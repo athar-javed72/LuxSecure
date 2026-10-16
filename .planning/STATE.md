@@ -19,10 +19,11 @@ UI Redesign & Design System phase — **MOSTLY COMPLETE** (handoff tasks open)
 - MySQL locally; seeders + `luxsecure_db.sql` for demo data
 
 ### Design system
-- Tokens / utilities in `resources/css/app.css` (`fs-*` brand palette)
+- **Estate Noir theme:** ink navy (`fs-primary` `#0b1426`) + brass (`fs-brand` `#9a7b4f`) + champagne (`fs-brand-light`) + stone surface (`fs-surface`)
+- Typography: Cormorant Garamond (display) + DM Sans (UI)
 - Shared components under `resources/views/components/`
 - Layout width via `x-container` (max-w-[1440px])
-- Navbar + footer LuxSecure-branded; footer contact-aware, no newsletter
+- Green monochrome brand wash removed (was a poor fit for luxury property)
 
 ### Git
 - `origin` → `https://github.com/athar-javed72/LuxSecure.git`

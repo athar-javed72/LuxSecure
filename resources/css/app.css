@@ -1,34 +1,47 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap");
 @import "tailwindcss";
 
+/*
+ | LuxSecure — Estate Noir theme
+ | Deep ink navy for trust/structure · warm brass for luxury CTAs · stone surfaces
+ | Suited to high-end property listing sites (not a monochrome green brand wash).
+ */
 @theme {
-    --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+    --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+    --font-display: "Cormorant Garamond", ui-serif, Georgia, serif;
 
-    --color-fs-primary: #0f172a;
-    --color-fs-secondary: #475569;
+    /* Ink — structure, nav, footer, headings */
+    --color-fs-primary: #0b1426;
+    --color-fs-secondary: #4b5568;
     --color-fs-muted: #94a3b8;
-    --color-fs-brand: #14532d;
-    --color-fs-brand-light: #dcfce7;
-    --color-fs-accent: #2563eb;
-    --color-fs-danger: #dc2626;
+
+    /* Brass — luxury accent / primary CTAs */
+    --color-fs-brand: #9a7b4f;
+    --color-fs-brand-dark: #7a623e;
+    --color-fs-brand-light: #f0e6d4;
+
+    /* Supporting */
+    --color-fs-accent: #1e3a5f;
+    --color-fs-surface: #f5f4f1;
+    --color-fs-danger: #b91c1c;
 
     --text-xs: 12px;
     --text-xs--line-height: 1.4;
     --text-sm: 14px;
     --text-sm--line-height: 1.5;
     --text-base: 16px;
-    --text-base--line-height: 1.5;
+    --text-base--line-height: 1.55;
     --text-lg: 20px;
     --text-lg--line-height: 1.4;
     --text-xl: 28px;
-    --text-xl--line-height: 1.3;
+    --text-xl--line-height: 1.25;
     --text-2xl: 40px;
-    --text-2xl--line-height: 1.2;
-    --text-hero: 30px;
-    --text-hero--line-height: 1.2;
+    --text-2xl--line-height: 1.15;
+    --text-hero: 34px;
+    --text-hero--line-height: 1.15;
 
-    --radius-sm: 8px;
-    --radius-md: 16px;
+    --radius-sm: 6px;
+    --radius-md: 12px;
     --radius-full: 9999px;
 
     --spacing-1: 4px;
@@ -40,8 +53,8 @@
     --spacing-16: 64px;
     --spacing-24: 96px;
 
-    --shadow-sm: 0 1px 2px 0 rgb(15 23 42 / 0.06), 0 1px 3px 0 rgb(15 23 42 / 0.08);
-    --shadow-lg: 0 10px 15px -3px rgb(15 23 42 / 0.1), 0 4px 6px -4px rgb(15 23 42 / 0.08);
+    --shadow-sm: 0 1px 2px 0 rgb(11 20 38 / 0.05), 0 1px 3px 0 rgb(11 20 38 / 0.06);
+    --shadow-lg: 0 12px 24px -8px rgb(11 20 38 / 0.14), 0 4px 8px -4px rgb(11 20 38 / 0.08);
 
     --breakpoint-sm: 640px;
     --breakpoint-md: 768px;
@@ -59,8 +72,16 @@
     }
 
     body {
-        @apply font-sans text-base text-fs-primary bg-white antialiased;
+        @apply font-sans text-base text-fs-primary bg-fs-surface antialiased;
         overflow-x: hidden;
+    }
+
+    h1,
+    h2,
+    .fs-display {
+        font-family: var(--font-display);
+        font-weight: 600;
+        letter-spacing: -0.01em;
     }
 
     [x-cloak] {
@@ -96,5 +117,10 @@
 
     .fs-hide-scrollbar::-webkit-scrollbar {
         display: none;
+    }
+
+    /* Subtle property-site atmosphere on light sections */
+    .fs-surface-panel {
+        @apply bg-white border border-black/5 shadow-sm;
     }
 }

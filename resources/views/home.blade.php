@@ -13,7 +13,7 @@
         height="1080"
         class="absolute inset-0 w-full h-full object-cover"
     >
-    <div class="absolute inset-0 bg-fs-primary/70"></div>
+    <div class="absolute inset-0 bg-gradient-to-r from-fs-primary/85 via-fs-primary/65 to-fs-primary/40"></div>
 
     <x-container class="relative z-10 w-full py-8 md:py-12">
         <div class="max-w-prose">
@@ -68,8 +68,8 @@
                 ['Bungalow', 'M3 12l9-8 9 8M5 10v10h14V10'],
             ] as [$label, $path])
                 <a href="{{ route('properties', ['type' => $label]) }}"
-                   class="w-full flex flex-col items-center justify-center gap-3 h-32 rounded-md bg-white shadow-sm hover:shadow-lg transition-shadow duration-150 border border-slate-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fs-brand">
-                    <span class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-fs-brand-light text-fs-brand">
+                   class="w-full flex flex-col items-center justify-center gap-3 h-32 rounded-md bg-white shadow-sm hover:shadow-lg transition-shadow duration-150 border border-black/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fs-brand">
+                    <span class="inline-flex items-center justify-center w-12 h-12 rounded-sm bg-fs-brand-light text-fs-brand">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="{{ $path }}"/></svg>
                     </span>
                     <span class="text-sm font-semibold text-fs-primary">{{ $label }}</span>
@@ -208,11 +208,12 @@
 {{-- CTA --}}
 <section class="pb-16">
     <x-container>
-        <div class="rounded-md bg-fs-brand px-6 py-12 text-center text-white">
-            <h2 class="text-xl md:text-2xl font-bold">Ready to find your next property?</h2>
-            <p class="mt-3 text-sm text-fs-brand-light max-w-prose mx-auto">Browse verified listings or talk to a LuxSecure agent today.</p>
+        <div class="rounded-md bg-fs-primary px-6 py-12 text-center text-white border border-white/5 shadow-lg">
+            <p class="text-[10px] font-semibold uppercase tracking-[0.2em] text-fs-brand">LuxSecure</p>
+            <h2 class="mt-3 text-xl md:text-2xl font-bold">Ready to find your next property?</h2>
+            <p class="mt-3 text-sm text-slate-300 max-w-prose mx-auto">Browse verified listings or talk to a LuxSecure agent today.</p>
             <div class="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
-                <x-button variant="secondary" href="{{ route('properties') }}">Browse properties</x-button>
+                <x-button variant="primary" href="{{ route('properties') }}">Browse properties</x-button>
                 <x-button variant="ghost" href="{{ route('contact') }}" class="!border-white/30 !text-white hover:!bg-white/10">Contact us</x-button>
             </div>
         </div>

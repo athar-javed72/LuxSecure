@@ -14,8 +14,11 @@ Completed Tasks:
 - Repo match: Compared local tree to https://github.com/athar-javed72/LuxSecure.git — ~134 common files, ~94 identical, ~40 content diffs (mostly views/CSS/JS), +16 local-only component files. Set git remote origin to that URL and fetched origin/main.
 - Agent tooling (2026-10-17): Ported GSD / Ralph / Context7 / Serena / CodeRabbit / server-validation plugin packs from Nexora Lab reference project into .agents/ and .agent/. Added AGENTS.md, PRD.md (UI redesign phase), .planning/STATE.md, Cursor rules under .cursor/rules/. Adapted laravel-stack + server-validation rules for Laravel 10 / Tailwind 4 / PHPUnit. Stripped third-party API secrets from mcp_config (kept context7 + serena stubs).
 
+- Theme update (2026-10-17): Replaced monochrome green brand wash with Estate Noir — ink navy + warm brass + stone surfaces; Cormorant Garamond display + DM Sans UI; tokens, buttons, navbar, footer, auth panels, home CTA, badges, admin shell updated to match luxury property positioning.
+
 Notes / STOP points:
 ---------------------
 - No git commit/push of the redesign yet (awaiting explicit user request).
 - README still mentions Tailwind CDN in places — tracked as PRD Task F1.
 - Re-run php artisan test + npm run build before calling the redesign phase fully closed (PRD Task F2).
+

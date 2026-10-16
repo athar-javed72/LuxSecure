@@ -9,6 +9,7 @@ alwaysApply: true
 - No Bootstrap. No Tailwind CDN.
 - Prefer existing routes/controllers/models; UI-first unless the task says otherwise.
 - Use `x-container`, design tokens (`fs-*`), and shared `resources/views/components/*`.
+- Theme: Estate Noir — ink navy (`fs-primary`) + brass (`fs-brand`) + stone (`fs-surface`). Do not reintroduce green brand washes.
 - Spec sources: `PRD.md`, `progress.txt` (append-only), `.planning/STATE.md`, `AGENTS.md`.
 - Before completing a PRD task: `php -l` on changed PHP, `php artisan test`, and `npm run build` if frontend changed.
 - Do not commit or push unless the user explicitly asks.

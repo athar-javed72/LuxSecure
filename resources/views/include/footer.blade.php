@@ -4,9 +4,9 @@
             {{-- Brand --}}
             <div>
                 <a href="{{ route('home') }}" class="inline-flex items-center gap-3 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
-                    <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-sm bg-fs-brand-light text-sm font-bold text-fs-brand">LS</span>
-                    <span class="text-lg font-bold tracking-wide">
-                        Lux<span class="text-fs-brand-light">Secure</span>
+                    <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-sm bg-fs-brand text-sm font-bold text-white tracking-wide">LS</span>
+                    <span class="fs-display text-xl font-semibold tracking-wide">
+                        Lux<span class="text-fs-brand">Secure</span>
                     </span>
                 </a>
                 <p class="mt-4 max-w-xs text-sm leading-relaxed text-slate-300">
@@ -93,7 +93,7 @@
                 <div class="mt-5">
                     <a
                         href="{{ route('contact') }}"
-                        class="inline-flex h-10 items-center justify-center rounded-sm bg-fs-brand-light px-4 text-sm font-semibold text-fs-brand transition-colors duration-150 hover:bg-[#bbf7d0] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                        class="inline-flex h-10 items-center justify-center rounded-sm bg-fs-brand px-4 text-sm font-semibold text-white transition-colors duration-150 hover:bg-fs-brand-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                     >
                         Send a message
                     </a>

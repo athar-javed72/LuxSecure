@@ -7,7 +7,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('styles')
 </head>
-<body class="min-h-screen bg-slate-50 text-fs-primary" x-data="{ sidebarOpen: false }">
+<body class="min-h-screen bg-fs-surface text-fs-primary" x-data="{ sidebarOpen: false }">
     {{-- Fixed 256px sidebar from lg --}}
     <aside
         class="fixed inset-y-0 left-0 z-40 w-64 bg-fs-primary text-white transform transition-transform duration-200 lg:translate-x-0"
@@ -16,7 +16,7 @@
     >
         <div class="h-[72px] px-4 flex items-center border-b border-white/10">
             <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2 min-w-0">
-                <span class="inline-flex items-center justify-center w-10 h-10 shrink-0 rounded-sm bg-white text-fs-brand font-bold text-sm">LS</span>
+                <span class="inline-flex items-center justify-center w-10 h-10 shrink-0 rounded-sm bg-fs-brand text-white font-bold text-sm tracking-wide">LS</span>
                 <span class="font-bold truncate">LuxSecure Admin</span>
             </a>
         </div>

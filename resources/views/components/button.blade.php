@@ -6,15 +6,15 @@
 ])
 
 @php
-    $base = 'inline-flex items-center justify-center gap-2 h-11 px-5 rounded-sm text-sm font-semibold transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fs-brand disabled:opacity-50 disabled:pointer-events-none';
+    $base = 'inline-flex items-center justify-center gap-2 h-11 px-5 rounded-sm text-sm font-semibold tracking-wide transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fs-brand disabled:opacity-50 disabled:pointer-events-none';
 
     $variants = [
-        'primary' => 'bg-fs-brand text-white hover:bg-[#0f3d22]',
-        'secondary' => 'bg-fs-brand-light text-fs-brand hover:bg-[#bbf7d0]',
-        'ghost' => 'bg-transparent text-fs-primary hover:bg-slate-100 border border-slate-200',
+        'primary' => 'bg-fs-brand text-white hover:bg-fs-brand-dark',
+        'secondary' => 'bg-fs-brand-light text-fs-primary hover:bg-[#e5d8c3]',
+        'ghost' => 'bg-transparent text-fs-primary hover:bg-black/5 border border-black/10',
+        'ink' => 'bg-fs-primary text-white hover:bg-[#152238]',
     ];
 
-    // List Property is the only accent-blue CTA defined in design tokens.
     $classes = $base . ' ' . ($variants[$variant] ?? $variants['primary']);
     $element = $tag ?? ($href ? 'a' : 'button');
 @endphp

@@ -25,7 +25,7 @@
     }"
 >
     {{-- Left panel stays mounted; only copy/animation swap --}}
-    <div class="hidden md:flex w-1/2 flex-col items-center justify-center bg-gradient-to-br from-fs-brand to-fs-primary p-8 text-center">
+    <div class="hidden md:flex w-1/2 flex-col items-center justify-center bg-gradient-to-br from-fs-primary via-[#152238] to-[#1e3a5f] p-8 text-center">
         <div class="relative w-[260px] h-[260px]">
             <lottie-player
                 x-show="mode === 'login'"
@@ -66,19 +66,19 @@
             <template x-if="mode === 'login'">
                 <div>
                     <h2 class="text-lg font-bold text-white">Welcome back</h2>
-                    <p class="mt-2 text-sm text-fs-brand-light max-w-prose mx-auto">Sign in to your LuxSecure account.</p>
+                    <p class="mt-2 text-sm text-slate-300 max-w-prose mx-auto">Sign in to your LuxSecure account.</p>
                 </div>
             </template>
             <template x-if="mode === 'forgot'">
                 <div>
                     <h2 class="text-lg font-bold text-white">Reset password</h2>
-                    <p class="mt-2 text-sm text-fs-brand-light max-w-prose mx-auto">We’ll email you a secure reset link.</p>
+                    <p class="mt-2 text-sm text-slate-300 max-w-prose mx-auto">We’ll email you a secure reset link.</p>
                 </div>
             </template>
             <template x-if="mode === 'register'">
                 <div>
                     <h2 class="text-lg font-bold text-white">Join LuxSecure</h2>
-                    <p class="mt-2 text-sm text-fs-brand-light max-w-prose mx-auto">Save favorites and manage inquiries.</p>
+                    <p class="mt-2 text-sm text-slate-300 max-w-prose mx-auto">Save favorites and manage inquiries.</p>
                 </div>
             </template>
         </div>
@@ -87,7 +87,7 @@
     {{-- Right panel: forms swap without leaving the page --}}
     <div class="w-full md:w-1/2 p-6 sm:p-8 flex flex-col justify-center relative min-h-[480px]">
         @if(session('success') || session('status'))
-            <div class="mb-4 p-4 rounded-sm bg-fs-brand-light text-fs-brand text-sm">{{ session('success') ?? session('status') }}</div>
+            <div class="mb-4 p-4 rounded-sm bg-fs-brand-light text-fs-primary text-sm">{{ session('success') ?? session('status') }}</div>
         @endif
         @if($errors->any())
             <div class="mb-4 p-4 rounded-sm bg-red-50 text-fs-danger text-sm">

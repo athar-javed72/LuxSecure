@@ -39,19 +39,19 @@
 @endphp
 
 <header
-    class="fixed top-0 left-0 w-full z-50 h-[72px] border-b border-white/10 shadow-lg backdrop-blur-xl {{ $variant === 'admin' ? 'bg-fs-primary/95' : 'bg-gradient-to-r from-fs-primary via-[#0a1f14] to-fs-brand' }}"
+    class="fixed top-0 left-0 w-full z-50 h-[72px] border-b border-white/10 shadow-lg backdrop-blur-xl bg-fs-primary/97"
     x-data="{ navOpen: false, profileOpen: false }"
     @keydown.escape.window="navOpen = false; profileOpen = false"
 >
     <x-container class="h-full flex items-center justify-between gap-4">
         <a href="{{ $variant === 'admin' ? route('admin.dashboard') : route('home') }}"
            class="flex items-center gap-3 shrink-0 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
-            <span class="inline-flex items-center justify-center w-10 h-10 rounded-sm bg-fs-brand-light text-fs-brand font-bold text-sm">LS</span>
+            <span class="inline-flex items-center justify-center w-10 h-10 rounded-sm bg-fs-brand text-white font-bold text-sm tracking-wide">LS</span>
             <span class="flex flex-col leading-tight">
-                <span class="text-lg font-bold tracking-wide text-white">
-                    Lux<span class="text-fs-brand-light">Secure</span>
+                <span class="fs-display text-xl font-semibold tracking-wide text-white">
+                    Lux<span class="text-fs-brand">Secure</span>
                 </span>
-                <span class="hidden sm:inline text-xs tracking-wide uppercase text-slate-300/80">
+                <span class="hidden sm:inline text-[10px] tracking-[0.18em] uppercase text-slate-300/80">
                     {{ $variant === 'admin' ? 'Admin Control' : 'Trusted Property Platform' }}
                 </span>
             </span>
@@ -77,7 +77,7 @@
             @elseif(!$isAuthenticated)
                 <x-button variant="ghost" href="{{ route('login.form') }}" class="!border-white/20 !text-white hover:!bg-white/10">Login</x-button>
                 <x-button variant="secondary" href="{{ route('register.form') }}">Register</x-button>
-                <x-button variant="primary" href="{{ route('properties') }}" class="!bg-fs-brand-light !text-fs-brand hover:!bg-white">Explore</x-button>
+                <x-button variant="primary" href="{{ route('properties') }}">Explore</x-button>
             @else
                 @if($isAdmin)
                     <x-button variant="secondary" href="{{ route('admin.dashboard') }}">Admin</x-button>
@@ -148,7 +148,7 @@
                 @guest
                     <x-button variant="ghost" href="{{ route('login.form') }}" class="w-full !border-white/20 !text-white hover:!bg-white/10">Login</x-button>
                     <x-button variant="secondary" href="{{ route('register.form') }}" class="w-full">Register</x-button>
-                    <x-button variant="primary" href="{{ route('properties') }}" class="w-full !bg-fs-brand-light !text-fs-brand">Explore Properties</x-button>
+                    <x-button variant="primary" href="{{ route('properties') }}" class="w-full">Explore Properties</x-button>
                 @else
                     <x-button variant="ghost" href="{{ route('profile') }}" class="w-full !border-white/20 !text-white hover:!bg-white/10">Account</x-button>
                     <form method="POST" action="{{ route('logout') }}">
