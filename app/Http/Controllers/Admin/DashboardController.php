@@ -17,6 +17,8 @@ class DashboardController extends Controller
             'totalProperties' => Property::count(),
             'totalInquiries' => ContactInquiry::count(),
             'unreadInquiries' => ContactInquiry::where('is_read', false)->count(),
+            'recentProperties' => Property::latest()->take(5)->get(),
+            'recentInquiries' => ContactInquiry::latest()->take(5)->get(),
         ]);
     }
 }

@@ -13,6 +13,7 @@
         'secondary' => 'bg-fs-brand-light text-fs-primary hover:bg-[#e5d8c3]',
         'ghost' => 'bg-transparent text-fs-primary hover:bg-black/5 border border-black/10',
         'ink' => 'bg-fs-primary text-white hover:bg-[#152238]',
+        'danger' => 'bg-fs-danger text-white hover:bg-[#991b1b]',
     ];
 
     $classes = $base . ' ' . ($variants[$variant] ?? $variants['primary']);

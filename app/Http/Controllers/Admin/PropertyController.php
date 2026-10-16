@@ -14,10 +14,36 @@ use Illuminate\View\View;
 
 class PropertyController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
-        $properties = Property::with('images')->latest()->paginate(15);
-        return view('admin.properties.index', compact('properties'));
+        $query = Property::with('images')->latest();
+
+        if ($request->filled('search')) {
+            $search = $request->string('search')->toString();
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                    ->orWhere('location', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('type') && in_array($request->type, Property::TYPES, true)) {
+            $query->where('type', $request->type);
+        }
+
+        if ($request->filled('status')) {
+            if ($request->status === 'active') {
+                $query->where('is_active', true);
+            } elseif ($request->status === 'inactive') {
+                $query->where('is_active', false);
+            }
+        }
+
+        $properties = $query->paginate(15)->withQueryString();
+
+        return view('admin.properties.index', [
+            'properties' => $properties,
+            'types' => Property::TYPES,
+        ]);
     }
 
     public function create(): View

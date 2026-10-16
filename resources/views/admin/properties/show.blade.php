@@ -3,16 +3,33 @@
 @section('title', $property->title)
 
 @section('content')
+@php use App\Support\Media; @endphp
+<x-breadcrumbs :items="[
+    ['label' => 'Admin', 'href' => route('admin.dashboard')],
+    ['label' => 'Properties', 'href' => route('admin.properties.index')],
+    ['label' => $property->title],
+]" />
+
 <div class="flex flex-wrap justify-between items-start gap-4 mb-6">
     <h1 class="text-xl md:text-2xl font-bold text-fs-primary">Property details</h1>
     <x-button variant="ghost" href="{{ route('admin.properties.index') }}">Back</x-button>
 </div>
 
-<div class="rounded-md bg-white shadow-sm border border-slate-100 p-6 w-full max-w-5xl">
+<div class="rounded-md bg-white shadow-sm border border-black/5 p-6 w-full max-w-5xl">
     <h2 class="text-lg font-bold text-fs-primary mb-4">{{ $property->title }}</h2>
     @if(filled($property->primary_image_url))
-        <div class="aspect-[4/3] rounded-md overflow-hidden bg-slate-100 mb-4">
+        <div class="aspect-[4/3] rounded-md overflow-hidden bg-fs-surface mb-4">
             <img src="{{ $property->primary_image_url }}" alt="{{ $property->title }}" loading="lazy" width="800" height="600" class="w-full h-full object-cover">
+        </div>
+    @endif
+    @if($property->images->isNotEmpty())
+        <div class="mb-4 flex flex-wrap gap-2">
+            @foreach($property->images as $image)
+                @php $url = Media::url($image->path); @endphp
+                @if($url !== '')
+                    <img src="{{ $url }}" alt="Gallery image {{ $loop->iteration }} for {{ $property->title }}" width="120" height="90" class="w-[120px] h-[90px] object-cover rounded-sm border border-black/5">
+                @endif
+            @endforeach
         </div>
     @endif
     <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">

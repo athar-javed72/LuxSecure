@@ -21,8 +21,8 @@ class UpdatePropertyRequest extends FormRequest
             'description' => ['nullable', 'string', 'max:5000'],
             'bedrooms' => ['nullable', 'integer', 'min:0'],
             'bathrooms' => ['nullable', 'integer', 'min:0'],
-            'featured_image' => ['nullable', 'image', 'max:5120'],
-            'images.*' => ['nullable', 'image', 'max:5120'],
+            'featured_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
+            'images.*' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
             'is_active' => ['nullable', 'boolean'],
         ];
     }

@@ -3,12 +3,18 @@
 @section('title', 'Edit User: ' . $user->name)
 
 @section('content')
+<x-breadcrumbs :items="[
+    ['label' => 'Admin', 'href' => route('admin.dashboard')],
+    ['label' => 'Users', 'href' => route('admin.users.index')],
+    ['label' => 'Edit'],
+]" />
+
 <div class="flex flex-wrap justify-between items-start gap-4 mb-6">
     <h1 class="text-xl md:text-2xl font-bold text-fs-primary">Edit user</h1>
     <x-button variant="ghost" href="{{ route('admin.users.show', $user) }}">Back</x-button>
 </div>
 
-<div class="rounded-md bg-white shadow-sm border border-slate-100 p-6 w-full max-w-5xl">
+<div class="rounded-md bg-white shadow-sm border border-black/5 p-6 w-full max-w-5xl">
     <h2 class="text-base font-semibold text-fs-primary mb-6">{{ $user->name }}</h2>
     <form method="POST" action="{{ route('admin.users.update', $user) }}">
         @csrf

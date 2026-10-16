@@ -8,7 +8,7 @@
         'sale' => 'bg-fs-brand text-white',
         'rent' => 'bg-fs-accent text-white',
         'muted' => 'bg-black/5 text-fs-secondary',
-        'danger' => 'bg-red-100 text-fs-danger',
+        'danger' => 'bg-fs-danger/10 text-fs-danger',
         'success' => 'bg-fs-brand-light text-fs-primary',
     ];
 @endphp
