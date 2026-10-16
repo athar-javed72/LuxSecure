@@ -1,0 +1,12 @@
+---
+description: Laravel Form Request and validation discipline
+globs: app/**/*.php
+alwaysApply: false
+---
+
+# Server validation
+
+- No `$request->all()` into writes — use validated Form Request data.
+- Prefer Form Requests under `app/Http/Requests/`.
+- Keep admin middleware and role checks intact.
+- Validate uploads (mime, size); store on the public disk safely.

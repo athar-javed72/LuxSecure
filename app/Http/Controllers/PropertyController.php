@@ -29,7 +29,11 @@ class PropertyController extends Controller
             }
         }
 
-        $properties = $query->latest()->paginate(12)->withQueryString();
+        $properties = match ($request->get('sort')) {
+            'price_asc' => $query->orderBy('price')->paginate(12)->withQueryString(),
+            'price_desc' => $query->orderByDesc('price')->paginate(12)->withQueryString(),
+            default => $query->latest()->paginate(12)->withQueryString(),
+        };
 
         return view('properties', compact('properties'));
     }

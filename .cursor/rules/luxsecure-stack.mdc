@@ -1,0 +1,14 @@
+---
+description: LuxSecure stack, design system, and verification gate
+alwaysApply: true
+---
+
+# LuxSecure stack
+
+- Laravel 10, PHP 8.1+, Blade, Tailwind CSS 4 (Vite), Alpine.js, Sanctum, PHPUnit, MySQL.
+- No Bootstrap. No Tailwind CDN.
+- Prefer existing routes/controllers/models; UI-first unless the task says otherwise.
+- Use `x-container`, design tokens (`fs-*`), and shared `resources/views/components/*`.
+- Spec sources: `PRD.md`, `progress.txt` (append-only), `.planning/STATE.md`, `AGENTS.md`.
+- Before completing a PRD task: `php -l` on changed PHP, `php artisan test`, and `npm run build` if frontend changed.
+- Do not commit or push unless the user explicitly asks.

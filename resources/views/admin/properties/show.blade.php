@@ -4,20 +4,28 @@
 
 @section('content')
 <div class="flex flex-wrap justify-between items-start gap-4 mb-6">
-    <h1 class="text-3xl font-bold text-slate-900">Property Details</h1>
-    <a href="{{ route('admin.properties.index') }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-700 font-semibold text-sm shadow-sm hover:bg-slate-50 hover:border-slate-300 transition">
-        <i class="fas fa-arrow-left text-xs" aria-hidden="true"></i> Back to Properties
-    </a>
+    <h1 class="text-xl md:text-2xl font-bold text-fs-primary">Property details</h1>
+    <x-button variant="ghost" href="{{ route('admin.properties.index') }}">Back</x-button>
 </div>
-<div class="bg-white rounded-2xl shadow-lg border border-slate-100 p-6 max-w-3xl">
-    <h2 class="text-2xl font-bold text-slate-800 mb-4">{{ $property->title }}</h2>
-    <img src="{{ $property->primary_image_url }}" alt="{{ $property->title }}" class="w-full h-64 object-cover rounded-lg mb-4">
-    <p class="text-gray-600"><strong>Location:</strong> {{ $property->location }}</p>
-    <p class="text-gray-600"><strong>Type:</strong> {{ $property->type }}</p>
-    <p class="text-gray-600"><strong>Price:</strong> PKR {{ number_format($property->price / 1_00_00_000, 1) }} Crore</p>
-    @if($property->description)<p class="text-gray-700 mt-2">{{ $property->description }}</p>@endif
-    <div class="mt-4">
-        <a href="{{ route('admin.properties.edit', $property) }}" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700">Edit</a>
+
+<div class="rounded-md bg-white shadow-sm border border-slate-100 p-6 w-full max-w-5xl">
+    <h2 class="text-lg font-bold text-fs-primary mb-4">{{ $property->title }}</h2>
+    @if(filled($property->primary_image_url))
+        <div class="aspect-[4/3] rounded-md overflow-hidden bg-slate-100 mb-4">
+            <img src="{{ $property->primary_image_url }}" alt="{{ $property->title }}" loading="lazy" width="800" height="600" class="w-full h-full object-cover">
+        </div>
+    @endif
+    <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+        <div><dt class="text-xs text-fs-muted">Location</dt><dd class="mt-1 text-fs-primary">{{ $property->location }}</dd></div>
+        <div><dt class="text-xs text-fs-muted">Type</dt><dd class="mt-1 text-fs-primary">{{ $property->type }}</dd></div>
+        <div><dt class="text-xs text-fs-muted">Price</dt><dd class="mt-1 text-fs-primary">PKR {{ number_format($property->price / 1_00_00_000, 1) }} Crore</dd></div>
+        <div><dt class="text-xs text-fs-muted">Status</dt><dd class="mt-1"><x-badge :tone="$property->is_active ? 'success' : 'muted'">{{ $property->is_active ? 'Active' : 'Inactive' }}</x-badge></dd></div>
+    </dl>
+    @if($property->description)
+        <p class="mt-4 text-sm text-fs-secondary">{{ $property->description }}</p>
+    @endif
+    <div class="mt-6">
+        <x-button variant="primary" href="{{ route('admin.properties.edit', $property) }}">Edit</x-button>
     </div>
 </div>
 @endsection

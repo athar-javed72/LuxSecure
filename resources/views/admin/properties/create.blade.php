@@ -4,20 +4,16 @@
 
 @section('content')
 <div class="mb-6">
-    <h1 class="text-3xl font-bold text-slate-900">Add Property</h1>
-    <p class="text-slate-600 mt-1">Create a new property listing</p>
+    <h1 class="text-xl md:text-2xl font-bold text-fs-primary">Add property</h1>
+    <p class="mt-2 text-sm text-fs-secondary">Create a new property listing</p>
 </div>
-<div class="bg-white rounded-2xl shadow-lg border border-slate-100 overflow-hidden max-w-2xl">
-    <form method="POST" action="{{ route('admin.properties.store') }}" enctype="multipart/form-data" class="p-6 sm:p-8">
+<div class="rounded-md bg-white shadow-sm border border-slate-100 w-full max-w-5xl">
+    <form method="POST" action="{{ route('admin.properties.store') }}" enctype="multipart/form-data" class="p-6">
         @csrf
         @include('admin.properties._form', ['property' => null])
-        <div class="mt-8 pt-6 border-t border-slate-200 flex flex-wrap gap-3">
-            <button type="submit" class="inline-flex items-center gap-2 bg-indigo-600 text-white px-6 py-2.5 rounded-xl font-semibold hover:bg-indigo-700 transition focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                <i class="fas fa-plus text-sm" aria-hidden="true"></i> Create Property
-            </button>
-            <a href="{{ route('admin.properties.index') }}" class="inline-flex items-center gap-2 bg-slate-100 text-slate-700 px-6 py-2.5 rounded-xl font-semibold hover:bg-slate-200 transition focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2">
-                <i class="fas fa-times text-sm" aria-hidden="true"></i> Cancel
-            </a>
+        <div class="mt-8 pt-6 border-t border-slate-100 flex flex-wrap gap-2">
+            <x-button type="submit" variant="primary">Create property</x-button>
+            <x-button variant="ghost" href="{{ route('admin.properties.index') }}">Cancel</x-button>
         </div>
     </form>
 </div>

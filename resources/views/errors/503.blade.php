@@ -1,17 +1,10 @@
 @extends('include.master')
 
-@section('title', 'Service Unavailable')
-@section('meta_description', 'LuxSecure is temporarily unavailable. Please try again shortly.')
+@section('title', 'Maintenance')
 
 @section('content')
-<div class="min-h-[65vh] flex flex-col items-center justify-center px-4 py-16">
-    <div class="text-center max-w-md">
-        <p class="text-6xl md:text-8xl font-extrabold text-amber-100 mb-2" aria-hidden="true">503</p>
-        <h1 class="text-2xl md:text-3xl font-bold text-slate-900 mb-2">Service temporarily unavailable</h1>
-        <p class="text-slate-600 mb-8">We're performing maintenance or experiencing high demand. Please try again in a few minutes.</p>
-        <a href="{{ url('/') }}" class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold bg-indigo-600 text-white hover:bg-indigo-700 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500">
-            <i class="fas fa-home" aria-hidden="true"></i> Back to Home
-        </a>
-    </div>
-</div>
+<x-container class="py-16 text-center">
+    <h1 class="text-xl md:text-2xl font-bold text-fs-primary">We’ll be right back</h1>
+    <p class="mt-2 text-sm text-fs-secondary">LuxSecure is undergoing scheduled maintenance.</p>
+</x-container>
 @endsection

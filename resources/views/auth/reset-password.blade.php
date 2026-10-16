@@ -1,54 +1,38 @@
 @extends('include.master')
 
 @section('title', 'Reset Password')
-@section('meta_description', 'Set a new password for your LuxSecure account.')
-
-@push('styles')
-<link rel="stylesheet" href="{{ asset('css/auth.css') }}">
-@endpush
 
 @section('content')
-<div class="flex min-h-[70vh] items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-    <div class="flex w-full max-w-4xl rounded-2xl overflow-hidden auth-card bg-white/90 backdrop-blur">
-        <div class="auth-side">
-            <lottie-player src="https://assets2.lottiefiles.com/packages/lf20_4kx2q32n.json" background="transparent" speed="1" style="width: 260px; height: 260px;" loop autoplay></lottie-player>
-            <h3 class="auth-side-title">Set new password</h3>
-            <p class="auth-side-text">Choose a strong password.</p>
+<x-container class="py-12">
+    <div class="flex w-full max-w-4xl mx-auto rounded-md overflow-hidden shadow-lg border border-slate-100 bg-white">
+        <div class="hidden md:flex w-1/2 flex-col items-center justify-center bg-gradient-to-br from-fs-brand to-fs-primary p-8 text-center">
+            <div class="inline-flex items-center justify-center w-20 h-20 rounded-md bg-white/15 text-white mb-6" aria-hidden="true">
+                <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                </svg>
+            </div>
+            <h2 class="text-lg font-bold text-white">New password</h2>
+            <p class="mt-2 text-sm text-fs-brand-light max-w-prose">Choose a strong password for your LuxSecure account.</p>
         </div>
-        <div class="w-full md:w-1/2 p-8 flex flex-col justify-center">
-            @if(session('success'))
-                <div class="alert alert-success mb-4">{{ session('success') }}</div>
-            @endif
-            @if(session('status'))
-                <div class="alert alert-success mb-4">{{ session('status') }}</div>
-            @endif
+
+        <div class="w-full md:w-1/2 p-6 sm:p-8 flex flex-col justify-center">
+            <h1 class="text-xl font-bold text-fs-primary">Reset password</h1>
+
             @if($errors->any())
-                <div class="alert alert-danger mb-4">
-                    <ul class="mb-0">@foreach($errors->all() as $e)<li>{{ $e }}</li>@endforeach</ul>
+                <div class="mt-4 p-4 rounded-sm bg-red-50 text-fs-danger text-sm">
+                    <ul class="space-y-1">@foreach($errors->all() as $e)<li>{{ $e }}</li>@endforeach</ul>
                 </div>
             @endif
-            <form method="POST" action="{{ url('/reset-password') }}" class="space-y-5">
+
+            <form method="POST" action="{{ route('password.update') }}" class="mt-6 space-y-4">
                 @csrf
                 <input type="hidden" name="token" value="{{ $token }}">
-                <h2 class="text-2xl font-bold text-gray-900 text-center">Reset password</h2>
-                <div>
-                    <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-                    <input type="email" id="email" name="email" value="{{ old('email', $email ?? '') }}" placeholder="you@example.com" required autofocus class="auth-input">
-                </div>
-                <div>
-                    <label for="password" class="block text-sm font-medium text-gray-700">New password</label>
-                    <input type="password" id="password" name="password" placeholder="Min 8 characters" required class="auth-input">
-                </div>
-                <div>
-                    <label for="password_confirmation" class="block text-sm font-medium text-gray-700">Confirm password</label>
-                    <input type="password" id="password_confirmation" name="password_confirmation" placeholder="••••••••" required class="auth-input">
-                </div>
-                <button type="submit" class="auth-btn">Reset password</button>
-                <p class="text-center text-sm">
-                    <a href="{{ route('login.form') }}" class="auth-link">Back to login</a>
-                </p>
+                <x-input label="Email" name="email" type="email" :value="old('email', request('email'))" required />
+                <x-input label="Password" name="password" type="password" required />
+                <x-input label="Confirm password" name="password_confirmation" type="password" required />
+                <x-button type="submit" variant="primary" class="w-full">Update password</x-button>
             </form>
         </div>
     </div>
-</div>
+</x-container>
 @endsection

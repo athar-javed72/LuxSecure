@@ -1,0 +1,100 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+@import "tailwindcss";
+
+@theme {
+    --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+
+    --color-fs-primary: #0f172a;
+    --color-fs-secondary: #475569;
+    --color-fs-muted: #94a3b8;
+    --color-fs-brand: #14532d;
+    --color-fs-brand-light: #dcfce7;
+    --color-fs-accent: #2563eb;
+    --color-fs-danger: #dc2626;
+
+    --text-xs: 12px;
+    --text-xs--line-height: 1.4;
+    --text-sm: 14px;
+    --text-sm--line-height: 1.5;
+    --text-base: 16px;
+    --text-base--line-height: 1.5;
+    --text-lg: 20px;
+    --text-lg--line-height: 1.4;
+    --text-xl: 28px;
+    --text-xl--line-height: 1.3;
+    --text-2xl: 40px;
+    --text-2xl--line-height: 1.2;
+    --text-hero: 30px;
+    --text-hero--line-height: 1.2;
+
+    --radius-sm: 8px;
+    --radius-md: 16px;
+    --radius-full: 9999px;
+
+    --spacing-1: 4px;
+    --spacing-2: 8px;
+    --spacing-4: 16px;
+    --spacing-6: 24px;
+    --spacing-8: 32px;
+    --spacing-12: 48px;
+    --spacing-16: 64px;
+    --spacing-24: 96px;
+
+    --shadow-sm: 0 1px 2px 0 rgb(15 23 42 / 0.06), 0 1px 3px 0 rgb(15 23 42 / 0.08);
+    --shadow-lg: 0 10px 15px -3px rgb(15 23 42 / 0.1), 0 4px 6px -4px rgb(15 23 42 / 0.08);
+
+    --breakpoint-sm: 640px;
+    --breakpoint-md: 768px;
+    --breakpoint-lg: 1024px;
+    --breakpoint-xl: 1280px;
+    --breakpoint-2xl: 1536px;
+
+    --max-width-prose: 65ch;
+}
+
+@layer base {
+    html {
+        scroll-behavior: smooth;
+        overflow-x: hidden;
+    }
+
+    body {
+        @apply font-sans text-base text-fs-primary bg-white antialiased;
+        overflow-x: hidden;
+    }
+
+    [x-cloak] {
+        display: none !important;
+    }
+
+    :focus-visible {
+        @apply outline-2 outline-offset-2 outline-fs-brand;
+    }
+
+    a {
+        text-decoration: none;
+    }
+
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+}
+
+@layer components {
+    .fs-line-clamp-2 {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+    }
+
+    .fs-hide-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    .fs-hide-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+}

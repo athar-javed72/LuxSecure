@@ -3,80 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Admin') | {{ config('app.name') }}</title>
-    <link href="{{ asset('css/main.css') }}" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
-    <style>
-        /* Admin action buttons: poster-style colors, light fill on hover */
-        .admin-action-btn { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.375rem 0.75rem; border-radius: 0.5rem; font-size: 0.8125rem; font-weight: 600; text-decoration: none; border: 1px solid transparent; transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease; cursor: pointer; }
-        .admin-action-btn.view { color: #0284c7; border-color: rgba(14, 165, 233, 0.35); background: rgba(224, 242, 254, 0.4); }
-        .admin-action-btn.view:hover { background: #bae6fd; border-color: #7dd3fc; color: #0369a1; }
-        .admin-action-btn.edit { color: #d97706; border-color: rgba(251, 191, 36, 0.4); background: rgba(254, 243, 199, 0.4); }
-        .admin-action-btn.edit:hover { background: #fde68a; border-color: #fcd34d; color: #b45309; }
-        .admin-action-btn.delete { color: #e11d48; border-color: rgba(251, 113, 133, 0.35); background: rgba(255, 228, 230, 0.4); }
-        .admin-action-btn.delete:hover { background: #fecdd3; border-color: #fda4af; color: #be123c; }
-        .admin-action-btn.mark-read { color: #059669; border-color: rgba(52, 211, 153, 0.35); background: rgba(209, 250, 229, 0.4); }
-        .admin-action-btn.mark-read:hover { background: #a7f3d0; border-color: #6ee7b7; color: #047857; }
-        button.admin-action-btn { font-family: inherit; }
-
-        /* Admin: light form fields (override main.css dark inputs) */
-        .admin-panel input[type="text"],
-        .admin-panel input[type="email"],
-        .admin-panel input[type="number"],
-        .admin-panel input[type="password"],
-        .admin-panel input[type="search"],
-        .admin-panel input[type="tel"],
-        .admin-panel select,
-        .admin-panel textarea {
-            background-color: #fff !important;
-            color: #1e293b !important;
-            border: 1px solid #e2e8f0 !important;
-            border-radius: 0.5rem;
-            padding: 0.5rem 0.75rem;
-            margin-bottom: 0;
-        }
-        .admin-panel input:focus,
-        .admin-panel select:focus,
-        .admin-panel textarea:focus {
-            border-color: #6366f1 !important;
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
-        }
-        .admin-panel input::placeholder,
-        .admin-panel textarea::placeholder {
-            color: #94a3b8;
-        }
-        .admin-panel input[type="file"] {
-            background: #f8fafc !important;
-            color: #1e293b !important;
-            border: 1px dashed #cbd5e1;
-            padding: 0.5rem;
-        }
-    </style>
+    <title>@yield('title', 'Admin') | LuxSecure</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('styles')
 </head>
-<body class="bg-gray-100 min-h-screen flex flex-col admin-panel">
-    @include('include.navbar', ['variant' => 'admin'])
-
-    <main class="max-w-7xl mx-auto px-4 pt-24 pb-10 flex-1">
-        @if (session('success'))
-            <div class="mb-4 p-4 bg-green-100 text-green-800 rounded-lg">{{ session('success') }}</div>
-        @endif
-        @if (session('error'))
-            <div class="mb-4 p-4 bg-red-100 text-red-800 rounded-lg">{{ session('error') }}</div>
-        @endif
-        @yield('content')
-    </main>
-    <footer class="border-t border-gray-200 bg-white mt-auto">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-center sm:text-left text-xs text-gray-500">
-            <span>© {{ date('Y') }} {{ config('app.name') }} Admin</span>
-            @include('include.branding', ['brandingClass' => 'text-gray-500', 'strongClass' => 'text-indigo-600 font-medium'])
+<body class="min-h-screen bg-slate-50 text-fs-primary" x-data="{ sidebarOpen: false }">
+    {{-- Fixed 256px sidebar from lg --}}
+    <aside
+        class="fixed inset-y-0 left-0 z-40 w-64 bg-fs-primary text-white transform transition-transform duration-200 lg:translate-x-0"
+        :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
+        aria-label="Admin sidebar"
+    >
+        <div class="h-[72px] px-4 flex items-center border-b border-white/10">
+            <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2 min-w-0">
+                <span class="inline-flex items-center justify-center w-10 h-10 shrink-0 rounded-sm bg-white text-fs-brand font-bold text-sm">LS</span>
+                <span class="font-bold truncate">LuxSecure Admin</span>
+            </a>
         </div>
-    </footer>
+        <nav class="p-4 space-y-1 overflow-y-auto h-[calc(100vh-72px)]">
+            @foreach(config('navigation.admin', []) as $item)
+                @php
+                    $active = false;
+                    foreach (($item['active'] ?? []) as $pattern) {
+                        if (request()->routeIs($pattern)) { $active = true; break; }
+                    }
+                    try { $href = route($item['route']); } catch (\Throwable $e) { $href = '#'; }
+                @endphp
+                <a href="{{ $href }}"
+                   class="flex items-center min-h-11 px-4 rounded-sm text-sm font-medium transition-colors duration-150 {{ $active ? 'bg-white/15 text-white' : 'text-slate-300 hover:bg-white/10 hover:text-white' }}"
+                   @click="sidebarOpen = false">
+                    {{ $item['label'] }}
+                </a>
+            @endforeach
+            <a href="{{ route('home') }}" class="flex items-center min-h-11 px-4 rounded-sm text-sm font-medium text-slate-300 hover:bg-white/10 hover:text-white transition-colors duration-150">View site</a>
+        </nav>
+    </aside>
+
+    <div class="min-h-screen flex flex-col lg:pl-64">
+        <header class="sticky top-0 z-30 h-[72px] bg-white border-b border-slate-200 flex items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+            <button
+                type="button"
+                class="lg:hidden inline-flex items-center justify-center w-11 h-11 rounded-sm border border-slate-200 shrink-0"
+                @click="sidebarOpen = true"
+                aria-label="Open sidebar"
+            >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 6h16M4 12h16M4 18h16"/></svg>
+            </button>
+            <div class="flex-1 min-w-0">
+                <p class="text-sm font-semibold text-fs-primary truncate">@yield('title', 'Admin')</p>
+                <p class="text-xs text-fs-muted truncate">Signed in as {{ auth()->user()->email }}</p>
+            </div>
+            <form method="POST" action="{{ route('logout') }}" class="shrink-0">
+                @csrf
+                <x-button type="submit" variant="ghost">Logout</x-button>
+            </form>
+        </header>
+
+        <div
+            x-cloak
+            x-show="sidebarOpen"
+            class="fixed inset-0 z-30 bg-fs-primary/40 lg:hidden"
+            @click="sidebarOpen = false"
+        ></div>
+
+        <main class="flex-1 p-4 sm:p-6 lg:p-8">
+            <div class="w-full max-w-[1600px]">
+                @if (session('success'))
+                    <div class="mb-4 p-4 rounded-sm bg-fs-brand-light text-fs-brand text-sm">{{ session('success') }}</div>
+                @endif
+                @if (session('error'))
+                    <div class="mb-4 p-4 rounded-sm bg-red-50 text-fs-danger text-sm">{{ session('error') }}</div>
+                @endif
+                @yield('content')
+            </div>
+        </main>
+
+        <footer class="border-t border-slate-200 bg-white px-4 sm:px-6 lg:px-8 py-4 text-xs text-fs-muted flex flex-col sm:flex-row sm:justify-between gap-2">
+            <span>© {{ date('Y') }} LuxSecure Admin</span>
+            @include('include.branding', ['brandingClass' => 'text-fs-muted', 'strongClass' => 'text-fs-brand font-medium'])
+        </footer>
+    </div>
     @stack('scripts')
 </body>
 </html>

@@ -1,0 +1,15 @@
+---
+description: GSD / Ralph loop protocols for LuxSecure
+alwaysApply: true
+---
+
+# GSD protocols
+
+When executing work from `PRD.md`:
+
+1. File-first context — re-read target files before editing.
+2. One task per turn; verify; append `progress.txt`; then stop.
+3. Never invent scope outside the active PRD.
+4. Keep `.planning/STATE.md` accurate at phase handoff.
+5. Anti-hallucination — verify uncertain APIs via Context7 or docs; say when unsure.
+6. Use workflows under `.agents/workflows/` and `.agent/workflows/` (gsd-plan, gsd-execute, gsd-verify, ralph-loop, etc.) when the user invokes those flows.

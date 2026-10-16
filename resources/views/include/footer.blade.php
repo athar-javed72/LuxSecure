@@ -1,56 +1,109 @@
-<footer class="bg-gradient-to-r from-indigo-900/95 via-slate-950/95 to-blue-900/95 text-white border-t border-white/10 shadow-2xl">
-    <div class="max-w-7xl mx-auto py-10 px-6 grid grid-cols-1 md:grid-cols-3 gap-10">
-        <!-- Brand/About -->
-        <div class="flex flex-col space-y-3">
-            <div class="flex items-center space-x-2">
-                <lottie-player src="https://assets2.lottiefiles.com/packages/lf20_4kx2q32n.json" background="transparent" speed="1" style="width: 50px; height: 50px;" loop autoplay></lottie-player>
-                <span class="text-2xl font-extrabold tracking-wide bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-400 bg-clip-text text-transparent">
-                    LuxSecure
-                </span>
+<footer class="mt-0 border-t border-white/10 bg-fs-primary text-white">
+    <x-container class="py-12 md:py-14">
+        <div class="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-x-10 lg:gap-y-0">
+            {{-- Brand --}}
+            <div>
+                <a href="{{ route('home') }}" class="inline-flex items-center gap-3 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
+                    <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-sm bg-fs-brand-light text-sm font-bold text-fs-brand">LS</span>
+                    <span class="text-lg font-bold tracking-wide">
+                        Lux<span class="text-fs-brand-light">Secure</span>
+                    </span>
+                </a>
+                <p class="mt-4 max-w-xs text-sm leading-relaxed text-slate-300">
+                    Secure, modern real estate across Pakistan’s most trusted communities.
+                </p>
             </div>
-            <p class="text-sm text-gray-300 max-w-sm">
-                Secure, modern real estate across Pakistan’s most trusted communities.
-            </p>
-            <div class="flex space-x-3">
-                <a href="#" class="text-gold hover:text-white text-xl transition-colors" aria-label="LuxSecure on Facebook"><i class="fab fa-facebook-f"></i></a>
-                <a href="#" class="text-gold hover:text-white text-xl transition-colors" aria-label="LuxSecure on X"><i class="fab fa-twitter"></i></a>
-                <a href="#" class="text-gold hover:text-white text-xl transition-colors" aria-label="LuxSecure on Instagram"><i class="fab fa-instagram"></i></a>
-                <a href="#" class="text-gold hover:text-white text-xl transition-colors" aria-label="LuxSecure on LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+
+            {{-- Explore — useful site links only (no redundant Home) --}}
+            <div>
+                <h2 class="text-xs font-semibold uppercase tracking-wider text-slate-400">Explore</h2>
+                <ul class="mt-4 space-y-1 text-sm">
+                    <li>
+                        <a href="{{ route('properties') }}" class="inline-flex min-h-10 items-center text-slate-200 transition-colors duration-150 hover:text-white">
+                            Properties
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('home') }}#about" class="inline-flex min-h-10 items-center text-slate-200 transition-colors duration-150 hover:text-white">
+                            Why LuxSecure
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('contact') }}" class="inline-flex min-h-10 items-center text-slate-200 transition-colors duration-150 hover:text-white">
+                            Contact
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            {{-- Account — guest vs signed-in --}}
+            <div>
+                <h2 class="text-xs font-semibold uppercase tracking-wider text-slate-400">Account</h2>
+                <ul class="mt-4 space-y-1 text-sm">
+                    @guest
+                        <li>
+                            <a href="{{ route('login.form') }}" class="inline-flex min-h-10 items-center text-slate-200 transition-colors duration-150 hover:text-white">
+                                Login
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('register.form') }}" class="inline-flex min-h-10 items-center text-slate-200 transition-colors duration-150 hover:text-white">
+                                Register
+                            </a>
+                        </li>
+                    @else
+                        <li>
+                            <a href="{{ route('profile') }}" class="inline-flex min-h-10 items-center text-slate-200 transition-colors duration-150 hover:text-white">
+                                My Profile
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('profile') }}#favorites" class="inline-flex min-h-10 items-center text-slate-200 transition-colors duration-150 hover:text-white">
+                                Saved Properties
+                            </a>
+                        </li>
+                        <li>
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button type="submit" class="inline-flex min-h-10 items-center text-slate-200 transition-colors duration-150 hover:text-white">
+                                    Logout
+                                </button>
+                            </form>
+                        </li>
+                    @endguest
+                </ul>
+            </div>
+
+            {{-- Contact — real info (no fake newsletter) --}}
+            <div>
+                <h2 class="text-xs font-semibold uppercase tracking-wider text-slate-400">Contact</h2>
+                <ul class="mt-4 space-y-2.5 text-sm text-slate-300">
+                    <li>
+                        <a href="mailto:support@luxsecure.pk" class="transition-colors duration-150 hover:text-white">
+                            support@luxsecure.pk
+                        </a>
+                    </li>
+                    <li>
+                        <a href="tel:+923000000000" class="transition-colors duration-150 hover:text-white">
+                            +92 300 0000000
+                        </a>
+                    </li>
+                    <li class="text-slate-400">Mon–Sat, 10:00 AM – 7:00 PM (PKT)</li>
+                </ul>
+                <div class="mt-5">
+                    <a
+                        href="{{ route('contact') }}"
+                        class="inline-flex h-10 items-center justify-center rounded-sm bg-fs-brand-light px-4 text-sm font-semibold text-fs-brand transition-colors duration-150 hover:bg-[#bbf7d0] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                    >
+                        Send a message
+                    </a>
+                </div>
             </div>
         </div>
-        <!-- Quick Links -->
-        <div class="space-y-3">
-            <h3 class="text-sm font-semibold tracking-wide uppercase text-gray-300">Navigation</h3>
-            <ul class="space-y-1.5 text-xs md:text-sm">
-                <li><a href="{{ route('home') }}" class="hover:underline text-gray-200">Home</a></li>
-                <li><a href="{{ route('properties') }}" class="hover:underline text-gray-200">Properties</a></li>
-                <li><a href="{{ route('home') }}#why-luxsecure" class="hover:underline text-gray-200">Why LuxSecure</a></li>
-                <li><a href="{{ route('contact') }}" class="hover:underline text-gray-200">Contact Us</a></li>
-                <li><a href="{{ route('login.form') }}" class="hover:underline text-gray-200">Login / Register</a></li>
-            </ul>
+
+        <div class="mt-10 flex flex-col gap-2 border-t border-white/10 pt-5 text-xs text-slate-400 sm:flex-row sm:items-center sm:justify-between">
+            <p>© {{ date('Y') }} LuxSecure. All rights reserved.</p>
+            @include('include.branding', ['brandingClass' => 'text-slate-400', 'strongClass' => 'text-slate-200 font-medium'])
         </div>
-        <!-- Contact -->
-        <div class="space-y-3">
-            <h3 class="text-sm font-semibold tracking-wide uppercase text-gray-300">Contact</h3>
-            <p class="text-sm text-gray-300">
-                support@luxsecure.pk<br>
-                +92 300 0000000
-            </p>
-            <p class="text-xs text-gray-400">
-                Mon–Sat, 10:00 AM – 7:00 PM (PKT)
-            </p>
-        </div>
-    </div>
-    <div class="border-t border-white/10 pt-6 pb-3 px-6 max-w-7xl mx-auto flex flex-col md:flex-row md:justify-between items-center gap-3 text-xs text-gray-400 bg-transparent">
-        <div class="flex flex-wrap space-x-4 mb-2 md:mb-0">
-            <a href="#" class="hover:underline">Privacy Policy</a>
-            <a href="#" class="hover:underline">Terms of Use</a>
-            <a href="#" class="hover:underline">Accessibility</a>
-            <a href="#" class="hover:underline">Sitemap</a>
-        </div>
-        <div class="flex flex-col sm:flex-row sm:items-center sm:gap-2 text-center sm:text-left">
-            <span>© {{ date('Y') }} LuxSecure. All rights reserved.</span>
-            @include('include.branding', ['brandingClass' => 'text-gray-400/90 text-xs', 'strongClass' => 'text-gray-300 font-medium'])
-        </div>
-    </div>
+    </x-container>
 </footer>

@@ -5,25 +5,22 @@ return [
         [
             'label' => 'Home',
             'route' => 'home',
-            'anchor' => null,
             'active' => ['home'],
         ],
         [
             'label' => 'Properties',
             'route' => 'properties',
-            'anchor' => null,
             'active' => ['properties', 'properties.*'],
         ],
         [
             'label' => 'Why LuxSecure',
             'route' => 'home',
-            'anchor' => '#why-luxsecure',
-            'active' => [], // Only Home shows active on home; hash-based active can be added via JS if needed
+            'anchor' => '#about',
+            'active' => [],
         ],
         [
             'label' => 'Contact',
             'route' => 'contact',
-            'anchor' => null,
             'active' => ['contact'],
         ],
     ],
@@ -32,13 +29,11 @@ return [
         [
             'label' => 'Home',
             'route' => 'home',
-            'anchor' => null,
             'active' => ['home'],
         ],
         [
             'label' => 'Properties',
             'route' => 'properties',
-            'anchor' => null,
             'active' => ['properties', 'properties.*'],
         ],
         [
@@ -50,7 +45,6 @@ return [
         [
             'label' => 'Contact',
             'route' => 'contact',
-            'anchor' => null,
             'active' => ['contact'],
         ],
     ],
@@ -59,27 +53,22 @@ return [
         [
             'label' => 'Dashboard',
             'route' => 'admin.dashboard',
-            'anchor' => null,
             'active' => ['admin.dashboard'],
         ],
         [
             'label' => 'Manage Properties',
             'route' => 'admin.properties.index',
-            'anchor' => null,
             'active' => ['admin.properties.*'],
         ],
         [
             'label' => 'Inquiries',
             'route' => 'admin.inquiries.index',
-            'anchor' => null,
             'active' => ['admin.inquiries.*'],
         ],
         [
             'label' => 'Users',
             'route' => 'admin.users.index',
-            'anchor' => null,
             'active' => ['admin.users.*'],
         ],
     ],
 ];
-
