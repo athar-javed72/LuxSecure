@@ -54,7 +54,7 @@
         :selected="old('price_unit', $listing?->price_unit ?? 'total')"
         required
     />
-    <x-input label="Currency" name="currency" :value="old('currency', $listing?->currency ?? 'PKR')" />
+    <x-input label="Currency" name="currency" :value="old('currency', $listing?->currency ?? optional(\App\Support\CountryContext::current())->currency_code)" />
     <x-select
         label="Status *"
         name="status"

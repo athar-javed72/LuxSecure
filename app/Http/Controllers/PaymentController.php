@@ -37,7 +37,14 @@ class PaymentController extends Controller
             'payable_id' => $payable->id,
             'user_id' => $request->user()->id,
             'amount' => $amount,
-            'currency' => 'PKR',
+            'currency' => $data['currency']
+                ?? ($payable->currency ?? null)
+                ?? ($payable->listing?->currency ?? null)
+                ?? \App\Support\CountryContext::current()?->currency_code
+                ?? 'PKR',
+            'country_id' => $payable->country_id
+                ?? ($payable->listing?->country_id ?? null)
+                ?? \App\Support\CountryContext::current()?->id,
             'gateway' => $data['gateway'],
             'status' => 'pending',
             'idempotency_key' => $data['idempotency_key'] ?? null,

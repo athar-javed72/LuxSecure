@@ -108,15 +108,26 @@ class AuthController extends Controller
     public function register(RegisterRequest $request)
     {
         $privileged = app(UserPrivilegedAttributes::class);
+        $country = \App\Support\CountryContext::current();
         $user = $privileged->createActive([
             'name' => $request->name,
             'email' => $request->email,
             'phone' => $request->phone ?: null,
             'password' => Hash::make($request->password),
             'email_verified_at' => app()->environment('local') ? now() : null,
+            'country_id' => $country?->id,
+            'preferred_locale' => session('locale', $country?->default_locale),
+            'preferred_currency' => session('currency', $country?->currency_code),
         ], true);
 
         $user->assignRole('client');
+
+        foreach (['terms' => 'accept_terms', 'privacy' => 'accept_privacy'] as $type => $field) {
+            $page = \App\Models\Page::resolveLegal($type);
+            if ($page && ($page->is_published || $page->status === 'published') && $request->boolean($field)) {
+                \App\Models\LegalAcceptance::record($user, $page, $request->ip());
+            }
+        }
 
         event(new \Illuminate\Auth\Events\Registered($user));
 

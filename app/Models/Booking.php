@@ -20,6 +20,7 @@ class Booking extends Model
     public const CANCELLATION_POLICIES = ['flexible', 'moderate', 'strict'];
 
     protected $fillable = [
+        'country_id',
         'user_id',
         'listing_id',
         'room_type_id',
@@ -28,8 +29,10 @@ class Booking extends Model
         'check_out',
         'guests',
         'total',
+        'currency',
         'status',
         'cancellation_policy',
+        'cancellation_policy_id',
         'notes',
         'hold_expires_at',
     ];
@@ -42,6 +45,16 @@ class Booking extends Model
         'hold_expires_at' => 'datetime',
     ];
 
+    public function country(): BelongsTo
+    {
+        return $this->belongsTo(Country::class);
+    }
+
+    public function cancellationPolicy(): BelongsTo
+    {
+        return $this->belongsTo(CancellationPolicy::class);
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -50,6 +63,20 @@ class Booking extends Model
     public function listing(): BelongsTo
     {
         return $this->belongsTo(Listing::class);
+    }
+
+    public function isOwnedByManager(User $user): bool
+    {
+        if ($user->ownsListing($this->listing)) {
+            return true;
+        }
+
+        if ($user->organization_id && $this->listing?->organization_id) {
+            return (int) $user->organization_id === (int) $this->listing->organization_id
+                && $user->hasAnyRole(['hotel_manager', 'organization_admin']);
+        }
+
+        return false;
     }
 
     public function roomType(): BelongsTo
@@ -72,11 +99,6 @@ class Booking extends Model
     public function legacyBookingPayments(): HasMany
     {
         return $this->hasMany(BookingPayment::class);
-    }
-
-    public function isOwnedByManager(User $user): bool
-    {
-        return $user->ownsListing($this->listing);
     }
 
     public function scopeBlockingInventory(Builder $query): Builder

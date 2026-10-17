@@ -3,14 +3,18 @@
 namespace App\Models;
 
 use App\Models\Concerns\LogsAdminActivity;
+use App\Support\CountryContext;
+use App\Support\Money;
+use App\Support\Scopes\CountryScoped;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
 class Listing extends Model
 {
-    use HasFactory, LogsAdminActivity, SoftDeletes;
+    use CountryScoped, HasFactory, LogsAdminActivity, SoftDeletes;
 
     public const PURPOSES = ['sale', 'rent', 'short_stay'];
 
@@ -21,10 +25,23 @@ class Listing extends Model
     public const AREA_UNITS = ['sq_ft', 'marla', 'kanal', 'sq_m'];
 
     protected $fillable = [
+        'country_id',
+        'organization_id',
         'listing_type_id',
         'title',
+        'branch_name',
         'slug',
         'location',
+        'address',
+        'lat',
+        'lng',
+        'phone',
+        'email',
+        'timezone',
+        'check_in_time',
+        'check_out_time',
+        'manager_id',
+        'cancellation_policy_id',
         'purpose',
         'price',
         'price_unit',
@@ -64,7 +81,12 @@ class Listing extends Model
                 };
             }
             if (blank($listing->currency)) {
-                $listing->currency = 'PKR';
+                $listing->currency = CountryContext::current()?->currency_code
+                    ?? session('currency')
+                    ?? 'PKR';
+            }
+            if (blank($listing->country_id)) {
+                $listing->country_id = CountryContext::current()?->id;
             }
         });
     }
@@ -110,6 +132,26 @@ class Listing extends Model
     public function attributeValue(string $key, mixed $default = null): mixed
     {
         return data_get($this->attributeValues(), $key, $default);
+    }
+
+    public function country(): BelongsTo
+    {
+        return $this->belongsTo(Country::class);
+    }
+
+    public function organization(): BelongsTo
+    {
+        return $this->belongsTo(Organization::class);
+    }
+
+    public function manager(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'manager_id');
+    }
+
+    public function cancellationPolicy(): BelongsTo
+    {
+        return $this->belongsTo(CancellationPolicy::class);
     }
 
     public function listingType()
@@ -228,11 +270,15 @@ class Listing extends Model
             default => '',
         };
 
-        if ($this->purpose === 'sale' || $this->price_unit === 'total') {
-            return $this->currency.' '.number_format($amount / 1_00_00_000, 1).' Cr'.$suffix;
+        $locale = $this->country?->default_locale ?: app()->getLocale();
+
+        if (($this->purpose === 'sale' || $this->price_unit === 'total') && $amount >= 10_000_000) {
+            $compact = number_format($amount / 10_000_000, 1).' Cr';
+
+            return Money::code($this->currency).' '.$compact.$suffix;
         }
 
-        return $this->currency.' '.number_format($amount).$suffix;
+        return Money::format($amount, $this->currency, $locale).$suffix;
     }
 
     public function getTypeNameAttribute(): string

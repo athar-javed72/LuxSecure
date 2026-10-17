@@ -44,7 +44,7 @@ class AdminPanelTest extends TestCase
             ->get(route('admin.dashboard'))
             ->assertOk()
             ->assertSee('Dashboard', false)
-            ->assertSee($admin->name, false);
+            ->assertSee($admin->name);
     }
 
     public function test_admin_can_create_a_property(): void

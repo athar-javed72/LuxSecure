@@ -32,8 +32,12 @@ Completed Tasks:
 
 - Step 3 content + QA (2026-10-17): Repo safety audit (tracked `.env.smoke-bak` + `luxsecure_db.sql` risk). CmsPagesSeeder drafts (privacy/terms/refund) local/testing only with [PLACEHOLDER] markers; SettingsSeeder contact/hours placeholders; footer policy links. Listing slug route keys (+ numeric API resolve). Playwright QA screenshots 1440/375 under storage/app/qa-screenshots/; booking E2E all PASS. CreatesApplication forces APP_ENV=testing. Verified: pint, 110 PHPUnit tests, npm run build.
 
+- Multi-country platform (2026-10-17): countries/currencies/languages/country_settings/organizations/branch fields; cancellation_policies + rules; RefundCalculator DB-driven; KYC types + payment methods per country; legal pages type/country/locale/version + legal_acceptances; country_admin + organization_admin roles; Money helper + navbar country/currency/locale (Alpine navBar); en/ur RTL; API country filter; Pakistan backfill + seed. Verified: pint, PHPUnit green, npm run build, migrate:fresh --seed.
+
 Notes / STOP points:
 ---------------------
 - No git commit/push unless user requests.
 - Re-seed RBAC after pull (`php artisan db:seed --class=RolesAndPermissionsSeeder`) for new reviews/kyc/payment grants.
 
+
+- Multi-country Admin CRUD (2026-10-17): Lean admin CRUD for Country (+settings), Organization, CancellationPolicy (+rules sync + RefundCalculator::previewTable), Currency, Language, KycDocumentType (country-scoped), CountryPaymentMethod toggles; public OrganizationController@show with branch filters; routes + navigation menu entries. Verified: php -l on new controllers, artisan route:list.

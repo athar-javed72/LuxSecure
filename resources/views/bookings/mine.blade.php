@@ -20,7 +20,7 @@
                     <p class="text-sm text-fs-secondary mt-1">
                         {{ $booking->roomType->name }} · {{ $booking->check_in->toDateString() }} → {{ $booking->check_out->toDateString() }}
                     </p>
-                    <p class="text-sm mt-2 font-semibold text-fs-brand">{{ number_format((float) $booking->total, 0) }} PKR</p>
+                    <p class="text-sm mt-2 font-semibold text-fs-brand">{{ \App\Support\Money::format($booking->total, $booking->currency) }}</p>
                     @if($booking->status === 'pending' && $booking->hold_expires_at)
                         <p class="mt-2 text-xs text-fs-secondary">
                             Hold until {{ $booking->hold_expires_at->timezone(config('app.timezone'))->format('M j, g:i A') }}

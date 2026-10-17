@@ -10,7 +10,28 @@ class PageController extends Controller
 {
     public function show(string $slug): View
     {
-        $page = Page::published()->where('slug', $slug)->firstOrFail();
+        $typeMap = [
+            'privacy-policy' => 'privacy',
+            'terms-of-service' => 'terms',
+            'refund-and-cancellation-policy' => 'refund',
+            'cookie-policy' => 'cookies',
+            'about' => 'about',
+        ];
+
+        if (isset($typeMap[$slug])) {
+            $page = Page::resolveLegal($typeMap[$slug]);
+            abort_unless($page, 404);
+        } else {
+            $page = Page::published()->where('slug', $slug)->firstOrFail();
+        }
+
+        return view('pages.show', compact('page'));
+    }
+
+    public function legal(string $type): View
+    {
+        $page = Page::resolveLegal($type);
+        abort_unless($page, 404);
 
         return view('pages.show', compact('page'));
     }

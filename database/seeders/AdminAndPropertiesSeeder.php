@@ -2,9 +2,12 @@
 
 namespace Database\Seeders;
 
+use App\Models\CancellationPolicy;
 use App\Models\City;
+use App\Models\Country;
 use App\Models\Listing;
 use App\Models\ListingType;
+use App\Models\Organization;
 use App\Models\Room;
 use App\Models\RoomType;
 use App\Models\SeasonalPrice;
@@ -38,9 +41,17 @@ class AdminAndPropertiesSeeder extends Seeder
         ])->save();
         $admin->syncRoles(['super_admin']);
 
-        $lahore = City::firstOrCreate(['slug' => 'lahore'], ['name' => 'Lahore', 'is_active' => true]);
-        $karachi = City::firstOrCreate(['slug' => 'karachi'], ['name' => 'Karachi', 'is_active' => true]);
-        $islamabad = City::firstOrCreate(['slug' => 'islamabad'], ['name' => 'Islamabad', 'is_active' => true]);
+        $pakistan = Country::query()->where('iso2', 'PK')->first();
+        $admin->forceFill(['country_id' => $pakistan?->id])->save();
+
+        $lahore = City::firstOrCreate(['slug' => 'lahore'], ['name' => 'Lahore', 'is_active' => true, 'country_id' => $pakistan?->id]);
+        $karachi = City::firstOrCreate(['slug' => 'karachi'], ['name' => 'Karachi', 'is_active' => true, 'country_id' => $pakistan?->id]);
+        $islamabad = City::firstOrCreate(['slug' => 'islamabad'], ['name' => 'Islamabad', 'is_active' => true, 'country_id' => $pakistan?->id]);
+        foreach ([$lahore, $karachi, $islamabad] as $city) {
+            if ($pakistan && blank($city->country_id)) {
+                $city->forceFill(['country_id' => $pakistan->id])->save();
+            }
+        }
 
         $apartment = $this->ensureType('Apartment', 'apartment', [
             ['key' => 'bedrooms', 'label' => 'Bedrooms', 'input_type' => 'number', 'is_required' => true, 'is_filterable' => true, 'sort_order' => 1],
@@ -134,13 +145,17 @@ class AdminAndPropertiesSeeder extends Seeder
             ],
         ];
 
+        $currency = $pakistan?->currency_code ?: 'PKR';
+        $flexibleId = CancellationPolicy::query()->where('slug', 'flexible')->whereNull('country_id')->value('id');
+
         foreach ($samples as $sample) {
             $slug = Str::slug($sample['title']);
             Listing::updateOrCreate(
                 ['slug' => $slug],
                 array_merge($sample, [
                     'status' => 'published',
-                    'currency' => 'PKR',
+                    'currency' => $currency,
+                    'country_id' => $pakistan?->id,
                     'slug' => $slug,
                     'owner_id' => $admin->id,
                     'agent_id' => $admin->id,
@@ -149,15 +164,37 @@ class AdminAndPropertiesSeeder extends Seeder
             );
         }
 
-        $this->seedHotelInventory();
+        $this->seedHotelInventory($admin, $pakistan, $flexibleId);
     }
 
-    private function seedHotelInventory(): void
+    private function seedHotelInventory(User $admin, ?Country $pakistan, ?int $flexibleId): void
     {
         $hotelListing = Listing::query()->where('slug', 'blue-area-boutique-hotel')->first();
         if (! $hotelListing) {
             return;
         }
+
+        $org = Organization::query()->updateOrCreate(
+            ['slug' => 'blue-area-boutique-hotel-org'],
+            [
+                'name' => 'Blue Area Boutique Hotel',
+                'description' => 'Seeded hotel group for local/testing.',
+                'owner_id' => $admin->id,
+                'country_id' => $pakistan?->id,
+                'is_active' => true,
+            ]
+        );
+
+        $hotelListing->forceFill([
+            'organization_id' => $org->id,
+            'branch_name' => $hotelListing->branch_name ?: 'Blue Area Flagship',
+            'timezone' => $pakistan?->timezone ?: 'Asia/Karachi',
+            'check_in_time' => '14:00:00',
+            'check_out_time' => '11:00:00',
+            'manager_id' => $admin->id,
+            'cancellation_policy_id' => $flexibleId,
+            'country_id' => $pakistan?->id,
+        ])->save();
 
         $deluxe = RoomType::updateOrCreate(
             ['listing_id' => $hotelListing->id, 'name' => 'Deluxe King'],

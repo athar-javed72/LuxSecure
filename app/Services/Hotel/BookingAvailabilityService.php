@@ -93,7 +93,16 @@ class BookingAvailabilityService
             $quote = $this->pricing->calculate($roomType, $checkInDate, $checkOutDate);
             $minutes = (int) config('luxsecure.booking_hold_minutes', env('BOOKING_HOLD_MINUTES', 30));
 
+            $listing = $roomType->listing;
+            $policy = \App\Models\CancellationPolicy::resolveForListing($listing);
+            $policySlug = $data['cancellation_policy'] ?? $policy?->slug ?? 'flexible';
+            if (! empty($data['cancellation_policy_id'])) {
+                $policy = \App\Models\CancellationPolicy::query()->find($data['cancellation_policy_id']) ?? $policy;
+                $policySlug = $policy?->slug ?? $policySlug;
+            }
+
             return Booking::create([
+                'country_id' => $listing->country_id,
                 'user_id' => $data['user_id'],
                 'listing_id' => $roomType->listing_id,
                 'room_type_id' => $roomType->id,
@@ -102,11 +111,14 @@ class BookingAvailabilityService
                 'check_out' => $checkOutDate->toDateString(),
                 'guests' => $data['guests'],
                 'total' => $quote['total'],
+                'currency' => $listing->currency ?: ($listing->country?->currency_code),
                 'status' => $data['status'] ?? 'pending',
-                'cancellation_policy' => $data['cancellation_policy'] ?? 'flexible',
+                'cancellation_policy' => $policySlug,
+                'cancellation_policy_id' => $policy?->id,
                 'notes' => $data['notes'] ?? null,
                 'hold_expires_at' => ($data['status'] ?? 'pending') === 'pending'
-                    ? now()->addMinutes(max(1, $minutes))
+                    ? now($listing->timezone ?: $listing->country?->timezone ?: config('app.timezone'))
+                        ->addMinutes(max(1, $minutes))
                     : null,
             ]);
         });

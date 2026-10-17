@@ -109,6 +109,24 @@ return [
             'permission' => 'cms.view',
         ],
         [
+            'label' => 'Countries',
+            'route' => 'admin.countries.index',
+            'active' => ['admin.countries.*', 'admin.kyc-document-types.*', 'admin.country-payment-methods.*'],
+            'permission' => ['countries.view', 'countries.update'],
+        ],
+        [
+            'label' => 'Organizations',
+            'route' => 'admin.organizations.index',
+            'active' => ['admin.organizations.*'],
+            'permission' => ['organizations.view', 'organizations.update'],
+        ],
+        [
+            'label' => 'Cancellation policies',
+            'route' => 'admin.cancellation-policies.index',
+            'active' => ['admin.cancellation-policies.*'],
+            'permission' => ['cancellation_policies.view', 'cancellation_policies.update'],
+        ],
+        [
             'label' => 'Settings',
             'route' => 'admin.settings.edit',
             'active' => ['admin.settings.*'],

@@ -49,15 +49,30 @@ class AppServiceProvider extends ServiceProvider
 
         View::composer(['include.footer', 'include.navbar', 'include.master'], function ($view) {
             try {
-                $view->with('siteName', \App\Models\Setting::getValue('site.name', config('app.name', 'LuxSecure')));
-                $view->with('siteEmail', \App\Models\Setting::getValue('site.email', '[PLACEHOLDER: CONTACT_EMAIL]'));
-                $view->with('sitePhone', \App\Models\Setting::getValue('site.phone', '[PLACEHOLDER: CONTACT_PHONE]'));
-                $view->with('siteHours', \App\Models\Setting::getValue('site.hours', '[PLACEHOLDER: BUSINESS_HOURS]'));
+                $ctx = \App\Support\CountryContext::class;
+                $view->with('siteName', $ctx::setting('site.name', config('app.name', 'LuxSecure')));
+                $view->with('siteEmail', $ctx::contact('site.email') ?? $ctx::contact('site.support_email'));
+                $view->with('sitePhone', $ctx::contact('site.phone'));
+                $view->with('siteHours', $ctx::contact('site.hours'));
+                $view->with('siteAddress', $ctx::contact('site.address'));
+                $view->with('countries', \App\Models\Country::query()->where('is_active', true)->orderBy('sort_order')->get());
+                $view->with('currencies', \App\Models\Currency::query()->where('is_active', true)->orderBy('code')->get());
+                $view->with('languages', \App\Models\Language::query()->where('is_active', true)->orderBy('sort_order')->get());
+                $view->with('legalPrivacy', \App\Models\Page::resolveLegal('privacy'));
+                $view->with('legalTerms', \App\Models\Page::resolveLegal('terms'));
+                $view->with('legalRefund', \App\Models\Page::resolveLegal('refund'));
             } catch (\Throwable) {
                 $view->with('siteName', config('app.name', 'LuxSecure'));
-                $view->with('siteEmail', '[PLACEHOLDER: CONTACT_EMAIL]');
-                $view->with('sitePhone', '[PLACEHOLDER: CONTACT_PHONE]');
-                $view->with('siteHours', '[PLACEHOLDER: BUSINESS_HOURS]');
+                $view->with('siteEmail', null);
+                $view->with('sitePhone', null);
+                $view->with('siteHours', null);
+                $view->with('siteAddress', null);
+                $view->with('countries', collect());
+                $view->with('currencies', collect());
+                $view->with('languages', collect());
+                $view->with('legalPrivacy', null);
+                $view->with('legalTerms', null);
+                $view->with('legalRefund', null);
             }
         });
     }

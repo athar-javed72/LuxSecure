@@ -23,7 +23,7 @@ class RentDueNotification extends Notification implements ShouldQueue
     {
         return (new MailMessage)
             ->subject('Rent payment due')
-            ->line('Rent of '.$this->rentPayment->amount.' PKR is due on '.$this->rentPayment->due_date->toDateString().'.')
+            ->line('Rent of '.\App\Support\Money::format($this->rentPayment->amount, $this->rentPayment->tenancy?->listing?->currency).' is due on '.$this->rentPayment->due_date->toDateString().'.')
             ->action('View tenancy', url('/tenancies/'.$this->rentPayment->tenancy_id));
     }
 

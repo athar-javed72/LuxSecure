@@ -25,7 +25,7 @@ class ListingController extends Controller
     public function index(Request $request): JsonResponse
     {
         $paginator = $this->cache->rememberIndex($request, function () use ($request) {
-            $query = Listing::query()->published()->with(['images', 'listingType']);
+            $query = Listing::query()->published()->with(['images', 'listingType', 'country', 'organization']);
 
             if ($request->filled('search')) {
                 $q = $request->string('search')->toString();
@@ -47,6 +47,12 @@ class ListingController extends Controller
             }
             if ($request->filled('city_id')) {
                 $query->where('city_id', $request->integer('city_id'));
+            }
+            if ($request->filled('country_id')) {
+                $query->where('country_id', $request->integer('country_id'));
+            } elseif ($request->filled('country')) {
+                $iso = strtoupper($request->string('country')->toString());
+                $query->whereHas('country', fn ($c) => $c->where('iso2', $iso));
             }
             if ($request->filled('price_min')) {
                 $query->where('price', '>=', (float) $request->price_min);

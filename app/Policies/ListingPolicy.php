@@ -14,7 +14,7 @@ class ListingPolicy
 
     public function view(User $user, Listing $listing): bool
     {
-        if ($user->can('listings.view.any')) {
+        if ($user->can('listings.view.any') && $this->inCountryScope($user, $listing)) {
             return true;
         }
 
@@ -28,7 +28,7 @@ class ListingPolicy
 
     public function update(User $user, Listing $listing): bool
     {
-        if ($user->can('listings.update.any')) {
+        if ($user->can('listings.update.any') && $this->inCountryScope($user, $listing)) {
             return true;
         }
 
@@ -37,10 +37,27 @@ class ListingPolicy
 
     public function delete(User $user, Listing $listing): bool
     {
-        if ($user->can('listings.delete.any')) {
+        if ($user->can('listings.delete.any') && $this->inCountryScope($user, $listing)) {
             return true;
         }
 
         return $user->can('listings.delete.own') && $user->ownsListing($listing);
+    }
+
+    private function inCountryScope(User $user, Listing $listing): bool
+    {
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
+        if ($user->hasRole('admin') && blank($user->country_id)) {
+            return true;
+        }
+
+        if (filled($user->country_id)) {
+            return (int) $listing->country_id === (int) $user->country_id;
+        }
+
+        return true;
     }
 }

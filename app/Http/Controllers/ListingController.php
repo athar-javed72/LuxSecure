@@ -44,6 +44,11 @@ class ListingController extends Controller
             $query->where('city_id', $request->integer('city_id'));
         }
 
+        $countryId = $request->integer('country_id') ?: \App\Support\CountryContext::current()?->id;
+        if ($countryId) {
+            $query->where('country_id', $countryId);
+        }
+
         if ($request->filled('price')) {
             $range = $request->price;
             if (preg_match('/^(\d+)-(\d+)$/', $range, $m)) {

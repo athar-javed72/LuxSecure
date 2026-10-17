@@ -39,10 +39,17 @@ class UserPrivilegedAttributes
     public function createActive(array $attributes, bool $active = true): User
     {
         $user = new User;
-        $user->fill(collect($attributes)->only(['name', 'email', 'phone', 'password'])->all());
+        $user->fill(collect($attributes)->only([
+            'name', 'email', 'phone', 'password', 'country_id', 'organization_id',
+            'preferred_locale', 'preferred_currency',
+        ])->all());
         $user->forceFill([
             'is_active' => $active,
             'email_verified_at' => $attributes['email_verified_at'] ?? null,
+            'country_id' => $attributes['country_id'] ?? null,
+            'organization_id' => $attributes['organization_id'] ?? null,
+            'preferred_locale' => $attributes['preferred_locale'] ?? null,
+            'preferred_currency' => $attributes['preferred_currency'] ?? null,
         ])->save();
 
         return $user;

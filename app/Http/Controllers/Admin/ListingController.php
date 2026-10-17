@@ -33,9 +33,17 @@ class ListingController extends Controller
         $query = Listing::with(['images', 'listingType', 'city'])->latest();
 
         $user = $request->user();
+        $query->forUserCountry($user);
         if (! $user->can('listings.view.any')) {
             $query->where(function ($q) use ($user) {
-                $q->where('agent_id', $user->id)->orWhere('owner_id', $user->id);
+                $q->where('agent_id', $user->id)
+                    ->orWhere('owner_id', $user->id)
+                    ->orWhere('manager_id', $user->id)
+                    ->orWhere(function ($org) use ($user) {
+                        if ($user->organization_id) {
+                            $org->where('organization_id', $user->organization_id);
+                        }
+                    });
             });
         }
 

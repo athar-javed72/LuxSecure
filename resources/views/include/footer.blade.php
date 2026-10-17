@@ -1,7 +1,6 @@
 <footer class="mt-0 border-t border-white/10 bg-fs-primary text-white">
     <x-container class="py-12 md:py-14">
         <div class="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-x-10 lg:gap-y-0">
-            {{-- Brand --}}
             <div>
                 <a href="{{ route('home') }}" class="inline-flex items-center gap-3 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
                     <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-sm bg-fs-brand text-sm font-bold text-white tracking-wide">LS</span>
@@ -14,7 +13,6 @@
                 </p>
             </div>
 
-            {{-- Explore — useful site links only (no redundant Home) --}}
             <div>
                 <h2 class="text-xs font-semibold uppercase tracking-wider text-slate-400">Explore</h2>
                 <ul class="mt-4 space-y-1 text-sm">
@@ -33,25 +31,30 @@
                             Contact
                         </a>
                     </li>
-                    <li>
-                        <a href="{{ route('pages.show', 'privacy-policy') }}" class="inline-flex min-h-10 items-center text-slate-200 transition-colors duration-150 hover:text-white">
-                            Privacy Policy
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('pages.show', 'terms-of-service') }}" class="inline-flex min-h-10 items-center text-slate-200 transition-colors duration-150 hover:text-white">
-                            Terms of Service
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('pages.show', 'refund-and-cancellation-policy') }}" class="inline-flex min-h-10 items-center text-slate-200 transition-colors duration-150 hover:text-white">
-                            Refund &amp; Cancellation
-                        </a>
-                    </li>
+                    @if($legalPrivacy ?? null)
+                        <li>
+                            <a href="{{ route('pages.show', $legalPrivacy->slug) }}" class="inline-flex min-h-10 items-center text-slate-200 transition-colors duration-150 hover:text-white">
+                                {{ $legalPrivacy->title }}
+                            </a>
+                        </li>
+                    @endif
+                    @if($legalTerms ?? null)
+                        <li>
+                            <a href="{{ route('pages.show', $legalTerms->slug) }}" class="inline-flex min-h-10 items-center text-slate-200 transition-colors duration-150 hover:text-white">
+                                {{ $legalTerms->title }}
+                            </a>
+                        </li>
+                    @endif
+                    @if($legalRefund ?? null)
+                        <li>
+                            <a href="{{ route('pages.show', $legalRefund->slug) }}" class="inline-flex min-h-10 items-center text-slate-200 transition-colors duration-150 hover:text-white">
+                                {{ $legalRefund->title }}
+                            </a>
+                        </li>
+                    @endif
                 </ul>
             </div>
 
-            {{-- Account — guest vs signed-in --}}
             <div>
                 <h2 class="text-xs font-semibold uppercase tracking-wider text-slate-400">Account</h2>
                 <ul class="mt-4 space-y-1 text-sm">
@@ -89,28 +92,28 @@
                 </ul>
             </div>
 
-            {{-- Contact — real info (no fake newsletter) --}}
             <div>
                 <h2 class="text-xs font-semibold uppercase tracking-wider text-slate-400">Contact</h2>
                 <ul class="mt-4 space-y-2.5 text-sm text-slate-300">
-                    <li>
-                        <a href="mailto:{{ $siteEmail ?? '[PLACEHOLDER: CONTACT_EMAIL]' }}" class="transition-colors duration-150 hover:text-white">
-                            {{ $siteEmail ?? '[PLACEHOLDER: CONTACT_EMAIL]' }}
-                        </a>
-                    </li>
-                    <li>
-                        @php
-                            $phoneDisplay = $sitePhone ?? '[PLACEHOLDER: CONTACT_PHONE]';
-                        @endphp
-                        @if(str_starts_with($phoneDisplay, '[PLACEHOLDER'))
-                            <span class="text-slate-400">{{ $phoneDisplay }}</span>
-                        @else
-                            <a href="tel:{{ preg_replace('/\s+/', '', $phoneDisplay) }}" class="transition-colors duration-150 hover:text-white">
-                                {{ $phoneDisplay }}
-                            </a>
-                        @endif
-                    </li>
-                    <li class="text-slate-400">{{ $siteHours ?? '[PLACEHOLDER: BUSINESS_HOURS]' }}</li>
+                    @if(!empty($siteEmail))
+                        <li>
+                            <a href="mailto:{{ $siteEmail }}" class="transition-colors duration-150 hover:text-white">{{ $siteEmail }}</a>
+                        </li>
+                    @endif
+                    @if(!empty($sitePhone))
+                        <li>
+                            <a href="tel:{{ preg_replace('/\s+/', '', $sitePhone) }}" class="transition-colors duration-150 hover:text-white">{{ $sitePhone }}</a>
+                        </li>
+                    @endif
+                    @if(!empty($siteHours))
+                        <li class="text-slate-400">{{ $siteHours }}</li>
+                    @endif
+                    @if(!empty($siteAddress))
+                        <li class="text-slate-400">{{ $siteAddress }}</li>
+                    @endif
+                    @if(empty($siteEmail) && empty($sitePhone) && empty($siteHours) && empty($siteAddress))
+                        <li class="text-slate-500">{{ __('Use the contact form to reach us.') }}</li>
+                    @endif
                 </ul>
                 <div class="mt-5">
                     <a

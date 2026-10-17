@@ -33,9 +33,10 @@ Production hardening (ledger / holds / CSP / Sanctum / SMS) — **COMPLETE local
 
 | Area | Status |
 |------|--------|
-| PHPUnit | **110 passed** |
+| PHPUnit | **121 passed** (incl. MultiCountryPlatformTest) |
 | `npm run build` | Passing |
-| `migrate:fresh --seed` | Passing (demo + CMS drafts local/testing only) |
+| `migrate:fresh --seed` | Passing (PK backfill + demo + CMS drafts local/testing only) |
+| Multi-country / orgs / branches / DB refund policies | Done (local) |
 | Ledger / holds / CSP / Sanctum / SMS | Done (local) |
 | CMS policy drafts + footer links | Seeded drafts; publish after legal review |
 | QA screenshots | `storage/app/qa-screenshots/` (gitignored) |

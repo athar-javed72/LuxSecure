@@ -9,7 +9,12 @@ class City extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'slug', 'is_active'];
+    protected $fillable = ['country_id', 'name', 'slug', 'is_active'];
+
+    public function country()
+    {
+        return $this->belongsTo(Country::class);
+    }
 
     protected $casts = [
         'is_active' => 'boolean',

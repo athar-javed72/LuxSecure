@@ -19,6 +19,10 @@ class User extends Authenticatable implements MustVerifyEmail
         'email',
         'phone',
         'password',
+        'country_id',
+        'organization_id',
+        'preferred_locale',
+        'preferred_currency',
     ];
 
     protected $hidden = [
@@ -92,10 +96,36 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Listing::class, 'agent_id');
     }
 
+    public function country()
+    {
+        return $this->belongsTo(Country::class);
+    }
+
+    public function organization()
+    {
+        return $this->belongsTo(Organization::class);
+    }
+
     public function ownsListing(Listing $listing): bool
     {
-        return (int) $listing->agent_id === (int) $this->id
-            || (int) $listing->owner_id === (int) $this->id;
+        if ((int) $listing->agent_id === (int) $this->id
+            || (int) $listing->owner_id === (int) $this->id
+            || (int) $listing->manager_id === (int) $this->id) {
+            return true;
+        }
+
+        if ($this->organization_id && $listing->organization_id
+            && (int) $this->organization_id === (int) $listing->organization_id
+            && $this->hasAnyRole(['hotel_manager', 'organization_admin'])) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function isCountryScoped(): bool
+    {
+        return filled($this->country_id) && ! $this->isSuperAdmin();
     }
 
     public function tenanciesAsTenant()

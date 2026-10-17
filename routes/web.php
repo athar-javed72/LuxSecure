@@ -7,6 +7,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ListingController;
+use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -39,6 +40,8 @@ Route::post('/contact', [ContactController::class, 'store'])->name('contact.stor
 Route::get('/blog', [PageController::class, 'blogIndex'])->name('blog.index');
 Route::get('/blog/{slug}', [PageController::class, 'blogShow'])->name('blog.show');
 Route::get('/pages/{slug}', [PageController::class, 'show'])->name('pages.show');
+Route::post('/locale', [\App\Http\Controllers\LocaleController::class, 'update'])->name('locale.update');
+Route::get('/organizations/{organization}', [OrganizationController::class, 'show'])->name('organizations.show');
 
 Route::post('/webhooks/payments/jazzcash', [\App\Http\Controllers\PaymentWebhookController::class, 'jazzcash'])
     ->name('webhooks.payments.jazzcash');
@@ -228,6 +231,34 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'active', 'panel', '
         Route::get('kyc', [\App\Http\Controllers\Admin\KycDocumentController::class, 'index'])->name('kyc.index');
         Route::patch('kyc/{kyc}', [\App\Http\Controllers\Admin\KycDocumentController::class, 'review'])->name('kyc.review');
         Route::get('kyc/{kyc}/download', [\App\Http\Controllers\Admin\KycDocumentController::class, 'download'])->name('kyc.download');
+    });
+
+    Route::middleware('permission:countries.view|countries.create|countries.update|countries.delete')->group(function () {
+        Route::get('countries/{country}/settings', [\App\Http\Controllers\Admin\CountryController::class, 'settings'])->name('countries.settings');
+        Route::put('countries/{country}/settings', [\App\Http\Controllers\Admin\CountryController::class, 'updateSettings'])->name('countries.settings.update');
+        Route::resource('countries', \App\Http\Controllers\Admin\CountryController::class)->except(['show', 'destroy']);
+
+        Route::resource('kyc-document-types', \App\Http\Controllers\Admin\KycDocumentTypeController::class)->except(['show']);
+        Route::get('country-payment-methods', [\App\Http\Controllers\Admin\CountryPaymentMethodController::class, 'index'])->name('country-payment-methods.index');
+        Route::put('country-payment-methods', [\App\Http\Controllers\Admin\CountryPaymentMethodController::class, 'update'])->name('country-payment-methods.update');
+    });
+
+    Route::middleware('permission:organizations.view|organizations.create|organizations.update|organizations.delete')->group(function () {
+        Route::resource('organizations', \App\Http\Controllers\Admin\OrganizationController::class)->except(['show']);
+    });
+
+    Route::middleware('permission:cancellation_policies.view|cancellation_policies.create|cancellation_policies.update|cancellation_policies.delete')->group(function () {
+        Route::get('cancellation-policies/{cancellation_policy}/preview', [\App\Http\Controllers\Admin\CancellationPolicyController::class, 'preview'])
+            ->name('cancellation-policies.preview');
+        Route::resource('cancellation-policies', \App\Http\Controllers\Admin\CancellationPolicyController::class)->except(['show']);
+    });
+
+    Route::middleware('permission:currencies.view|currencies.create|currencies.update|currencies.delete')->group(function () {
+        Route::resource('currencies', \App\Http\Controllers\Admin\CurrencyController::class)->except(['show']);
+    });
+
+    Route::middleware('permission:languages.view|languages.create|languages.update|languages.delete')->group(function () {
+        Route::resource('languages', \App\Http\Controllers\Admin\LanguageController::class)->except(['show']);
     });
 
     Route::get('two-factor', [\App\Http\Controllers\Admin\TwoFactorController::class, 'show'])->name('two-factor.show');

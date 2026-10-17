@@ -56,7 +56,7 @@
             </div>
             <div>
                 <dt class="text-xs font-semibold uppercase tracking-wide text-fs-muted">Total</dt>
-                <dd class="mt-1 font-semibold text-fs-brand">{{ number_format((float) $booking->total, 2) }} PKR</dd>
+                <dd class="mt-1 font-semibold text-fs-brand">{{ \App\Support\Money::format($booking->total, $booking->currency) }}</dd>
             </div>
             <div>
                 <dt class="text-xs font-semibold uppercase tracking-wide text-fs-muted">Cancellation</dt>
@@ -121,7 +121,7 @@
                 Refund preview ({{ $refundPreview['reason'] }}):
                 <span class="font-semibold text-fs-primary">{{ $refundPreview['refund_percent'] }}%</span>
                 @if((float) $refundPreview['refund_amount'] > 0)
-                    · <span class="font-semibold text-fs-brand">{{ number_format((float) $refundPreview['refund_amount'], 2) }} PKR</span>
+                    · <span class="font-semibold text-fs-brand">{{ \App\Support\Money::format($refundPreview['refund_amount'], $booking->currency) }}</span>
                 @else
                     · no refund
                 @endif

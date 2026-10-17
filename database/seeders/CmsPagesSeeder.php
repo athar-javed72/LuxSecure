@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Country;
 use App\Models\Page;
 use Illuminate\Database\Seeder;
 
@@ -15,10 +16,13 @@ class CmsPagesSeeder extends Seeder
             return;
         }
 
+        $pkId = Country::query()->where('iso2', 'PK')->value('id');
+
         $pages = [
             [
                 'title' => 'Privacy Policy',
                 'slug' => 'privacy-policy',
+                'type' => 'privacy',
                 'meta_title' => 'Privacy Policy | [PLACEHOLDER: BUSINESS_NAME]',
                 'meta_description' => 'Draft privacy policy for [PLACEHOLDER: BUSINESS_NAME] — review with counsel before publishing.',
                 'body' => <<<'TXT'
@@ -74,6 +78,7 @@ TXT,
             [
                 'title' => 'Terms of Service',
                 'slug' => 'terms-of-service',
+                'type' => 'terms',
                 'meta_title' => 'Terms of Service | [PLACEHOLDER: BUSINESS_NAME]',
                 'meta_description' => 'Draft terms of service for [PLACEHOLDER: BUSINESS_NAME] — review with counsel before publishing.',
                 'body' => <<<'TXT'
@@ -121,6 +126,7 @@ TXT,
             [
                 'title' => 'Refund and Cancellation Policy',
                 'slug' => 'refund-and-cancellation-policy',
+                'type' => 'refund',
                 'meta_title' => 'Refund and Cancellation Policy | [PLACEHOLDER: BUSINESS_NAME]',
                 'meta_description' => 'Draft refund and cancellation policy for [PLACEHOLDER: BUSINESS_NAME] — review with counsel before publishing.',
                 'body' => <<<'TXT'
@@ -169,16 +175,30 @@ TXT,
         ];
 
         foreach ($pages as $page) {
-            Page::query()->updateOrCreate(
-                ['slug' => $page['slug']],
-                [
-                    'title' => $page['title'],
-                    'body' => $page['body'],
-                    'meta_title' => $page['meta_title'],
-                    'meta_description' => $page['meta_description'],
-                    'is_published' => false,
-                ]
-            );
+            foreach ([null, $pkId] as $countryId) {
+                $slug = $countryId
+                    ? $page['slug'].'-pk'
+                    : $page['slug'];
+
+                Page::query()->updateOrCreate(
+                    [
+                        'slug' => $slug,
+                        'country_id' => $countryId,
+                        'locale' => 'en',
+                    ],
+                    [
+                        'title' => $page['title'].($countryId ? ' (Pakistan)' : ' (Global)'),
+                        'type' => $page['type'],
+                        'body' => $page['body'],
+                        'meta_title' => $page['meta_title'],
+                        'meta_description' => $page['meta_description'],
+                        'version' => '1.0-draft',
+                        'status' => 'draft',
+                        'is_published' => false,
+                        'effective_from' => now()->toDateString(),
+                    ]
+                );
+            }
         }
     }
 }

@@ -60,9 +60,9 @@ class SeederSafetyTest extends TestCase
 
         $this->seed(DatabaseSeeder::class);
 
-        foreach (['privacy-policy', 'terms-of-service', 'refund-and-cancellation-policy'] as $slug) {
-            $page = Page::query()->where('slug', $slug)->first();
-            $this->assertNotNull($page, "Missing CMS page {$slug}");
+        foreach (['privacy', 'terms', 'refund'] as $type) {
+            $page = Page::query()->where('type', $type)->whereNull('country_id')->first();
+            $this->assertNotNull($page, "Missing global CMS page type {$type}");
             $this->assertFalse((bool) $page->is_published);
             $this->assertStringContainsString('[PLACEHOLDER:', (string) $page->body);
         }

@@ -71,7 +71,9 @@ class UpdateListingRequest extends FormRequest
         }
 
         if (! $this->filled('currency')) {
-            $this->merge(['currency' => 'PKR']);
+            $this->merge([
+                'currency' => \App\Support\CountryContext::current()?->currency_code ?: 'PKR',
+            ]);
         }
     }
 }

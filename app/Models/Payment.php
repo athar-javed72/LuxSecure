@@ -19,8 +19,20 @@ class Payment extends Model
 
     public const GATEWAYS = ['bank_transfer', 'jazzcash', 'easypaisa'];
 
-    public static function enabledGateways(): array
+    public static function enabledGateways(?int $countryId = null): array
     {
+        $countryId ??= \App\Support\CountryContext::current()?->id;
+        if ($countryId) {
+            $fromCountry = CountryPaymentMethod::query()
+                ->where('country_id', $countryId)
+                ->where('is_enabled', true)
+                ->pluck('gateway')
+                ->all();
+            if ($fromCountry !== []) {
+                return array_values($fromCountry);
+            }
+        }
+
         $gateways = ['bank_transfer'];
         if (config('payments.jazzcash.enabled')) {
             $gateways[] = 'jazzcash';
@@ -37,6 +49,7 @@ class Payment extends Model
         'payable_type',
         'payable_id',
         'user_id',
+        'country_id',
         'amount',
         'currency',
         'gateway',

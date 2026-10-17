@@ -78,6 +78,7 @@ export function registerAlpineComponents(Alpine) {
     Alpine.data('navBar', () => ({
         navOpen: false,
         profileOpen: false,
+        localeOpen: false,
         openNav() {
             this.navOpen = true;
         },
@@ -90,12 +91,28 @@ export function registerAlpineComponents(Alpine) {
         closeProfile() {
             this.profileOpen = false;
         },
+        toggleLocale() {
+            this.localeOpen = !this.localeOpen;
+        },
+        closeLocale() {
+            this.localeOpen = false;
+        },
         closeOverlays() {
             this.navOpen = false;
             this.profileOpen = false;
+            this.localeOpen = false;
         },
         profileExpanded() {
             return this.profileOpen ? 'true' : 'false';
+        },
+        localeExpanded() {
+            return this.localeOpen ? 'true' : 'false';
+        },
+        submitLocaleForm() {
+            const form = this.$refs.localeForm;
+            if (form) {
+                form.submit();
+            }
         },
     }));
 

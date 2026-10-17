@@ -68,6 +68,39 @@
         </nav>
 
         <div class="hidden lg:flex items-center gap-2">
+            @if(($countries ?? collect())->isNotEmpty() && $variant !== 'admin')
+                <div class="relative" @click.outside="closeLocale()">
+                    <button type="button" class="inline-flex items-center h-11 px-3 rounded-full bg-white/10 text-white text-xs font-medium hover:bg-white/15" @click="toggleLocale()" :aria-expanded="localeExpanded()">
+                        {{ optional($activeCountry)->iso2 ?? 'PK' }} · {{ session('currency', optional($activeCountry)->currency_code ?? 'PKR') }}
+                    </button>
+                    <div x-cloak x-show="localeOpen" class="absolute right-0 top-full mt-2 w-64 rounded-md bg-white shadow-lg border border-slate-100 p-3 z-50 text-fs-primary">
+                        <form method="POST" action="{{ route('locale.update') }}" x-ref="localeForm" class="space-y-2">
+                            @csrf
+                            <label class="block text-xs font-semibold text-fs-muted">Country
+                                <select name="country_id" class="mt-1 w-full rounded-sm border border-black/10 px-2 py-2 text-sm" @change="submitLocaleForm()">
+                                    @foreach($countries as $country)
+                                        <option value="{{ $country->id }}" @selected((int) session('country_id', optional($activeCountry)->id) === (int) $country->id)>{{ $country->name }}</option>
+                                    @endforeach
+                                </select>
+                            </label>
+                            <label class="block text-xs font-semibold text-fs-muted">Currency
+                                <select name="currency" class="mt-1 w-full rounded-sm border border-black/10 px-2 py-2 text-sm" @change="submitLocaleForm()">
+                                    @foreach($currencies as $currency)
+                                        <option value="{{ $currency->code }}" @selected(session('currency', optional($activeCountry)->currency_code) === $currency->code)>{{ $currency->code }} ({{ $currency->symbol }})</option>
+                                    @endforeach
+                                </select>
+                            </label>
+                            <label class="block text-xs font-semibold text-fs-muted">Language
+                                <select name="locale" class="mt-1 w-full rounded-sm border border-black/10 px-2 py-2 text-sm" @change="submitLocaleForm()">
+                                    @foreach($languages as $language)
+                                        <option value="{{ $language->code }}" @selected(app()->getLocale() === $language->code)>{{ $language->native_name ?: $language->name }}</option>
+                                    @endforeach
+                                </select>
+                            </label>
+                        </form>
+                    </div>
+                </div>
+            @endif
             @if($variant === 'admin')
                 <x-button variant="ghost" href="{{ route('home') }}" class="!border-white/20 !text-white hover:!bg-white/10">View site</x-button>
                 <form method="POST" action="{{ route('logout') }}">

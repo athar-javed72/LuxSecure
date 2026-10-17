@@ -9,11 +9,14 @@ class Invoice extends Model
 {
     protected $fillable = [
         'payment_id',
+        'country_id',
         'number',
         'pdf_path',
         'subtotal',
         'tax',
+        'tax_name',
         'total',
+        'currency',
         'line_items',
     ];
 
