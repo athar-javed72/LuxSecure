@@ -162,7 +162,7 @@
                                     <span class="text-[10px] uppercase tracking-wide text-fs-brand">Verified</span>
                                 @endif
                             </h2>
-                            <p class="text-sm text-fs-secondary">{{ $agentProfile?->display_role ?? 'LuxSecure Agent' }}</p>
+                            <p class="text-sm text-fs-secondary">{{ $agentProfile?->display_role ?? (($siteName ?? config('app.name')).' Agent') }}</p>
                             @if(($agentAverageRating ?? null) !== null)
                                 <p class="text-xs text-fs-muted mt-1">Agent rating {{ number_format($agentAverageRating, 1) }}/5</p>
                             @endif

@@ -46,15 +46,16 @@
     <x-container class="h-full flex items-center justify-between gap-4">
         <a href="{{ $variant === 'admin' ? route('admin.dashboard') : route('home') }}"
            class="flex items-center gap-3 shrink-0 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
-            <span class="inline-flex items-center justify-center w-10 h-10 rounded-sm bg-fs-brand text-white font-bold text-sm tracking-wide">LS</span>
-            <span class="flex flex-col leading-tight">
-                <span class="fs-display text-xl font-semibold tracking-wide text-white">
-                    {{ $siteName ?? 'LuxSecure' }}
-                </span>
-                <span class="hidden sm:inline text-[10px] tracking-[0.18em] uppercase text-slate-300/80">
-                    {{ $variant === 'admin' ? 'Admin Control' : 'Trusted Property Platform' }}
-                </span>
-            </span>
+            @if(!empty($siteLogo))
+                <img src="{{ $siteLogo }}" alt="{{ $siteName ?? config('app.name') }}" class="h-10 w-auto max-w-[160px] object-contain brightness-0 invert">
+            @else
+                <span class="fs-display text-xl font-semibold tracking-wide text-white">{{ $siteName ?? config('app.name') }}</span>
+            @endif
+            @if($variant === 'admin')
+                <span class="hidden sm:inline text-[10px] tracking-[0.18em] uppercase text-slate-300/80">Admin Control</span>
+            @elseif(!empty($siteTagline))
+                <span class="hidden xl:inline text-[10px] tracking-[0.12em] uppercase text-slate-300/80 max-w-[14rem] truncate">{{ $siteTagline }}</span>
+            @endif
         </a>
 
         <nav class="hidden lg:flex items-center gap-1" aria-label="Main navigation">
@@ -182,7 +183,7 @@
             x-transition:leave-end="translate-x-full"
         >
             <div class="h-[72px] px-4 flex items-center justify-between border-b border-white/10">
-                <span class="text-base font-bold">LuxSecure</span>
+                <span class="text-base font-bold">{{ $siteName ?? config('app.name') }}</span>
                 <button type="button" class="inline-flex items-center justify-center w-11 h-11 rounded-sm border border-white/20" @click="closeNav()" aria-label="Close menu">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>

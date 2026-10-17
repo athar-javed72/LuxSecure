@@ -1,7 +1,7 @@
 @extends('include.master')
 
 @section('title', 'Properties')
-@section('meta_description', 'Browse and filter LuxSecure property listings by location, type, and budget.')
+@section('meta_description', 'Browse and filter '.($siteName ?? config('app.name')).' property listings by location, type, and budget.')
 
 @section('content')
 <x-container class="py-8" x-data="filtersPanel">

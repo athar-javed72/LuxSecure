@@ -8,4 +8,4 @@
     <li>Total: {{ number_format((float) $booking->total, 2) }}</li>
     <li>Cancellation policy: {{ $booking->cancellation_policy }}</li>
 </ul>
-<p>— LuxSecure</p>
+<p>— {{ config('app.name') }}</p>

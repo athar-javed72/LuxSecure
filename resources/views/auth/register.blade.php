@@ -1,7 +1,7 @@
 @extends('include.master')
 
 @section('title', 'Register')
-@section('meta_description', 'Create your LuxSecure account.')
+@section('meta_description', 'Create your '.($siteName ?? config('app.name')).' account.')
 
 @section('content')
 <x-container class="py-12">

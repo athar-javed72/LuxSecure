@@ -55,7 +55,7 @@ class MultiCountryPlatformTest extends TestCase
 
     public function test_refund_calculator_reads_db_rules(): void
     {
-        $policy = CancellationPolicy::query()->where('slug', 'flexible')->whereNull('country_id')->first();
+        $policy = CancellationPolicy::query()->where('slug', 'hotel-flexible')->whereNull('country_id')->first();
         $this->assertNotNull($policy);
         $this->assertGreaterThanOrEqual(2, $policy->rules()->count());
 
@@ -73,13 +73,14 @@ class MultiCountryPlatformTest extends TestCase
             'total' => 10000,
             'currency' => 'PKR',
             'status' => 'confirmed',
-            'cancellation_policy' => 'flexible',
+            'cancellation_policy' => 'hotel-flexible',
             'cancellation_policy_id' => $policy->id,
         ]);
 
+        // Hotel Flexible: 3–6 days before → 50%.
         $result = app(RefundCalculator::class)->forBooking($booking, 10000);
-        $this->assertSame(100.0, $result['refund_percent']);
-        $this->assertSame('10000.00', $result['refund_amount']);
+        $this->assertSame(50.0, $result['refund_percent']);
+        $this->assertSame('5000.00', $result['refund_amount']);
     }
 
     public function test_legal_page_fallback_country_then_global(): void
@@ -130,17 +131,19 @@ class MultiCountryPlatformTest extends TestCase
     {
         $this->seedRbac();
         $pk = Country::query()->where('iso2', 'PK')->firstOrFail();
-        $ae = Country::query()->create([
-            'iso2' => 'AE',
-            'name' => 'United Arab Emirates',
-            'currency_code' => 'AED',
-            'default_locale' => 'en',
-            'timezone' => 'Asia/Dubai',
-            'phone_code' => '+971',
-            'area_units' => ['sq_m'],
-            'is_active' => true,
-            'sort_order' => 2,
-        ]);
+        $ae = Country::query()->firstOrCreate(
+            ['iso2' => 'AE'],
+            [
+                'name' => 'United Arab Emirates',
+                'currency_code' => 'AED',
+                'default_locale' => 'en',
+                'timezone' => 'Asia/Dubai',
+                'phone_code' => '+971',
+                'area_units' => ['sq_m'],
+                'is_active' => true,
+                'sort_order' => 2,
+            ]
+        );
         Currency::query()->firstOrCreate(['code' => 'AED'], ['symbol' => 'د.إ', 'decimals' => 2, 'is_active' => true]);
 
         $admin = User::factory()->create(['country_id' => $pk->id, 'email_verified_at' => now(), 'is_active' => true]);
@@ -164,20 +167,20 @@ class MultiCountryPlatformTest extends TestCase
         $super = $this->makeSuperAdmin();
         $this->actingAs($super)
             ->post(route('admin.countries.store'), [
-                'iso2' => 'GB',
-                'name' => 'United Kingdom',
+                'iso2' => 'NZ',
+                'name' => 'New Zealand',
                 'currency_code' => 'PKR',
                 'default_locale' => 'en',
-                'timezone' => 'Europe/London',
-                'phone_code' => '+44',
+                'timezone' => 'Pacific/Auckland',
+                'phone_code' => '+64',
                 'area_units' => ['sq_m'],
-                'tax_percent' => 20,
+                'tax_percent' => 15,
                 'is_active' => 1,
                 'sort_order' => 9,
             ])
             ->assertRedirect();
 
-        $this->assertDatabaseHas('countries', ['iso2' => 'GB', 'name' => 'United Kingdom']);
+        $this->assertDatabaseHas('countries', ['iso2' => 'NZ', 'name' => 'New Zealand']);
     }
 
     public function test_backfill_migration_is_idempotent(): void

@@ -11,6 +11,8 @@ class CancellationPolicy extends Model
     protected $fillable = [
         'name',
         'slug',
+        'applies_to',
+        'reference_date',
         'country_id',
         'organization_id',
         'is_default',
@@ -22,6 +24,16 @@ class CancellationPolicy extends Model
         'is_default' => 'boolean',
         'is_active' => 'boolean',
     ];
+
+    public static function purposeToAppliesTo(?string $purpose): string
+    {
+        return match ($purpose) {
+            'rent' => 'rent',
+            'sale' => 'sale',
+            'short_stay' => 'hotel',
+            default => 'hotel',
+        };
+    }
 
     public function country(): BelongsTo
     {
@@ -47,10 +59,13 @@ class CancellationPolicy extends Model
             }
         }
 
+        $appliesTo = static::purposeToAppliesTo($listing->purpose);
+
         if ($listing->organization_id) {
             $org = static::query()
                 ->with('rules')
                 ->where('organization_id', $listing->organization_id)
+                ->where('applies_to', $appliesTo)
                 ->where('is_active', true)
                 ->where('is_default', true)
                 ->first();
@@ -64,6 +79,7 @@ class CancellationPolicy extends Model
                 ->with('rules')
                 ->where('country_id', $listing->country_id)
                 ->whereNull('organization_id')
+                ->where('applies_to', $appliesTo)
                 ->where('is_active', true)
                 ->where('is_default', true)
                 ->first();
@@ -72,12 +88,30 @@ class CancellationPolicy extends Model
             }
         }
 
+        $preferredSlug = match ($appliesTo) {
+            'rent' => 'rent-standard',
+            'sale' => 'sale-token',
+            default => 'hotel-flexible',
+        };
+
+        $globals = static::query()
+            ->with('rules')
+            ->whereNull('country_id')
+            ->whereNull('organization_id')
+            ->where('applies_to', $appliesTo)
+            ->where('is_active', true)
+            ->where('is_default', true)
+            ->get();
+
+        if ($globals->isNotEmpty()) {
+            return $globals->firstWhere('slug', $preferredSlug) ?? $globals->first();
+        }
+
         return static::query()
             ->with('rules')
             ->whereNull('country_id')
             ->whereNull('organization_id')
-            ->where('is_active', true)
-            ->where('is_default', true)
+            ->where('slug', $preferredSlug)
             ->first()
             ?? static::query()
                 ->with('rules')

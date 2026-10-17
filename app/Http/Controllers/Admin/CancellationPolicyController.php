@@ -123,6 +123,8 @@ class CancellationPolicyController extends Controller
         $data = $request->validate([
             'name' => ['required', 'string', 'max:120'],
             'slug' => ['nullable', 'string', 'max:120'],
+            'applies_to' => ['required', 'in:hotel,rent,sale'],
+            'reference_date' => ['required', 'in:check_in,move_in,agreement_date'],
             'country_id' => ['nullable', 'exists:countries,id'],
             'organization_id' => ['nullable', 'exists:organizations,id'],
             'description' => ['nullable', 'string', 'max:5000'],

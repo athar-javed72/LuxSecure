@@ -1,7 +1,7 @@
 @extends('include.master')
 
 @section('title', 'Forgot Password')
-@section('meta_description', 'Reset your LuxSecure account password.')
+@section('meta_description', 'Reset your '.($siteName ?? config('app.name')).' account password.')
 
 @section('content')
 <x-container class="py-12">

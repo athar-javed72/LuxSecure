@@ -1,16 +1,16 @@
-# LuxSecure
+# Maskanoor
 
 **Developed by Nexora Labs**
 
-Luxury property listing and management platform for Pakistan — verified homes, RBAC admin, bookings/tenancies, payments, KYC, reviews, Sanctum API, and Estate Noir UI.
+Multi-country property listing and management platform — verified homes, RBAC admin, bookings/tenancies, payments, KYC, reviews, Sanctum API, and Estate Noir UI. Brand name, tagline, logo, and contact details are Admin-editable Settings (`site.name`, `site.tagline.{locale}`, `site.logo`).
 
 ## Product ownership
 
-LuxSecure is an **in-house product** of **Nexora Labs**. Features and architecture are maintained for internal use, portfolio demos, and future client deployments under Nexora Labs.
+Maskanoor is an **in-house product** of **Nexora Labs**. Features and architecture are maintained for internal use, portfolio demos, and future client deployments under Nexora Labs.
 
 ## Tech stack
 
-- **Backend:** Laravel 13.x, PHP 8.3–8.5, Sanctum 4.x, Spatie Permission + Activity Log
+- **Backend:** Laravel 13.x, PHP 8.4.1–8.5, Sanctum 4.x, Spatie Permission + Activity Log
 - **Frontend:** Blade, Tailwind CSS 4 via Vite (`@tailwindcss/vite`), Alpine.js — **no Bootstrap, no Tailwind CDN**
 - **Database:** MySQL (primary); SQLite for tests
 - **Media:** Intervention Image; uploads via configurable `UPLOADS_DISK` / `PRIVATE_DISK`
@@ -43,12 +43,13 @@ Permission catalog lives in `config/rbac.php` and is seeded by `RolesAndPermissi
 | Tenancies | Rent schedule, overdue list, mark paid |
 | Payments | Polymorphic payments, bank transfer proof + approval, JazzCash/Easypaisa sandbox webhooks (signed, idempotent), invoice PDF, admin filters + CSV |
 | Reviews | Completed booking/tenancy only; admin moderation; averages on listing/agent |
-| KYC | Private-disk docs (CNIC/license/registry); admin review; verified badges; unverified agents cannot publish |
-| Notifications | Database + mail (booking, rent due daily, lead assigned, ticket reply, KYC); in-app bell; SMS/WhatsApp `MessageChannel` with log driver |
+| KYC | Country-specific document types; admin review; verified badges |
+| Notifications | Database + mail; in-app bell; SMS/WhatsApp `MessageChannel` with log driver |
 | Phone OTP | Throttled send/verify; hashed codes; expiry |
 | CMS | Blog, FAQ, testimonials, pages |
 | Agents / leads / tickets | Profiles, lead conversion, support tickets |
-| Settings | Site name/email/phone (footer + branding), commerce/policies |
+| Settings | Brand, contact, commerce commission/tax (global + per country) |
+| Multi-country | PK, SA, AE, QA, MY, GB reference data; currencies, locales, cities, KYC, payments |
 | API v1 | Sanctum token auth, listings/favorites, Scribe OpenAPI |
 | Ops | Listing cache, `luxsecure:backup`, optional Sentry |
 
@@ -56,11 +57,11 @@ Permission catalog lives in `config/rbac.php` and is seeded by `RolesAndPermissi
 
 | Token | Role |
 |-------|------|
-| `fs-primary` | Ink navy |
-| `fs-brand` | Brass accents |
+| `fs-primary` | Ink navy (`#0b1426`) |
+| `fs-brand` | Brass accents (`#9a7b4f`) |
 | `fs-surface` | Stone background |
 
-Fonts: Cormorant Garamond (display) + DM Sans (UI). Shared `x-*` Blade components.
+Fonts: Cormorant Garamond (display) + DM Sans (UI). Shared `x-*` Blade components. Default logo: `/brand/maskanoor-logo.svg`.
 
 ## Requirements
 
@@ -96,7 +97,7 @@ npm run build
 php artisan serve
 ```
 
-**Seeding safety:** `migrate:fresh --seed` always installs roles/permissions. Demo accounts, listings, hotel rooms/seasonal prices, and settings seed **only when `APP_ENV` is `local` or `testing`**. In production, create the first super admin with:
+**Seeding safety:** `migrate:fresh --seed` always installs roles/permissions and `ReferenceDataSeeder` (countries, languages, currencies, KYC types, payment methods, cancellation policies, brand settings). Demo accounts, demo listings, hotel inventory, CMS drafts, and the **Maskanoor Stays** demo organization seed **only when `APP_ENV` is `local` or `testing`**. In production, create the first super admin with:
 
 ```bash
 php artisan luxsecure:create-super-admin
@@ -161,4 +162,4 @@ MIT.
 
 ---
 
-*LuxSecure — Developed by Nexora Labs*
+*Developed by Nexora Labs*

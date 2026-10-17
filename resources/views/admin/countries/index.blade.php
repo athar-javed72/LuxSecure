@@ -26,6 +26,7 @@
                 <th class="px-3 py-3 font-semibold">ISO</th>
                 <th class="px-3 py-3 font-semibold">Currency</th>
                 <th class="px-3 py-3 font-semibold">Locale</th>
+                <th class="px-3 py-3 font-semibold">Tax</th>
                 <th class="px-3 py-3 font-semibold">Active</th>
                 <th class="px-3 py-3 font-semibold text-right">Actions</th>
             </tr>
@@ -37,6 +38,12 @@
                     <td class="px-3 py-3 text-fs-secondary">{{ $country->iso2 }}</td>
                     <td class="px-3 py-3 text-fs-secondary">{{ $country->currency_code }}</td>
                     <td class="px-3 py-3 text-fs-secondary">{{ $country->default_locale }}</td>
+                    <td class="px-3 py-3">
+                        <span class="text-fs-secondary">{{ $country->tax_name }} {{ $country->tax_percent }}%</span>
+                        @if($country->tax_needs_review)
+                            <x-badge tone="warning" class="ml-1">Needs review</x-badge>
+                        @endif
+                    </td>
                     <td class="px-3 py-3"><x-badge :tone="$country->is_active ? 'success' : 'muted'">{{ $country->is_active ? 'Yes' : 'No' }}</x-badge></td>
                     <td class="px-3 py-3 text-right">
                         <div class="inline-flex flex-wrap gap-2 justify-end">
@@ -48,7 +55,7 @@
                     </td>
                 </tr>
             @empty
-                <tr><td colspan="6" class="px-4 py-8 text-center text-fs-muted">No countries yet.</td></tr>
+                <tr><td colspan="7" class="px-4 py-8 text-center text-fs-muted">No countries yet.</td></tr>
             @endforelse
         </tbody>
     </table>

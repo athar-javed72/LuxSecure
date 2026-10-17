@@ -12,12 +12,14 @@ class Country extends Model
         'name',
         'currency_code',
         'default_locale',
+        'locales',
         'timezone',
         'phone_code',
         'phone_regex',
         'area_units',
         'tax_name',
         'tax_percent',
+        'tax_needs_review',
         'invoice_prefix',
         'invoice_sequence',
         'is_active',
@@ -25,8 +27,10 @@ class Country extends Model
     ];
 
     protected $casts = [
+        'locales' => 'array',
         'area_units' => 'array',
         'tax_percent' => 'decimal:4',
+        'tax_needs_review' => 'boolean',
         'is_active' => 'boolean',
         'invoice_sequence' => 'integer',
         'sort_order' => 'integer',

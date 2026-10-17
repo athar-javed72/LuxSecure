@@ -29,7 +29,7 @@ class PhoneOtpService
             'expires_at' => now()->addMinutes(10),
         ]);
 
-        $this->sms->send($phone, "Your LuxSecure verification code is {$code}", [
+        $this->sms->send($phone, 'Your '.config('app.name')." verification code is {$code}", [
             'user_id' => $user->id,
             'purpose' => 'phone_verification',
         ]);

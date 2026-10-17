@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Booking;
+use App\Models\CountrySetting;
 use App\Models\KycDocument;
 use App\Models\Listing;
 use App\Models\Payment;
@@ -44,6 +45,9 @@ class RemainingPlatformFeaturesTest extends TestCase
 
     public function test_footer_reads_site_settings(): void
     {
+        // Clear country overrides so global Settings drive the footer contact chain.
+        CountrySetting::query()->whereIn('key', ['site.name', 'site.email', 'site.phone'])->delete();
+
         Setting::setValue('site.name', 'Noir Estate', 'site');
         Setting::setValue('site.email', 'hello@noir.test', 'site');
         Setting::setValue('site.phone', '+92 311 1111111', 'site');

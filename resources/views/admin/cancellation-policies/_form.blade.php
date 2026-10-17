@@ -18,6 +18,8 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <x-input label="Name *" name="name" :value="old('name', $policy?->name)" required />
         <x-input label="Slug" name="slug" :value="old('slug', $policy?->slug)" placeholder="auto from name if empty" />
+        <x-select label="Applies to *" name="applies_to" :options="['hotel' => 'Hotel', 'rent' => 'Rent', 'sale' => 'Sale']" :selected="old('applies_to', $policy?->applies_to ?? 'hotel')" required />
+        <x-select label="Reference date *" name="reference_date" :options="['check_in' => 'Check-in', 'move_in' => 'Move-in', 'agreement_date' => 'Agreement date']" :selected="old('reference_date', $policy?->reference_date ?? 'check_in')" required />
         <x-select label="Country" name="country_id" :options="$countries->all()" :selected="old('country_id', $policy?->country_id)" placeholder="Global" />
         <x-select label="Organization" name="organization_id" :options="$organizations->all()" :selected="old('organization_id', $policy?->organization_id)" placeholder="None" />
     </div>

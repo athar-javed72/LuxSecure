@@ -8,7 +8,7 @@
     ['label' => 'Dashboard'],
 ]" />
 
-<x-page-header title="Dashboard" subtitle="Overview of your LuxSecure admin panel" />
+<x-page-header title="Dashboard" :subtitle="'Overview of your '.($siteName ?? config('app.name')).' admin panel'" />
 
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
     <x-stat-card label="Total users" :value="$totalUsers" :href="route('admin.users.index')" />

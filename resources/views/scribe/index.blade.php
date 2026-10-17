@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>LuxSecure API Documentation</title>
+    <title>{{ $siteName ?? config('app.name') }} API Documentation</title>
 
     <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
 
@@ -186,7 +186,7 @@
     <div class="dark-box"></div>
     <div class="content">
         <h1 id="introduction">Introduction</h1>
-<p>LuxSecure API v1 — Sanctum token auth, listings, bookings, favorites, and profile.</p>
+<p>{{ $siteName ?? config('app.name') }} API v1 — Sanctum token auth, listings, bookings, favorites, and profile.</p>
 <aside>
     <strong>Base URL</strong>: <code>http://localhost</code>
 </aside>

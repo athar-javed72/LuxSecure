@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="@yield('meta_description', 'LuxSecure — Find verified homes, villas, and apartments across Pakistan.')">
-    <title>@yield('title', 'Home') | {{ $siteName ?? 'LuxSecure' }}</title>
+    <meta name="description" content="@yield('meta_description', ($siteName ?? config('app.name')).' — '.($siteTagline ?? 'Find your place. Stay with trust.'))">
+    <title>@yield('title', 'Home') | {{ $siteName ?? config('app.name') }}</title>
+    <link rel="icon" href="{{ $siteFavicon ?? '/favicon.svg' }}" type="image/svg+xml">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('styles')
 </head>

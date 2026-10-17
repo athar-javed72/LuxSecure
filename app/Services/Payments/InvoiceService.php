@@ -27,6 +27,15 @@ class InvoiceService
         $taxName = $country?->tax_name;
         $subtotal = (float) $payment->amount;
         $tax = round($subtotal * ($taxRate / 100), 2);
+        $payable = $payment->payable;
+        $purpose = null;
+        if ($payable) {
+            if (method_exists($payable, 'listing')) {
+                $purpose = $payable->listing?->purpose;
+            }
+            $purpose ??= $payable->purpose ?? null;
+        }
+        $commissionRate = CountryContext::commissionForPurpose($purpose);
         $total = $subtotal + $tax;
 
         $number = $country
@@ -43,8 +52,10 @@ class InvoiceService
             'total' => $total,
             'currency' => $payment->currency,
             'line_items' => [[
-                'description' => class_basename($payment->payable_type).' #'.$payment->payable_id,
+                'description' => class_basename((string) $payment->payable_type).' #'.$payment->payable_id
+                    .($commissionRate > 0 ? ' (commission '.$commissionRate.'%)' : ''),
                 'amount' => $subtotal,
+                'commission_percent' => $commissionRate,
             ]],
         ]);
 

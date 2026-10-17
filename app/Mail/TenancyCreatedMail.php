@@ -19,7 +19,7 @@ class TenancyCreatedMail extends Mailable implements ShouldQueue
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Your tenancy has been created — LuxSecure',
+            subject: 'Your tenancy has been created — '.config('app.name'),
         );
     }
 

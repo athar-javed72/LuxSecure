@@ -58,4 +58,19 @@ class CountryContext
 
         return (string) $value;
     }
+
+    /**
+     * Commission percent for a listing purpose (sale|rent|short_stay).
+     */
+    public static function commissionForPurpose(?string $purpose): float
+    {
+        $key = match ($purpose) {
+            'rent' => 'commerce.commission_rent',
+            'sale' => 'commerce.commission_sale',
+            'short_stay' => 'commerce.commission_hotel',
+            default => 'commerce.commission_rate',
+        };
+
+        return (float) self::setting($key, Setting::getValue($key, Setting::getValue('commerce.commission_rate', 0)));
+    }
 }

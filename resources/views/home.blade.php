@@ -1,7 +1,9 @@
 @extends('include.master')
 
 @section('title', 'Find Your Dream Home')
-@section('meta_description', 'LuxSecure — Browse verified homes, villas, and apartments. Search by location, type, and budget.')
+@section('meta_description')
+{{ ($siteName ?? config('app.name')).' — Browse verified homes, villas, and apartments. Search by location, type, and budget.' }}
+@endsection
 
 @section('home_content')
 {{-- Hero: fits one 1920×950 viewport with search visible --}}
@@ -106,9 +108,9 @@
 <section id="about" class="bg-slate-50 py-16 scroll-mt-[72px]" aria-labelledby="about-heading">
     <x-container class="grid lg:grid-cols-2 gap-12 items-center">
         <div>
-            <x-section-heading title="About LuxSecure" subtitle="A cleaner way to discover verified real estate" heading-id="about-heading" />
+            <x-section-heading :title="'About '.($siteName ?? config('app.name'))" subtitle="A cleaner way to discover verified real estate" heading-id="about-heading" />
             <p class="mt-6 text-sm text-fs-secondary max-w-prose">
-                LuxSecure helps buyers and renters explore curated homes with clear pricing, trusted agents, and a responsive experience on every device.
+                {{ $siteName ?? config('app.name') }} helps buyers and renters explore curated homes with clear pricing, trusted agents, and a responsive experience on every device.
             </p>
             <ul class="mt-6 space-y-3 text-sm text-fs-secondary max-w-prose">
                 <li class="flex gap-2"><span class="text-fs-brand font-bold">✓</span> Verified inventory across major Pakistani cities</li>
@@ -238,9 +240,9 @@
 <section class="pb-16">
     <x-container>
         <div class="rounded-md bg-fs-primary px-6 py-12 text-center text-white border border-white/5 shadow-lg">
-            <p class="text-[10px] font-semibold uppercase tracking-[0.2em] text-fs-brand">LuxSecure</p>
+            <p class="text-[10px] font-semibold uppercase tracking-[0.2em] text-fs-brand">{{ $siteName ?? config('app.name') }}</p>
             <h2 class="mt-3 text-xl md:text-2xl font-bold">Ready to find your next property?</h2>
-            <p class="mt-3 text-sm text-slate-300 max-w-prose mx-auto">Browse verified listings or talk to a LuxSecure agent today.</p>
+            <p class="mt-3 text-sm text-slate-300 max-w-prose mx-auto">Browse verified listings or talk to a {{ $siteName ?? config('app.name') }} agent today.</p>
             <div class="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
                 <x-button variant="primary" href="{{ route('properties') }}">Browse properties</x-button>
                 <x-button variant="ghost" href="{{ route('contact') }}" class="!border-white/30 !text-white hover:!bg-white/10">Contact us</x-button>

@@ -30,7 +30,7 @@ class TwoFactorService
     public function qrUrl(User $user, string $secret): string
     {
         return $this->google2fa->getQRCodeUrl(
-            config('app.name', 'LuxSecure'),
+            config('app.name'),
             $user->email,
             $secret
         );

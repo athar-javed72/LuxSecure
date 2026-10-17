@@ -6,7 +6,7 @@
 ])
 
 <div {{ $attributes->merge(['class' => 'rounded-md bg-fs-primary text-white px-6 py-12 text-center border border-white/5 shadow-lg']) }}>
-    <p class="text-[10px] font-semibold uppercase tracking-[0.2em] text-fs-brand">LuxSecure</p>
+    <p class="text-[10px] font-semibold uppercase tracking-[0.2em] text-fs-brand">{{ $siteName ?? config('app.name') }}</p>
     <h3 class="fs-display mt-3 text-xl md:text-2xl font-semibold text-white">{{ $title }}</h3>
     @if($description)
         <p class="mt-2 text-sm text-slate-300 max-w-md mx-auto">{{ $description }}</p>

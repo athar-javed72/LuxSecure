@@ -58,10 +58,17 @@ class AppServiceProvider extends ServiceProvider
             return '<?php echo \'nonce="\'.e(\\Illuminate\\Support\\Facades\\Vite::cspNonce()).\'"\'; ?>';
         });
 
-        View::composer(['include.footer', 'include.navbar', 'include.master'], function ($view) {
+        View::composer(['include.footer', 'include.navbar', 'include.master', 'admin.layout', 'components.auth-card'], function ($view) {
             try {
                 $ctx = CountryContext::class;
-                $view->with('siteName', $ctx::setting('site.name', config('app.name', 'LuxSecure')));
+                $locale = app()->getLocale();
+                $tagline = $ctx::setting('site.tagline.'.$locale)
+                    ?: $ctx::setting('site.tagline', '');
+                $view->with('siteName', $ctx::setting('site.name', config('app.name', 'Maskanoor')));
+                $view->with('siteTagline', $tagline);
+                $view->with('siteLogo', $ctx::setting('site.logo', '/brand/maskanoor-logo.svg'));
+                $view->with('siteFavicon', $ctx::setting('site.favicon', '/favicon.svg'));
+                $view->with('siteLegalName', $ctx::setting('site.legal_name', $ctx::setting('site.name', config('app.name', 'Maskanoor'))));
                 $view->with('siteEmail', $ctx::contact('site.email') ?? $ctx::contact('site.support_email'));
                 $view->with('sitePhone', $ctx::contact('site.phone'));
                 $view->with('siteHours', $ctx::contact('site.hours'));
@@ -73,7 +80,11 @@ class AppServiceProvider extends ServiceProvider
                 $view->with('legalTerms', Page::resolveLegal('terms'));
                 $view->with('legalRefund', Page::resolveLegal('refund'));
             } catch (\Throwable) {
-                $view->with('siteName', config('app.name', 'LuxSecure'));
+                $view->with('siteName', config('app.name', 'Maskanoor'));
+                $view->with('siteTagline', '');
+                $view->with('siteLogo', '/brand/maskanoor-logo.svg');
+                $view->with('siteFavicon', '/favicon.svg');
+                $view->with('siteLegalName', config('app.name', 'Maskanoor'));
                 $view->with('siteEmail', null);
                 $view->with('sitePhone', null);
                 $view->with('siteHours', null);

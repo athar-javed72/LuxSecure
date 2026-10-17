@@ -9,7 +9,7 @@ class Area extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['city_id', 'name', 'slug', 'is_active'];
+    protected $fillable = ['country_id', 'city_id', 'name', 'slug', 'is_active'];
 
     protected $casts = [
         'is_active' => 'boolean',

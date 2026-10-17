@@ -13,7 +13,7 @@ return [
             'active' => ['properties', 'properties.*'],
         ],
         [
-            'label' => 'Why LuxSecure',
+            'label' => 'Why us',
             'route' => 'home',
             'anchor' => '#about',
             'active' => [],

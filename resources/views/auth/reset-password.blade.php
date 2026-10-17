@@ -12,7 +12,7 @@
                 </svg>
             </div>
             <h2 class="text-lg font-bold text-white">New password</h2>
-            <p class="mt-2 text-sm text-slate-300 max-w-prose">Choose a strong password for your LuxSecure account.</p>
+            <p class="mt-2 text-sm text-slate-300 max-w-prose">Choose a strong password for your {{ $siteName ?? config('app.name') }} account.</p>
         </div>
 
         <div class="w-full md:w-1/2 p-6 sm:p-8 flex flex-col justify-center">

@@ -11,10 +11,18 @@
         <x-input label="Tax percent" name="tax_percent" type="number" :value="old('tax_percent', $country?->tax_percent ?? 0)" step="0.0001" />
         <x-input label="Invoice prefix" name="invoice_prefix" :value="old('invoice_prefix', $country?->invoice_prefix)" />
         <x-input label="Sort order" name="sort_order" type="number" :value="old('sort_order', $country?->sort_order ?? 0)" />
+        <x-input label="Locales (comma-separated)" name="locales_csv" :value="old('locales_csv', implode(',', $country?->locales ?? []))" placeholder="en,ur" />
     </div>
-    <label class="inline-flex items-center gap-2 min-h-11 cursor-pointer">
-        <input type="hidden" name="is_active" value="0">
-        <input type="checkbox" name="is_active" value="1" {{ old('is_active', $country?->is_active ?? true) ? 'checked' : '' }} class="rounded-sm border-black/20 text-fs-brand focus:ring-fs-brand">
-        <span class="text-sm text-fs-primary">Active</span>
-    </label>
+    <div class="flex flex-wrap gap-4">
+        <label class="inline-flex items-center gap-2 min-h-11 cursor-pointer">
+            <input type="hidden" name="is_active" value="0">
+            <input type="checkbox" name="is_active" value="1" {{ old('is_active', $country?->is_active ?? true) ? 'checked' : '' }} class="rounded-sm border-black/20 text-fs-brand focus:ring-fs-brand">
+            <span class="text-sm text-fs-primary">Active</span>
+        </label>
+        <label class="inline-flex items-center gap-2 min-h-11 cursor-pointer">
+            <input type="hidden" name="tax_needs_review" value="0">
+            <input type="checkbox" name="tax_needs_review" value="1" {{ old('tax_needs_review', $country?->tax_needs_review ?? false) ? 'checked' : '' }} class="rounded-sm border-black/20 text-fs-brand focus:ring-fs-brand">
+            <span class="text-sm text-fs-primary">Tax needs review</span>
+        </label>
+    </div>
 </div>

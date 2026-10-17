@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Admin') | LuxSecure</title>
+    <title>@yield('title', 'Admin') | {{ $siteName ?? config('app.name') }}</title>
+    <link rel="icon" href="{{ $siteFavicon ?? '/favicon.svg' }}" type="image/svg+xml">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('styles')
 </head>
@@ -20,8 +21,10 @@
     >
         <div class="h-[72px] px-4 flex items-center justify-between gap-2 border-b border-white/10">
             <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2 min-w-0 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
-                <span class="inline-flex items-center justify-center w-10 h-10 shrink-0 rounded-sm bg-fs-brand text-white font-bold text-sm tracking-wide">LS</span>
-                <span class="font-bold truncate">LuxSecure Admin</span>
+                @if(!empty($siteLogo))
+                    <img src="{{ $siteLogo }}" alt="{{ $siteName ?? config('app.name') }}" class="h-9 w-auto max-w-[140px] object-contain brightness-0 invert">
+                @endif
+                <span class="font-bold truncate">{{ $siteName ?? config('app.name') }} Admin</span>
             </a>
             <button
                 type="button"
@@ -100,7 +103,7 @@
         </main>
 
         <footer class="border-t border-black/10 bg-white px-4 sm:px-6 lg:px-8 py-4 text-xs text-fs-muted flex flex-col sm:flex-row sm:justify-between gap-2">
-            <span>© {{ date('Y') }} LuxSecure Admin</span>
+            <span>© {{ date('Y') }} {{ $siteName ?? config('app.name') }} Admin</span>
             @include('include.branding', ['brandingClass' => 'text-fs-muted', 'strongClass' => 'text-fs-brand font-medium'])
         </footer>
     </div>

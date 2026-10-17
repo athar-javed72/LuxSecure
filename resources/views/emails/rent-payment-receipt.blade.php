@@ -7,4 +7,4 @@
     <li>Paid at: {{ optional($payment->paid_at)->toDateTimeString() }}</li>
     <li>Method: {{ $payment->method }}</li>
 </ul>
-<p>— LuxSecure</p>
+<p>— {{ config('app.name') }}</p>

@@ -19,7 +19,7 @@ class BookingConfirmationMail extends Mailable implements ShouldQueue
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Booking '.$this->booking->status.' — LuxSecure',
+            subject: 'Booking '.$this->booking->status.' — '.config('app.name'),
         );
     }
 

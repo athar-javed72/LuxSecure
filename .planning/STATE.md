@@ -1,31 +1,27 @@
-# STATE — LuxSecure
+# STATE — Maskanoor
 
-Production hardening (ledger / holds / CSP / Sanctum / SMS) — **COMPLETE locally**
+Maskanoor rebrand + multi-country reference data — **COMPLETE locally**
 
 ---
 
 ## 1. What Exists
 
 ### Product
-- **LuxSecure** — property listing & management (Nexora Labs).
-- Public: home, properties, contact, auth, profile, bookings/tenancies, reviews, KYC, phone OTP, notifications bell.
-- Admin (`/admin`): listings, payments (filters/CSV/approve/refund), reviews moderation, KYC review, tenancies, bookings, CMS, settings, activity, RBAC users/roles.
-- Payments: **canonical polymorphic `payments` ledger** via `PaymentLedgerService` + `RefundCalculator`; `booking_payments` deprecated/read-only (backfilled).
-- Bookings: `hold_expires_at` (default 30m, `BOOKING_HOLD_MINUTES`); `luxsecure:expire-booking-holds` every 5 minutes; availability ignores expired holds.
-- API: Sanctum with **role ability sets**; staff needing 2FA get short-lived `2fa:setup` only.
-- Ops: listing cache UUID versioning; TrustProxies from `TRUSTED_PROXIES`; prod CSP nonce + Alpine CSP build; SMS `log`/`http` drivers.
+- **Maskanoor** — multi-country property listing & management (Nexora Labs). Brand from Settings (`site.name`, `site.tagline.{locale}`, `site.logo`).
+- Public: home, properties, contact, auth, profile, bookings/tenancies, reviews, KYC, phone OTP, notifications bell; RTL for ur/ar.
+- Admin (`/admin`): listings, payments, reviews, KYC, CMS, settings, countries (+ tax needs-review badge), cancellation policies (`applies_to` / `reference_date`), orgs, activity, RBAC.
+- Reference data (all envs): PK/SA/AE/QA/MY/GB, currencies, languages, cities/areas, KYC types, payment methods, cancellation policies, commission defaults.
+- Demo (local/testing only): admin user, listings, CMS drafts, **Maskanoor Stays** org + 3 `[DEMO]` branches.
+- Payments: polymorphic ledger + RefundCalculator (purpose-aware policy resolution).
+- API: Sanctum + Scribe; ops: `luxsecure:*` artisan commands (namespace unchanged).
 
 ### Stack
-- Laravel 10, PHP 8.1+, Sanctum, Spatie Permission + Activity Log, PHPUnit, Pint
+- Laravel 13, PHP 8.4.1–8.5, Sanctum, Spatie Permission + Activity Log, PHPUnit, Pint
 - Blade + Tailwind CSS 4 (Vite) + **@alpinejs/csp** — Estate Noir theme
 
 ### Git
 - `origin` → `https://github.com/athar-javed72/LuxSecure.git`
-- Hardening changes uncommitted unless user asks to commit
-
-### Env samples
-- `.env.example` — production-oriented (HTTPS, `APP_DEBUG=false`, `LOG_LEVEL=error`)
-- `.env.local.example` — local development
+- Maskanoor changes uncommitted unless user asks to commit
 
 ---
 
@@ -33,28 +29,26 @@ Production hardening (ledger / holds / CSP / Sanctum / SMS) — **COMPLETE local
 
 | Area | Status |
 |------|--------|
-| PHPUnit | **123 passed** (incl. MultiCountryPlatformTest) |
+| PHPUnit | **132 passed** |
 | `npm run build` | Passing |
-| `migrate:fresh --seed` | Passing (PK backfill + demo + CMS drafts local/testing only) |
-| Multi-country / orgs / branches / DB refund policies | Done (local) |
-| Ledger / holds / CSP / Sanctum / SMS | Done (local) |
-| CMS policy drafts + footer links | Seeded drafts; publish after legal review |
-| QA screenshots | `storage/app/qa-screenshots/` (gitignored) |
+| `migrate:fresh --seed` | Passing (reference all envs; demo local/testing) |
+| Maskanoor brand from Settings | Done |
+| Multi-country reference + purpose policies | Done |
 | Pushed to GitHub | No (awaiting user) |
 
 ---
 
 ## 3. Known gaps
 
-1. Push / commit when user requests.
-2. **Repo hygiene:** tracked `.env.smoke-bak` (has `APP_KEY`) and `luxsecure_db.sql` — remove from git history / untrack; now in `.gitignore`.
-3. Real JazzCash/Easypaisa + SMS HTTP gateway credentials for live calls.
-4. Drop `booking_payments` table only after a later deprecation window.
-5. Replace `[PLACEHOLDER:*]` contact/hours and CMS legal drafts before public publish.
+1. Commit / push when user requests.
+2. Repo remote / folder still named LuxSecure; artisan prefix still `luxsecure:*`; demo login `admin@luxsecure.com`.
+3. Regenerate Scribe HTML if `/docs` should show Maskanoor title from live config.
+4. Repo hygiene: tracked secrets history / `luxsecure_db.sql` if still public.
+5. CMS legal drafts still `[PLACEHOLDER:*]` until legal review; ar/ms lang files are machine drafts (`needs_native_review`).
 
 ---
 
 ## 4. Next (optional)
 
 - `git commit` / `git push` when ready
-- Wire production SMS HTTP gateway and payment secrets
+- Native review of ar/ms translations; clear Pakistan `tax_needs_review` in Admin after confirmation

@@ -61,7 +61,7 @@
             <template x-if="isLogin">
                 <div>
                     <h2 class="text-lg font-bold text-white">Welcome back</h2>
-                    <p class="mt-2 text-sm text-slate-300 max-w-prose mx-auto">Sign in to your LuxSecure account.</p>
+                    <p class="mt-2 text-sm text-slate-300 max-w-prose mx-auto">Sign in to your {{ $siteName ?? config('app.name') }} account.</p>
                 </div>
             </template>
             <template x-if="isForgot">
@@ -72,7 +72,7 @@
             </template>
             <template x-if="isRegister">
                 <div>
-                    <h2 class="text-lg font-bold text-white">Join LuxSecure</h2>
+                    <h2 class="text-lg font-bold text-white">Join {{ $siteName ?? config('app.name') }}</h2>
                     <p class="mt-2 text-sm text-slate-300 max-w-prose mx-auto">Save favorites and manage inquiries.</p>
                 </div>
             </template>
@@ -102,7 +102,7 @@
         {{-- LOGIN --}}
         <div x-show="isLogin" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-1" x-transition:enter-end="opacity-100 translate-y-0">
             <h1 class="text-xl font-bold text-fs-primary text-center">Login</h1>
-            <p class="mt-2 text-sm text-fs-secondary text-center md:hidden">Welcome back to LuxSecure</p>
+            <p class="mt-2 text-sm text-fs-secondary text-center md:hidden">Welcome back to {{ $siteName ?? config('app.name') }}</p>
 
             <form method="POST" action="{{ route('login') }}" class="mt-6 space-y-4">
                 @csrf

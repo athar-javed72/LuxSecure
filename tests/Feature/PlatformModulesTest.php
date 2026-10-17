@@ -58,7 +58,7 @@ class PlatformModulesTest extends TestCase
         ]);
 
         Faq::create([
-            'question' => 'Is LuxSecure verified?',
+            'question' => 'Is Maskanoor verified?',
             'answer' => 'Yes.',
             'is_published' => true,
             'sort_order' => 1,
@@ -68,7 +68,7 @@ class PlatformModulesTest extends TestCase
             ->assertOk()
             ->assertSee('Estate Noir Realty')
             ->assertSee('Market update')
-            ->assertSee('Is LuxSecure verified?')
+            ->assertSee('Is Maskanoor verified?')
             ->assertDontSee('Ayesha Khan');
     }
 
@@ -139,11 +139,11 @@ class PlatformModulesTest extends TestCase
 
         $this->actingAs($admin)->put(route('admin.settings.update'), [
             'settings' => [
-                'site.name' => 'LuxSecure Pro',
+                'site.name' => 'Maskanoor Pro',
             ],
         ])->assertRedirect();
 
-        $this->assertSame('LuxSecure Pro', Setting::getValue('site.name'));
+        $this->assertSame('Maskanoor Pro', Setting::getValue('site.name'));
     }
 
     public function test_activity_log_records_admin_listing_change(): void

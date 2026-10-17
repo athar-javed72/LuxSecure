@@ -1,7 +1,7 @@
 @extends('include.master')
 
 @section('title', 'Contact')
-@section('meta_description', 'Contact LuxSecure for property inquiries, listing help, or support.')
+@section('meta_description', 'Contact '.($siteName ?? config('app.name')).' for property inquiries, listing help, or support.')
 
 @section('content')
 <x-container class="py-8 md:py-12">

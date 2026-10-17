@@ -20,7 +20,10 @@ class CountryController extends Controller
         'site.hours' => ['label' => 'Hours', 'type' => 'string'],
         'site.address' => ['label' => 'Address', 'type' => 'text'],
         'site.support_email' => ['label' => 'Support email', 'type' => 'string'],
-        'commerce.commission_rate' => ['label' => 'Commission rate (%)', 'type' => 'number'],
+        'commerce.commission_hotel' => ['label' => 'Hotel commission (%)', 'type' => 'number'],
+        'commerce.commission_rent' => ['label' => 'Rent commission (%)', 'type' => 'number'],
+        'commerce.commission_sale' => ['label' => 'Sale commission (%)', 'type' => 'number'],
+        'commerce.commission_rate' => ['label' => 'Default commission (%)', 'type' => 'number'],
         'commerce.tax_rate' => ['label' => 'Tax rate (%)', 'type' => 'number'],
         'social.facebook' => ['label' => 'Facebook', 'type' => 'string'],
         'social.instagram' => ['label' => 'Instagram', 'type' => 'string'],
@@ -125,11 +128,13 @@ class CountryController extends Controller
             'name' => ['required', 'string', 'max:120'],
             'currency_code' => ['required', 'string', 'size:3'],
             'default_locale' => ['required', 'string', 'max:12'],
+            'locales_csv' => ['nullable', 'string', 'max:120'],
             'timezone' => ['required', 'string', 'max:64'],
             'phone_code' => ['nullable', 'string', 'max:8'],
             'phone_regex' => ['nullable', 'string', 'max:255'],
             'tax_name' => ['nullable', 'string', 'max:120'],
             'tax_percent' => ['nullable', 'numeric', 'min:0', 'max:100'],
+            'tax_needs_review' => ['sometimes', 'boolean'],
             'invoice_prefix' => ['nullable', 'string', 'max:20'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
             'is_active' => ['sometimes', 'boolean'],
@@ -138,8 +143,14 @@ class CountryController extends Controller
         $data['iso2'] = strtoupper($data['iso2']);
         $data['currency_code'] = strtoupper($data['currency_code']);
         $data['is_active'] = $request->boolean('is_active', true);
+        $data['tax_needs_review'] = $request->boolean('tax_needs_review');
         $data['sort_order'] = (int) ($data['sort_order'] ?? 0);
         $data['tax_percent'] = $data['tax_percent'] ?? 0;
+        $localesCsv = (string) ($data['locales_csv'] ?? '');
+        unset($data['locales_csv']);
+        $data['locales'] = $localesCsv !== ''
+            ? array_values(array_filter(array_map('trim', explode(',', $localesCsv))))
+            : [$data['default_locale']];
 
         return $data;
     }

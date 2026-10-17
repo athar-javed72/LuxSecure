@@ -159,7 +159,7 @@ class AdminAndPropertiesSeeder extends Seeder
                     'slug' => $slug,
                     'owner_id' => $admin->id,
                     'agent_id' => $admin->id,
-                    'description' => 'A carefully verified LuxSecure listing with modern finishes and a prime location.',
+                    'description' => 'A carefully verified Maskanoor listing with modern finishes and a prime location.',
                 ])
             );
         }

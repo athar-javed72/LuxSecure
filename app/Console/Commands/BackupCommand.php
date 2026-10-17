@@ -10,7 +10,7 @@ class BackupCommand extends Command
 {
     protected $signature = 'luxsecure:backup {--db : Dump the database} {--storage : Archive public storage}';
 
-    protected $description = 'Create a LuxSecure backup archive (database dump and/or storage).';
+    protected $description = 'Create a backup archive (database dump and/or storage).';
 
     public function handle(): int
     {

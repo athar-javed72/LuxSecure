@@ -6,7 +6,7 @@
 <x-container class="py-10 max-w-lg mx-auto">
     <x-empty-state
         title="Account suspended"
-        description="This account has been deactivated. You can no longer access LuxSecure with these credentials."
+        :description="'This account has been deactivated. You can no longer access '.($siteName ?? config('app.name')).' with these credentials.'"
         action-label="Return to sign in"
         :action-href="route('login.form')"
     />

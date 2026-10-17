@@ -6,7 +6,7 @@
 <x-container class="py-10">
     <x-page-header
         title="Blog"
-        subtitle="Market insights, buying guides, and updates from the LuxSecure team."
+        :subtitle="'Market insights, buying guides, and updates from the '.($siteName ?? config('app.name')).' team.'"
     />
 
     @if ($posts->isNotEmpty())

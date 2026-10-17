@@ -61,6 +61,6 @@ class AgentProfile extends Model
     {
         $parts = array_filter([$this->agency, $this->is_verified ? 'Verified' : null]);
 
-        return $parts !== [] ? implode(' · ', $parts) : 'LuxSecure Agent';
+        return $parts !== [] ? implode(' · ', $parts) : (config('app.name').' Agent');
     }
 }

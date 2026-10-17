@@ -19,7 +19,7 @@ class RentPaymentReceiptMail extends Mailable implements ShouldQueue
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Rent payment receipt '.$this->payment->receipt_no.' — LuxSecure',
+            subject: 'Rent payment receipt '.$this->payment->receipt_no.' — '.config('app.name'),
         );
     }
 

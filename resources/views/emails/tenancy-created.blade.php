@@ -8,4 +8,4 @@
     <li>Monthly rent: {{ number_format((float) $tenancy->monthly_rent, 2) }}</li>
     <li>Security deposit: {{ number_format((float) $tenancy->security_deposit, 2) }}</li>
 </ul>
-<p>— LuxSecure</p>
+<p>— {{ config('app.name') }}</p>
