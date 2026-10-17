@@ -24,6 +24,8 @@ Completed Tasks:
 - Production hardening P0–P2 (2026-10-17): single `payments` ledger (stop booking_payments writes; idempotent backfill; PaymentLedgerService + RefundCalculator); booking hold_expires_at + expire command every 5m; TrustProxies from TRUSTED_PROXIES; 2FA/contact throttles; prod CSP nonce + @alpinejs/csp (no unsafe-eval/inline scripts); Sanctum role abilities + short-lived 2fa:setup token; SMS http/log drivers with prod log guard; admin payments.approve/refund permission middleware; webhook unique-race no-op; listing cache UUID version; User fillable cleanup via UserPrivilegedAttributes; notifications mark-all query update; soft deletes on bookings/payments. Verified: pint, 105 PHPUnit tests, npm run build, migrate:fresh --seed.
 
 
+- Step 1 production UI smoke (2026-10-17): APP_ENV=production + built assets; CSP script-src has nonce only (no unsafe-eval/unsafe-inline). Alpine CSP components OK: authCard switch, navBar mobile menu, filtersOpen drawer, adminShell sidebar, permissionMatrix select-all, confirmDelete modal, notifCount present. Blockers fixed during smoke: stale public/hot, multiple artisan serve PIDs with APP_ENV=local, HTTPS force-redirect skipped when APP_URL is http. Booking date picker not exercised (seeded hotel has 0 room types).
+
 Notes / STOP points:
 ---------------------
 - No git commit/push unless user requests.

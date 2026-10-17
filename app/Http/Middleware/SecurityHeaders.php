@@ -11,7 +11,11 @@ class SecurityHeaders
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (app()->environment('production') && ! $request->secure() && ! $request->is('webhooks/*')) {
+        // Force HTTPS only when APP_URL is https (skip local http://127.0.0.1 smoke tests).
+        if (app()->environment('production')
+            && ! $request->secure()
+            && ! $request->is('webhooks/*')
+            && str_starts_with((string) config('app.url'), 'https://')) {
             return redirect()->secure($request->getRequestUri());
         }
 
