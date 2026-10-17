@@ -4,11 +4,16 @@
     'maxWidth' => 'max-w-lg',
 ])
 
+@php
+    $modalConfig = ['name' => $name];
+@endphp
+
 <div
     x-data="modal"
-    x-on:open-modal.window="if ($event.detail === '{{ $name }}') open = true"
-    x-on:close-modal.window="if ($event.detail === '{{ $name }}') open = false"
-    x-on:keydown.escape.window="open = false"
+    data-alpine-config="{{ json_encode($modalConfig, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) }}"
+    x-on:open-modal.window="onOpenEvent($event)"
+    x-on:close-modal.window="onCloseEvent($event)"
+    x-on:keydown.escape.window="closeModal()"
     {{ $attributes }}
 >
     <template x-teleport="body">
@@ -20,7 +25,7 @@
             aria-modal="true"
             @if($title) aria-labelledby="modal-title-{{ $name }}" @endif
         >
-            <div class="absolute inset-0 bg-fs-primary/50" @click="open = false" aria-hidden="true"></div>
+            <div class="absolute inset-0 bg-fs-primary/50" @click="closeModal()" aria-hidden="true"></div>
             <div
                 x-show="open"
                 x-transition.opacity.duration.150ms
@@ -33,7 +38,7 @@
                     @else
                         <span></span>
                     @endif
-                    <button type="button" class="inline-flex items-center justify-center w-10 h-10 rounded-sm border border-black/10 text-fs-secondary hover:bg-black/5" @click="open = false" aria-label="Close dialog">
+                    <button type="button" class="inline-flex items-center justify-center w-10 h-10 rounded-sm border border-black/10 text-fs-secondary hover:bg-black/5" @click="closeModal()" aria-label="Close dialog">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M6 18L18 6M6 6l12 12"/></svg>
                     </button>
                 </div>

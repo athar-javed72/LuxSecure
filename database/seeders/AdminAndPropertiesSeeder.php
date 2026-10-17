@@ -5,6 +5,8 @@ namespace Database\Seeders;
 use App\Models\City;
 use App\Models\Listing;
 use App\Models\ListingType;
+use App\Models\Room;
+use App\Models\RoomType;
 use App\Models\TypeAttribute;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -139,6 +141,29 @@ class AdminAndPropertiesSeeder extends Seeder
                     'description' => 'A carefully verified LuxSecure listing with modern finishes and a prime location.',
                 ])
             );
+        }
+
+        $hotelListing = Listing::query()->where('slug', 'blue-area-boutique-hotel')->first();
+        if ($hotelListing) {
+            $deluxe = RoomType::updateOrCreate(
+                ['listing_id' => $hotelListing->id, 'name' => 'Deluxe King'],
+                [
+                    'capacity' => 2,
+                    'base_price' => 25000,
+                    'amenities' => ['wifi', 'breakfast'],
+                    'is_active' => true,
+                ]
+            );
+
+            foreach (['101', '102'] as $number) {
+                Room::updateOrCreate(
+                    ['room_type_id' => $deluxe->id, 'number' => $number],
+                    [
+                        'listing_id' => $hotelListing->id,
+                        'status' => 'available',
+                    ]
+                );
+            }
         }
     }
 

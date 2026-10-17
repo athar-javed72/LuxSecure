@@ -41,7 +41,7 @@
 <header
     class="fixed top-0 left-0 w-full z-50 h-[72px] border-b border-white/10 shadow-lg backdrop-blur-xl bg-fs-primary/97"
     x-data="navBar"
-    @keydown.escape.window="navOpen = false; profileOpen = false"
+    @keydown.escape.window="closeOverlays()"
 >
     <x-container class="h-full flex items-center justify-between gap-4">
         <a href="{{ $variant === 'admin' ? route('admin.dashboard') : route('home') }}"
@@ -82,17 +82,24 @@
                 @if($isAdmin)
                     <x-button variant="secondary" href="{{ route('admin.dashboard') }}">Admin</x-button>
                 @endif
+                @php
+                    $notifConfig = [
+                        'count' => Auth::user()->unreadNotifications()->count(),
+                        'url' => route('notifications.unread-count'),
+                    ];
+                @endphp
                 <a href="{{ route('notifications.index') }}" class="relative inline-flex items-center justify-center w-11 h-11 rounded-full bg-white/10 text-white hover:bg-white/15 transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fs-brand" aria-label="Notifications"
-                   x-data="notifCount({ count: {{ Auth::user()->unreadNotifications()->count() }}, url: @js(route('notifications.unread-count')) })">
+                   x-data="notifCount"
+                   data-alpine-config="{{ json_encode($notifConfig, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) }}">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 17h5l-1.4-1.4A2 2 0 0118 14.2V11a6 6 0 10-12 0v3.2c0 .5-.2 1-.6 1.4L4 17h5m6 0a3 3 0 11-6 0"/></svg>
-                    <span x-show="count > 0" x-text="count" class="absolute -top-1 -right-1 min-w-[1.25rem] h-5 px-1 rounded-full bg-fs-brand text-[10px] font-bold flex items-center justify-center"></span>
+                    <span x-show="hasCount" x-text="count" class="absolute -top-1 -right-1 min-w-[1.25rem] h-5 px-1 rounded-full bg-fs-brand text-[10px] font-bold flex items-center justify-center"></span>
                 </a>
-                <div class="relative" @click.outside="profileOpen = false">
+                <div class="relative" @click.outside="closeProfile()">
                     <button
                         type="button"
                         class="inline-flex items-center gap-2 h-11 px-3 rounded-full bg-white/10 text-white text-sm font-medium hover:bg-white/15 transition-colors duration-150"
-                        @click="profileOpen = !profileOpen"
-                        :aria-expanded="profileOpen.toString()"
+                        @click="toggleProfile()"
+                        :aria-expanded="profileExpanded()"
                     >
                         <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-fs-brand-light text-fs-brand text-xs font-bold uppercase">
                             {{ mb_substr(Auth::user()->name, 0, 1, 'UTF-8') }}
@@ -121,7 +128,7 @@
             <button
                 type="button"
                 class="inline-flex items-center justify-center w-11 h-11 rounded-full border border-white/20 text-white hover:bg-white/10 transition-colors duration-150"
-                @click="navOpen = true"
+                @click="openNav()"
                 aria-label="Open menu"
             >
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 6h16M4 12h16M4 18h16"/></svg>
@@ -130,7 +137,7 @@
     </x-container>
 
     <div x-cloak x-show="navOpen" class="lg:hidden fixed inset-0 z-[60]" role="dialog" aria-modal="true" aria-label="Mobile navigation">
-        <div class="absolute inset-0 bg-fs-primary/50" @click="navOpen = false"></div>
+        <div class="absolute inset-0 bg-fs-primary/50" @click="closeNav()"></div>
         <div
             class="absolute inset-y-0 right-0 w-full max-w-sm bg-fs-primary text-white shadow-lg flex flex-col"
             x-show="navOpen"
@@ -143,13 +150,13 @@
         >
             <div class="h-[72px] px-4 flex items-center justify-between border-b border-white/10">
                 <span class="text-base font-bold">LuxSecure</span>
-                <button type="button" class="inline-flex items-center justify-center w-11 h-11 rounded-sm border border-white/20" @click="navOpen = false" aria-label="Close menu">
+                <button type="button" class="inline-flex items-center justify-center w-11 h-11 rounded-sm border border-white/20" @click="closeNav()" aria-label="Close menu">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
             <nav class="flex-1 overflow-y-auto p-4 space-y-1">
                 @foreach($menuConfig as $item)
-                    <a href="{{ $resolveHref($item) }}" class="flex items-center min-h-11 px-4 rounded-sm text-sm font-medium text-slate-100 hover:bg-white/10" @click="navOpen = false">{{ $item['label'] }}</a>
+                    <a href="{{ $resolveHref($item) }}" class="flex items-center min-h-11 px-4 rounded-sm text-sm font-medium text-slate-100 hover:bg-white/10" @click="closeNav()">{{ $item['label'] }}</a>
                 @endforeach
             </nav>
             <div class="p-4 border-t border-white/10 space-y-2">

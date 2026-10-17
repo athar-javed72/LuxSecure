@@ -1,5 +1,17 @@
 /** Named Alpine.data components for CSP-safe Alpine (@alpinejs/csp). */
 
+function parseAlpineConfig(el) {
+    const raw = el?.getAttribute?.('data-alpine-config');
+    if (!raw) {
+        return {};
+    }
+    try {
+        return JSON.parse(raw);
+    } catch {
+        return {};
+    }
+}
+
 export function registerAlpineComponents(Alpine) {
     Alpine.data('adminShell', () => ({
         sidebarOpen: false,
@@ -14,11 +26,43 @@ export function registerAlpineComponents(Alpine) {
             };
             mq.addEventListener('change', sync);
         },
+        get showOverlay() {
+            return this.sidebarOpen && !this.isDesktop;
+        },
+        get sidebarHidden() {
+            return !this.isDesktop && !this.sidebarOpen;
+        },
+        sidebarClass() {
+            return this.sidebarOpen ? 'translate-x-0' : '-translate-x-full';
+        },
+        ariaHidden() {
+            return this.sidebarHidden ? 'true' : 'false';
+        },
+        openSidebar() {
+            this.sidebarOpen = true;
+        },
+        closeSidebar() {
+            this.sidebarOpen = false;
+        },
     }));
 
-    Alpine.data('authCard', (cfg) => ({
-        mode: cfg.mode,
-        urls: cfg.urls,
+    Alpine.data('authCard', () => ({
+        mode: 'login',
+        urls: {},
+        init() {
+            const cfg = parseAlpineConfig(this.$el);
+            this.mode = cfg.mode || 'login';
+            this.urls = cfg.urls || {};
+        },
+        get isLogin() {
+            return this.mode === 'login';
+        },
+        get isForgot() {
+            return this.mode === 'forgot';
+        },
+        get isRegister() {
+            return this.mode === 'register';
+        },
         setMode(next) {
             if (this.mode === next) {
                 return;
@@ -34,12 +78,34 @@ export function registerAlpineComponents(Alpine) {
     Alpine.data('navBar', () => ({
         navOpen: false,
         profileOpen: false,
+        openNav() {
+            this.navOpen = true;
+        },
+        closeNav() {
+            this.navOpen = false;
+        },
+        toggleProfile() {
+            this.profileOpen = !this.profileOpen;
+        },
+        closeProfile() {
+            this.profileOpen = false;
+        },
+        closeOverlays() {
+            this.navOpen = false;
+            this.profileOpen = false;
+        },
+        profileExpanded() {
+            return this.profileOpen ? 'true' : 'false';
+        },
     }));
 
-    Alpine.data('notifCount', (cfg) => ({
-        count: Number(cfg.count) || 0,
-        url: cfg.url,
+    Alpine.data('notifCount', () => ({
+        count: 0,
+        url: '',
         init() {
+            const cfg = parseAlpineConfig(this.$el);
+            this.count = Number(cfg.count) || 0;
+            this.url = cfg.url || '';
             if (!this.url) {
                 return;
             }
@@ -48,35 +114,116 @@ export function registerAlpineComponents(Alpine) {
                     const r = await fetch(this.url, { headers: { Accept: 'application/json' } });
                     const j = await r.json();
                     this.count = j.count ?? 0;
-                } catch (e) {
+                } catch {
                     /* ignore */
                 }
             }, 60000);
+        },
+        get hasCount() {
+            return this.count > 0;
         },
     }));
 
     Alpine.data('dismissible', () => ({
         show: true,
+        dismiss() {
+            this.show = false;
+        },
     }));
 
-    Alpine.data('tabs', (tab) => ({
-        tab,
+    Alpine.data('tabs', () => ({
+        tab: null,
+        init() {
+            const cfg = parseAlpineConfig(this.$el);
+            this.tab = cfg.tab != null ? cfg.tab : null;
+        },
+        setTab(key) {
+            this.tab = key;
+        },
+        isActive(key) {
+            return this.tab === key;
+        },
+        tabClass(key) {
+            return this.isActive(key)
+                ? 'border-fs-brand text-fs-primary'
+                : 'border-transparent text-fs-muted hover:text-fs-primary';
+        },
+        ariaSelected(key) {
+            return this.isActive(key) ? 'true' : 'false';
+        },
     }));
 
     Alpine.data('modal', () => ({
         open: false,
+        name: 'modal',
+        init() {
+            const cfg = parseAlpineConfig(this.$el);
+            this.name = cfg.name || 'modal';
+        },
+        openModal() {
+            this.open = true;
+        },
+        closeModal() {
+            this.open = false;
+        },
+        onOpenEvent(e) {
+            if (e.detail === this.name) {
+                this.open = true;
+            }
+        },
+        onCloseEvent(e) {
+            if (e.detail === this.name) {
+                this.open = false;
+            }
+        },
     }));
 
-    Alpine.data('faqItem', (open) => ({
-        open: !!open,
+    Alpine.data('faqItem', () => ({
+        open: false,
+        init() {
+            const cfg = parseAlpineConfig(this.$el);
+            this.open = !!cfg.open;
+        },
+        toggle() {
+            this.open = !this.open;
+        },
+        chevronClass() {
+            return this.open ? 'rotate-180' : '';
+        },
+        ariaExpanded() {
+            return this.open ? 'true' : 'false';
+        },
     }));
 
     Alpine.data('filtersPanel', () => ({
         filtersOpen: false,
+        openFilters() {
+            this.filtersOpen = true;
+        },
+        closeFilters() {
+            this.filtersOpen = false;
+        },
+        submitSort(el) {
+            if (el && el.form) {
+                el.form.submit();
+            }
+        },
     }));
 
     Alpine.data('testimonialSlider', () => ({
         slide: 0,
+        setSlide(i) {
+            this.slide = i;
+        },
+        isSlide(i) {
+            return this.slide === i;
+        },
+        get trackStyle() {
+            return 'transform: translateX(-' + this.slide * 100 + '%)';
+        },
+        dotClass(i) {
+            return this.isSlide(i) ? 'bg-fs-brand' : 'bg-slate-300';
+        },
     }));
 
     Alpine.data('confirmDelete', () => ({
@@ -94,6 +241,11 @@ export function registerAlpineComponents(Alpine) {
                     this.previouslyFocused.focus();
                 }
             });
+        },
+        closeOnEscape() {
+            if (this.open) {
+                this.closeModal();
+            }
         },
         trap(e) {
             if (!this.open) {
@@ -119,17 +271,52 @@ export function registerAlpineComponents(Alpine) {
         },
     }));
 
-    Alpine.data('listingForm', (cfg) => ({
-        listingTypeId: cfg.listingTypeId,
-        types: cfg.types,
-        attrValues: cfg.attrValues || {},
+    Alpine.data('listingForm', () => ({
+        listingTypeId: '',
+        types: {},
+        attrValues: {},
         featuredPreview: null,
         galleryPreviews: [],
         featuredObjectUrl: null,
         galleryObjectUrls: [],
+        init() {
+            const cfg = parseAlpineConfig(this.$el);
+            this.listingTypeId = cfg.listingTypeId != null ? cfg.listingTypeId : '';
+            this.types = cfg.types || {};
+            this.attrValues = cfg.attrValues || {};
+        },
         get dynamicAttributes() {
             const type = this.types[this.listingTypeId];
             return type ? type.attributes : [];
+        },
+        get hasDynamicAttributes() {
+            return this.dynamicAttributes.length > 0;
+        },
+        get hasGalleryPreviews() {
+            return this.galleryPreviews.length > 0;
+        },
+        attrId(key) {
+            return 'attr_' + key;
+        },
+        attrName(key) {
+            return 'attributes[' + key + ']';
+        },
+        attrValue(key) {
+            const v = this.attrValues[key];
+            return v === undefined || v === null ? '' : v;
+        },
+        isAttrChecked(key) {
+            const v = this.attrValues[key];
+            return v == 1 || v === true || v === '1';
+        },
+        isOptSelected(key, value) {
+            return String(this.attrValue(key)) === String(value);
+        },
+        isInputType(attr, type) {
+            return attr.input_type === type;
+        },
+        galleryAlt(index) {
+            return 'Preview of new gallery image ' + (index + 1);
         },
         optionEntries(options) {
             if (!options) {
@@ -172,8 +359,28 @@ export function registerAlpineComponents(Alpine) {
         },
     }));
 
-    Alpine.data('imageOrder', (order) => ({
-        order: Array.isArray(order) ? order : [],
+    Alpine.data('imageOrder', () => ({
+        order: [],
+        init() {
+            const cfg = parseAlpineConfig(this.$el);
+            this.order = Array.isArray(cfg.order) ? cfg.order : [];
+        },
+        moveUp(id) {
+            const i = this.order.indexOf(id);
+            if (i > 0) {
+                const t = this.order[i - 1];
+                this.order[i - 1] = this.order[i];
+                this.order[i] = t;
+            }
+        },
+        moveDown(id) {
+            const i = this.order.indexOf(id);
+            if (i > -1 && i < this.order.length - 1) {
+                const t = this.order[i + 1];
+                this.order[i + 1] = this.order[i];
+                this.order[i] = t;
+            }
+        },
     }));
 
     Alpine.data('permissionMatrix', () => ({
@@ -200,8 +407,15 @@ export function registerAlpineComponents(Alpine) {
         },
     }));
 
-    Alpine.data('listingTypeForm', (cfg) => ({
-        rows: cfg.rows || [],
+    Alpine.data('listingTypeForm', () => ({
+        rows: [],
+        init() {
+            const cfg = parseAlpineConfig(this.$el);
+            this.rows = Array.isArray(cfg.rows) ? cfg.rows : [];
+            if (this.rows.length === 0) {
+                this.addRow();
+            }
+        },
         addRow() {
             this.rows.push({
                 key: '',
@@ -221,9 +435,9 @@ export function registerAlpineComponents(Alpine) {
         },
     }));
 
-    Alpine.data('bookingQuote', (cfg) => ({
-        quoteUrl: cfg.quoteUrl,
-        roomTypeId: cfg.roomTypeId,
+    Alpine.data('bookingQuote', () => ({
+        quoteUrl: '',
+        roomTypeId: null,
         checkIn: '',
         checkOut: '',
         nights: 0,
@@ -231,8 +445,22 @@ export function registerAlpineComponents(Alpine) {
         available: false,
         availableRooms: 0,
         loaded: false,
+        init() {
+            const cfg = parseAlpineConfig(this.$el);
+            this.quoteUrl = cfg.quoteUrl || '';
+            this.roomTypeId = cfg.roomTypeId;
+        },
         get totalLabel() {
             return Number(this.total || 0).toLocaleString();
+        },
+        get nightsLabel() {
+            return this.nights + ' night(s)';
+        },
+        get roomsLeftLabel() {
+            return this.availableRooms + ' room(s) left';
+        },
+        get showUnavailable() {
+            return !this.available && !!this.checkIn && !!this.checkOut;
         },
         async fetchQuote() {
             if (!this.checkIn || !this.checkOut || this.checkOut <= this.checkIn) {
@@ -245,7 +473,7 @@ export function registerAlpineComponents(Alpine) {
                 check_in: this.checkIn,
                 check_out: this.checkOut,
             });
-            const res = await fetch(`${this.quoteUrl}?${params.toString()}`, {
+            const res = await fetch(this.quoteUrl + '?' + params.toString(), {
                 headers: { Accept: 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
             });
             if (!res.ok) {

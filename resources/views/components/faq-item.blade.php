@@ -4,20 +4,25 @@
     'open' => false,
 ])
 
+@php
+    $faqConfig = ['open' => (bool) $open];
+@endphp
+
 <div
-    x-data="faqItem(@json($open))"
+    x-data="faqItem"
+    data-alpine-config="{{ json_encode($faqConfig, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) }}"
     {{ $attributes->merge(['class' => 'rounded-sm border border-slate-200 px-5 py-4']) }}
 >
     <button
         type="button"
         class="flex w-full items-center justify-between gap-4 text-left min-h-11 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fs-brand"
-        @click="open = !open"
-        :aria-expanded="open.toString()"
+        @click="toggle()"
+        :aria-expanded="ariaExpanded()"
     >
         <h3 class="text-base font-semibold text-fs-primary">{{ $question }}</h3>
         <svg
             class="w-5 h-5 shrink-0 text-fs-secondary transition-transform duration-150"
-            :class="open ? 'rotate-180' : ''"
+            :class="chevronClass()"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"

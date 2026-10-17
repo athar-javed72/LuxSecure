@@ -7,6 +7,10 @@
     $roomTypeOptions = $roomTypes->mapWithKeys(fn ($type) => [
         $type->id => $type->name.' · up to '.$type->capacity.' · from '.number_format((float) $type->base_price, 0).'/night',
     ])->all();
+    $bookingQuoteConfig = [
+        'quoteUrl' => route('bookings.quote'),
+        'roomTypeId' => (int) $selectedRoomTypeId,
+    ];
 @endphp
 
 <x-container class="py-8">
@@ -15,12 +19,11 @@
         ['label' => 'Book'],
     ]" />
 
-    <div class="max-w-xl"
-         x-data="bookingQuote({
-            quoteUrl: @js(route('bookings.quote')),
-            roomTypeId: {{ (int) $selectedRoomTypeId }},
-            csrf: @js(csrf_token())
-         })">
+    <div
+        class="max-w-xl"
+        x-data="bookingQuote"
+        data-alpine-config="{{ json_encode($bookingQuoteConfig, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) }}"
+    >
         <x-page-header
             :title="'Book '.$listing->title"
             subtitle="Select dates to see live pricing and availability."
@@ -79,12 +82,12 @@
                 <div class="mt-4 rounded-sm bg-fs-surface p-4 text-sm" x-show="loaded" x-cloak>
                     <template x-if="available">
                         <p>
-                            <span class="font-semibold text-fs-primary" x-text="nights + ' night(s)'"></span>
+                            <span class="font-semibold text-fs-primary" x-text="nightsLabel"></span>
                             · Total <span class="font-semibold text-fs-brand" x-text="totalLabel"></span>
-                            · <span x-text="availableRooms + ' room(s) left'"></span>
+                            · <span x-text="roomsLeftLabel"></span>
                         </p>
                     </template>
-                    <template x-if="!available && checkIn && checkOut">
+                    <template x-if="showUnavailable">
                         <p class="text-fs-danger">Those dates are not available.</p>
                     </template>
                 </div>
@@ -99,4 +102,3 @@
     </div>
 </x-container>
 @endsection
-

@@ -8,7 +8,7 @@
 <div
     class="inline-flex"
     x-data="confirmDelete"
-    @keydown.escape.window="if (open) closeModal()"
+    @keydown.escape.window="closeOnEscape()"
 >
     <div @click="openModal()">
         {{ $trigger ?? $slot }}

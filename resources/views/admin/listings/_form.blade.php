@@ -3,15 +3,17 @@
     $featuredUrl = filled($listing?->featured_image) ? Media::url($listing->featured_image) : '';
     $selectedType = (string) old('listing_type_id', $listing?->listing_type_id ?? ($listingTypes->first()->id ?? ''));
     $currentAttrs = old('attributes', $listing?->attributeValues() ?? []);
+    $listingFormConfig = [
+        'listingTypeId' => $selectedType,
+        'types' => $typesPayload,
+        'attrValues' => $currentAttrs,
+    ];
 @endphp
 
 <div
     class="grid grid-cols-1 md:grid-cols-2 gap-4"
-    x-data="listingForm({
-        listingTypeId: @js($selectedType),
-        types: @js($typesPayload),
-        attrValues: @js($currentAttrs)
-    })"
+    x-data="listingForm"
+    data-alpine-config="{{ json_encode($listingFormConfig, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) }}"
 >
     <div class="md:col-span-2">
         <x-input label="Title *" name="title" :value="old('title', $listing?->title)" placeholder="e.g. Modern Villa in DHA" required />
@@ -97,63 +99,63 @@
         @error('description')<p class="mt-1 text-xs text-fs-danger">{{ $message }}</p>@enderror
     </div>
 
-    <x-panel class="md:col-span-2 bg-fs-surface/60 space-y-3" x-show="dynamicAttributes.length" x-cloak>
+    <x-panel class="md:col-span-2 bg-fs-surface/60 space-y-3" x-show="hasDynamicAttributes" x-cloak>
         <h3 class="fs-display text-sm font-semibold text-fs-primary">Type attributes</h3>
         <template x-for="attr in dynamicAttributes" :key="attr.key">
             <div>
-                <label class="block text-xs font-semibold text-fs-primary mb-1" :for="'attr_' + attr.key">
+                <label class="block text-xs font-semibold text-fs-primary mb-1" :for="attrId(attr.key)">
                     <span x-text="attr.label"></span>
                     <span x-show="attr.is_required"> *</span>
                 </label>
 
-                <template x-if="attr.input_type === 'boolean'">
+                <template x-if="isInputType(attr, 'boolean')">
                     <label class="inline-flex items-center gap-2 min-h-11">
-                        <input type="hidden" :name="'attributes[' + attr.key + ']'" value="0">
+                        <input type="hidden" :name="attrName(attr.key)" value="0">
                         <input
                             type="checkbox"
                             value="1"
                             class="rounded-sm border-black/20 text-fs-brand focus:ring-fs-brand"
-                            :name="'attributes[' + attr.key + ']'"
-                            :id="'attr_' + attr.key"
-                            :checked="attrValues[attr.key] == 1 || attrValues[attr.key] === true || attrValues[attr.key] === '1'"
+                            :name="attrName(attr.key)"
+                            :id="attrId(attr.key)"
+                            :checked="isAttrChecked(attr.key)"
                         >
-                        <span class="text-sm text-fs-secondary" x-text="'Yes'"></span>
+                        <span class="text-sm text-fs-secondary">Yes</span>
                     </label>
                 </template>
 
-                <template x-if="attr.input_type === 'select'">
+                <template x-if="isInputType(attr, 'select')">
                     <select
                         class="w-full h-12 px-4 rounded-sm border border-black/10 bg-white text-sm text-fs-primary focus:border-fs-brand focus:ring-2 focus:ring-fs-brand/20"
-                        :name="'attributes[' + attr.key + ']'"
-                        :id="'attr_' + attr.key"
+                        :name="attrName(attr.key)"
+                        :id="attrId(attr.key)"
                         :required="attr.is_required"
                     >
                         <option value="">Select</option>
                         <template x-for="opt in optionEntries(attr.options)" :key="opt.value">
-                            <option :value="opt.value" :selected="String(attrValues[attr.key] ?? '') === opt.value" x-text="opt.label"></option>
+                            <option :value="opt.value" :selected="isOptSelected(attr.key, opt.value)" x-text="opt.label"></option>
                         </template>
                     </select>
                 </template>
 
-                <template x-if="attr.input_type === 'number'">
+                <template x-if="isInputType(attr, 'number')">
                     <input
                         type="number"
                         class="w-full h-12 px-4 rounded-sm border border-black/10 bg-white text-sm text-fs-primary focus:border-fs-brand focus:ring-2 focus:ring-fs-brand/20"
-                        :name="'attributes[' + attr.key + ']'"
-                        :id="'attr_' + attr.key"
+                        :name="attrName(attr.key)"
+                        :id="attrId(attr.key)"
                         :required="attr.is_required"
-                        :value="attrValues[attr.key] ?? ''"
+                        :value="attrValue(attr.key)"
                     >
                 </template>
 
-                <template x-if="attr.input_type === 'text'">
+                <template x-if="isInputType(attr, 'text')">
                     <input
                         type="text"
                         class="w-full h-12 px-4 rounded-sm border border-black/10 bg-white text-sm text-fs-primary focus:border-fs-brand focus:ring-2 focus:ring-fs-brand/20"
-                        :name="'attributes[' + attr.key + ']'"
-                        :id="'attr_' + attr.key"
+                        :name="attrName(attr.key)"
+                        :id="attrId(attr.key)"
                         :required="attr.is_required"
-                        :value="attrValues[attr.key] ?? ''"
+                        :value="attrValue(attr.key)"
                     >
                 </template>
             </div>
@@ -186,7 +188,14 @@
     <x-panel class="md:col-span-2 space-y-3">
         <h3 class="fs-display text-sm font-semibold text-fs-primary">Gallery</h3>
         @if($listing && $listing->relationLoaded('images') && $listing->images->isNotEmpty())
-            <div class="space-y-3" x-data="imageOrder({{ $listing->images->pluck('id')->values()->toJson() }})">
+            @php
+                $imageOrderConfig = ['order' => $listing->images->pluck('id')->values()->all()];
+            @endphp
+            <div
+                class="space-y-3"
+                x-data="imageOrder"
+                data-alpine-config="{{ json_encode($imageOrderConfig, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) }}"
+            >
                 <div class="flex flex-wrap gap-3">
                     @foreach($listing->images as $image)
                         @php $galleryUrl = Media::url($image->path); @endphp
@@ -195,14 +204,17 @@
                                 <img src="{{ $galleryUrl }}" alt="Gallery image {{ $loop->iteration }}" width="112" height="84" class="w-28 h-[84px] object-cover rounded-sm border border-black/10 bg-fs-surface">
                             @endif
                             <div class="flex gap-1">
-                                <button type="button" class="text-[10px] text-fs-brand underline" @click="const i = order.indexOf({{ $image->id }}); if (i > 0) { const t = order[i-1]; order[i-1]=order[i]; order[i]=t; }">Up</button>
-                                <button type="button" class="text-[10px] text-fs-brand underline" @click="const i = order.indexOf({{ $image->id }}); if (i < order.length-1) { const t = order[i+1]; order[i+1]=order[i]; order[i]=t; }">Down</button>
+                                <button type="button" class="text-[10px] text-fs-brand underline" @click="moveUp({{ (int) $image->id }})">Up</button>
+                                <button type="button" class="text-[10px] text-fs-brand underline" @click="moveDown({{ (int) $image->id }})">Down</button>
                             </div>
-                            <form method="POST" action="{{ route('admin.listings.images.destroy', [$listing, $image]) }}" onsubmit="return confirm('Delete this image?')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="text-[10px] text-fs-danger underline">Delete</button>
-                            </form>
+                            <x-confirm-delete
+                                :action="route('admin.listings.images.destroy', [$listing, $image])"
+                                title="Delete gallery image?"
+                                message="This image will be removed from the listing."
+                                confirm-label="Delete"
+                            >
+                                <button type="button" class="text-[10px] text-fs-danger underline">Delete</button>
+                            </x-confirm-delete>
                         </div>
                     @endforeach
                 </div>
@@ -223,9 +235,9 @@
             multiple
             @change="onGalleryChange($event)"
         />
-        <div class="flex flex-wrap gap-2" x-show="galleryPreviews.length" x-cloak>
+        <div class="flex flex-wrap gap-2" x-show="hasGalleryPreviews" x-cloak>
             <template x-for="(src, index) in galleryPreviews" :key="index">
-                <img :src="src" :alt="'Preview of new gallery image ' + (index + 1)" width="96" height="72" class="w-24 h-[72px] object-cover rounded-sm border border-black/10 bg-fs-surface">
+                <img :src="src" :alt="galleryAlt(index)" width="96" height="72" class="w-24 h-[72px] object-cover rounded-sm border border-black/10 bg-fs-surface">
             </template>
         </div>
         @error('images.*')<p class="mt-1 text-xs text-fs-danger">{{ $message }}</p>@enderror

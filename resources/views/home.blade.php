@@ -176,7 +176,7 @@
             </div>
             <div class="mt-6 md:hidden">
                 <div class="relative overflow-hidden">
-                    <div class="flex transition-transform duration-200" :style="`transform: translateX(-${slide * 100}%)`">
+                    <div class="flex transition-transform duration-200" :style="trackStyle">
                         @foreach ($testimonials as $item)
                             <div class="w-full shrink-0 px-1"><x-testimonial-card :quote="$item->quote" :name="$item->name" :role="$item->role" /></div>
                         @endforeach
@@ -184,8 +184,8 @@
                 </div>
                 <div class="mt-4 flex justify-center gap-2">
                     @foreach ($testimonials as $index => $item)
-                        <button type="button" class="inline-flex items-center justify-center w-11 h-11" @click="slide = {{ $index }}" aria-label="Show testimonial {{ $index + 1 }}">
-                            <span class="w-2.5 h-2.5 rounded-full" :class="slide === {{ $index }} ? 'bg-fs-brand' : 'bg-slate-300'"></span>
+                        <button type="button" class="inline-flex items-center justify-center w-11 h-11" @click="setSlide({{ (int) $index }})" aria-label="Show testimonial {{ $index + 1 }}">
+                            <span class="w-2.5 h-2.5 rounded-full" :class="dotClass({{ (int) $index }})"></span>
                         </button>
                     @endforeach
                 </div>

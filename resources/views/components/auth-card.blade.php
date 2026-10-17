@@ -4,24 +4,26 @@
 
 @php
     $initialMode = in_array($mode, ['login', 'register', 'forgot'], true) ? $mode : 'login';
+    $authCardConfig = [
+        'mode' => $initialMode,
+        'urls' => [
+            'login' => route('login.form'),
+            'register' => route('register.form'),
+            'forgot' => route('password.request'),
+        ],
+    ];
 @endphp
 
 <div
     class="flex w-full max-w-4xl mx-auto rounded-md overflow-hidden shadow-lg border border-slate-100 bg-white"
-    x-data="authCard({
-        mode: @js($initialMode),
-        urls: {
-            login: @js(route('login.form')),
-            register: @js(route('register.form')),
-            forgot: @js(route('password.request')),
-        }
-    })"
+    x-data="authCard"
+    data-alpine-config="{{ json_encode($authCardConfig, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) }}"
 >
     {{-- Left panel stays mounted; only copy/animation swap --}}
     <div class="hidden md:flex w-1/2 flex-col items-center justify-center bg-gradient-to-br from-fs-primary via-[#152238] to-[#1e3a5f] p-8 text-center">
         <div class="relative w-[260px] h-[260px]">
             <lottie-player
-                x-show="mode === 'login'"
+                x-show="isLogin"
                 x-cloak
                 src="https://assets2.lottiefiles.com/packages/lf20_ktwnwv5m.json"
                 background="transparent"
@@ -32,7 +34,7 @@
                 aria-hidden="true"
             ></lottie-player>
             <lottie-player
-                x-show="mode === 'forgot'"
+                x-show="isForgot"
                 x-cloak
                 src="https://assets2.lottiefiles.com/packages/lf20_4kx2q32n.json"
                 background="transparent"
@@ -43,7 +45,7 @@
                 aria-hidden="true"
             ></lottie-player>
             <lottie-player
-                x-show="mode === 'register'"
+                x-show="isRegister"
                 x-cloak
                 src="https://assets2.lottiefiles.com/packages/lf20_jcikwtux.json"
                 background="transparent"
@@ -56,19 +58,19 @@
         </div>
 
         <div class="mt-4 min-h-[72px]">
-            <template x-if="mode === 'login'">
+            <template x-if="isLogin">
                 <div>
                     <h2 class="text-lg font-bold text-white">Welcome back</h2>
                     <p class="mt-2 text-sm text-slate-300 max-w-prose mx-auto">Sign in to your LuxSecure account.</p>
                 </div>
             </template>
-            <template x-if="mode === 'forgot'">
+            <template x-if="isForgot">
                 <div>
                     <h2 class="text-lg font-bold text-white">Reset password</h2>
                     <p class="mt-2 text-sm text-slate-300 max-w-prose mx-auto">We’ll email you a secure reset link.</p>
                 </div>
             </template>
-            <template x-if="mode === 'register'">
+            <template x-if="isRegister">
                 <div>
                     <h2 class="text-lg font-bold text-white">Join LuxSecure</h2>
                     <p class="mt-2 text-sm text-slate-300 max-w-prose mx-auto">Save favorites and manage inquiries.</p>
@@ -98,7 +100,7 @@
         @endif
 
         {{-- LOGIN --}}
-        <div x-show="mode === 'login'" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-1" x-transition:enter-end="opacity-100 translate-y-0">
+        <div x-show="isLogin" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-1" x-transition:enter-end="opacity-100 translate-y-0">
             <h1 class="text-xl font-bold text-fs-primary text-center">Login</h1>
             <p class="mt-2 text-sm text-fs-secondary text-center md:hidden">Welcome back to LuxSecure</p>
 
@@ -116,7 +118,7 @@
         </div>
 
         {{-- FORGOT --}}
-        <div x-show="mode === 'forgot'" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-1" x-transition:enter-end="opacity-100 translate-y-0">
+        <div x-show="isForgot" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-1" x-transition:enter-end="opacity-100 translate-y-0">
             <h1 class="text-xl font-bold text-fs-primary">Forgot password</h1>
             <p class="mt-2 text-sm text-fs-secondary max-w-prose">Enter your email and we’ll send a reset link.</p>
 
@@ -134,7 +136,7 @@
         </div>
 
         {{-- REGISTER --}}
-        <div x-show="mode === 'register'" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-1" x-transition:enter-end="opacity-100 translate-y-0">
+        <div x-show="isRegister" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-1" x-transition:enter-end="opacity-100 translate-y-0">
             <h1 class="text-xl font-bold text-fs-primary text-center">Create account</h1>
 
             <form method="POST" action="{{ route('register') }}" class="mt-6 space-y-4">

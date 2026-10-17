@@ -17,9 +17,13 @@
     }
 @endphp
 
+@php
+    $listingTypeFormConfig = ['rows' => $rows];
+@endphp
 <div
     class="space-y-4"
-    x-data="listingTypeForm({ rows: @js($rows) })"
+    x-data="listingTypeForm"
+    data-alpine-config="{{ json_encode($listingTypeFormConfig, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) }}"
 >
     <x-input label="Name *" name="name" :value="old('name', $listingType?->name)" required />
     <x-input label="Slug" name="slug" :value="old('slug', $listingType?->slug)" placeholder="auto from name if empty" />

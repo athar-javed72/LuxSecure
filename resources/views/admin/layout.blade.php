@@ -13,9 +13,9 @@
 >
     <aside
         class="fixed inset-y-0 left-0 z-40 w-64 bg-fs-primary text-white transform transition-transform duration-200 lg:translate-x-0"
-        :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
-        :inert="!isDesktop && !sidebarOpen"
-        :aria-hidden="(!isDesktop && !sidebarOpen).toString()"
+        :class="sidebarClass()"
+        :inert="sidebarHidden"
+        :aria-hidden="ariaHidden()"
         aria-label="Admin sidebar"
     >
         <div class="h-[72px] px-4 flex items-center justify-between gap-2 border-b border-white/10">
@@ -26,7 +26,7 @@
             <button
                 type="button"
                 class="lg:hidden inline-flex items-center justify-center w-11 h-11 rounded-sm border border-white/20 shrink-0"
-                @click="sidebarOpen = false"
+                @click="closeSidebar()"
                 aria-label="Close sidebar"
             >
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -51,7 +51,7 @@
                 @if($allowed)
                     <a href="{{ $href }}"
                        class="flex items-center min-h-11 px-4 rounded-sm text-sm font-medium transition-colors duration-150 {{ $active ? 'bg-white/15 text-white' : 'text-fs-muted hover:bg-white/10 hover:text-white' }}"
-                       @click="sidebarOpen = false">
+                       @click="closeSidebar()">
                         {{ $item['label'] }}
                     </a>
                 @endif
@@ -65,7 +65,7 @@
             <button
                 type="button"
                 class="lg:hidden inline-flex items-center justify-center w-11 h-11 rounded-sm border border-black/10 shrink-0"
-                @click="sidebarOpen = true"
+                @click="openSidebar()"
                 aria-label="Open sidebar"
             >
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 6h16M4 12h16M4 18h16"/></svg>
@@ -82,9 +82,9 @@
 
         <div
             x-cloak
-            x-show="sidebarOpen && !isDesktop"
+            x-show="showOverlay"
             class="fixed inset-0 z-30 bg-fs-primary/40 lg:hidden"
-            @click="sidebarOpen = false"
+            @click="closeSidebar()"
         ></div>
 
         <main class="flex-1 p-4 sm:p-6 lg:p-8">

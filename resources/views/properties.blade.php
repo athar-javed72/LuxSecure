@@ -14,7 +14,7 @@
             <button
                 type="button"
                 class="lg:hidden inline-flex items-center justify-center h-11 px-5 rounded-sm border border-slate-200 text-sm font-semibold text-fs-primary"
-                @click="filtersOpen = true"
+                @click="openFilters()"
             >
                 Filters
             </button>
@@ -23,7 +23,7 @@
                     <input type="hidden" name="{{ $key }}" value="{{ $value }}">
                 @endforeach
                 <label for="sort" class="sr-only">Sort</label>
-                <select id="sort" name="sort" onchange="this.form.submit()" class="h-11 px-4 rounded-sm border border-slate-200 text-sm text-fs-primary bg-white">
+                <select id="sort" name="sort" @change="submitSort($el)" class="h-11 px-4 rounded-sm border border-slate-200 text-sm text-fs-primary bg-white">
                     <option value="">Newest</option>
                     <option value="price_asc" @selected(request('sort') === 'price_asc')>Price: Low to High</option>
                     <option value="price_desc" @selected(request('sort') === 'price_desc')>Price: High to Low</option>
@@ -66,7 +66,7 @@
 
     {{-- Mobile filter drawer --}}
     <div x-cloak x-show="filtersOpen" class="lg:hidden fixed inset-0 z-[70]" role="dialog" aria-modal="true" aria-label="Filters">
-        <div class="absolute inset-0 bg-fs-primary/40" @click="filtersOpen = false"></div>
+        <div class="absolute inset-0 bg-fs-primary/40" @click="closeFilters()"></div>
         <div
             class="absolute inset-x-0 bottom-0 max-h-[85vh] overflow-y-auto rounded-t-md bg-white shadow-lg p-5"
             x-show="filtersOpen"
@@ -79,7 +79,7 @@
         >
             <div class="flex items-center justify-between mb-4">
                 <h2 class="text-base font-semibold text-fs-primary">Filters</h2>
-                <button type="button" class="w-11 h-11 rounded-sm border border-slate-200" @click="filtersOpen = false" aria-label="Close filters">✕</button>
+                <button type="button" class="w-11 h-11 rounded-sm border border-slate-200" @click="closeFilters()" aria-label="Close filters">✕</button>
             </div>
             @include('include.property-filters', ['idPrefix' => 'mobile'])
         </div>
