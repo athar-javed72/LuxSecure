@@ -8,6 +8,7 @@ use App\Models\Organization;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
@@ -75,7 +76,7 @@ class OrganizationController extends Controller
     }
 
     /**
-     * @return array{countries: \Illuminate\Support\Collection, owners: \Illuminate\Support\Collection}
+     * @return array{countries: Collection, owners: Collection}
      */
     private function formData(): array
     {

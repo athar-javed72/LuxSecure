@@ -2,16 +2,19 @@
 
 namespace Tests\Feature;
 
+use App\Models\Booking;
 use App\Models\CancellationPolicy;
 use App\Models\Country;
 use App\Models\CountryPaymentMethod;
 use App\Models\Currency;
 use App\Models\KycDocumentType;
+use App\Models\LegalAcceptance;
 use App\Models\Listing;
 use App\Models\Organization;
 use App\Models\Page;
 use App\Models\User;
 use App\Services\Payments\RefundCalculator;
+use App\Support\LegalAcceptanceService;
 use App\Support\Money;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -58,7 +61,7 @@ class MultiCountryPlatformTest extends TestCase
 
         $hotel = Listing::query()->where('slug', 'blue-area-boutique-hotel')->firstOrFail();
         $user = $this->makeClient();
-        $booking = \App\Models\Booking::query()->create([
+        $booking = Booking::query()->create([
             'country_id' => $hotel->country_id,
             'user_id' => $user->id,
             'listing_id' => $hotel->id,
@@ -235,11 +238,11 @@ class MultiCountryPlatformTest extends TestCase
             ]
         );
 
-        \App\Models\LegalAcceptance::record($user, $page, '127.0.0.1');
-        $this->assertFalse(\App\Support\LegalAcceptanceService::requiresAcceptance($user->fresh()));
+        LegalAcceptance::record($user, $page, '127.0.0.1');
+        $this->assertFalse(LegalAcceptanceService::requiresAcceptance($user->fresh()));
 
         $page->update(['version' => '2.0']);
-        $this->assertTrue(\App\Support\LegalAcceptanceService::requiresAcceptance($user->fresh()));
+        $this->assertTrue(LegalAcceptanceService::requiresAcceptance($user->fresh()));
 
         $this->actingAs($user)
             ->get(route('bookings.mine'))

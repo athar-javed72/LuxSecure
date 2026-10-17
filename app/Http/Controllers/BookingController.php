@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreBookingRequest;
 use App\Mail\BookingConfirmationMail;
 use App\Models\Booking;
+use App\Models\CancellationPolicy;
 use App\Models\Listing;
 use App\Models\RoomType;
 use App\Services\Hotel\BookingAvailabilityService;
 use App\Services\Hotel\BookingPricingService;
 use App\Services\Payments\PaymentLedgerService;
+use App\Support\LegalAcceptanceService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -31,8 +33,8 @@ class BookingController extends Controller
         $roomTypes = $listing->roomTypes()->where('is_active', true)->with('seasonalPrices')->get();
         abort_if($roomTypes->isEmpty(), 404);
 
-        $policy = \App\Models\CancellationPolicy::resolveForListing($listing);
-        $legal = \App\Support\LegalAcceptanceService::currentPublished();
+        $policy = CancellationPolicy::resolveForListing($listing);
+        $legal = LegalAcceptanceService::currentPublished();
 
         return view('bookings.create', [
             'listing' => $listing,
@@ -80,7 +82,7 @@ class BookingController extends Controller
             'status' => 'pending',
         ]);
 
-        \App\Support\LegalAcceptanceService::recordFromRequest(
+        LegalAcceptanceService::recordFromRequest(
             $request->user(),
             [
                 'accept_terms' => $request->boolean('accept_terms'),

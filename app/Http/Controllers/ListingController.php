@@ -6,6 +6,7 @@ use App\Models\City;
 use App\Models\Listing;
 use App\Models\ListingType;
 use App\Models\TypeAttribute;
+use App\Support\CountryContext;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -44,7 +45,7 @@ class ListingController extends Controller
             $query->where('city_id', $request->integer('city_id'));
         }
 
-        $countryId = $request->integer('country_id') ?: \App\Support\CountryContext::current()?->id;
+        $countryId = $request->integer('country_id') ?: CountryContext::current()?->id;
         if ($countryId) {
             $query->where('country_id', $countryId);
         }

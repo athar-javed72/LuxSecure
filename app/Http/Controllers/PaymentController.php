@@ -7,6 +7,7 @@ use App\Models\Booking;
 use App\Models\Payment;
 use App\Models\RentPayment;
 use App\Services\Payments\PaymentGatewayManager;
+use App\Support\CountryContext;
 use App\Support\StorageDisk;
 use Illuminate\Http\RedirectResponse;
 
@@ -40,11 +41,11 @@ class PaymentController extends Controller
             'currency' => $data['currency']
                 ?? ($payable->currency ?? null)
                 ?? ($payable->listing?->currency ?? null)
-                ?? \App\Support\CountryContext::current()?->currency_code
+                ?? CountryContext::current()?->currency_code
                 ?? 'PKR',
             'country_id' => $payable->country_id
                 ?? ($payable->listing?->country_id ?? null)
-                ?? \App\Support\CountryContext::current()?->id,
+                ?? CountryContext::current()?->id,
             'gateway' => $data['gateway'],
             'status' => 'pending',
             'idempotency_key' => $data['idempotency_key'] ?? null,

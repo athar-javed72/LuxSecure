@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Listing;
+use Database\Seeders\AdminAndPropertiesSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\File;
 use Tests\Support\CreatesUsers;
@@ -30,7 +31,7 @@ class ProductionAlpineCspTest extends TestCase
 
         // Seed while still in testing — migrate/seed must not run under production.
         $this->seedRbac();
-        $this->seed(\Database\Seeders\AdminAndPropertiesSeeder::class);
+        $this->seed(AdminAndPropertiesSeeder::class);
 
         $admin = $this->makeAdmin();
         $client = $this->makeClient();

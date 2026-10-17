@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Models\Listing;
 use App\Models\ListingType;
+use App\Support\CountryContext;
 use App\Support\ListingAttributeRules;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -72,7 +73,7 @@ class UpdateListingRequest extends FormRequest
 
         if (! $this->filled('currency')) {
             $this->merge([
-                'currency' => \App\Support\CountryContext::current()?->currency_code ?: 'PKR',
+                'currency' => CountryContext::current()?->currency_code ?: 'PKR',
             ]);
         }
     }

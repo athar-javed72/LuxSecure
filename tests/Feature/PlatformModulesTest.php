@@ -7,9 +7,12 @@ use App\Models\BlogPost;
 use App\Models\ContactInquiry;
 use App\Models\Faq;
 use App\Models\Lead;
+use App\Models\Listing;
 use App\Models\ListingImage;
 use App\Models\Setting;
 use App\Models\Ticket;
+use App\Support\StorageDisk;
+use Database\Seeders\SettingsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Activitylog\Models\Activity;
@@ -29,7 +32,7 @@ class PlatformModulesTest extends TestCase
     {
         parent::setUp();
         $this->seedRbac();
-        $this->seed(\Database\Seeders\SettingsSeeder::class);
+        $this->seed(SettingsSeeder::class);
     }
 
     public function test_home_uses_agent_profiles_and_cms_content(): void
@@ -163,7 +166,7 @@ class PlatformModulesTest extends TestCase
             'attributes' => $listing->attributeValues(),
         ])->assertRedirect();
 
-        $this->assertTrue(Activity::query()->where('subject_type', \App\Models\Listing::class)->exists());
+        $this->assertTrue(Activity::query()->where('subject_type', Listing::class)->exists());
 
         $this->actingAs($admin)->get(route('admin.activity.index'))->assertOk();
         $this->actingAs($this->makeAgent(['email' => 'no-log@example.com']))
@@ -197,9 +200,9 @@ class PlatformModulesTest extends TestCase
         $admin = $this->makeAdmin();
         $listing = $this->makeListing();
 
-        Storage::fake(\App\Support\StorageDisk::uploads());
-        Storage::disk(\App\Support\StorageDisk::uploads())->put('listings/a.jpg', 'fake-image-a');
-        Storage::disk(\App\Support\StorageDisk::uploads())->put('listings/b.jpg', 'fake-image-b');
+        Storage::fake(StorageDisk::uploads());
+        Storage::disk(StorageDisk::uploads())->put('listings/a.jpg', 'fake-image-a');
+        Storage::disk(StorageDisk::uploads())->put('listings/b.jpg', 'fake-image-b');
 
         $img1 = ListingImage::create([
             'listing_id' => $listing->id,
@@ -224,7 +227,7 @@ class PlatformModulesTest extends TestCase
             ->assertRedirect();
 
         $this->assertDatabaseMissing('listing_images', ['id' => $img1->id]);
-        Storage::disk(\App\Support\StorageDisk::uploads())->assertMissing('listings/a.jpg');
+        Storage::disk(StorageDisk::uploads())->assertMissing('listings/a.jpg');
     }
 
     public function test_users_and_leads_csv_export(): void

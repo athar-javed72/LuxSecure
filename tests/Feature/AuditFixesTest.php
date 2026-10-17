@@ -10,6 +10,7 @@ use App\Models\RoomType;
 use App\Services\Payments\Drivers\JazzCashGateway;
 use App\Services\PhoneOtpService;
 use App\Support\StorageDisk;
+use Database\Seeders\SettingsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -31,7 +32,7 @@ class AuditFixesTest extends TestCase
     {
         parent::setUp();
         $this->seedRbac();
-        $this->seed(\Database\Seeders\SettingsSeeder::class);
+        $this->seed(SettingsSeeder::class);
         Storage::fake(StorageDisk::uploads());
         Storage::fake(StorageDisk::private());
         config([

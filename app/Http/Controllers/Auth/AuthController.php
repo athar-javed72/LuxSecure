@@ -7,8 +7,12 @@ use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Models\User;
 use App\Services\TwoFactorService;
+use App\Services\UserAccessRevoker;
 use App\Services\UserPrivilegedAttributes;
+use App\Support\CountryContext;
+use App\Support\LegalAcceptanceService;
 use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -38,7 +42,7 @@ class AuthController extends Controller
         return view('auth.reset-password', ['token' => $token]);
     }
 
-    public function login(LoginRequest $request, TwoFactorService $twoFactor, \App\Services\UserAccessRevoker $accessRevoker)
+    public function login(LoginRequest $request, TwoFactorService $twoFactor, UserAccessRevoker $accessRevoker)
     {
         if (Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
             $user = Auth::user();
@@ -96,7 +100,7 @@ class AuthController extends Controller
         Auth::login($user, (bool) $request->session()->pull('login.two_factor_remember'));
         $request->session()->forget('login.two_factor_user_id');
         $request->session()->regenerate();
-        app(\App\Services\UserAccessRevoker::class)->markSessionEstablished($request);
+        app(UserAccessRevoker::class)->markSessionEstablished($request);
 
         if ($user->can('panel.access')) {
             return redirect()->intended(route('admin.dashboard'));
@@ -108,7 +112,7 @@ class AuthController extends Controller
     public function register(RegisterRequest $request)
     {
         $privileged = app(UserPrivilegedAttributes::class);
-        $country = \App\Support\CountryContext::current();
+        $country = CountryContext::current();
         $user = $privileged->createActive([
             'name' => $request->name,
             'email' => $request->email,
@@ -122,7 +126,7 @@ class AuthController extends Controller
 
         $user->assignRole('client');
 
-        \App\Support\LegalAcceptanceService::recordFromRequest(
+        LegalAcceptanceService::recordFromRequest(
             $user,
             [
                 'accept_terms' => $request->boolean('accept_terms'),
@@ -131,7 +135,7 @@ class AuthController extends Controller
             $request->ip()
         );
 
-        event(new \Illuminate\Auth\Events\Registered($user));
+        event(new Registered($user));
 
         $message = app()->environment('local')
             ? 'Registration successful. You can login now.'

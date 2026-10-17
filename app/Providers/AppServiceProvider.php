@@ -3,12 +3,21 @@
 namespace App\Providers;
 
 use App\Contracts\MessageChannel;
+use App\Models\Country;
+use App\Models\Currency;
+use App\Models\Language;
+use App\Models\Page;
 use App\Services\Messaging\HttpMessageChannel;
 use App\Services\Messaging\LogMessageChannel;
+use App\Support\CountryContext;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Str;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -41,6 +50,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        $this->configureRateLimiting();
+
         Paginator::useTailwind();
 
         Blade::directive('nonce', function () {
@@ -49,18 +60,18 @@ class AppServiceProvider extends ServiceProvider
 
         View::composer(['include.footer', 'include.navbar', 'include.master'], function ($view) {
             try {
-                $ctx = \App\Support\CountryContext::class;
+                $ctx = CountryContext::class;
                 $view->with('siteName', $ctx::setting('site.name', config('app.name', 'LuxSecure')));
                 $view->with('siteEmail', $ctx::contact('site.email') ?? $ctx::contact('site.support_email'));
                 $view->with('sitePhone', $ctx::contact('site.phone'));
                 $view->with('siteHours', $ctx::contact('site.hours'));
                 $view->with('siteAddress', $ctx::contact('site.address'));
-                $view->with('countries', \App\Models\Country::query()->where('is_active', true)->orderBy('sort_order')->get());
-                $view->with('currencies', \App\Models\Currency::query()->where('is_active', true)->orderBy('code')->get());
-                $view->with('languages', \App\Models\Language::query()->where('is_active', true)->orderBy('sort_order')->get());
-                $view->with('legalPrivacy', \App\Models\Page::resolveLegal('privacy'));
-                $view->with('legalTerms', \App\Models\Page::resolveLegal('terms'));
-                $view->with('legalRefund', \App\Models\Page::resolveLegal('refund'));
+                $view->with('countries', Country::query()->where('is_active', true)->orderBy('sort_order')->get());
+                $view->with('currencies', Currency::query()->where('is_active', true)->orderBy('code')->get());
+                $view->with('languages', Language::query()->where('is_active', true)->orderBy('sort_order')->get());
+                $view->with('legalPrivacy', Page::resolveLegal('privacy'));
+                $view->with('legalTerms', Page::resolveLegal('terms'));
+                $view->with('legalRefund', Page::resolveLegal('refund'));
             } catch (\Throwable) {
                 $view->with('siteName', config('app.name', 'LuxSecure'));
                 $view->with('siteEmail', null);
@@ -74,6 +85,38 @@ class AppServiceProvider extends ServiceProvider
                 $view->with('legalTerms', null);
                 $view->with('legalRefund', null);
             }
+        });
+    }
+
+    protected function configureRateLimiting(): void
+    {
+        RateLimiter::for('api', function (Request $request) {
+            return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
+        });
+
+        RateLimiter::for('api-auth', function (Request $request) {
+            $email = Str::lower((string) $request->input('email'));
+
+            return [
+                Limit::perMinute(10)->by($request->ip()),
+                Limit::perMinute(5)->by(($email !== '' ? $email : 'guest').'|'.$request->ip()),
+            ];
+        });
+
+        RateLimiter::for('login', function (Request $request) {
+            $email = Str::lower((string) $request->input('email'));
+
+            return Limit::perMinute(5)->by($email.'|'.$request->ip());
+        });
+
+        RateLimiter::for('two-factor', function (Request $request) {
+            $userKey = (string) ($request->session()->get('login.two_factor_user_id') ?: 'guest');
+
+            return Limit::perMinute(6)->by($userKey.'|'.$request->ip());
+        });
+
+        RateLimiter::for('contact', function (Request $request) {
+            return Limit::perMinute(6)->by($request->ip());
         });
     }
 }

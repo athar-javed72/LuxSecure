@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Role;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Support\CreatesListings;
 use Tests\Support\CreatesUsers;
@@ -158,7 +159,7 @@ class RbacTest extends TestCase
             'password_confirmation' => 'password123',
         ])->assertRedirect();
 
-        $user = \App\Models\User::where('email', 'newclient@example.com')->first();
+        $user = User::where('email', 'newclient@example.com')->first();
         $this->assertTrue($user->hasRole('client'));
         $this->assertFalse($user->hasRole('admin'));
         $this->assertFalse($user->can('panel.access'));

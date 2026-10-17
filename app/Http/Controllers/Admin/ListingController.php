@@ -287,7 +287,7 @@ class ListingController extends Controller
         return back()->with('success', 'Bulk action applied to listings.');
     }
 
-    public function downloadPrivateDocument(Listing $listing): \Symfony\Component\HttpFoundation\StreamedResponse
+    public function downloadPrivateDocument(Listing $listing): StreamedResponse
     {
         $user = request()->user();
         $allowed = $user->can('listings.view.any')

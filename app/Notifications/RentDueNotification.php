@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Models\RentPayment;
+use App\Support\Money;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -23,7 +24,7 @@ class RentDueNotification extends Notification implements ShouldQueue
     {
         return (new MailMessage)
             ->subject('Rent payment due')
-            ->line('Rent of '.\App\Support\Money::format($this->rentPayment->amount, $this->rentPayment->tenancy?->listing?->currency).' is due on '.$this->rentPayment->due_date->toDateString().'.')
+            ->line('Rent of '.Money::format($this->rentPayment->amount, $this->rentPayment->tenancy?->listing?->currency).' is due on '.$this->rentPayment->due_date->toDateString().'.')
             ->action('View tenancy', url('/tenancies/'.$this->rentPayment->tenancy_id));
     }
 

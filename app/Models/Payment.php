@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Concerns\LogsAdminActivity;
+use App\Support\CountryContext;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -21,7 +22,7 @@ class Payment extends Model
 
     public static function enabledGateways(?int $countryId = null): array
     {
-        $countryId ??= \App\Support\CountryContext::current()?->id;
+        $countryId ??= CountryContext::current()?->id;
         if ($countryId) {
             $fromCountry = CountryPaymentMethod::query()
                 ->where('country_id', $countryId)

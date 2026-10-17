@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Models\Listing;
+use Database\Seeders\AdminAndPropertiesSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\File;
 use Tests\Support\CreatesUsers;
@@ -62,7 +64,7 @@ class AssetAndCspTest extends TestCase
 
     public function test_properties_filter_defaults_to_all_types_and_seeded_listings_are_visible(): void
     {
-        $this->seed(\Database\Seeders\AdminAndPropertiesSeeder::class);
+        $this->seed(AdminAndPropertiesSeeder::class);
 
         $response = $this->get(route('properties'));
 
@@ -72,6 +74,6 @@ class AssetAndCspTest extends TestCase
         // Empty value option for All types is selected when no type query is present.
         $response->assertSee('value="" selected', false);
         $response->assertSee('Gulberg Apartment for Sale');
-        $this->assertGreaterThan(0, \App\Models\Listing::published()->count());
+        $this->assertGreaterThan(0, Listing::published()->count());
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Services\Hotel;
 
 use App\Models\Booking;
+use App\Models\CancellationPolicy;
 use App\Models\Room;
 use App\Models\RoomType;
 use Carbon\Carbon;
@@ -94,10 +95,10 @@ class BookingAvailabilityService
             $minutes = (int) config('luxsecure.booking_hold_minutes', env('BOOKING_HOLD_MINUTES', 30));
 
             $listing = $roomType->listing;
-            $policy = \App\Models\CancellationPolicy::resolveForListing($listing);
+            $policy = CancellationPolicy::resolveForListing($listing);
             $policySlug = $data['cancellation_policy'] ?? $policy?->slug ?? 'flexible';
             if (! empty($data['cancellation_policy_id'])) {
-                $policy = \App\Models\CancellationPolicy::query()->find($data['cancellation_policy_id']) ?? $policy;
+                $policy = CancellationPolicy::query()->find($data['cancellation_policy_id']) ?? $policy;
                 $policySlug = $policy?->slug ?? $policySlug;
             }
 

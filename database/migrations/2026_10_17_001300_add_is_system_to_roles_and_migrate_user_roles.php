@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
@@ -35,7 +36,7 @@ return new class extends Migration
         if (Schema::hasColumn('users', 'role')) {
             $adminRole = Role::findByName('admin', $guard);
             $clientRole = Role::findByName('client', $guard);
-            $modelType = config('auth.providers.users.model', \App\Models\User::class);
+            $modelType = config('auth.providers.users.model', User::class);
 
             $users = DB::table('users')->select('id', 'role')->get();
             foreach ($users as $user) {
@@ -69,7 +70,7 @@ return new class extends Migration
             });
         }
 
-        $modelType = config('auth.providers.users.model', \App\Models\User::class);
+        $modelType = config('auth.providers.users.model', User::class);
         $adminRoleId = DB::table('roles')->where('name', 'admin')->value('id');
         $users = DB::table('users')->pluck('id');
         foreach ($users as $userId) {

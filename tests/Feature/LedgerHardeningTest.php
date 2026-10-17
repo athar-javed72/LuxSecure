@@ -2,8 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Http\Middleware\SecurityHeaders;
 use App\Http\Middleware\TrustProxies;
 use App\Models\Booking;
+use App\Models\Listing;
 use App\Models\Payment;
 use App\Models\PaymentWebhookEvent;
 use App\Models\Room;
@@ -17,7 +19,9 @@ use App\Services\Payments\PaymentLedgerService;
 use App\Services\Payments\RefundCalculator;
 use App\Services\SanctumAbilityResolver;
 use App\Services\TwoFactorService;
+use Database\Seeders\SettingsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -40,7 +44,7 @@ class LedgerHardeningTest extends TestCase
     {
         parent::setUp();
         $this->seedRbac();
-        $this->seed(\Database\Seeders\SettingsSeeder::class);
+        $this->seed(SettingsSeeder::class);
         Mail::fake();
         config([
             'payments.jazzcash.enabled' => false,
@@ -242,8 +246,8 @@ class LedgerHardeningTest extends TestCase
     {
         $this->app['env'] = 'production';
 
-        $middleware = app(\App\Http\Middleware\SecurityHeaders::class);
-        $request = \Illuminate\Http\Request::create('https://example.test/', 'GET');
+        $middleware = app(SecurityHeaders::class);
+        $request = Request::create('https://example.test/', 'GET');
         $request->server->set('HTTPS', 'on');
 
         $response = $middleware->handle($request, function () {
@@ -476,7 +480,7 @@ class LedgerHardeningTest extends TestCase
     }
 
     /**
-     * @return array{0: \App\Models\Listing, 1: RoomType}
+     * @return array{0: Listing, 1: RoomType}
      */
     private function makeHotelFixture(): array
     {

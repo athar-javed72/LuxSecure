@@ -6,6 +6,7 @@ use App\Models\Concerns\LogsAdminActivity;
 use App\Support\CountryContext;
 use App\Support\Money;
 use App\Support\Scopes\CountryScoped;
+use App\Support\StorageDisk;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -252,10 +253,10 @@ class Listing extends Model
             ? $this->images->first()
             : $this->images()->first();
         if ($first) {
-            return \App\Support\StorageDisk::url($first->path);
+            return StorageDisk::url($first->path);
         }
         if ($this->featured_image) {
-            return \App\Support\StorageDisk::url($this->featured_image);
+            return StorageDisk::url($this->featured_image);
         }
 
         return '';

@@ -114,7 +114,7 @@ return new class extends Migration
                 Schema::table('favorites', function (Blueprint $table) {
                     $table->dropUnique(['user_id', 'property_id']);
                 });
-            } catch (\Throwable) {
+            } catch (Throwable) {
                 // Index already absent or differently named.
             }
             DB::statement('ALTER TABLE favorites CHANGE property_id listing_id BIGINT UNSIGNED NOT NULL');

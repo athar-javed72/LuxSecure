@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Support\CreatesUsers;
 use Tests\Support\SeedsRbac;
@@ -30,7 +31,7 @@ class AuthTest extends TestCase
 
         $response->assertRedirect(route('login.form'));
         $this->assertDatabaseHas('users', ['email' => 'test@example.com']);
-        $this->assertTrue(\App\Models\User::where('email', 'test@example.com')->first()->hasRole('client'));
+        $this->assertTrue(User::where('email', 'test@example.com')->first()->hasRole('client'));
     }
 
     public function test_login_succeeds_with_valid_credentials(): void

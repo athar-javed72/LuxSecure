@@ -2,13 +2,14 @@
 
 namespace App\Http\Requests\Admin;
 
+use App\Models\RoomType;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreSeasonalPriceRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()?->can('create', \App\Models\RoomType::class) ?? false;
+        return $this->user()?->can('create', RoomType::class) ?? false;
     }
 
     public function rules(): array

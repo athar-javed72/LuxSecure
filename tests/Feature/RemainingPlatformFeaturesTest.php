@@ -6,12 +6,14 @@ use App\Models\Booking;
 use App\Models\KycDocument;
 use App\Models\Listing;
 use App\Models\Payment;
+use App\Models\PhoneOtp;
 use App\Models\Review;
 use App\Models\RoomType;
 use App\Models\Setting;
 use App\Models\Tenancy;
 use App\Notifications\KycResultNotification;
 use App\Support\StorageDisk;
+use Database\Seeders\SettingsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Hash;
@@ -33,7 +35,7 @@ class RemainingPlatformFeaturesTest extends TestCase
     {
         parent::setUp();
         $this->seedRbac();
-        $this->seed(\Database\Seeders\SettingsSeeder::class);
+        $this->seed(SettingsSeeder::class);
         Storage::fake(StorageDisk::uploads());
         Storage::fake(StorageDisk::private());
         config(['payments.jazzcash.integrity_salt' => 'test-salt']);
@@ -265,7 +267,7 @@ class RemainingPlatformFeaturesTest extends TestCase
             ->post(route('phone.verify.send'), ['phone' => '+923001112233'])
             ->assertRedirect();
 
-        $otp = \App\Models\PhoneOtp::latest()->first();
+        $otp = PhoneOtp::latest()->first();
         $this->assertNotNull($otp);
 
         // Recover code by creating a known hash path: re-send is hashed; force known code for assert.

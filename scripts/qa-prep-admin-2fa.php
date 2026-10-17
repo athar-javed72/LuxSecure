@@ -2,10 +2,11 @@
 
 require __DIR__.'/../vendor/autoload.php';
 $app = require __DIR__.'/../bootstrap/app.php';
-$app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
+$app->make(Kernel::class)->bootstrap();
 
 use App\Models\User;
 use App\Services\TwoFactorService;
+use Illuminate\Contracts\Console\Kernel;
 use PragmaRX\Google2FA\Google2FA;
 
 $user = User::where('email', 'admin@luxsecure.com')->firstOrFail();

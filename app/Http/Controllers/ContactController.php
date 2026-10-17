@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreContactInquiryRequest;
+use App\Mail\ContactInquiryReceived;
 use App\Models\ContactInquiry;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
 
 class ContactController extends Controller
@@ -20,8 +22,8 @@ class ContactController extends Controller
 
         if (config('mail.default') !== 'array' && config('mail.from.address')) {
             try {
-                \Illuminate\Support\Facades\Mail::to(config('mail.from.address'))
-                    ->send(new \App\Mail\ContactInquiryReceived($inquiry));
+                Mail::to(config('mail.from.address'))
+                    ->send(new ContactInquiryReceived($inquiry));
             } catch (\Throwable $e) {
                 report($e);
             }

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\AgentProfile;
 use App\Models\KycDocument;
 use App\Notifications\KycResultNotification;
+use App\Services\UserPrivilegedAttributes;
 use App\Support\StorageDisk;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -47,7 +48,7 @@ class KycDocumentController extends Controller
 
         $user = $kyc->user;
         if ($data['status'] === 'approved') {
-            app(\App\Services\UserPrivilegedAttributes::class)->setKycVerifiedAt($user, now());
+            app(UserPrivilegedAttributes::class)->setKycVerifiedAt($user, now());
             AgentProfile::query()->where('user_id', $user->id)->update(['is_verified' => true]);
         } elseif ($data['status'] === 'rejected') {
             $stillApproved = KycDocument::query()
@@ -55,7 +56,7 @@ class KycDocumentController extends Controller
                 ->where('status', 'approved')
                 ->exists();
             if (! $stillApproved) {
-                app(\App\Services\UserPrivilegedAttributes::class)->setKycVerifiedAt($user, null);
+                app(UserPrivilegedAttributes::class)->setKycVerifiedAt($user, null);
                 AgentProfile::query()->where('user_id', $user->id)->update(['is_verified' => false]);
             }
         }

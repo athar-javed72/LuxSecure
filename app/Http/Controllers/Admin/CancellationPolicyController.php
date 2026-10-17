@@ -10,6 +10,7 @@ use App\Models\Organization;
 use App\Services\Payments\RefundCalculator;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
@@ -104,7 +105,7 @@ class CancellationPolicyController extends Controller
     }
 
     /**
-     * @return array{countries: \Illuminate\Support\Collection, organizations: \Illuminate\Support\Collection}
+     * @return array{countries: Collection, organizations: Collection}
      */
     private function formData(): array
     {
