@@ -7,6 +7,7 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator as Paginator;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 
 class ListingCacheService
 {
@@ -71,7 +72,10 @@ class ListingCacheService
 
     public function flush(): void
     {
-        Cache::store($this->store())->forever('listings.cache.version', (string) now()->timestamp);
+        Cache::store($this->store())->forever(
+            'listings.cache.version',
+            (string) Str::uuid().'-'.str_replace('.', '', (string) microtime(true))
+        );
     }
 
     private function store(): string

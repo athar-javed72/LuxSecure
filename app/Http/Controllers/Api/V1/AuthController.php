@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use App\Services\SanctumAbilityResolver;
 use App\Services\TwoFactorService;
+use App\Services\UserPrivilegedAttributes;
 use App\Support\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -18,7 +20,11 @@ use Illuminate\Validation\ValidationException;
  */
 class AuthController extends Controller
 {
-    public function __construct(private readonly TwoFactorService $twoFactor) {}
+    public function __construct(
+        private readonly TwoFactorService $twoFactor,
+        private readonly SanctumAbilityResolver $abilities,
+        private readonly UserPrivilegedAttributes $privileged,
+    ) {}
 
     /**
      * Register a client account.
@@ -34,17 +40,16 @@ class AuthController extends Controller
             'password' => ['required', 'confirmed', Password::defaults()],
         ]);
 
-        $user = User::create([
+        $user = $this->privileged->createActive([
             'name' => $data['name'],
             'email' => $data['email'],
             'phone' => $data['phone'] ?? null,
             'password' => Hash::make($data['password']),
-            'is_active' => true,
             'email_verified_at' => app()->environment('local') ? now() : null,
-        ]);
+        ], true);
         $user->assignRole('client');
 
-        $token = $user->createToken('api')->plainTextToken;
+        $token = $this->abilities->issueToken($user, 'api', $this->twoFactor)->plainTextToken;
 
         return ApiResponse::success([
             'token' => $token,
@@ -92,11 +97,12 @@ class AuthController extends Controller
             }
         }
 
-        $token = $user->createToken($credentials['device_name'] ?? 'api')->plainTextToken;
+        $accessToken = $this->abilities->issueToken($user, $credentials['device_name'] ?? 'api', $this->twoFactor);
 
         return ApiResponse::success([
-            'token' => $token,
+            'token' => $accessToken->plainTextToken,
             'token_type' => 'Bearer',
+            'abilities' => $accessToken->accessToken->abilities,
             'user' => new UserResource($user->load('roles')),
             'two_factor_setup_required' => $this->twoFactor->requiresSetup($user),
         ], 'Authenticated');
@@ -120,11 +126,12 @@ class AuthController extends Controller
             return ApiResponse::error('Invalid or expired two-factor challenge.', 422, null, 'invalid_2fa');
         }
 
-        $token = $user->createToken($data['device_name'] ?? 'api')->plainTextToken;
+        $accessToken = $this->abilities->issueToken($user, $data['device_name'] ?? 'api', $this->twoFactor);
 
         return ApiResponse::success([
-            'token' => $token,
+            'token' => $accessToken->plainTextToken,
             'token_type' => 'Bearer',
+            'abilities' => $accessToken->accessToken->abilities,
             'user' => new UserResource($user->load('roles')),
         ], 'Authenticated');
     }

@@ -1,5 +1,10 @@
 import './bootstrap';
-import Alpine from 'alpinejs';
+import Alpine from '@alpinejs/csp';
+import { registerAlpineComponents } from './alpine-components';
+
+document.addEventListener('alpine:init', () => {
+    registerAlpineComponents(Alpine);
+});
 
 window.Alpine = Alpine;
 Alpine.start();

@@ -5,6 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @deprecated Legacy ledger. Do not write new rows — use App\Models\Payment.
+ */
 class BookingPayment extends Model
 {
     public const STATUSES = ['pending', 'paid', 'refunded', 'failed'];

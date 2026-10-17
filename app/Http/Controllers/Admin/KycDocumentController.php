@@ -47,7 +47,7 @@ class KycDocumentController extends Controller
 
         $user = $kyc->user;
         if ($data['status'] === 'approved') {
-            $user->update(['kyc_verified_at' => now()]);
+            app(\App\Services\UserPrivilegedAttributes::class)->setKycVerifiedAt($user, now());
             AgentProfile::query()->where('user_id', $user->id)->update(['is_verified' => true]);
         } elseif ($data['status'] === 'rejected') {
             $stillApproved = KycDocument::query()
@@ -55,7 +55,7 @@ class KycDocumentController extends Controller
                 ->where('status', 'approved')
                 ->exists();
             if (! $stillApproved) {
-                $user->update(['kyc_verified_at' => null]);
+                app(\App\Services\UserPrivilegedAttributes::class)->setKycVerifiedAt($user, null);
                 AgentProfile::query()->where('user_id', $user->id)->update(['is_verified' => false]);
             }
         }

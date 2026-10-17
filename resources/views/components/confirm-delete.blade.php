@@ -7,39 +7,7 @@
 
 <div
     class="inline-flex"
-    x-data="{
-        open: false,
-        previouslyFocused: null,
-        openModal() {
-            this.previouslyFocused = document.activeElement;
-            this.open = true;
-            this.$nextTick(() => this.$refs.confirmBtn && this.$refs.confirmBtn.focus());
-        },
-        closeModal() {
-            this.open = false;
-            this.$nextTick(() => {
-                if (this.previouslyFocused && this.previouslyFocused.focus) {
-                    this.previouslyFocused.focus();
-                }
-            });
-        },
-        trap(e) {
-            if (!this.open) return;
-            const root = this.$refs.dialog;
-            if (!root) return;
-            const list = Array.from(root.querySelectorAll('button')).filter((el) => !el.disabled);
-            if (!list.length) return;
-            const first = list[0];
-            const last = list[list.length - 1];
-            if (e.shiftKey && document.activeElement === first) {
-                e.preventDefault();
-                last.focus();
-            } else if (!e.shiftKey && document.activeElement === last) {
-                e.preventDefault();
-                first.focus();
-            }
-        }
-    }"
+    x-data="confirmDelete"
     @keydown.escape.window="if (open) closeModal()"
 >
     <div @click="openModal()">

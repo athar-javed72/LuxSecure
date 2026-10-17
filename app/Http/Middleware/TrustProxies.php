@@ -12,7 +12,7 @@ class TrustProxies extends Middleware
      *
      * @var array<int, string>|string|null
      */
-    protected $proxies = '*';
+    protected $proxies;
 
     /**
      * The headers that should be used to detect proxies.
@@ -25,4 +25,17 @@ class TrustProxies extends Middleware
         Request::HEADER_X_FORWARDED_PORT |
         Request::HEADER_X_FORWARDED_PROTO |
         Request::HEADER_X_FORWARDED_AWS_ELB;
+
+    public function __construct()
+    {
+        $raw = trim((string) config('luxsecure.trusted_proxies', ''));
+
+        if ($raw === '' || strcasecmp($raw, 'none') === 0) {
+            $this->proxies = [];
+        } elseif ($raw === '*') {
+            $this->proxies = '*';
+        } else {
+            $this->proxies = array_values(array_filter(array_map('trim', explode(',', $raw))));
+        }
+    }
 }

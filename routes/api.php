@@ -31,19 +31,33 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
     Route::middleware(['auth:sanctum', 'active', 'panel.2fa', 'throttle:api'])->group(function () {
         Route::post('auth/logout', [AuthController::class, 'logout'])->name('auth.logout');
 
-        Route::get('profile', [ProfileController::class, 'show'])->name('profile.show');
-        Route::put('profile', [ProfileController::class, 'update'])->name('profile.update');
+        Route::middleware('ability:profile:read,profile:*')->group(function () {
+            Route::get('profile', [ProfileController::class, 'show'])->name('profile.show');
+        });
+        Route::middleware('ability:profile:update,profile:*')->group(function () {
+            Route::put('profile', [ProfileController::class, 'update'])->name('profile.update');
+        });
 
-        Route::get('favorites', [FavoriteController::class, 'index'])->name('favorites.index');
-        Route::post('favorites/{listing}', [FavoriteController::class, 'toggle'])->name('favorites.toggle');
+        Route::middleware('ability:favorites:read,favorites:*')->group(function () {
+            Route::get('favorites', [FavoriteController::class, 'index'])->name('favorites.index');
+        });
+        Route::middleware('ability:favorites:write,favorites:*')->group(function () {
+            Route::post('favorites/{listing}', [FavoriteController::class, 'toggle'])->name('favorites.toggle');
+        });
 
-        Route::get('bookings', [BookingController::class, 'index'])->name('bookings.index');
-        Route::post('bookings', [BookingController::class, 'store'])->name('bookings.store');
-        Route::get('bookings/{booking}', [BookingController::class, 'show'])->name('bookings.show');
-        Route::post('bookings/{booking}/cancel', [BookingController::class, 'cancel'])->name('bookings.cancel');
+        Route::middleware('ability:bookings:read,bookings:*')->group(function () {
+            Route::get('bookings', [BookingController::class, 'index'])->name('bookings.index');
+            Route::get('bookings/{booking}', [BookingController::class, 'show'])->name('bookings.show');
+        });
+        Route::middleware('ability:bookings:write,bookings:*')->group(function () {
+            Route::post('bookings', [BookingController::class, 'store'])->name('bookings.store');
+            Route::post('bookings/{booking}/cancel', [BookingController::class, 'cancel'])->name('bookings.cancel');
+        });
 
-        Route::post('two-factor/setup', [TwoFactorController::class, 'setup'])->name('two-factor.setup');
-        Route::post('two-factor/confirm', [TwoFactorController::class, 'confirm'])->name('two-factor.confirm');
-        Route::post('two-factor/disable', [TwoFactorController::class, 'disable'])->name('two-factor.disable');
+        Route::middleware('ability:2fa:setup,profile:*')->group(function () {
+            Route::post('two-factor/setup', [TwoFactorController::class, 'setup'])->name('two-factor.setup');
+            Route::post('two-factor/confirm', [TwoFactorController::class, 'confirm'])->name('two-factor.confirm');
+            Route::post('two-factor/disable', [TwoFactorController::class, 'disable'])->name('two-factor.disable');
+        });
     });
 });

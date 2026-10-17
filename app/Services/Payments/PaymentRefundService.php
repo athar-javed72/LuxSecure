@@ -5,59 +5,41 @@ namespace App\Services\Payments;
 use App\Models\Booking;
 use App\Models\Payment;
 use App\Models\RentPayment;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\ValidationException;
 
+/**
+ * Facade over PaymentLedgerService for cancel/refund transitions.
+ */
 class PaymentRefundService
 {
-    public function __construct(private readonly PaymentStatusMachine $statuses) {}
+    public function __construct(private readonly PaymentLedgerService $ledger) {}
 
     public function voidOrMarkRefundPending(Booking|RentPayment $payable): void
     {
-        $payments = Payment::query()
-            ->where('payable_type', $payable::class)
-            ->where('payable_id', $payable->id)
-            ->get();
+        if ($payable instanceof Booking) {
+            $this->ledger->cancelBooking($payable, Auth::user());
 
-        foreach ($payments as $payment) {
-            if (in_array($payment->status, ['pending', 'awaiting_approval'], true)) {
-                $this->statuses->transition($payment, 'failed');
-                $payment->update([
-                    'meta' => array_merge($payment->fresh()->meta ?? [], ['voided' => true]),
-                ]);
-            } elseif ($payment->status === 'paid') {
-                $this->statuses->transition($payment, 'refund_pending');
-            }
+            return;
         }
+
+        $this->ledger->voidPendingForPayable($payable);
+
+        // Rent: mark paid as refund_pending without booking policy.
+        Payment::query()
+            ->where('payable_type', RentPayment::class)
+            ->where('payable_id', $payable->id)
+            ->where('status', 'paid')
+            ->each(function (Payment $payment) {
+                app(PaymentStatusMachine::class)->transition($payment, 'refund_pending');
+            });
     }
 
-    public function refund(Payment $payment): Payment
+    public function refund(Payment $payment, ?string $reason = null): Payment
     {
-        if (! in_array($payment->status, ['paid', 'refund_pending'], true)) {
-            throw ValidationException::withMessages([
-                'status' => 'Only paid or refund-pending payments can be refunded.',
-            ]);
-        }
+        /** @var User $actor */
+        $actor = Auth::user();
 
-        if ($payment->status === 'paid') {
-            $this->statuses->transition($payment, 'refund_pending');
-            $payment->refresh();
-        }
-
-        $this->statuses->transition($payment, 'refunded');
-        $payment->update([
-            'meta' => array_merge($payment->meta ?? [], [
-                'refunded_at' => now()->toIso8601String(),
-                'refunded_by' => Auth::id(),
-            ]),
-        ]);
-
-        activity()
-            ->performedOn($payment)
-            ->causedBy(Auth::user())
-            ->withProperties(['status' => 'refunded', 'amount' => $payment->amount])
-            ->log('payment_refunded');
-
-        return $payment->fresh();
+        return $this->ledger->adminRefund($payment, $actor, $reason);
     }
 }

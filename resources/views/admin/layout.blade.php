@@ -9,15 +9,7 @@
 </head>
 <body
     class="min-h-screen bg-fs-surface text-fs-primary"
-    x-data="{
-        sidebarOpen: false,
-        isDesktop: window.matchMedia('(min-width: 1024px)').matches,
-        init() {
-            const mq = window.matchMedia('(min-width: 1024px)');
-            const sync = (e) => { this.isDesktop = e.matches; if (e.matches) this.sidebarOpen = false; };
-            mq.addEventListener('change', sync);
-        }
-    }"
+    x-data="adminShell"
 >
     <aside
         class="fixed inset-y-0 left-0 z-40 w-64 bg-fs-primary text-white transform transition-transform duration-200 lg:translate-x-0"

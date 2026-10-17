@@ -3,8 +3,10 @@
 namespace App\Services\Payments\Drivers;
 
 use App\Contracts\PaymentGateway;
+use App\Models\Booking;
 use App\Models\Payment;
 use App\Services\Payments\InvoiceService;
+use App\Services\Payments\PaymentLedgerService;
 use App\Services\Payments\PaymentStatusMachine;
 use Illuminate\Validation\ValidationException;
 
@@ -13,6 +15,7 @@ class BankTransferGateway implements PaymentGateway
     public function __construct(
         private readonly InvoiceService $invoices,
         private readonly PaymentStatusMachine $statuses,
+        private readonly PaymentLedgerService $ledger,
     ) {}
 
     public function name(): string
@@ -73,8 +76,13 @@ class BankTransferGateway implements PaymentGateway
 
         $payment->forceFill(['approved_by' => $approverId])->save();
         $this->statuses->transition($payment->fresh(), 'paid');
-        $this->invoices->createFor($payment->fresh());
+        $paid = $payment->fresh();
+        $this->invoices->createFor($paid);
 
-        return $payment->fresh('invoice');
+        if ($paid->payable_type === Booking::class && $paid->payable instanceof Booking) {
+            $this->ledger->markBookingPaid($paid->payable, $paid);
+        }
+
+        return $paid->fresh('invoice');
     }
 }

@@ -2,13 +2,17 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Booking extends Model
 {
+    use SoftDeletes;
+
     public const STATUSES = ['pending', 'confirmed', 'cancelled', 'completed'];
 
     public const ACTIVE_STATUSES = ['pending', 'confirmed'];
@@ -27,6 +31,7 @@ class Booking extends Model
         'status',
         'cancellation_policy',
         'notes',
+        'hold_expires_at',
     ];
 
     protected $casts = [
@@ -34,6 +39,7 @@ class Booking extends Model
         'check_out' => 'date',
         'guests' => 'integer',
         'total' => 'decimal:2',
+        'hold_expires_at' => 'datetime',
     ];
 
     public function user(): BelongsTo
@@ -56,18 +62,34 @@ class Booking extends Model
         return $this->belongsTo(Room::class);
     }
 
-    public function payments(): HasMany
-    {
-        return $this->hasMany(BookingPayment::class);
-    }
-
-    public function gatewayPayments(): MorphMany
+    /** Canonical ledger — polymorphic payments. */
+    public function payments(): MorphMany
     {
         return $this->morphMany(Payment::class, 'payable');
+    }
+
+    /** @deprecated Read-only legacy table; do not write. */
+    public function legacyBookingPayments(): HasMany
+    {
+        return $this->hasMany(BookingPayment::class);
     }
 
     public function isOwnedByManager(User $user): bool
     {
         return $user->ownsListing($this->listing);
+    }
+
+    public function scopeBlockingInventory(Builder $query): Builder
+    {
+        return $query->where(function (Builder $q) {
+            $q->where('status', 'confirmed')
+                ->orWhere(function (Builder $pending) {
+                    $pending->where('status', 'pending')
+                        ->where(function (Builder $hold) {
+                            $hold->whereNull('hold_expires_at')
+                                ->orWhere('hold_expires_at', '>', now());
+                        });
+                });
+        });
     }
 }

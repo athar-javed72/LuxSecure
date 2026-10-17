@@ -47,7 +47,7 @@ class AuditFixesTest extends TestCase
     {
         $user = $this->makeClient();
         $this->actingAs($user);
-        $user->update(['is_active' => false]);
+        $user->forceFill(['is_active' => false])->save();
 
         $this->get(route('profile'))
             ->assertRedirect(route('login.form'))
@@ -60,7 +60,7 @@ class AuditFixesTest extends TestCase
     {
         $user = $this->makeClient();
         $token = $user->createToken('api')->plainTextToken;
-        $user->update(['is_active' => false]);
+        $user->forceFill(['is_active' => false])->save();
 
         $this->withToken($token)
             ->getJson('/api/v1/profile')

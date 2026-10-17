@@ -7,11 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
 class Payment extends Model
 {
     use LogsAdminActivity;
+    use SoftDeletes;
 
     public const STATUSES = ['pending', 'awaiting_approval', 'paid', 'failed', 'refund_pending', 'refunded'];
 

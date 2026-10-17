@@ -7,6 +7,7 @@ use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Models\User;
 use App\Services\TwoFactorService;
+use App\Services\UserPrivilegedAttributes;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\Request;
@@ -106,20 +107,16 @@ class AuthController extends Controller
 
     public function register(RegisterRequest $request)
     {
-        $user = User::create([
+        $privileged = app(UserPrivilegedAttributes::class);
+        $user = $privileged->createActive([
             'name' => $request->name,
             'email' => $request->email,
             'phone' => $request->phone ?: null,
             'password' => Hash::make($request->password),
-            'is_active' => true,
-        ]);
+            'email_verified_at' => app()->environment('local') ? now() : null,
+        ], true);
 
         $user->assignRole('client');
-
-        // Local / development: auto-verify so user can login without email (no mail setup needed)
-        if (app()->environment('local')) {
-            $user->update(['email_verified_at' => now()]);
-        }
 
         event(new \Illuminate\Auth\Events\Registered($user));
 

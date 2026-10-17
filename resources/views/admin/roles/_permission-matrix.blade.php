@@ -4,23 +4,7 @@
 
 <div
     class="space-y-4"
-    x-data="{
-        toggleGroup(btn, checked) {
-            const fieldset = btn.closest('fieldset');
-            if (!fieldset) return;
-            fieldset.querySelectorAll('input[data-perm]').forEach((box) => { box.checked = checked; });
-        },
-        syncSelectAll(box) {
-            const fieldset = box.closest('fieldset');
-            if (!fieldset) return;
-            const boxes = [...fieldset.querySelectorAll('input[data-perm]')];
-            const selectAll = fieldset.querySelector('input[data-select-all]');
-            if (selectAll) {
-                selectAll.checked = boxes.length > 0 && boxes.every((b) => b.checked);
-                selectAll.indeterminate = !selectAll.checked && boxes.some((b) => b.checked);
-            }
-        }
-    }"
+    x-data="permissionMatrix"
 >
     @foreach($groupedPermissions as $group => $permissions)
         @php

@@ -8,7 +8,7 @@
 @endphp
 
 <div
-    x-data="{ tab: @js($activeKey) }"
+    x-data="tabs(@js($activeKey))"
     {{ $attributes->merge(['class' => 'w-full']) }}
 >
     <div class="flex flex-wrap gap-1 border-b border-black/10 mb-6" role="tablist">

@@ -6,10 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\BookingResource;
 use App\Mail\BookingConfirmationMail;
 use App\Models\Booking;
-use App\Models\BookingPayment;
 use App\Models\RoomType;
 use App\Services\Hotel\BookingAvailabilityService;
-use App\Services\Payments\PaymentRefundService;
+use App\Services\Payments\PaymentLedgerService;
 use App\Support\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -25,16 +24,13 @@ class BookingController extends Controller
 {
     public function __construct(
         private readonly BookingAvailabilityService $availability,
-        private readonly PaymentRefundService $refunds,
+        private readonly PaymentLedgerService $ledger,
     ) {}
 
-    /**
-     * List the authenticated user's bookings.
-     */
     public function index(Request $request): JsonResponse
     {
         $bookings = Booking::query()
-            ->with(['listing.images', 'listing.listingType', 'roomType'])
+            ->with(['listing.images', 'listing.listingType', 'roomType', 'payments'])
             ->where('user_id', $request->user()->id)
             ->latest()
             ->paginate(min((int) $request->get('per_page', 15), 50));
@@ -51,9 +47,6 @@ class BookingController extends Controller
         ]);
     }
 
-    /**
-     * Create a booking (availability checked in a transaction).
-     */
     public function store(Request $request): JsonResponse
     {
         abort_unless($request->user()->can('bookings.create'), 403);
@@ -78,41 +71,32 @@ class BookingController extends Controller
             'status' => 'pending',
         ]);
 
-        BookingPayment::create([
-            'booking_id' => $booking->id,
-            'amount' => $booking->total,
-            'status' => 'pending',
-            'method' => 'pending',
-        ]);
+        $this->ledger->createPendingForBooking($booking);
 
         $booking->load(['user', 'listing', 'roomType']);
         Mail::to($booking->user->email)->queue(new BookingConfirmationMail($booking));
 
-        return ApiResponse::success(new BookingResource($booking->load(['listing.images', 'listing.listingType', 'roomType'])), 'Booking created', 201);
+        return ApiResponse::success(
+            new BookingResource($booking->load(['listing.images', 'listing.listingType', 'roomType', 'payments'])),
+            'Booking created',
+            201
+        );
     }
 
-    /**
-     * Show one of the user's bookings.
-     */
     public function show(Request $request, Booking $booking): JsonResponse
     {
         abort_unless((int) $booking->user_id === (int) $request->user()->id, 403);
-        $booking->load(['listing.images', 'listing.listingType', 'roomType', 'room']);
+        $booking->load(['listing.images', 'listing.listingType', 'roomType', 'room', 'payments']);
 
         return ApiResponse::success(new BookingResource($booking));
     }
 
-    /**
-     * Cancel an own pending/confirmed booking.
-     */
     public function cancel(Request $request, Booking $booking): JsonResponse
     {
         abort_unless((int) $booking->user_id === (int) $request->user()->id, 403);
-        abort_unless(in_array($booking->status, ['pending', 'confirmed'], true), 422, 'Booking cannot be cancelled.');
 
-        $booking->update(['status' => 'cancelled']);
-        $this->refunds->voidOrMarkRefundPending($booking);
-        $booking->load(['user', 'listing', 'roomType']);
+        $result = $this->ledger->cancelBooking($booking, $request->user());
+        $booking = $result['booking']->load(['user', 'listing', 'roomType', 'payments']);
         Mail::to($booking->user->email)->queue(new BookingConfirmationMail($booking));
 
         return ApiResponse::success(new BookingResource($booking), 'Booking cancelled');

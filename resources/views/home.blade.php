@@ -165,7 +165,7 @@
 </section>
 
 {{-- Testimonials --}}
-<section class="py-16" aria-labelledby="testimonials-heading" x-data="{ slide: 0 }">
+<section class="py-16" aria-labelledby="testimonials-heading" x-data="testimonialSlider">
     <x-container>
         <x-section-heading title="What clients say" subtitle="Trusted by buyers and investors" heading-id="testimonials-heading" align="center" class="mx-auto" />
         @if($testimonials->isNotEmpty())

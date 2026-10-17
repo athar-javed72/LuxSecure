@@ -22,10 +22,12 @@ class AdminAndPropertiesSeeder extends Seeder
             [
                 'name' => 'Admin',
                 'password' => Hash::make('password'),
-                'email_verified_at' => now(),
-                'is_active' => true,
             ]
         );
+        $admin->forceFill([
+            'email_verified_at' => $admin->email_verified_at ?? now(),
+            'is_active' => true,
+        ])->save();
         $admin->syncRoles(['super_admin']);
 
         $lahore = City::firstOrCreate(['slug' => 'lahore'], ['name' => 'Lahore', 'is_active' => true]);

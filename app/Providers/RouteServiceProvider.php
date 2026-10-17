@@ -44,6 +44,16 @@ class RouteServiceProvider extends ServiceProvider
             return Limit::perMinute(5)->by($email.'|'.$request->ip());
         });
 
+        RateLimiter::for('two-factor', function (Request $request) {
+            $userKey = (string) ($request->session()->get('login.two_factor_user_id') ?: 'guest');
+
+            return Limit::perMinute(6)->by($userKey.'|'.$request->ip());
+        });
+
+        RateLimiter::for('contact', function (Request $request) {
+            return Limit::perMinute(6)->by($request->ip());
+        });
+
         $this->routes(function () {
             Route::middleware('api')
                 ->prefix('api')

@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Vite;
 use Symfony\Component\HttpFoundation\Response;
 
 class SecurityHeaders
@@ -13,6 +14,10 @@ class SecurityHeaders
         if (app()->environment('production') && ! $request->secure() && ! $request->is('webhooks/*')) {
             return redirect()->secure($request->getRequestUri());
         }
+
+        $nonce = base64_encode(random_bytes(16));
+        $request->attributes->set('csp_nonce', $nonce);
+        Vite::useCspNonce($nonce);
 
         /** @var Response $response */
         $response = $next($request);
@@ -26,23 +31,24 @@ class SecurityHeaders
             $response->headers->set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
         }
 
-        $response->headers->set('Content-Security-Policy', $this->contentSecurityPolicy());
+        $response->headers->set('Content-Security-Policy', $this->contentSecurityPolicy($nonce));
 
         return $response;
     }
 
-    private function contentSecurityPolicy(): string
+    private function contentSecurityPolicy(string $nonce): string
     {
-        $scriptSrc = ["'self'", "'unsafe-inline'", "'unsafe-eval'", 'https://unpkg.com'];
-        $styleSrc = ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'];
-        $fontSrc = ["'self'", 'https://fonts.gstatic.com', 'data:'];
-        $imgSrc = ["'self'", 'data:', 'blob:', 'https:'];
-        $connectSrc = ["'self'", 'https://assets2.lottiefiles.com', 'https://unpkg.com'];
-        $mediaSrc = ["'self'", 'https://assets2.lottiefiles.com'];
-        $workerSrc = ["'self'", 'blob:'];
+        $nonceSrc = "'nonce-{$nonce}'";
 
-        // Vite HMR only in local — matches public/hot when `npm run dev` is active.
         if (app()->environment('local')) {
+            $scriptSrc = ["'self'", "'unsafe-inline'", "'unsafe-eval'", $nonceSrc, 'https://unpkg.com'];
+            $styleSrc = ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'];
+            $fontSrc = ["'self'", 'https://fonts.gstatic.com', 'data:'];
+            $imgSrc = ["'self'", 'data:', 'blob:', 'https:'];
+            $connectSrc = ["'self'", 'https://assets2.lottiefiles.com', 'https://unpkg.com'];
+            $mediaSrc = ["'self'", 'https://assets2.lottiefiles.com'];
+            $workerSrc = ["'self'", 'blob:'];
+
             $viteOrigins = [
                 'http://localhost:5173',
                 'http://127.0.0.1:5173',
@@ -57,7 +63,14 @@ class SecurityHeaders
             $fontSrc = array_merge($fontSrc, $viteOrigins);
             $workerSrc = array_merge($workerSrc, $viteOrigins);
         } else {
-            $connectSrc = array_merge($connectSrc, ['ws:', 'wss:']);
+            // Production: no unsafe-eval / unsafe-inline for scripts; nonce + Alpine CSP build.
+            $scriptSrc = ["'self'", $nonceSrc, 'https://unpkg.com'];
+            $styleSrc = ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'];
+            $fontSrc = ["'self'", 'https://fonts.gstatic.com', 'data:'];
+            $imgSrc = ["'self'", 'data:', 'blob:', 'https:'];
+            $connectSrc = ["'self'", 'https://assets2.lottiefiles.com', 'https://unpkg.com', 'ws:', 'wss:'];
+            $mediaSrc = ["'self'", 'https://assets2.lottiefiles.com'];
+            $workerSrc = ["'self'", 'blob:'];
         }
 
         return implode('; ', [

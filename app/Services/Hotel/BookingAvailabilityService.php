@@ -22,7 +22,7 @@ class BookingAvailabilityService
 
         return Booking::query()
             ->where('room_type_id', $roomTypeId)
-            ->whereIn('status', Booking::ACTIVE_STATUSES)
+            ->blockingInventory()
             ->where('check_in', '<', $checkOut)
             ->where('check_out', '>', $checkIn)
             ->when($ignoreBookingId, fn ($q) => $q->where('id', '!=', $ignoreBookingId));
@@ -64,7 +64,6 @@ class BookingAvailabilityService
                 ]);
             }
 
-            // Lock inventory rows for this room type.
             $rooms = Room::query()
                 ->where('room_type_id', $roomType->id)
                 ->where('status', 'available')
@@ -74,7 +73,7 @@ class BookingAvailabilityService
 
             if ($rooms->isEmpty()) {
                 throw ValidationException::withMessages([
-                    'room_type_id' => 'No rooms available for this type.',
+                    'room_type_id' => 'No rooms available for this room type.',
                 ]);
             }
 
@@ -85,7 +84,6 @@ class BookingAvailabilityService
             $occupiedRoomIds = $overlapping->pluck('room_id')->filter()->all();
             $freeRoom = $rooms->first(fn (Room $room) => ! in_array($room->id, $occupiedRoomIds, true));
 
-            // If older bookings have no room assigned, fall back to count check.
             if (! $freeRoom || $overlapping->count() >= $rooms->count()) {
                 throw ValidationException::withMessages([
                     'check_in' => 'Selected dates are not available for this room type.',
@@ -93,6 +91,7 @@ class BookingAvailabilityService
             }
 
             $quote = $this->pricing->calculate($roomType, $checkInDate, $checkOutDate);
+            $minutes = (int) config('luxsecure.booking_hold_minutes', env('BOOKING_HOLD_MINUTES', 30));
 
             return Booking::create([
                 'user_id' => $data['user_id'],
@@ -106,6 +105,9 @@ class BookingAvailabilityService
                 'status' => $data['status'] ?? 'pending',
                 'cancellation_policy' => $data['cancellation_policy'] ?? 'flexible',
                 'notes' => $data['notes'] ?? null,
+                'hold_expires_at' => ($data['status'] ?? 'pending') === 'pending'
+                    ? now()->addMinutes(max(1, $minutes))
+                    : null,
             ]);
         });
     }

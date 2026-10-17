@@ -87,7 +87,7 @@ class ApiV1Test extends TestCase
         $this->postJson('/api/v1/favorites/'.$listing->id)->assertUnauthorized();
 
         $user = $this->makeClient(['email' => 'fav@example.com']);
-        Sanctum::actingAs($user);
+        Sanctum::actingAs($user, ['*']);
 
         $this->postJson('/api/v1/favorites/'.$listing->id)
             ->assertOk()
@@ -122,7 +122,7 @@ class ApiV1Test extends TestCase
             'status' => 'available',
         ]);
 
-        Sanctum::actingAs($guest);
+        Sanctum::actingAs($guest, ['*']);
 
         $this->postJson('/api/v1/bookings', [
             'room_type_id' => $roomType->id,

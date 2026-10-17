@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use App\Services\RoleAssignmentService;
 use App\Services\UserAccessRevoker;
+use App\Services\UserPrivilegedAttributes;
 use App\Support\CsvExporter;
 use App\Support\Rbac;
 use Illuminate\Http\RedirectResponse;
@@ -22,6 +23,7 @@ class UserController extends Controller
     public function __construct(
         private RoleAssignmentService $assignments,
         private UserAccessRevoker $accessRevoker,
+        private UserPrivilegedAttributes $privileged,
     ) {}
 
     public function index(Request $request): View
@@ -54,14 +56,13 @@ class UserController extends Controller
     {
         $this->authorize('create', User::class);
 
-        $user = User::create([
+        $user = $this->privileged->createActive([
             'name' => $request->input('name'),
             'email' => $request->input('email'),
             'phone' => $request->input('phone'),
             'password' => Hash::make($request->input('password')),
-            'is_active' => $request->boolean('is_active', true),
             'email_verified_at' => now(),
-        ]);
+        ], $request->boolean('is_active', true));
 
         $this->assignments->syncRoles($request->user(), $user, $request->input('roles', []));
         if ($request->user()->isSuperAdmin()) {
@@ -105,7 +106,6 @@ class UserController extends Controller
         }
 
         $data = $request->safe()->only('name', 'email', 'phone');
-        $data['is_active'] = $isActive;
 
         if ($request->filled('password')) {
             $data['password'] = Hash::make($request->password);
@@ -116,6 +116,7 @@ class UserController extends Controller
         $previousPerms = $user->getDirectPermissions()->pluck('name')->sort()->values()->all();
 
         $user->update($data);
+        $this->privileged->setActive($user, $isActive);
 
         if ($request->user()->can('users.assign_roles')) {
             $this->assignments->syncRoles($request->user(), $user->fresh(), $request->input('roles', []));

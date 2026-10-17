@@ -66,10 +66,13 @@ class PaymentController extends Controller
         return back()->with('success', 'Payment approved and invoice generated.');
     }
 
-    public function refund(Payment $payment, PaymentRefundService $refunds): RedirectResponse
+    public function refund(Request $request, Payment $payment, PaymentRefundService $refunds): RedirectResponse
     {
         $this->authorize('refund', $payment);
-        $refunds->refund($payment);
+        $data = $request->validate([
+            'reason' => ['nullable', 'string', 'max:500'],
+        ]);
+        $refunds->refund($payment, $data['reason'] ?? null);
 
         return back()->with('success', 'Payment refunded.');
     }

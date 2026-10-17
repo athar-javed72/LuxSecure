@@ -328,7 +328,8 @@ class RentAndHotelBookingTest extends TestCase
         ])->assertRedirect(route('bookings.mine'));
 
         $this->assertDatabaseCount('bookings', 1);
-        $this->assertDatabaseCount('booking_payments', 1);
+        $this->assertDatabaseCount('payments', 1);
+        $this->assertDatabaseCount('booking_payments', 0);
         Mail::assertQueued(BookingConfirmationMail::class);
 
         $this->actingAs($guest)

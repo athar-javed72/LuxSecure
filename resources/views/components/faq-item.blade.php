@@ -5,7 +5,7 @@
 ])
 
 <div
-    x-data="{ open: @json($open) }"
+    x-data="faqItem(@json($open))"
     {{ $attributes->merge(['class' => 'rounded-sm border border-slate-200 px-5 py-4']) }}
 >
     <button

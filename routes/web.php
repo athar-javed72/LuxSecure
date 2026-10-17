@@ -18,7 +18,7 @@ Route::get('/', [HomeController::class, '__invoke'])->name('home');
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login.form')->middleware('guest');
 Route::post('/login', [AuthController::class, 'login'])->name('login')->middleware('throttle:login');
 Route::get('/two-factor-challenge', [AuthController::class, 'showTwoFactorChallenge'])->name('two-factor.challenge')->middleware('guest');
-Route::post('/two-factor-challenge', [AuthController::class, 'verifyTwoFactorChallenge'])->name('two-factor.verify')->middleware('guest');
+Route::post('/two-factor-challenge', [AuthController::class, 'verifyTwoFactorChallenge'])->name('two-factor.verify')->middleware(['guest', 'throttle:two-factor']);
 Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register.form')->middleware('guest');
 Route::post('/register', [AuthController::class, 'register'])->name('register')->middleware('throttle:6,1');
 
@@ -34,7 +34,7 @@ Route::get('/properties', [ListingController::class, 'index'])->name('properties
 Route::get('/properties/{listing}', [ListingController::class, 'show'])->name('properties.show');
 
 Route::get('/contact', [ContactController::class, 'show'])->name('contact');
-Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
+Route::post('/contact', [ContactController::class, 'store'])->name('contact.store')->middleware('throttle:contact');
 
 Route::get('/blog', [PageController::class, 'blogIndex'])->name('blog.index');
 Route::get('/blog/{slug}', [PageController::class, 'blogShow'])->name('blog.show');
@@ -209,10 +209,15 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'active', 'panel', '
         Route::get('payments', [\App\Http\Controllers\Admin\PaymentController::class, 'index'])->name('payments.index');
         Route::get('payments/export', [\App\Http\Controllers\Admin\PaymentController::class, 'export'])->name('payments.export');
         Route::get('payments/{payment}', [\App\Http\Controllers\Admin\PaymentController::class, 'show'])->name('payments.show');
-        Route::post('payments/{payment}/approve', [\App\Http\Controllers\Admin\PaymentController::class, 'approve'])->name('payments.approve');
-        Route::post('payments/{payment}/refund', [\App\Http\Controllers\Admin\PaymentController::class, 'refund'])->name('payments.refund');
         Route::get('payments/{payment}/invoice', [\App\Http\Controllers\Admin\PaymentController::class, 'downloadInvoice'])->name('payments.invoice');
     });
+
+    Route::post('payments/{payment}/approve', [\App\Http\Controllers\Admin\PaymentController::class, 'approve'])
+        ->middleware('permission:payments.update.any')
+        ->name('payments.approve');
+    Route::post('payments/{payment}/refund', [\App\Http\Controllers\Admin\PaymentController::class, 'refund'])
+        ->middleware('permission:payments.refund')
+        ->name('payments.refund');
 
     Route::middleware('permission:reviews.view.any|reviews.moderate')->group(function () {
         Route::get('reviews', [\App\Http\Controllers\Admin\ReviewController::class, 'index'])->name('reviews.index');

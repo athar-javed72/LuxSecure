@@ -7,54 +7,11 @@
 
 <div
     class="grid grid-cols-1 md:grid-cols-2 gap-4"
-    x-data="{
+    x-data="listingForm({
         listingTypeId: @js($selectedType),
         types: @js($typesPayload),
-        attrValues: @js($currentAttrs),
-        featuredPreview: null,
-        galleryPreviews: [],
-        featuredObjectUrl: null,
-        galleryObjectUrls: [],
-        get dynamicAttributes() {
-            const type = this.types[this.listingTypeId];
-            return type ? type.attributes : [];
-        },
-        optionEntries(options) {
-            if (!options) return [];
-            if (Array.isArray(options)) {
-                return options.map((v) => ({ value: String(v), label: String(v) }));
-            }
-            return Object.keys(options).map((k) => ({ value: String(k), label: String(options[k]) }));
-        },
-        onFeaturedChange(event) {
-            if (this.featuredObjectUrl) {
-                URL.revokeObjectURL(this.featuredObjectUrl);
-                this.featuredObjectUrl = null;
-            }
-            const file = event.target.files && event.target.files[0];
-            if (!file) {
-                this.featuredPreview = null;
-                return;
-            }
-            this.featuredObjectUrl = URL.createObjectURL(file);
-            this.featuredPreview = this.featuredObjectUrl;
-        },
-        onGalleryChange(event) {
-            this.galleryObjectUrls.forEach((url) => URL.revokeObjectURL(url));
-            this.galleryObjectUrls = [];
-            this.galleryPreviews = [];
-            const files = event.target.files ? Array.from(event.target.files) : [];
-            files.forEach((file) => {
-                const url = URL.createObjectURL(file);
-                this.galleryObjectUrls.push(url);
-                this.galleryPreviews.push(url);
-            });
-        },
-        destroy() {
-            if (this.featuredObjectUrl) URL.revokeObjectURL(this.featuredObjectUrl);
-            this.galleryObjectUrls.forEach((url) => URL.revokeObjectURL(url));
-        }
-    }"
+        attrValues: @js($currentAttrs)
+    })"
 >
     <div class="md:col-span-2">
         <x-input label="Title *" name="title" :value="old('title', $listing?->title)" placeholder="e.g. Modern Villa in DHA" required />
@@ -229,7 +186,7 @@
     <x-panel class="md:col-span-2 space-y-3">
         <h3 class="fs-display text-sm font-semibold text-fs-primary">Gallery</h3>
         @if($listing && $listing->relationLoaded('images') && $listing->images->isNotEmpty())
-            <div class="space-y-3" x-data="{ order: {{ $listing->images->pluck('id')->values()->toJson() }} }">
+            <div class="space-y-3" x-data="imageOrder({{ $listing->images->pluck('id')->values()->toJson() }})">
                 <div class="flex flex-wrap gap-3">
                     @foreach($listing->images as $image)
                         @php $galleryUrl = Media::url($image->path); @endphp

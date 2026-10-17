@@ -15,7 +15,7 @@
 
 <div
     {{ $attributes->merge(['class' => $classes, 'role' => $tone === 'error' ? 'alert' : 'status']) }}
-    @if($dismissible) x-data="{ show: true }" x-show="show" x-cloak @endif
+    @if($dismissible) x-data="dismissible" x-show="show" x-cloak @endif
 >
     <div class="flex-1 min-w-0">{{ $slot }}</div>
     @if($dismissible)

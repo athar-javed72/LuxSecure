@@ -16,6 +16,7 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('luxsecure:backup')->dailyAt('02:00')->timezone($tz);
         $schedule->command('luxsecure:notify-rent-due')->dailyAt('08:00')->timezone($tz);
+        $schedule->command('luxsecure:expire-booking-holds')->everyFiveMinutes()->timezone($tz);
     }
 
     /**

@@ -5,7 +5,7 @@
 ])
 
 <div
-    x-data="{ open: false }"
+    x-data="modal"
     x-on:open-modal.window="if ($event.detail === '{{ $name }}') open = true"
     x-on:close-modal.window="if ($event.detail === '{{ $name }}') open = false"
     x-on:keydown.escape.window="open = false"

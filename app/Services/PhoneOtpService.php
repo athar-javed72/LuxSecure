@@ -59,9 +59,6 @@ class PhoneOtpService
         }
 
         $otp->update(['consumed_at' => now()]);
-        $user->update([
-            'phone' => $phone,
-            'phone_verified_at' => now(),
-        ]);
+        app(UserPrivilegedAttributes::class)->setPhoneVerified($user, $phone, now());
     }
 }

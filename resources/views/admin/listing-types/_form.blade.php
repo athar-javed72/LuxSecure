@@ -19,16 +19,7 @@
 
 <div
     class="space-y-4"
-    x-data="{
-        rows: @js($rows),
-        addRow() {
-            this.rows.push({ key: '', label: '', input_type: 'text', options: '', is_required: false, is_filterable: false, sort_order: this.rows.length });
-        },
-        removeRow(index) {
-            this.rows.splice(index, 1);
-            if (this.rows.length === 0) this.addRow();
-        }
-    }"
+    x-data="listingTypeForm({ rows: @js($rows) })"
 >
     <x-input label="Name *" name="name" :value="old('name', $listingType?->name)" required />
     <x-input label="Slug" name="slug" :value="old('slug', $listingType?->slug)" placeholder="auto from name if empty" />

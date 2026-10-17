@@ -4,7 +4,7 @@
 @section('meta_description', 'Browse and filter LuxSecure property listings by location, type, and budget.')
 
 @section('content')
-<x-container class="py-8" x-data="{ filtersOpen: false }">
+<x-container class="py-8" x-data="filtersPanel">
     <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6">
         <div>
             <h1 class="text-xl md:text-2xl font-bold text-fs-primary">Properties</h1>

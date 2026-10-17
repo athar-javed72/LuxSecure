@@ -1,6 +1,6 @@
 # STATE — LuxSecure
 
-Remaining platform features phase — **COMPLETE locally** (push optional)
+Production hardening (ledger / holds / CSP / Sanctum / SMS) — **COMPLETE locally**
 
 ---
 
@@ -9,23 +9,23 @@ Remaining platform features phase — **COMPLETE locally** (push optional)
 ### Product
 - **LuxSecure** — property listing & management (Nexora Labs).
 - Public: home, properties, contact, auth, profile, bookings/tenancies, reviews, KYC, phone OTP, notifications bell.
-- Admin (`/admin`): listings, payments (filters/CSV/approve), reviews moderation, KYC review, tenancies, bookings, CMS, settings, activity, RBAC users/roles.
-- Payments: polymorphic `payments` + invoices (dompdf), bank transfer / JazzCash / Easypaisa (signed idempotent webhooks).
-- API: legacy `/api/properties` + Sanctum; v1 + Scribe `/docs`.
-- Ops: listing cache, image optimize, backup command, optional Sentry (`SENTRY_LARAVEL_DSN` empty = off).
+- Admin (`/admin`): listings, payments (filters/CSV/approve/refund), reviews moderation, KYC review, tenancies, bookings, CMS, settings, activity, RBAC users/roles.
+- Payments: **canonical polymorphic `payments` ledger** via `PaymentLedgerService` + `RefundCalculator`; `booking_payments` deprecated/read-only (backfilled).
+- Bookings: `hold_expires_at` (default 30m, `BOOKING_HOLD_MINUTES`); `luxsecure:expire-booking-holds` every 5 minutes; availability ignores expired holds.
+- API: Sanctum with **role ability sets**; staff needing 2FA get short-lived `2fa:setup` only.
+- Ops: listing cache UUID versioning; TrustProxies from `TRUSTED_PROXIES`; prod CSP nonce + Alpine CSP build; SMS `log`/`http` drivers.
 
 ### Stack
 - Laravel 10, PHP 8.1+, Sanctum, Spatie Permission + Activity Log, PHPUnit, Pint
-- Blade + Tailwind CSS 4 (Vite) + Alpine.js — no Bootstrap / no Tailwind CDN
-- Estate Noir theme; uploads via `UPLOADS_DISK` / `PRIVATE_DISK`
+- Blade + Tailwind CSS 4 (Vite) + **@alpinejs/csp** — Estate Noir theme
 
 ### Git
 - `origin` → `https://github.com/athar-javed72/LuxSecure.git`
-- Local changes for remaining features are uncommitted unless user asks to commit
+- Hardening changes uncommitted unless user asks to commit
 
-### Docs
-- `README.md` documents modules, roles, setup, env keys
-- `PRD.md`, `progress.txt`, `AGENTS.md`, `.agents/` / `.agent/`
+### Env samples
+- `.env.example` — production-oriented (HTTPS, `APP_DEBUG=false`, `LOG_LEVEL=error`)
+- `.env.local.example` — local development
 
 ---
 
@@ -33,10 +33,10 @@ Remaining platform features phase — **COMPLETE locally** (push optional)
 
 | Area | Status |
 |------|--------|
-| PHPUnit | 69 passed |
+| PHPUnit | **105 passed** |
 | `npm run build` | Passing |
 | `migrate:fresh --seed` | Passing |
-| Payments / reviews / KYC / notifications / OTP | Done (local) |
+| Ledger / holds / CSP / Sanctum / SMS | Done (local) |
 | Pushed to GitHub | No (awaiting user) |
 
 ---
@@ -44,12 +44,12 @@ Remaining platform features phase — **COMPLETE locally** (push optional)
 ## 3. Known gaps
 
 1. Push / commit when user requests.
-2. Real JazzCash/Easypaisa credentials needed for live sandbox calls (env stubs only).
-3. Seeder/remote images need network for Unsplash URLs.
+2. Real JazzCash/Easypaisa + SMS HTTP gateway credentials for live calls.
+3. Drop `booking_payments` table only after a later deprecation window.
 
 ---
 
 ## 4. Next (optional)
 
 - `git commit` / `git push` when ready
-- Wire production Sentry DSN and payment secrets
+- Wire production SMS HTTP gateway and payment secrets

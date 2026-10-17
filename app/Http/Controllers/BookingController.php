@@ -5,12 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreBookingRequest;
 use App\Mail\BookingConfirmationMail;
 use App\Models\Booking;
-use App\Models\BookingPayment;
 use App\Models\Listing;
 use App\Models\RoomType;
 use App\Services\Hotel\BookingAvailabilityService;
 use App\Services\Hotel\BookingPricingService;
-use App\Services\Payments\PaymentRefundService;
+use App\Services\Payments\PaymentLedgerService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -22,7 +21,7 @@ class BookingController extends Controller
     public function __construct(
         private readonly BookingAvailabilityService $availability,
         private readonly BookingPricingService $pricing,
-        private readonly PaymentRefundService $refunds,
+        private readonly PaymentLedgerService $ledger,
     ) {}
 
     public function create(Listing $listing, Request $request): View
@@ -73,12 +72,7 @@ class BookingController extends Controller
             'status' => 'pending',
         ]);
 
-        BookingPayment::create([
-            'booking_id' => $booking->id,
-            'amount' => $booking->total,
-            'status' => 'pending',
-            'method' => 'pending',
-        ]);
+        $this->ledger->createPendingForBooking($booking);
 
         $booking->load(['user', 'listing', 'roomType']);
         Mail::to($booking->user->email)->queue(new BookingConfirmationMail($booking));
@@ -93,7 +87,7 @@ class BookingController extends Controller
         $this->authorize('viewAny', Booking::class);
 
         $bookings = Booking::query()
-            ->with(['listing', 'roomType', 'room'])
+            ->with(['listing', 'roomType', 'room', 'payments'])
             ->where('user_id', $request->user()->id)
             ->latest()
             ->paginate(12);
@@ -112,8 +106,7 @@ class BookingController extends Controller
     public function cancel(Booking $booking): RedirectResponse
     {
         $this->authorize('cancelOwn', $booking);
-        $booking->update(['status' => 'cancelled']);
-        $this->refunds->voidOrMarkRefundPending($booking);
+        $this->ledger->cancelBooking($booking, request()->user());
         $booking->load(['user', 'listing', 'roomType']);
         Mail::to($booking->user->email)->queue(new BookingConfirmationMail($booking));
 

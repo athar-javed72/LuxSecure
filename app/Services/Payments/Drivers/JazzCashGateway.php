@@ -3,9 +3,12 @@
 namespace App\Services\Payments\Drivers;
 
 use App\Contracts\PaymentGateway;
+use App\Models\Booking;
 use App\Models\Payment;
 use App\Models\PaymentWebhookEvent;
+use App\Services\Payments\Concerns\RecordsWebhookEvents;
 use App\Services\Payments\InvoiceService;
+use App\Services\Payments\PaymentLedgerService;
 use App\Services\Payments\PaymentStatusMachine;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -14,9 +17,12 @@ use Illuminate\Validation\ValidationException;
 
 class JazzCashGateway implements PaymentGateway
 {
+    use RecordsWebhookEvents;
+
     public function __construct(
         private readonly InvoiceService $invoices,
         private readonly PaymentStatusMachine $statuses,
+        private readonly PaymentLedgerService $ledger,
     ) {}
 
     public function name(): string
@@ -98,7 +104,6 @@ class JazzCashGateway implements PaymentGateway
 
             $payment = Payment::query()->where('external_id', $eventId)->lockForUpdate()->firstOrFail();
 
-            // Concurrent winner may have inserted the event while we waited on the payment row.
             $existingEvent = PaymentWebhookEvent::query()
                 ->where('gateway', $this->name())
                 ->where('event_id', $eventId)
@@ -125,18 +130,20 @@ class JazzCashGateway implements PaymentGateway
                 ]);
             }
 
-            PaymentWebhookEvent::create([
-                'gateway' => $this->name(),
-                'event_id' => $eventId,
-                'payload' => $payload,
-                'status' => 'processed',
-            ]);
+            $race = $this->recordWebhookEventOrExisting($this->name(), $eventId, $payload, $payment);
+            if ($race) {
+                return $race;
+            }
 
             $responseCode = (string) ($payload['pp_ResponseCode'] ?? $payload['status'] ?? '');
 
             if (in_array($responseCode, ['000', 'success', 'paid'], true)) {
                 $this->statuses->transition($payment, 'paid');
-                $this->invoices->createFor($payment->fresh());
+                $paid = $payment->fresh();
+                $this->invoices->createFor($paid);
+                if ($paid->payable_type === Booking::class && $paid->payable instanceof Booking) {
+                    $this->ledger->markBookingPaid($paid->payable, $paid);
+                }
             } else {
                 $this->statuses->transition($payment, 'failed');
             }

@@ -21,6 +21,8 @@ Completed Tasks:
 - API v1 + ops (2026-10-17): Sanctum token auth (register/login/logout/2FA challenge), listings/bookings/favorites/profile Resources, consistent JSON errors, api/api-auth rate limits, Scribe OpenAPI at /docs, admin TOTP 2FA (web+API), listing query cache, Intervention image optimization, queued ContactInquiry mail, luxsecure:backup + docs/BACKUP.md. Verified: pint, 61 PHPUnit tests, npm run build, scribe:generate.
 - Remaining platform features (2026-10-17): polymorphic payments + bank/JazzCash/Easypaisa gateways + dompdf invoices; reviews + moderation + averages; KYC private docs + verified badges + unverified publish block; DB/mail notifications + bell + rent-due schedule + MessageChannel log driver; listing floor plan/video/private docs; UPLOADS_DISK/PRIVATE_DISK; phone OTP; footer/settings; README rewrite; Sentry env-off. Verified: pint, 69 PHPUnit tests, npm run build, migrate:fresh --seed.
 
+- Production hardening P0–P2 (2026-10-17): single `payments` ledger (stop booking_payments writes; idempotent backfill; PaymentLedgerService + RefundCalculator); booking hold_expires_at + expire command every 5m; TrustProxies from TRUSTED_PROXIES; 2FA/contact throttles; prod CSP nonce + @alpinejs/csp (no unsafe-eval/inline scripts); Sanctum role abilities + short-lived 2fa:setup token; SMS http/log drivers with prod log guard; admin payments.approve/refund permission middleware; webhook unique-race no-op; listing cache UUID version; User fillable cleanup via UserPrivilegedAttributes; notifications mark-all query update; soft deletes on bookings/payments. Verified: pint, 105 PHPUnit tests, npm run build, migrate:fresh --seed.
+
 
 Notes / STOP points:
 ---------------------

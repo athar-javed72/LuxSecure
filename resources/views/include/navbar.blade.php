@@ -40,7 +40,7 @@
 
 <header
     class="fixed top-0 left-0 w-full z-50 h-[72px] border-b border-white/10 shadow-lg backdrop-blur-xl bg-fs-primary/97"
-    x-data="{ navOpen: false, profileOpen: false }"
+    x-data="navBar"
     @keydown.escape.window="navOpen = false; profileOpen = false"
 >
     <x-container class="h-full flex items-center justify-between gap-4">
@@ -83,8 +83,7 @@
                     <x-button variant="secondary" href="{{ route('admin.dashboard') }}">Admin</x-button>
                 @endif
                 <a href="{{ route('notifications.index') }}" class="relative inline-flex items-center justify-center w-11 h-11 rounded-full bg-white/10 text-white hover:bg-white/15 transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fs-brand" aria-label="Notifications"
-                   x-data="{ count: {{ Auth::user()->unreadNotifications()->count() }} }"
-                   x-init="setInterval(async () => { try { const r = await fetch('{{ route('notifications.unread-count') }}', { headers: { 'Accept': 'application/json' } }); const j = await r.json(); count = j.count ?? 0; } catch (e) {} }, 60000)">
+                   x-data="notifCount({ count: {{ Auth::user()->unreadNotifications()->count() }}, url: @js(route('notifications.unread-count')) })">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 17h5l-1.4-1.4A2 2 0 0118 14.2V11a6 6 0 10-12 0v3.2c0 .5-.2 1-.6 1.4L4 17h5m6 0a3 3 0 11-6 0"/></svg>
                     <span x-show="count > 0" x-text="count" class="absolute -top-1 -right-1 min-w-[1.25rem] h-5 px-1 rounded-full bg-fs-brand text-[10px] font-bold flex items-center justify-center"></span>
                 </a>

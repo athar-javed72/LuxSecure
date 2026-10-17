@@ -27,7 +27,19 @@ return [
     'uploads_disk' => env('UPLOADS_DISK', 'public'),
     'private_disk' => env('PRIVATE_DISK', 'local'),
 
+    'booking_hold_minutes' => (int) env('BOOKING_HOLD_MINUTES', 30),
+
+    'trusted_proxies' => env('TRUSTED_PROXIES', ''),
+
+    'sanctum_2fa_setup_minutes' => (int) env('SANCTUM_2FA_SETUP_MINUTES', 15),
+
     'messaging' => [
         'default' => env('MESSAGING_DRIVER', 'log'),
+        'allow_log_in_production' => (bool) env('MESSAGING_ALLOW_LOG_IN_PRODUCTION', false),
+        'http' => [
+            'url' => env('MESSAGING_HTTP_URL', ''),
+            'key' => env('MESSAGING_HTTP_KEY'),
+            'sender' => env('MESSAGING_HTTP_SENDER'),
+        ],
     ],
 ];

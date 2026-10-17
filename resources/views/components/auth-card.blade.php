@@ -8,21 +8,14 @@
 
 <div
     class="flex w-full max-w-4xl mx-auto rounded-md overflow-hidden shadow-lg border border-slate-100 bg-white"
-    x-data="{
+    x-data="authCard({
         mode: @js($initialMode),
-        setMode(next) {
-            if (this.mode === next) return;
-            this.mode = next;
-            const urls = {
-                login: @js(route('login.form')),
-                register: @js(route('register.form')),
-                forgot: @js(route('password.request')),
-            };
-            if (urls[next] && window.location.pathname !== new URL(urls[next], window.location.origin).pathname) {
-                window.history.replaceState({}, '', urls[next]);
-            }
+        urls: {
+            login: @js(route('login.form')),
+            register: @js(route('register.form')),
+            forgot: @js(route('password.request')),
         }
-    }"
+    })"
 >
     {{-- Left panel stays mounted; only copy/animation swap --}}
     <div class="hidden md:flex w-1/2 flex-col items-center justify-center bg-gradient-to-br from-fs-primary via-[#152238] to-[#1e3a5f] p-8 text-center">
