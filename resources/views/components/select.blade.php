@@ -11,6 +11,10 @@
 @php
     $selectId = $id ?? $name;
     $current = old($name, $selected);
+    // Treat null / missing as empty so "All …" placeholders stay selected by default.
+    if ($current === null) {
+        $current = '';
+    }
 @endphp
 
 <div {{ $attributes->only('class')->merge(['class' => 'w-full']) }}>
@@ -26,14 +30,10 @@
         ]) }}
     >
         @if($placeholder !== null)
-            <option value="">{{ $placeholder }}</option>
+            <option value="" @selected((string) $current === '')>{{ $placeholder }}</option>
         @endif
         @foreach($options as $value => $text)
-            @if(is_int($value))
-                <option value="{{ $text }}" @selected($current == $text)>{{ $text }}</option>
-            @else
-                <option value="{{ $value }}" @selected((string) $current === (string) $value)>{{ $text }}</option>
-            @endif
+            <option value="{{ $value }}" @selected((string) $current === (string) $value)>{{ $text }}</option>
         @endforeach
     </select>
     @error($name)

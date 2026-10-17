@@ -39,6 +39,12 @@ class AdminAndPropertiesSeeder extends Seeder
             ['key' => 'furnished', 'label' => 'Furnished', 'input_type' => 'boolean', 'is_required' => false, 'is_filterable' => true, 'sort_order' => 4],
         ]);
 
+        $house = $this->ensureType('House', 'house', [
+            ['key' => 'bedrooms', 'label' => 'Bedrooms', 'input_type' => 'number', 'is_required' => true, 'is_filterable' => true, 'sort_order' => 1],
+            ['key' => 'bathrooms', 'label' => 'Bathrooms', 'input_type' => 'number', 'is_required' => true, 'is_filterable' => true, 'sort_order' => 2],
+            ['key' => 'garage', 'label' => 'Garage', 'input_type' => 'boolean', 'is_required' => false, 'is_filterable' => true, 'sort_order' => 3],
+        ]);
+
         $plot = $this->ensureType('Plot', 'plot', [
             ['key' => 'plot_number', 'label' => 'Plot number', 'input_type' => 'text', 'is_required' => false, 'is_filterable' => false, 'sort_order' => 1],
             ['key' => 'facing', 'label' => 'Facing', 'input_type' => 'select', 'options' => ['North', 'South', 'East', 'West'], 'is_required' => false, 'is_filterable' => true, 'sort_order' => 2],
@@ -49,10 +55,6 @@ class AdminAndPropertiesSeeder extends Seeder
             ['key' => 'rooms', 'label' => 'Rooms', 'input_type' => 'number', 'is_required' => true, 'is_filterable' => true, 'sort_order' => 2],
             ['key' => 'breakfast_included', 'label' => 'Breakfast included', 'input_type' => 'boolean', 'is_required' => false, 'is_filterable' => true, 'sort_order' => 3],
         ]);
-
-        if (Listing::query()->exists()) {
-            return;
-        }
 
         $samples = [
             [
@@ -80,6 +82,19 @@ class AdminAndPropertiesSeeder extends Seeder
                 'area_unit' => 'sq_ft',
                 'attributes' => ['bedrooms' => 3, 'bathrooms' => 2, 'floor' => 8, 'furnished' => false],
                 'featured_image' => 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1200&q=80',
+            ],
+            [
+                'title' => 'Model Town Family House',
+                'location' => 'Model Town, Lahore',
+                'listing_type_id' => $house->id,
+                'purpose' => 'sale',
+                'price' => 45000000,
+                'price_unit' => 'total',
+                'city_id' => $lahore->id,
+                'area_size' => 10,
+                'area_unit' => 'marla',
+                'attributes' => ['bedrooms' => 5, 'bathrooms' => 4, 'garage' => true],
+                'featured_image' => 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=1200&q=80',
             ],
             [
                 'title' => 'Bahria Town Residential Plot',
@@ -110,14 +125,18 @@ class AdminAndPropertiesSeeder extends Seeder
         ];
 
         foreach ($samples as $sample) {
-            Listing::create(array_merge($sample, [
-                'status' => 'published',
-                'currency' => 'PKR',
-                'slug' => Str::slug($sample['title']),
-                'owner_id' => $admin->id,
-                'agent_id' => $admin->id,
-                'description' => 'A carefully verified LuxSecure listing with modern finishes and a prime location.',
-            ]));
+            $slug = Str::slug($sample['title']);
+            Listing::updateOrCreate(
+                ['slug' => $slug],
+                array_merge($sample, [
+                    'status' => 'published',
+                    'currency' => 'PKR',
+                    'slug' => $slug,
+                    'owner_id' => $admin->id,
+                    'agent_id' => $admin->id,
+                    'description' => 'A carefully verified LuxSecure listing with modern finishes and a prime location.',
+                ])
+            );
         }
     }
 
@@ -126,7 +145,7 @@ class AdminAndPropertiesSeeder extends Seeder
      */
     private function ensureType(string $name, string $slug, array $attributes): ListingType
     {
-        $type = ListingType::firstOrCreate(
+        $type = ListingType::updateOrCreate(
             ['slug' => $slug],
             ['name' => $name, 'icon' => null, 'is_active' => true]
         );

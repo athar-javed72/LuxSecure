@@ -11,7 +11,7 @@
         name="type"
         :id="$idPrefix . '-type'"
         :options="$listingTypes->mapWithKeys(fn ($t) => [$t->slug => $t->name])->all()"
-        :selected="request('type')"
+        :selected="request()->query('type', '')"
         placeholder="All types"
     />
     <x-select
@@ -23,7 +23,7 @@
             'rent' => 'For Rent',
             'short_stay' => 'Short Stay',
         ]"
-        :selected="request('purpose')"
+        :selected="request()->query('purpose', '')"
         placeholder="Any purpose"
     />
     <x-select
@@ -31,7 +31,7 @@
         name="city_id"
         :id="$idPrefix . '-city'"
         :options="$cities->mapWithKeys(fn ($c) => [$c->id => $c->name])->all()"
-        :selected="request('city_id')"
+        :selected="request()->query('city_id', '')"
         placeholder="All cities"
     />
     <x-select
@@ -46,7 +46,7 @@
             '0-100000' => 'Rent/stay under 100k',
             '100001-300000' => 'Rent/stay 100k–300k',
         ]"
-        :selected="request('price')"
+        :selected="request()->query('price', '')"
         placeholder="Any budget"
     />
 
