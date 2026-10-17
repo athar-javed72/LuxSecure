@@ -7,51 +7,74 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, HasRoles, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'name',
         'email',
         'phone',
         'password',
-        'role',
+        'is_active',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'is_active' => 'boolean',
     ];
+
+    public function isSuperAdmin(): bool
+    {
+        return $this->hasRole('super_admin');
+    }
 
     public function isAdmin(): bool
     {
-        return $this->role === 'admin';
+        return $this->hasAnyRole(['super_admin', 'admin']);
+    }
+
+    public function isStaff(): bool
+    {
+        return $this->can('panel.access');
     }
 
     public function favorites()
     {
         return $this->belongsToMany(Listing::class, 'favorites')->withTimestamps();
+    }
+
+    public function ownedListings()
+    {
+        return $this->hasMany(Listing::class, 'owner_id');
+    }
+
+    public function agentListings()
+    {
+        return $this->hasMany(Listing::class, 'agent_id');
+    }
+
+    public function ownsListing(Listing $listing): bool
+    {
+        return (int) $listing->agent_id === (int) $this->id
+            || (int) $listing->owner_id === (int) $this->id;
+    }
+
+    public static function superAdminCount(): int
+    {
+        return static::role('super_admin')->count();
+    }
+
+    public function isLastSuperAdmin(): bool
+    {
+        return $this->isSuperAdmin() && static::superAdminCount() <= 1;
     }
 }

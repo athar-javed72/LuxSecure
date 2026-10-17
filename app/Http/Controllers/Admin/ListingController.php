@@ -23,6 +23,13 @@ class ListingController extends Controller
 
         $query = Listing::with(['images', 'listingType', 'city'])->latest();
 
+        $user = $request->user();
+        if (! $user->can('listings.view.any')) {
+            $query->where(function ($q) use ($user) {
+                $q->where('agent_id', $user->id)->orWhere('owner_id', $user->id);
+            });
+        }
+
         if ($request->filled('search')) {
             $search = $request->string('search')->toString();
             $query->where(function ($q) use ($search) {
@@ -66,6 +73,10 @@ class ListingController extends Controller
 
         if ($request->hasFile('featured_image')) {
             $data['featured_image'] = $request->file('featured_image')->store('listings', 'public');
+        }
+
+        if (blank($data['agent_id'] ?? null) && $request->user()->hasRole('agent')) {
+            $data['agent_id'] = $request->user()->id;
         }
 
         $listing = Listing::create($data);

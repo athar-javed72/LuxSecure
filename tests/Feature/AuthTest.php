@@ -2,13 +2,22 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Support\CreatesUsers;
+use Tests\Support\SeedsRbac;
 use Tests\TestCase;
 
 class AuthTest extends TestCase
 {
+    use CreatesUsers;
     use RefreshDatabase;
+    use SeedsRbac;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->seedRbac();
+    }
 
     public function test_register_creates_user_and_redirects(): void
     {
@@ -21,13 +30,13 @@ class AuthTest extends TestCase
 
         $response->assertRedirect(route('login.form'));
         $this->assertDatabaseHas('users', ['email' => 'test@example.com']);
+        $this->assertTrue(\App\Models\User::where('email', 'test@example.com')->first()->hasRole('client'));
     }
 
     public function test_login_succeeds_with_valid_credentials(): void
     {
-        $user = User::factory()->create([
+        $user = $this->makeClient([
             'email' => 'login@example.com',
-            'email_verified_at' => now(),
         ]);
 
         $response = $this->post(route('login'), [

@@ -3,17 +3,26 @@
 namespace Tests\Feature;
 
 use App\Models\Listing;
-use App\Models\User;
 use App\Policies\ListingPolicy;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Gate;
 use Tests\Support\CreatesListings;
+use Tests\Support\CreatesUsers;
+use Tests\Support\SeedsRbac;
 use Tests\TestCase;
 
 class SecurityHardeningTest extends TestCase
 {
     use CreatesListings;
+    use CreatesUsers;
     use RefreshDatabase;
+    use SeedsRbac;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->seedRbac();
+    }
 
     public function test_login_is_rate_limited_after_five_attempts(): void
     {
@@ -52,12 +61,9 @@ class SecurityHardeningTest extends TestCase
         ]);
     }
 
-    public function test_cannot_demote_or_delete_the_last_admin(): void
+    public function test_cannot_demote_or_delete_the_last_super_admin(): void
     {
-        $admin = User::factory()->create([
-            'role' => 'admin',
-            'email_verified_at' => now(),
-        ]);
+        $admin = $this->makeSuperAdmin();
 
         $demote = $this->actingAs($admin)
             ->from(route('admin.users.edit', $admin))
@@ -65,31 +71,25 @@ class SecurityHardeningTest extends TestCase
                 'name' => $admin->name,
                 'email' => $admin->email,
                 'phone' => $admin->phone,
-                'role' => 'user',
+                'is_active' => 1,
+                'roles' => ['client'],
             ]);
 
-        $demote->assertRedirect(route('admin.users.edit', $admin));
-        $demote->assertSessionHas('error');
-        $this->assertDatabaseHas('users', [
-            'id' => $admin->id,
-            'role' => 'admin',
-        ]);
+        $demote->assertRedirect();
+        $demote->assertSessionHasErrors('roles');
+        $this->assertTrue($admin->fresh()->hasRole('super_admin'));
 
         $delete = $this->actingAs($admin)
             ->from(route('admin.users.show', $admin))
             ->delete(route('admin.users.destroy', $admin));
 
-        $delete->assertRedirect(route('admin.users.show', $admin));
-        $delete->assertSessionHas('error');
+        $delete->assertForbidden();
         $this->assertDatabaseHas('users', ['id' => $admin->id]);
     }
 
-    public function test_non_admin_is_denied_by_property_policy(): void
+    public function test_non_admin_is_denied_by_listing_policy(): void
     {
-        $user = User::factory()->create([
-            'role' => 'user',
-            'email_verified_at' => now(),
-        ]);
+        $user = $this->makeClient();
 
         $this->assertFalse(Gate::forUser($user)->allows('viewAny', Listing::class));
         $this->assertFalse((new ListingPolicy)->viewAny($user));

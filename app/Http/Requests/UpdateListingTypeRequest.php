@@ -10,7 +10,7 @@ class UpdateListingTypeRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()?->isAdmin() ?? false;
+        return $this->user()?->can('listing_types.update') ?? false;
     }
 
     public function rules(): array

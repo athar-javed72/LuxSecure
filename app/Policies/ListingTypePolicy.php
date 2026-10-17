@@ -9,26 +9,26 @@ class ListingTypePolicy
 {
     public function viewAny(User $user): bool
     {
-        return $user->isAdmin();
+        return $user->can('listing_types.view');
     }
 
     public function view(User $user, ListingType $listingType): bool
     {
-        return $user->isAdmin();
+        return $user->can('listing_types.view');
     }
 
     public function create(User $user): bool
     {
-        return $user->isAdmin();
+        return $user->can('listing_types.create');
     }
 
     public function update(User $user, ListingType $listingType): bool
     {
-        return $user->isAdmin();
+        return $user->can('listing_types.update');
     }
 
     public function delete(User $user, ListingType $listingType): bool
     {
-        return $user->isAdmin();
+        return $user->can('listing_types.delete');
     }
 }

@@ -6,11 +6,17 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class EnsureUserIsAdmin
+class EnsurePanelAccess
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (! $request->user()?->isAdmin()) {
+        $user = $request->user();
+
+        if (! $user || ! $user->is_active) {
+            abort(403, 'Unauthorized.');
+        }
+
+        if (! $user->can('panel.access')) {
             abort(403, 'Unauthorized.');
         }
 

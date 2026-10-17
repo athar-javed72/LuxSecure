@@ -12,7 +12,9 @@ class UpdateListingRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()?->isAdmin() ?? false;
+        $user = $this->user();
+
+        return $user && ($user->can('listings.update.any') || $user->can('listings.update.own'));
     }
 
     public function rules(): array

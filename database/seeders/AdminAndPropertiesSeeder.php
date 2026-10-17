@@ -15,18 +15,18 @@ class AdminAndPropertiesSeeder extends Seeder
 {
     public function run(): void
     {
+        $this->call(RolesAndPermissionsSeeder::class);
+
         $admin = User::firstOrCreate(
             ['email' => 'admin@luxsecure.com'],
             [
                 'name' => 'Admin',
                 'password' => Hash::make('password'),
-                'role' => 'admin',
                 'email_verified_at' => now(),
+                'is_active' => true,
             ]
         );
-        if (! $admin->isAdmin()) {
-            $admin->update(['role' => 'admin', 'email_verified_at' => $admin->email_verified_at ?? now()]);
-        }
+        $admin->syncRoles(['super_admin']);
 
         $lahore = City::firstOrCreate(['slug' => 'lahore'], ['name' => 'Lahore', 'is_active' => true]);
         $karachi = City::firstOrCreate(['slug' => 'karachi'], ['name' => 'Karachi', 'is_active' => true]);

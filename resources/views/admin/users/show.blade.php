@@ -20,13 +20,17 @@
         <div><dt class="text-xs text-fs-muted">ID</dt><dd class="mt-1">{{ $user->id }}</dd></div>
         <div><dt class="text-xs text-fs-muted">Email</dt><dd class="mt-1">{{ $user->email }}</dd></div>
         <div><dt class="text-xs text-fs-muted">Phone</dt><dd class="mt-1">{{ $user->phone ?? '—' }}</dd></div>
-        <div><dt class="text-xs text-fs-muted">Role</dt><dd class="mt-1"><x-badge :tone="$user->role === 'admin' ? 'sale' : 'muted'">{{ $user->role }}</x-badge></dd></div>
+        <div><dt class="text-xs text-fs-muted">Roles</dt><dd class="mt-1">{{ $user->getRoleNames()->implode(', ') ?: '—' }}</dd></div>
+        <div><dt class="text-xs text-fs-muted">Direct permissions</dt><dd class="mt-1">{{ $user->getDirectPermissions()->pluck('name')->implode(', ') ?: '—' }}</dd></div>
+        <div><dt class="text-xs text-fs-muted">Active</dt><dd class="mt-1"><x-badge :tone="$user->is_active ? 'success' : 'muted'">{{ $user->is_active ? 'Yes' : 'No' }}</x-badge></dd></div>
         <div><dt class="text-xs text-fs-muted">Verified</dt><dd class="mt-1">{{ $user->hasVerifiedEmail() ? 'Yes' : 'No' }}</dd></div>
         <div><dt class="text-xs text-fs-muted">Registered</dt><dd class="mt-1">{{ $user->created_at->format('M j, Y H:i') }}</dd></div>
     </dl>
     <div class="mt-6 flex flex-wrap gap-2">
-        <x-button variant="primary" href="{{ route('admin.users.edit', $user) }}">Edit</x-button>
-        @if($user->id !== auth()->id())
+        @can('update', $user)
+            <x-button variant="primary" href="{{ route('admin.users.edit', $user) }}">Edit</x-button>
+        @endcan
+        @can('delete', $user)
             <x-confirm-delete
                 :action="route('admin.users.destroy', $user)"
                 title="Delete this user?"
@@ -36,7 +40,7 @@
                     <x-button type="button" variant="ghost" class="!text-fs-danger">Delete</x-button>
                 </x-slot:trigger>
             </x-confirm-delete>
-        @endif
+        @endcan
     </div>
 </div>
 @endsection

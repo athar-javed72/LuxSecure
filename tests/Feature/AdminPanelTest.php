@@ -3,32 +3,25 @@
 namespace Tests\Feature;
 
 use App\Models\ContactInquiry;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Tests\Support\CreatesListings;
+use Tests\Support\CreatesUsers;
+use Tests\Support\SeedsRbac;
 use Tests\TestCase;
 
 class AdminPanelTest extends TestCase
 {
     use CreatesListings;
+    use CreatesUsers;
     use RefreshDatabase;
+    use SeedsRbac;
 
-    private function makeAdmin(array $overrides = []): User
+    protected function setUp(): void
     {
-        return User::factory()->create(array_merge([
-            'role' => 'admin',
-            'email_verified_at' => now(),
-        ], $overrides));
-    }
-
-    private function makeUser(array $overrides = []): User
-    {
-        return User::factory()->create(array_merge([
-            'role' => 'user',
-            'email_verified_at' => now(),
-        ], $overrides));
+        parent::setUp();
+        $this->seedRbac();
     }
 
     public function test_guest_is_redirected_to_login_on_admin(): void
@@ -38,7 +31,7 @@ class AdminPanelTest extends TestCase
 
     public function test_non_admin_gets_403_on_admin(): void
     {
-        $user = $this->makeUser();
+        $user = $this->makeClient();
 
         $this->actingAs($user)->get('/admin')->assertForbidden();
     }
@@ -158,8 +151,7 @@ class AdminPanelTest extends TestCase
         $response = $this->actingAs($admin)->from(route('admin.users.show', $admin))
             ->delete(route('admin.users.destroy', $admin));
 
-        $response->assertRedirect(route('admin.users.show', $admin));
-        $response->assertSessionHas('error');
+        $response->assertForbidden();
         $this->assertDatabaseHas('users', ['id' => $admin->id]);
     }
 }

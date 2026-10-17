@@ -10,7 +10,7 @@ class StoreListingTypeRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()?->isAdmin() ?? false;
+        return $this->user()?->can('listing_types.create') ?? false;
     }
 
     public function rules(): array

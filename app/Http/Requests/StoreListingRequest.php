@@ -12,7 +12,7 @@ class StoreListingRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()?->isAdmin() ?? false;
+        return $this->user()?->can('listings.create') ?? false;
     }
 
     public function rules(): array

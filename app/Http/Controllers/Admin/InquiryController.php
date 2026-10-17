@@ -12,7 +12,16 @@ class InquiryController extends Controller
 {
     public function index(Request $request): View
     {
+        $this->authorize('viewAny', ContactInquiry::class);
+
         $query = ContactInquiry::with('listing')->latest();
+
+        $user = $request->user();
+        if (! $user->can('inquiries.view.any')) {
+            $query->whereHas('listing', function ($q) use ($user) {
+                $q->where('agent_id', $user->id)->orWhere('owner_id', $user->id);
+            });
+        }
 
         if ($request->filled('search')) {
             $search = $request->string('search')->toString();
@@ -38,6 +47,8 @@ class InquiryController extends Controller
 
     public function markRead(ContactInquiry $inquiry): RedirectResponse
     {
+        $this->authorize('update', $inquiry);
+
         $inquiry->update(['is_read' => true]);
 
         return back()->with('success', 'Marked as read.');

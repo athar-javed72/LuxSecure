@@ -39,9 +39,19 @@ class AuthController extends Controller
     public function login(LoginRequest $request)
     {
         if (Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
+            $user = Auth::user();
+            if (! $user->is_active) {
+                Auth::logout();
+
+                return back()->withErrors(['email' => 'This account has been deactivated.']);
+            }
+
             $request->session()->regenerate();
 
-            // Always allow access to profile; verification is optional (email may not be configured)
+            if ($user->can('panel.access')) {
+                return redirect()->intended(route('admin.dashboard'));
+            }
+
             return redirect()->intended(route('profile'));
         }
 
@@ -55,7 +65,10 @@ class AuthController extends Controller
             'email' => $request->email,
             'phone' => $request->phone ?: null,
             'password' => Hash::make($request->password),
+            'is_active' => true,
         ]);
+
+        $user->assignRole('client');
 
         // Local / development: auto-verify so user can login without email (no mail setup needed)
         if (app()->environment('local')) {

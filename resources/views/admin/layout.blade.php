@@ -43,17 +43,26 @@
         <nav class="p-4 space-y-1 overflow-y-auto h-[calc(100vh-72px)]">
             @foreach(config('navigation.admin', []) as $item)
                 @php
+                    $perms = $item['permission'] ?? null;
+                    $allowed = $perms === null;
+                    if (is_string($perms)) {
+                        $allowed = auth()->user()?->can($perms) ?? false;
+                    } elseif (is_array($perms)) {
+                        $allowed = collect($perms)->contains(fn ($p) => auth()->user()?->can($p));
+                    }
                     $active = false;
                     foreach (($item['active'] ?? []) as $pattern) {
                         if (request()->routeIs($pattern)) { $active = true; break; }
                     }
                     try { $href = route($item['route']); } catch (\Throwable $e) { $href = '#'; }
                 @endphp
-                <a href="{{ $href }}"
-                   class="flex items-center min-h-11 px-4 rounded-sm text-sm font-medium transition-colors duration-150 {{ $active ? 'bg-white/15 text-white' : 'text-fs-muted hover:bg-white/10 hover:text-white' }}"
-                   @click="sidebarOpen = false">
-                    {{ $item['label'] }}
-                </a>
+                @if($allowed)
+                    <a href="{{ $href }}"
+                       class="flex items-center min-h-11 px-4 rounded-sm text-sm font-medium transition-colors duration-150 {{ $active ? 'bg-white/15 text-white' : 'text-fs-muted hover:bg-white/10 hover:text-white' }}"
+                       @click="sidebarOpen = false">
+                        {{ $item['label'] }}
+                    </a>
+                @endif
             @endforeach
             <a href="{{ route('home') }}" class="flex items-center min-h-11 px-4 rounded-sm text-sm font-medium text-fs-muted hover:bg-white/10 hover:text-white transition-colors duration-150">View site</a>
         </nav>
