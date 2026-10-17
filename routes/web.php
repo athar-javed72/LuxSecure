@@ -1,27 +1,28 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\ContactController;
-use App\Http\Controllers\PropertyController;
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\FavoriteController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PropertyController;
+use Illuminate\Support\Facades\Route;
 
 // Logout route
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Home Page
-Route::get('/', [AuthController::class, 'home'])->name('home');
+Route::get('/', [HomeController::class, '__invoke'])->name('home');
 
 // Auth
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login.form')->middleware('guest');
-Route::post('/login', [AuthController::class, 'login'])->name('login');
+Route::post('/login', [AuthController::class, 'login'])->name('login')->middleware('throttle:login');
 Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register.form')->middleware('guest');
-Route::post('/register', [AuthController::class, 'register'])->name('register');
+Route::post('/register', [AuthController::class, 'register'])->name('register')->middleware('throttle:6,1');
 Route::get('/forgot-password', [AuthController::class, 'showForgotForm'])->name('password.request')->middleware('guest');
-Route::post('/forgot-password', [AuthController::class, 'sendResetLink'])->name('password.email');
+Route::post('/forgot-password', [AuthController::class, 'sendResetLink'])->name('password.email')->middleware('throttle:6,1');
 Route::get('/reset-password/{token}', [AuthController::class, 'showResetForm'])->name('password.reset')->middleware('guest');
-Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update');
+Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update')->middleware('throttle:6,1');
 Route::get('/email/verify', [AuthController::class, 'verifyNotice'])->name('verification.notice')->middleware('auth');
 Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verifyEmail'])->name('verification.verify')->middleware(['auth', 'signed']);
 Route::post('/email/verification-notification', [AuthController::class, 'resendVerification'])->name('verification.send')->middleware(['auth', 'throttle:6,1']);
@@ -53,4 +54,3 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::get('inquiries', [\App\Http\Controllers\Admin\InquiryController::class, 'index'])->name('inquiries.index');
     Route::patch('inquiries/{inquiry}', [\App\Http\Controllers\Admin\InquiryController::class, 'markRead'])->name('inquiries.markRead');
 });
-

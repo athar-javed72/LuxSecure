@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -14,6 +15,8 @@ class UserController extends Controller
 {
     public function index(Request $request): View
     {
+        $this->authorize('viewAny', User::class);
+
         $query = User::query()->orderBy('created_at', 'desc');
 
         if ($request->filled('search')) {
@@ -31,28 +34,32 @@ class UserController extends Controller
 
     public function show(User $user): View
     {
+        $this->authorize('view', $user);
+
         return view('admin.users.show', compact('user'));
     }
 
     public function edit(User $user): View
     {
+        $this->authorize('update', $user);
+
         return view('admin.users.edit', compact('user'));
     }
 
-    public function update(Request $request, User $user): RedirectResponse
+    public function update(UpdateUserRequest $request, User $user): RedirectResponse
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $user->id,
-            'phone' => 'nullable|string|max:20|regex:/^[0-9+\-\s()]+$/',
-            'role' => 'required|in:user,admin',
-            'password' => 'nullable|min:8|confirmed',
-        ]);
+        $this->authorize('update', $user);
 
-        $data = $request->only('name', 'email', 'phone', 'role');
+        $data = $request->safe()->only('name', 'email', 'phone', 'role');
+
+        if ($user->isAdmin() && ($data['role'] ?? null) !== 'admin' && $this->isLastAdmin($user)) {
+            return back()->with('error', 'Cannot demote the last remaining admin.');
+        }
+
         if ($request->filled('password')) {
             $data['password'] = Hash::make($request->password);
         }
+
         $user->update($data);
 
         return redirect()->route('admin.users.show', $user)->with('success', 'User updated.');
@@ -60,10 +67,26 @@ class UserController extends Controller
 
     public function destroy(User $user): RedirectResponse
     {
+        $this->authorize('delete', $user);
+
+        if ($user->isAdmin() && $this->isLastAdmin($user)) {
+            return back()->with('error', 'Cannot delete the last remaining admin.');
+        }
+
         if ($user->id === Auth::id()) {
             return back()->with('error', 'You cannot delete your own account.');
         }
+
         $user->delete();
+
         return redirect()->route('admin.users.index')->with('success', 'User deleted.');
+    }
+
+    private function isLastAdmin(User $user): bool
+    {
+        return User::query()
+            ->where('role', 'admin')
+            ->where('id', '!=', $user->id)
+            ->doesntExist();
     }
 }

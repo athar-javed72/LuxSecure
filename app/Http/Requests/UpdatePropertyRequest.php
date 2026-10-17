@@ -16,7 +16,7 @@ class UpdatePropertyRequest extends FormRequest
         return [
             'title' => ['required', 'string', 'max:255'],
             'location' => ['required', 'string', 'max:255'],
-            'type' => ['required', 'string', 'in:' . implode(',', \App\Models\Property::TYPES)],
+            'type' => ['required', 'string', 'in:'.implode(',', \App\Models\Property::TYPES)],
             'price' => ['required', 'numeric', 'min:0'],
             'description' => ['nullable', 'string', 'max:5000'],
             'bedrooms' => ['nullable', 'integer', 'min:0'],

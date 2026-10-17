@@ -12,7 +12,7 @@ class InquiryController extends Controller
 {
     public function index(Request $request): View
     {
-        $query = ContactInquiry::latest();
+        $query = ContactInquiry::with('property')->latest();
 
         if ($request->filled('search')) {
             $search = $request->string('search')->toString();
@@ -39,6 +39,7 @@ class InquiryController extends Controller
     public function markRead(ContactInquiry $inquiry): RedirectResponse
     {
         $inquiry->update(['is_read' => true]);
+
         return back()->with('success', 'Marked as read.');
     }
 }

@@ -16,6 +16,8 @@ class PropertyController extends Controller
 {
     public function index(Request $request): View
     {
+        $this->authorize('viewAny', Property::class);
+
         $query = Property::with('images')->latest();
 
         if ($request->filled('search')) {
@@ -48,11 +50,15 @@ class PropertyController extends Controller
 
     public function create(): View
     {
+        $this->authorize('create', Property::class);
+
         return view('admin.properties.create', ['types' => Property::TYPES]);
     }
 
     public function store(StorePropertyRequest $request): RedirectResponse
     {
+        $this->authorize('create', Property::class);
+
         $data = $request->validated();
         $data['is_active'] = $request->boolean('is_active', true);
 
@@ -74,18 +80,26 @@ class PropertyController extends Controller
 
     public function show(Property $property): View
     {
+        $this->authorize('view', $property);
+
         $property->load('images');
+
         return view('admin.properties.show', compact('property'));
     }
 
     public function edit(Property $property): View
     {
+        $this->authorize('update', $property);
+
         $property->load('images');
+
         return view('admin.properties.edit', ['property' => $property, 'types' => Property::TYPES]);
     }
 
     public function update(UpdatePropertyRequest $request, Property $property): RedirectResponse
     {
+        $this->authorize('update', $property);
+
         $data = $request->validated();
         $data['is_active'] = $request->boolean('is_active', true);
 
@@ -111,6 +125,8 @@ class PropertyController extends Controller
 
     public function destroy(Property $property): RedirectResponse
     {
+        $this->authorize('delete', $property);
+
         foreach ($property->images as $img) {
             Storage::disk('public')->delete($img->path);
         }
@@ -118,6 +134,7 @@ class PropertyController extends Controller
             Storage::disk('public')->delete($property->featured_image);
         }
         $property->delete();
+
         return redirect()->route('admin.properties.index')->with('success', 'Property deleted.');
     }
 }

@@ -113,9 +113,16 @@
                 <p class="mt-2 text-sm text-fs-secondary">Ask about availability, viewing times, or financing.</p>
                 <form method="POST" action="{{ route('contact.store') }}" class="mt-4 space-y-4">
                     @csrf
-                    <input type="hidden" name="message" value="I am interested in {{ $property->title }} ({{ $property->location }}). Please contact me.">
+                    <input type="hidden" name="property_id" value="{{ $property->id }}">
                     <x-input label="Name" name="name" :value="old('name', auth()->user()->name ?? '')" required />
                     <x-input label="Email" name="email" type="email" :value="old('email', auth()->user()->email ?? '')" required />
+                    <div>
+                        <label for="message" class="block text-xs font-semibold text-fs-primary mb-1">Message</label>
+                        <textarea id="message" name="message" rows="4" required
+                                  class="w-full px-4 py-3 rounded-sm border border-slate-200 bg-white text-sm text-fs-primary placeholder:text-fs-muted focus:border-fs-brand focus:ring-2 focus:ring-fs-brand/20">{{ old('message', 'I am interested in '.$property->title.' ('.$property->location.'). Please contact me.') }}</textarea>
+                        @error('message')<p class="mt-1 text-xs text-fs-danger">{{ $message }}</p>@enderror
+                        @error('property_id')<p class="mt-1 text-xs text-fs-danger">{{ $message }}</p>@enderror
+                    </div>
                     <x-button type="submit" variant="primary" class="w-full">Request info</x-button>
                 </form>
             </div>

@@ -18,6 +18,7 @@ class FavoriteController extends Controller
             $user->favorites()->attach($property->id);
             $message = 'Added to favorites.';
         }
+
         return back()->with('success', $message);
     }
 }

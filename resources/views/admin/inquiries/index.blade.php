@@ -38,10 +38,11 @@
         <table class="w-full text-sm xl:table-fixed">
             <thead class="bg-fs-surface text-left text-xs uppercase tracking-wide text-fs-muted">
                 <tr>
-                    <th class="px-3 py-3 font-semibold xl:w-[14%]">Date</th>
-                    <th class="px-3 py-3 font-semibold xl:w-[14%]">Name</th>
-                    <th class="px-3 py-3 font-semibold xl:w-[18%]">Email</th>
-                    <th class="px-3 py-3 font-semibold xl:w-[34%]">Message</th>
+                    <th class="px-3 py-3 font-semibold xl:w-[12%]">Date</th>
+                    <th class="px-3 py-3 font-semibold xl:w-[12%]">Name</th>
+                    <th class="px-3 py-3 font-semibold xl:w-[16%]">Email</th>
+                    <th class="px-3 py-3 font-semibold xl:w-[16%]">Property</th>
+                    <th class="px-3 py-3 font-semibold xl:w-[24%]">Message</th>
                     <th class="px-3 py-3 font-semibold xl:w-[10%]">Read</th>
                     <th class="px-3 py-3 font-semibold text-right xl:w-[10%]">Actions</th>
                 </tr>
@@ -52,6 +53,13 @@
                         <td class="px-3 py-3 text-fs-secondary whitespace-nowrap">{{ $inquiry->created_at->format('M j, Y H:i') }}</td>
                         <td class="px-3 py-3 font-medium text-fs-primary xl:truncate">{{ $inquiry->name }}</td>
                         <td class="px-3 py-3 text-fs-secondary xl:truncate"><a href="mailto:{{ $inquiry->email }}" class="text-fs-brand">{{ $inquiry->email }}</a></td>
+                        <td class="px-3 py-3 text-fs-secondary xl:truncate">
+                            @if($inquiry->property)
+                                <a href="{{ route('admin.properties.show', $inquiry->property) }}" class="text-fs-brand hover:underline">{{ $inquiry->property->title }}</a>
+                            @else
+                                <span class="text-fs-muted">—</span>
+                            @endif
+                        </td>
                         <td class="px-3 py-3 text-fs-secondary xl:truncate">{{ Str::limit($inquiry->message, 80) }}</td>
                         <td class="px-3 py-3">
                             <x-badge :tone="$inquiry->is_read ? 'muted' : 'success'">{{ $inquiry->is_read ? 'Read' : 'New' }}</x-badge>
@@ -67,7 +75,7 @@
                         </td>
                     </tr>
                 @empty
-                    <tr><td colspan="6" class="px-4 py-8 text-center text-fs-muted">No inquiries found.</td></tr>
+                    <tr><td colspan="7" class="px-4 py-8 text-center text-fs-muted">No inquiries found.</td></tr>
                 @endforelse
             </tbody>
         </table>

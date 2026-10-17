@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UpdateProfileRequest;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Illuminate\Http\RedirectResponse;
 
 class ProfileController extends Controller
 {
@@ -12,21 +13,17 @@ class ProfileController extends Controller
     {
         $user = $request->user();
         $user->load('favorites.images');
+
         return view('profile', [
             'user' => $user,
             'showEdit' => $request->boolean('edit'),
         ]);
     }
 
-    public function update(Request $request): RedirectResponse
+    public function update(UpdateProfileRequest $request): RedirectResponse
     {
-        $user = $request->user();
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $user->id,
-            'phone' => 'nullable|string|max:20|regex:/^[0-9+\-\s()]+$/',
-        ]);
-        $user->update($request->only('name', 'email', 'phone'));
+        $request->user()->update($request->validated());
+
         return back()->with('success', 'Profile updated.');
     }
 }

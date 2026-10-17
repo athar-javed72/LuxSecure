@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\Property;
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\RegisterRequest;
 use App\Models\User;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Auth\Events\Verified;
@@ -35,15 +36,11 @@ class AuthController extends Controller
         return view('auth.reset-password', ['token' => $token]);
     }
 
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
-
         if (Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
             $request->session()->regenerate();
+
             // Always allow access to profile; verification is optional (email may not be configured)
             return redirect()->intended(route('profile'));
         }
@@ -51,15 +48,8 @@ class AuthController extends Controller
         return back()->withErrors(['email' => 'Invalid credentials']);
     }
 
-    public function register(Request $request)
+    public function register(RegisterRequest $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users',
-            'phone' => 'nullable|string|max:20|regex:/^[0-9+\-\s()]+$/',
-            'password' => 'required|min:8|confirmed',
-        ]);
-
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -77,6 +67,7 @@ class AuthController extends Controller
         $message = app()->environment('local')
             ? 'Registration successful. You can login now.'
             : 'Registration successful. Please verify your email and login.';
+
         return redirect('login')->with('success', $message);
     }
 
@@ -85,6 +76,7 @@ class AuthController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+
         return redirect('/login')->with('status', 'Logged out successfully.');
     }
 
@@ -97,6 +89,7 @@ class AuthController extends Controller
         if ($status === Password::RESET_LINK_SENT) {
             return back()->with('success', __($status));
         }
+
         return back()->withErrors(['email' => __($status)]);
     }
 
@@ -119,6 +112,7 @@ class AuthController extends Controller
         if ($status === Password::PASSWORD_RESET) {
             return redirect('login')->with('success', 'Your password has been reset.');
         }
+
         return back()->withErrors(['email' => __($status)]);
     }
 
@@ -130,7 +124,7 @@ class AuthController extends Controller
     public function verifyEmail(Request $request, $id, $hash)
     {
         $user = User::findOrFail($id);
-        if (!hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
+        if (! hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
             abort(403);
         }
         if ($user->hasVerifiedEmail()) {
@@ -138,6 +132,7 @@ class AuthController extends Controller
         }
         $user->markEmailAsVerified();
         event(new Verified($user));
+
         return redirect()->route('profile')->with('success', 'Email verified successfully.');
     }
 
@@ -147,17 +142,7 @@ class AuthController extends Controller
             return redirect()->route('profile');
         }
         $request->user()->sendEmailVerificationNotification();
+
         return back()->with('success', 'Verification link sent!');
-    }
-
-    public function home()
-    {
-        $houses = Property::where('is_active', true)
-            ->with('images')
-            ->latest()
-            ->take(12)
-            ->get();
-
-        return view('home', compact('houses'));
     }
 }

@@ -40,10 +40,11 @@ class PropertyController extends Controller
 
     public function show(Property $property): View
     {
-        if (!$property->is_active) {
+        if (! $property->is_active) {
             abort(404);
         }
         $property->load('images');
+
         return view('properties.show', compact('property'));
     }
 }

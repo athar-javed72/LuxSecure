@@ -17,6 +17,6 @@ class Media
             return $path;
         }
 
-        return asset('storage/' . ltrim($path, '/'));
+        return asset('storage/'.ltrim($path, '/'));
     }
 }

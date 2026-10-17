@@ -38,20 +38,27 @@ class Property extends Model
         return $this->belongsToMany(User::class, 'favorites')->withTimestamps();
     }
 
+    public function inquiries()
+    {
+        return $this->hasMany(ContactInquiry::class);
+    }
+
     public function getPrimaryImageUrlAttribute(): string
     {
         $first = $this->relationLoaded('images') && $this->images->isNotEmpty()
             ? $this->images->first()
             : $this->images()->first();
         if ($first) {
-            return asset('storage/' . $first->path);
+            return asset('storage/'.$first->path);
         }
         if ($this->featured_image) {
             if (str_starts_with($this->featured_image, 'http://') || str_starts_with($this->featured_image, 'https://')) {
                 return $this->featured_image;
             }
-            return asset('storage/' . $this->featured_image);
+
+            return asset('storage/'.$this->featured_image);
         }
+
         return '';
     }
 }

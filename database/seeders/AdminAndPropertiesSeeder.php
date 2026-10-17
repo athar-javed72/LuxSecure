@@ -20,7 +20,7 @@ class AdminAndPropertiesSeeder extends Seeder
                 'email_verified_at' => now(),
             ]
         );
-        if (!$admin->isAdmin()) {
+        if (! $admin->isAdmin()) {
             $admin->update(['role' => 'admin', 'email_verified_at' => $admin->email_verified_at ?? now()]);
         }
 
@@ -76,6 +76,7 @@ class AdminAndPropertiesSeeder extends Seeder
             foreach ($samples as $s) {
                 Property::create($s);
             }
+
             return;
         }
 
