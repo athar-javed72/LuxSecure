@@ -111,6 +111,11 @@ class RemainingPlatformFeaturesTest extends TestCase
 
     public function test_jazzcash_webhook_is_signed_and_idempotent(): void
     {
+        config([
+            'payments.jazzcash.enabled' => true,
+            'payments.jazzcash.integrity_salt' => 'test-salt',
+        ]);
+
         $client = $this->makeClient();
         $listing = $this->makeListing(['status' => 'published']);
         $roomType = RoomType::create([
@@ -146,7 +151,9 @@ class RemainingPlatformFeaturesTest extends TestCase
         $payload = [
             'pp_TxnRefNo' => 'JC-TEST-1',
             'pp_ResponseCode' => '000',
-            'pp_Amount' => '2000',
+            'pp_Amount' => '2000.00',
+            'pp_Currency' => 'PKR',
+            'timestamp' => now()->toIso8601String(),
         ];
         ksort($payload);
         $hashPayload = $payload;

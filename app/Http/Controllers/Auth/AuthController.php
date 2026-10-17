@@ -37,7 +37,7 @@ class AuthController extends Controller
         return view('auth.reset-password', ['token' => $token]);
     }
 
-    public function login(LoginRequest $request, TwoFactorService $twoFactor)
+    public function login(LoginRequest $request, TwoFactorService $twoFactor, \App\Services\UserAccessRevoker $accessRevoker)
     {
         if (Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
             $user = Auth::user();
@@ -56,6 +56,12 @@ class AuthController extends Controller
             }
 
             $request->session()->regenerate();
+            $accessRevoker->markSessionEstablished($request);
+
+            if ($twoFactor->requiresSetup($user)) {
+                return redirect()->route('admin.two-factor.show')
+                    ->with('error', 'Please set up two-factor authentication to continue.');
+            }
 
             if ($user->can('panel.access')) {
                 return redirect()->intended(route('admin.dashboard'));
@@ -89,6 +95,7 @@ class AuthController extends Controller
         Auth::login($user, (bool) $request->session()->pull('login.two_factor_remember'));
         $request->session()->forget('login.two_factor_user_id');
         $request->session()->regenerate();
+        app(\App\Services\UserAccessRevoker::class)->markSessionEstablished($request);
 
         if ($user->can('panel.access')) {
             return redirect()->intended(route('admin.dashboard'));

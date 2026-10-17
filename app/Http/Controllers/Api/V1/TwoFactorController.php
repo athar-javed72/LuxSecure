@@ -13,19 +13,19 @@ use Illuminate\Http\Request;
  *
  * @authenticated
  *
- * Admin-level roles (admin, super_admin) can enable TOTP 2FA.
+ * Panel roles must enable TOTP 2FA.
  */
 class TwoFactorController extends Controller
 {
     public function __construct(private readonly TwoFactorService $twoFactor) {}
 
     /**
-     * Begin 2FA setup (admin roles only).
+     * Begin 2FA setup (panel roles).
      */
     public function setup(Request $request): JsonResponse
     {
         $user = $request->user();
-        abort_unless($user->isAdmin(), 403, 'Two-factor setup is limited to admin-level roles.');
+        abort_unless($user->can('panel.access'), 403, 'Two-factor setup is required for panel roles.');
 
         $secret = $this->twoFactor->generateSecret();
         cache()->put('2fa.setup.'.$user->id, $secret, now()->addMinutes(15));
@@ -42,7 +42,7 @@ class TwoFactorController extends Controller
     public function confirm(Request $request): JsonResponse
     {
         $user = $request->user();
-        abort_unless($user->isAdmin(), 403);
+        abort_unless($user->can('panel.access'), 403);
 
         $data = $request->validate(['code' => ['required', 'string']]);
         $secret = cache()->pull('2fa.setup.'.$user->id);
@@ -62,7 +62,7 @@ class TwoFactorController extends Controller
     public function disable(Request $request): JsonResponse
     {
         $user = $request->user();
-        abort_unless($user->isAdmin(), 403);
+        abort_unless($user->can('panel.access'), 403);
 
         $data = $request->validate(['code' => ['required', 'string']]);
         if (! $this->twoFactor->verifyUser($user, $data['code'])) {

@@ -269,11 +269,27 @@ class ListingController extends Controller
             if ($data['action'] === 'delete' && $request->user()->can('delete', $listing)) {
                 $listing->delete();
             } elseif ($data['action'] === 'status' && ! empty($data['status']) && $request->user()->can('update', $listing)) {
-                $listing->update(['status' => $data['status']]);
+                $statusData = $this->enforceKycPendingStatus(['status' => $data['status']], $request->user(), $listing);
+                $listing->update(['status' => $statusData['status']]);
             }
         }
 
+        $this->listingCache->flush();
+
         return back()->with('success', 'Bulk action applied to listings.');
+    }
+
+    public function downloadPrivateDocument(Listing $listing): \Symfony\Component\HttpFoundation\StreamedResponse
+    {
+        $user = request()->user();
+        $allowed = $user->can('listings.view.any')
+            || (int) $listing->owner_id === (int) $user->id
+            || (int) $listing->agent_id === (int) $user->id;
+
+        abort_unless($allowed, 403);
+        abort_unless(filled($listing->private_document_path), 404);
+
+        return StorageDisk::privateDisk()->download($listing->private_document_path);
     }
 
     /**

@@ -139,7 +139,7 @@ return [
             'label' => 'Room types',
             'route' => 'admin.room-types.index',
             'active' => ['admin.room-types.*'],
-            'permission' => ['listings.view.any', 'listings.view.own'],
+            'permission' => ['rooms.view.any', 'rooms.view.own'],
             'roles' => ['super_admin', 'admin', 'hotel_manager'],
         ],
         [

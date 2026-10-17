@@ -7,8 +7,6 @@ use Knuckles\Scribe\Extracting\Strategies;
 use function Knuckles\Scribe\Config\configureStrategy;
 use function Knuckles\Scribe\Config\removeStrategies;
 
-// Only the most common configs are shown. See the https://scribe.knuckles.wtf/laravel/reference/config for all.
-
 return [
     // The HTML <title> for the generated documentation.
     'title' => config('app.name').' API Documentation',
@@ -49,7 +47,6 @@ return [
     // - "external_static" and "external_laravel" do the same as above, but pass the OpenAPI spec as a URL to an external UI template
     // static avoids a Windows rename issue when moving assets into public/vendor/scribe
     'type' => 'static',
-
 
     // See https://scribe.knuckles.wtf/laravel/reference/config#theme for supported options
     'theme' => 'default',

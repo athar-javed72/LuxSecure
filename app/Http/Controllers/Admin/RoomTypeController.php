@@ -22,7 +22,7 @@ class RoomTypeController extends Controller
 
         $query = RoomType::query()->with(['listing', 'rooms'])->withCount('rooms');
 
-        if (! $request->user()->can('listings.view.any')) {
+        if (! $request->user()->can('rooms.view.any')) {
             $query->whereHas('listing', function ($q) use ($request) {
                 $q->where('owner_id', $request->user()->id)
                     ->orWhere('agent_id', $request->user()->id);
@@ -47,7 +47,7 @@ class RoomTypeController extends Controller
         $data = $request->validated();
         $listing = Listing::findOrFail($data['listing_id']);
 
-        if (! $request->user()->can('listings.update.any') && ! $request->user()->ownsListing($listing)) {
+        if (! $request->user()->can('rooms.update.any') && ! $request->user()->ownsListing($listing)) {
             abort(403);
         }
 

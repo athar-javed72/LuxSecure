@@ -26,9 +26,9 @@ Route::get('/forgot-password', [AuthController::class, 'showForgotForm'])->name(
 Route::post('/forgot-password', [AuthController::class, 'sendResetLink'])->name('password.email')->middleware('throttle:6,1');
 Route::get('/reset-password/{token}', [AuthController::class, 'showResetForm'])->name('password.reset')->middleware('guest');
 Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update')->middleware('throttle:6,1');
-Route::get('/email/verify', [AuthController::class, 'verifyNotice'])->name('verification.notice')->middleware('auth');
-Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verifyEmail'])->name('verification.verify')->middleware(['auth', 'signed']);
-Route::post('/email/verification-notification', [AuthController::class, 'resendVerification'])->name('verification.send')->middleware(['auth', 'throttle:6,1']);
+Route::get('/email/verify', [AuthController::class, 'verifyNotice'])->name('verification.notice')->middleware(['auth', 'active']);
+Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verifyEmail'])->name('verification.verify')->middleware(['auth', 'active', 'signed']);
+Route::post('/email/verification-notification', [AuthController::class, 'resendVerification'])->name('verification.send')->middleware(['auth', 'active', 'throttle:6,1']);
 
 Route::get('/properties', [ListingController::class, 'index'])->name('properties');
 Route::get('/properties/{listing}', [ListingController::class, 'show'])->name('properties.show');
@@ -45,7 +45,7 @@ Route::post('/webhooks/payments/jazzcash', [\App\Http\Controllers\PaymentWebhook
 Route::post('/webhooks/payments/easypaisa', [\App\Http\Controllers\PaymentWebhookController::class, 'easypaisa'])
     ->name('webhooks.payments.easypaisa');
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'active'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::post('/favorites/{listing}', [FavoriteController::class, 'toggle'])->name('favorites.toggle');
@@ -80,7 +80,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/notifications/read-all', [\App\Http\Controllers\NotificationController::class, 'markAllRead'])->name('notifications.read-all');
 });
 
-Route::prefix('admin')->name('admin.')->middleware(['auth', 'panel'])->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'active', 'panel', 'panel.2fa'])->group(function () {
     Route::get('/', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
 
     Route::middleware('permission:users.view|users.create|users.update|users.delete')->group(function () {
@@ -112,6 +112,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'panel'])->group(fun
             Route::post('listings/bulk', [\App\Http\Controllers\Admin\ListingController::class, 'bulk'])->name('listings.bulk');
             Route::delete('listings/{listing}/images/{image}', [\App\Http\Controllers\Admin\ListingController::class, 'destroyImage'])->name('listings.images.destroy');
             Route::post('listings/{listing}/images/reorder', [\App\Http\Controllers\Admin\ListingController::class, 'reorderImages'])->name('listings.images.reorder');
+            Route::get('listings/{listing}/private-document', [\App\Http\Controllers\Admin\ListingController::class, 'downloadPrivateDocument'])->name('listings.private-document');
             Route::resource('listings', \App\Http\Controllers\Admin\ListingController::class);
         });
 
@@ -188,7 +189,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'panel'])->group(fun
             ->name('rent-payments.mark-paid');
     });
 
-    Route::middleware('permission:listings.view.any|listings.view.own')->group(function () {
+    Route::middleware('permission:rooms.view.any|rooms.view.own|rooms.create|rooms.update.any|rooms.update.own')->group(function () {
         Route::get('room-types', [\App\Http\Controllers\Admin\RoomTypeController::class, 'index'])->name('room-types.index');
         Route::get('room-types/create', [\App\Http\Controllers\Admin\RoomTypeController::class, 'create'])->name('room-types.create');
         Route::post('room-types', [\App\Http\Controllers\Admin\RoomTypeController::class, 'store'])->name('room-types.store');
@@ -209,6 +210,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'panel'])->group(fun
         Route::get('payments/export', [\App\Http\Controllers\Admin\PaymentController::class, 'export'])->name('payments.export');
         Route::get('payments/{payment}', [\App\Http\Controllers\Admin\PaymentController::class, 'show'])->name('payments.show');
         Route::post('payments/{payment}/approve', [\App\Http\Controllers\Admin\PaymentController::class, 'approve'])->name('payments.approve');
+        Route::post('payments/{payment}/refund', [\App\Http\Controllers\Admin\PaymentController::class, 'refund'])->name('payments.refund');
         Route::get('payments/{payment}/invoice', [\App\Http\Controllers\Admin\PaymentController::class, 'downloadInvoice'])->name('payments.invoice');
     });
 

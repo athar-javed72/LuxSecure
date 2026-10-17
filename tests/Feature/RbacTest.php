@@ -76,23 +76,25 @@ class RbacTest extends TestCase
         $this->assertFalse($role->fresh()->hasPermissionTo('users.delete'));
     }
 
-    public function test_admin_cannot_assign_permissions_they_do_not_hold(): void
+    public function test_admin_cannot_assign_direct_permissions(): void
     {
         $admin = $this->makeAdmin();
         $target = $this->makeClient(['email' => 'target@example.com']);
 
-        // Admin role does not have roles.create — attempting to grant it directly should be filtered out.
+        // Only super_admin may assign direct permissions — admin input is ignored entirely.
         $this->actingAs($admin)->put(route('admin.users.update', $target), [
             'name' => $target->name,
             'email' => $target->email,
             'is_active' => 1,
             'roles' => ['client'],
-            'permissions' => ['roles.create', 'panel.access'],
+            'permissions' => ['roles.create', 'panel.access', 'listings.view.own'],
         ])->assertRedirect();
 
         $target->refresh();
         $this->assertFalse($target->hasDirectPermission('roles.create'));
-        $this->assertTrue($target->hasDirectPermission('panel.access'));
+        $this->assertFalse($target->hasDirectPermission('panel.access'));
+        $this->assertFalse($target->hasDirectPermission('listings.view.own'));
+        $this->assertCount(0, $target->getDirectPermissions());
     }
 
     public function test_admin_cannot_edit_super_admin(): void

@@ -13,9 +13,22 @@ class Payment extends Model
 {
     use LogsAdminActivity;
 
-    public const STATUSES = ['pending', 'awaiting_approval', 'paid', 'failed', 'refunded'];
+    public const STATUSES = ['pending', 'awaiting_approval', 'paid', 'failed', 'refund_pending', 'refunded'];
 
     public const GATEWAYS = ['bank_transfer', 'jazzcash', 'easypaisa'];
+
+    public static function enabledGateways(): array
+    {
+        $gateways = ['bank_transfer'];
+        if (config('payments.jazzcash.enabled')) {
+            $gateways[] = 'jazzcash';
+        }
+        if (config('payments.easypaisa.enabled')) {
+            $gateways[] = 'easypaisa';
+        }
+
+        return $gateways;
+    }
 
     protected $fillable = [
         'uuid',

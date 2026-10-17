@@ -14,7 +14,7 @@ class TwoFactorController extends Controller
 
     public function show(Request $request): View
     {
-        abort_unless($request->user()->isAdmin(), 403);
+        abort_unless($request->user()->can('panel.access'), 403);
 
         return view('admin.two-factor.show', [
             'enabled' => $request->user()->hasTwoFactorEnabled(),
@@ -23,7 +23,7 @@ class TwoFactorController extends Controller
 
     public function enable(Request $request): RedirectResponse|View
     {
-        abort_unless($request->user()->isAdmin(), 403);
+        abort_unless($request->user()->can('panel.access'), 403);
         $secret = $this->twoFactor->generateSecret();
         $request->session()->put('admin.2fa.setup_secret', $secret);
 
@@ -35,12 +35,12 @@ class TwoFactorController extends Controller
 
     public function confirm(Request $request): RedirectResponse
     {
-        abort_unless($request->user()->isAdmin(), 403);
+        abort_unless($request->user()->can('panel.access'), 403);
         $request->validate(['code' => ['required', 'string']]);
         $secret = $request->session()->get('admin.2fa.setup_secret');
 
         if (! $secret || ! $this->twoFactor->confirm($request->user(), $secret, $request->string('code')->toString())) {
-            return back()->withErrors(['code' => 'Invalid code.']);
+            return back()->withErrors(['code' => 'Invalid authentication code.']);
         }
 
         $request->session()->forget('admin.2fa.setup_secret');
@@ -50,15 +50,15 @@ class TwoFactorController extends Controller
 
     public function disable(Request $request): RedirectResponse
     {
-        abort_unless($request->user()->isAdmin(), 403);
+        abort_unless($request->user()->can('panel.access'), 403);
         $request->validate(['code' => ['required', 'string']]);
 
         if (! $this->twoFactor->verifyUser($request->user(), $request->string('code')->toString())) {
-            return back()->withErrors(['code' => 'Invalid code.']);
+            return back()->withErrors(['code' => 'Invalid authentication code.']);
         }
 
         $this->twoFactor->disable($request->user());
 
-        return back()->with('success', 'Two-factor authentication disabled.');
+        return redirect()->route('admin.two-factor.show')->with('success', 'Two-factor authentication disabled.');
     }
 }

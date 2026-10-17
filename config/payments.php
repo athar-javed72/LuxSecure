@@ -6,6 +6,7 @@ return [
     ],
 
     'jazzcash' => [
+        'enabled' => (bool) env('PAYMENTS_JAZZCASH_ENABLED', false),
         'sandbox' => (bool) env('JAZZCASH_SANDBOX', true),
         'merchant_id' => env('JAZZCASH_MERCHANT_ID'),
         'password' => env('JAZZCASH_PASSWORD'),
@@ -15,6 +16,7 @@ return [
     ],
 
     'easypaisa' => [
+        'enabled' => (bool) env('PAYMENTS_EASYPAISA_ENABLED', false),
         'sandbox' => (bool) env('EASYPAISA_SANDBOX', true),
         'store_id' => env('EASYPAISA_STORE_ID'),
         'secret' => env('EASYPAISA_SECRET'),

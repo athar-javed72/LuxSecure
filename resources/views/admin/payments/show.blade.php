@@ -20,10 +20,17 @@
         <div><dt class="text-xs text-fs-muted">Paid at</dt><dd>{{ optional($payment->paid_at)->toDateTimeString() ?: '—' }}</dd></div>
     </dl>
 
-    @if($payment->gateway === 'bank_transfer' && $payment->status === 'awaiting_approval')
+    @if($payment->gateway === 'bank_transfer' && $payment->status === 'awaiting_approval' && $payment->proof_path)
         <form method="POST" action="{{ route('admin.payments.approve', $payment) }}">
             @csrf
             <x-button type="submit" variant="primary">Approve bank transfer</x-button>
+        </form>
+    @endif
+
+    @if(in_array($payment->status, ['paid', 'refund_pending'], true) && auth()->user()->can('payments.refund'))
+        <form method="POST" action="{{ route('admin.payments.refund', $payment) }}">
+            @csrf
+            <x-button type="submit" variant="ghost">Mark refunded</x-button>
         </form>
     @endif
 

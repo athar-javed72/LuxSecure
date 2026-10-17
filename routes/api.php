@@ -28,7 +28,7 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
     Route::get('listings', [ListingController::class, 'index'])->name('listings.index');
     Route::get('listings/{listing}', [ListingController::class, 'show'])->name('listings.show');
 
-    Route::middleware(['auth:sanctum', 'throttle:api'])->group(function () {
+    Route::middleware(['auth:sanctum', 'active', 'panel.2fa', 'throttle:api'])->group(function () {
         Route::post('auth/logout', [AuthController::class, 'logout'])->name('auth.logout');
 
         Route::get('profile', [ProfileController::class, 'show'])->name('profile.show');

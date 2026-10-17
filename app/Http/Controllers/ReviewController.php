@@ -2,27 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreReviewRequest;
 use App\Models\Booking;
 use App\Models\Listing;
 use App\Models\Review;
 use App\Models\Tenancy;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
 class ReviewController extends Controller
 {
-    public function store(Request $request, Listing $listing): RedirectResponse
+    public function store(StoreReviewRequest $request, Listing $listing): RedirectResponse
     {
-        $this->authorize('create', Review::class);
-
         $user = $request->user();
         $this->assertEligible($user->id, $listing->id);
 
-        $data = $request->validate([
-            'rating' => ['required', 'integer', 'min:1', 'max:5'],
-            'body' => ['nullable', 'string', 'max:2000'],
-        ]);
+        $data = $request->validated();
 
         Review::query()->updateOrCreate(
             ['listing_id' => $listing->id, 'user_id' => $user->id],

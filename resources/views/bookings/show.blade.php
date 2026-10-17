@@ -21,11 +21,16 @@
             @csrf
             <input type="hidden" name="payable_type" value="booking">
             <input type="hidden" name="payable_id" value="{{ $booking->id }}">
-            <x-select label="Gateway" name="gateway" :options="['bank_transfer' => 'Bank transfer', 'jazzcash' => 'JazzCash', 'easypaisa' => 'Easypaisa']" :selected="old('gateway', 'bank_transfer')" required />
+            @php
+                $gatewayOptions = collect(\App\Models\Payment::enabledGateways())
+                    ->mapWithKeys(fn ($g) => [$g => ucfirst(str_replace('_', ' ', $g))])
+                    ->all();
+            @endphp
+            <x-select label="Gateway" name="gateway" :options="$gatewayOptions" :selected="old('gateway', 'bank_transfer')" required />
             <x-input label="Bank reference" name="bank_reference" :value="old('bank_reference')" />
             <div>
-                <label class="block text-xs font-semibold mb-1">Proof (bank transfer)</label>
-                <input type="file" name="proof" accept=".jpg,.jpeg,.png,.pdf" class="w-full text-sm">
+                <label class="block text-xs font-semibold mb-1">Proof (required for bank transfer)</label>
+                <input type="file" name="proof" accept=".jpg,.jpeg,.png,.pdf" class="w-full text-sm" required>
             </div>
             <x-button type="submit" variant="primary">Initiate payment</x-button>
         </form>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Payment;
 use App\Services\Payments\Drivers\BankTransferGateway;
+use App\Services\Payments\PaymentRefundService;
 use App\Support\CsvExporter;
 use App\Support\StorageDisk;
 use Illuminate\Http\RedirectResponse;
@@ -60,11 +61,17 @@ class PaymentController extends Controller
     {
         $this->authorize('approve', $payment);
 
-        abort_unless($payment->gateway === 'bank_transfer' && $payment->status === 'awaiting_approval', 422);
-
         $bank->approve($payment, (int) request()->user()->id);
 
         return back()->with('success', 'Payment approved and invoice generated.');
+    }
+
+    public function refund(Payment $payment, PaymentRefundService $refunds): RedirectResponse
+    {
+        $this->authorize('refund', $payment);
+        $refunds->refund($payment);
+
+        return back()->with('success', 'Payment refunded.');
     }
 
     public function downloadInvoice(Payment $payment): StreamedResponse

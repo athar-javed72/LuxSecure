@@ -112,6 +112,16 @@ return [
             'payments.update.own',
             'payments.delete.any',
             'payments.delete.own',
+            'payments.refund',
+        ],
+        'rooms' => [
+            'rooms.view.any',
+            'rooms.view.own',
+            'rooms.create',
+            'rooms.update.any',
+            'rooms.update.own',
+            'rooms.delete.any',
+            'rooms.delete.own',
         ],
         'reviews' => [
             'reviews.view.any',
@@ -167,6 +177,7 @@ return [
             'bookings.*',
             'tenancies.*',
             'payments.*',
+            'rooms.*',
             'reviews.*',
             'kyc.*',
             'tickets.*',
@@ -238,6 +249,10 @@ return [
             'payments.view.own',
             'payments.create',
             'payments.update.own',
+            'rooms.view.own',
+            'rooms.create',
+            'rooms.update.own',
+            'rooms.delete.own',
             'inquiries.view.own',
             'inquiries.update.own',
             'kyc.view.own',
@@ -255,6 +270,30 @@ return [
             'kyc.view.own',
             'kyc.submit',
             'kyc.create',
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Roles each actor role may assign (never includes self-elevation)
+    |--------------------------------------------------------------------------
+    */
+    'assignable_roles' => [
+        'super_admin' => [
+            'super_admin',
+            'admin',
+            'agent',
+            'support',
+            'landlord',
+            'hotel_manager',
+            'client',
+        ],
+        'admin' => [
+            'agent',
+            'support',
+            'landlord',
+            'hotel_manager',
+            'client',
         ],
     ],
 ];

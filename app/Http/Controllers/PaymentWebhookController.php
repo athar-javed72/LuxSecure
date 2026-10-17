@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Services\Payments\PaymentGatewayManager;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class PaymentWebhookController extends Controller
 {
@@ -22,20 +23,32 @@ class PaymentWebhookController extends Controller
 
     private function handle(string $gateway, Request $request): JsonResponse
     {
-        $driver = $this->gateways->driver($gateway);
-        $payload = $request->all();
-        $signature = $request->header('X-Signature') ?? $request->input('signature') ?? $request->input('pp_SecureHash');
-
-        if (! $driver->verifyWebhook($payload, is_string($signature) ? $signature : null)) {
-            return response()->json(['success' => false, 'message' => 'Invalid signature.'], 401);
+        if (! config("payments.{$gateway}.enabled")) {
+            return response()->json(['success' => false, 'message' => 'Gateway disabled.'], 422);
         }
 
-        $payment = $driver->handleWebhook($payload);
+        try {
+            $driver = $this->gateways->driver($gateway);
+            $payload = $request->all();
+            $signature = $request->header('X-Signature') ?? $request->input('signature') ?? $request->input('pp_SecureHash');
 
-        return response()->json([
-            'success' => true,
-            'payment_uuid' => $payment->uuid,
-            'status' => $payment->status,
-        ]);
+            if (! $driver->verifyWebhook($payload, is_string($signature) ? $signature : null)) {
+                return response()->json(['success' => false, 'message' => 'Invalid signature.'], 401);
+            }
+
+            $payment = $driver->handleWebhook($payload);
+
+            return response()->json([
+                'success' => true,
+                'payment_uuid' => $payment->uuid,
+                'status' => $payment->status,
+            ]);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Webhook rejected.',
+                'errors' => $e->errors(),
+            ], 422);
+        }
     }
 }

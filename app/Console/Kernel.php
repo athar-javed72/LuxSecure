@@ -12,8 +12,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        $schedule->command('luxsecure:backup')->dailyAt('02:00');
-        $schedule->command('luxsecure:notify-rent-due')->dailyAt('08:00');
+        $tz = config('app.timezone', 'Asia/Karachi');
+
+        $schedule->command('luxsecure:backup')->dailyAt('02:00')->timezone($tz);
+        $schedule->command('luxsecure:notify-rent-due')->dailyAt('08:00')->timezone($tz);
     }
 
     /**

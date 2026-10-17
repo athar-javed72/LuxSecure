@@ -2,31 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\InitiatePaymentRequest;
 use App\Models\Booking;
 use App\Models\Payment;
 use App\Models\RentPayment;
 use App\Services\Payments\PaymentGatewayManager;
 use App\Support\StorageDisk;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 
 class PaymentController extends Controller
 {
     public function __construct(private readonly PaymentGatewayManager $gateways) {}
 
-    public function initiate(Request $request): RedirectResponse
+    public function initiate(InitiatePaymentRequest $request): RedirectResponse
     {
-        $this->authorize('create', Payment::class);
-
-        $data = $request->validate([
-            'payable_type' => ['required', Rule::in(['booking', 'rent_payment'])],
-            'payable_id' => ['required', 'integer'],
-            'gateway' => ['required', Rule::in(Payment::GATEWAYS)],
-            'idempotency_key' => ['nullable', 'string', 'max:100'],
-            'bank_reference' => ['nullable', 'string', 'max:120'],
-            'proof' => ['nullable', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:5120'],
-        ]);
+        $data = $request->validated();
 
         [$payable, $amount] = $this->resolvePayable($data['payable_type'], (int) $data['payable_id'], $request->user()->id);
 

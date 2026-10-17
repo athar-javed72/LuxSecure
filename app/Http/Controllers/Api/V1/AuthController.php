@@ -98,6 +98,7 @@ class AuthController extends Controller
             'token' => $token,
             'token_type' => 'Bearer',
             'user' => new UserResource($user->load('roles')),
+            'two_factor_setup_required' => $this->twoFactor->requiresSetup($user),
         ], 'Authenticated');
     }
 

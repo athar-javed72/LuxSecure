@@ -10,6 +10,7 @@ use App\Models\Listing;
 use App\Models\RoomType;
 use App\Services\Hotel\BookingAvailabilityService;
 use App\Services\Hotel\BookingPricingService;
+use App\Services\Payments\PaymentRefundService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -21,6 +22,7 @@ class BookingController extends Controller
     public function __construct(
         private readonly BookingAvailabilityService $availability,
         private readonly BookingPricingService $pricing,
+        private readonly PaymentRefundService $refunds,
     ) {}
 
     public function create(Listing $listing, Request $request): View
@@ -111,6 +113,7 @@ class BookingController extends Controller
     {
         $this->authorize('cancelOwn', $booking);
         $booking->update(['status' => 'cancelled']);
+        $this->refunds->voidOrMarkRefundPending($booking);
         $booking->load(['user', 'listing', 'roomType']);
         Mail::to($booking->user->email)->queue(new BookingConfirmationMail($booking));
 

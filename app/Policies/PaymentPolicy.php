@@ -51,4 +51,9 @@ class PaymentPolicy
     {
         return $user->can('payments.update.any');
     }
+
+    public function refund(User $user, Payment $payment): bool
+    {
+        return $user->can('payments.refund');
+    }
 }

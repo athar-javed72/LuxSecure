@@ -17,31 +17,29 @@ class RoleAssignmentService
     public function filterAssignableRoles(User $actor, array $roleNames): array
     {
         $roleNames = array_values(array_unique($roleNames));
+        $allowlist = $this->allowlistFor($actor);
 
-        if ($actor->isSuperAdmin()) {
-            return $roleNames;
-        }
-
-        $owned = $actor->getRoleNames()->all();
-
-        return array_values(array_intersect($roleNames, $owned));
+        return array_values(array_intersect($roleNames, $allowlist));
     }
 
     /**
-     * @param  array<int, string>  $permissionNames
-     * @return array<int, string>
+     * @return list<string>
      */
-    public function filterAssignablePermissions(User $actor, array $permissionNames): array
+    public function allowlistFor(User $actor): array
     {
-        $permissionNames = array_values(array_unique($permissionNames));
-
         if ($actor->isSuperAdmin()) {
-            return $permissionNames;
+            return array_values(config('rbac.roles', []));
         }
 
-        $owned = $actor->getAllPermissions()->pluck('name')->all();
+        $map = config('rbac.assignable_roles', []);
 
-        return array_values(array_intersect($permissionNames, $owned));
+        foreach ($actor->getRoleNames() as $role) {
+            if (isset($map[$role])) {
+                return array_values($map[$role]);
+            }
+        }
+
+        return [];
     }
 
     /**
@@ -55,7 +53,23 @@ class RoleAssignmentService
             ]);
         }
 
+        if (! $actor->can('users.assign_roles')) {
+            return;
+        }
+
         $filtered = $this->filterAssignableRoles($actor, $roleNames);
+
+        if (in_array('super_admin', $roleNames, true) && ! $actor->isSuperAdmin()) {
+            throw ValidationException::withMessages([
+                'roles' => 'You may not assign the super_admin role.',
+            ]);
+        }
+
+        if (in_array('admin', $roleNames, true) && ! $actor->isSuperAdmin() && ! in_array('admin', $this->allowlistFor($actor), true)) {
+            throw ValidationException::withMessages([
+                'roles' => 'You may not assign the admin role.',
+            ]);
+        }
 
         if (in_array('super_admin', $target->getRoleNames()->all(), true)
             && ! in_array('super_admin', $filtered, true)
@@ -63,14 +77,6 @@ class RoleAssignmentService
             throw ValidationException::withMessages([
                 'roles' => 'Cannot demote the last remaining super admin.',
             ]);
-        }
-
-        if (! $actor->isSuperAdmin() && in_array('super_admin', $filtered, true) && ! $actor->hasRole('super_admin')) {
-            $filtered = array_values(array_diff($filtered, ['super_admin']));
-        }
-
-        if (! $actor->can('users.assign_roles')) {
-            return;
         }
 
         $target->syncRoles($filtered);
@@ -81,6 +87,12 @@ class RoleAssignmentService
      */
     public function syncDirectPermissions(User $actor, User $target, array $permissionNames): void
     {
+        if (! $actor->isSuperAdmin()) {
+            throw ValidationException::withMessages([
+                'permissions' => 'Only a super admin may assign direct permissions.',
+            ]);
+        }
+
         if ($target->isSuperAdmin() && ! $actor->isSuperAdmin()) {
             throw ValidationException::withMessages([
                 'permissions' => 'Only a super admin can modify another super admin.',
@@ -91,34 +103,52 @@ class RoleAssignmentService
             return;
         }
 
-        // Non-super-admins may only grant permissions they themselves hold.
-        $filtered = $this->filterAssignablePermissions($actor, $permissionNames);
-
-        // Super admin may grant any; non-super may not grant permissions beyond their own (already filtered).
-        if (! $actor->isSuperAdmin()) {
-            // Already filtered to owned permissions.
+        $filtered = [];
+        foreach (array_values(array_unique($permissionNames)) as $name) {
+            if ($this->isForbiddenDirectPermission($name) && ! $actor->isSuperAdmin()) {
+                continue;
+            }
+            // Super admin may grant restricted permissions; still block nothing for super_admin per requirement
+            // "except by super_admin".
+            $filtered[] = $name;
         }
 
         $target->syncPermissions($filtered);
     }
 
-    public function assignableRolesFor(User $actor): Collection
+    public function isForbiddenDirectPermission(string $name): bool
     {
-        $query = Role::query()->orderBy('name');
-
-        if (! $actor->isSuperAdmin()) {
-            $query->whereIn('name', $actor->getRoleNames());
+        if ($name === 'panel.access') {
+            return true;
         }
 
-        return $query->get();
+        if (str_ends_with($name, '.any')) {
+            return true;
+        }
+
+        foreach (['users.', 'roles.', 'settings.'] as $prefix) {
+            if (str_starts_with($name, $prefix)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function assignableRolesFor(User $actor): Collection
+    {
+        return Role::query()
+            ->whereIn('name', $this->allowlistFor($actor))
+            ->orderBy('name')
+            ->get();
     }
 
     public function assignablePermissionsFor(User $actor): Collection
     {
-        if ($actor->isSuperAdmin()) {
-            return Permission::query()->orderBy('name')->get();
+        if (! $actor->isSuperAdmin()) {
+            return collect();
         }
 
-        return $actor->getAllPermissions()->sortBy('name')->values();
+        return Permission::query()->orderBy('name')->get();
     }
 }

@@ -14,7 +14,12 @@ class TwoFactorService
 
     public function requiresTwoFactor(User $user): bool
     {
-        return $user->isAdmin() && filled($user->two_factor_confirmed_at);
+        return $user->can('panel.access') && filled($user->two_factor_confirmed_at);
+    }
+
+    public function requiresSetup(User $user): bool
+    {
+        return $user->can('panel.access') && blank($user->two_factor_confirmed_at);
     }
 
     public function generateSecret(): string

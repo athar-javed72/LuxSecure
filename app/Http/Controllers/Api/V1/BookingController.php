@@ -9,6 +9,7 @@ use App\Models\Booking;
 use App\Models\BookingPayment;
 use App\Models\RoomType;
 use App\Services\Hotel\BookingAvailabilityService;
+use App\Services\Payments\PaymentRefundService;
 use App\Support\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -22,7 +23,10 @@ use Illuminate\Validation\Rule;
  */
 class BookingController extends Controller
 {
-    public function __construct(private readonly BookingAvailabilityService $availability) {}
+    public function __construct(
+        private readonly BookingAvailabilityService $availability,
+        private readonly PaymentRefundService $refunds,
+    ) {}
 
     /**
      * List the authenticated user's bookings.
@@ -107,6 +111,7 @@ class BookingController extends Controller
         abort_unless(in_array($booking->status, ['pending', 'confirmed'], true), 422, 'Booking cannot be cancelled.');
 
         $booking->update(['status' => 'cancelled']);
+        $this->refunds->voidOrMarkRefundPending($booking);
         $booking->load(['user', 'listing', 'roomType']);
         Mail::to($booking->user->email)->queue(new BookingConfirmationMail($booking));
 

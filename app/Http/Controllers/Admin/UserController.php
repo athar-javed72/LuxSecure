@@ -7,6 +7,7 @@ use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use App\Services\RoleAssignmentService;
+use App\Services\UserAccessRevoker;
 use App\Support\CsvExporter;
 use App\Support\Rbac;
 use Illuminate\Http\RedirectResponse;
@@ -18,7 +19,10 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class UserController extends Controller
 {
-    public function __construct(private RoleAssignmentService $assignments) {}
+    public function __construct(
+        private RoleAssignmentService $assignments,
+        private UserAccessRevoker $accessRevoker,
+    ) {}
 
     public function index(Request $request): View
     {
@@ -60,7 +64,9 @@ class UserController extends Controller
         ]);
 
         $this->assignments->syncRoles($request->user(), $user, $request->input('roles', []));
-        $this->assignments->syncDirectPermissions($request->user(), $user, $request->input('permissions', []));
+        if ($request->user()->isSuperAdmin()) {
+            $this->assignments->syncDirectPermissions($request->user(), $user, $request->input('permissions', []));
+        }
 
         return redirect()->route('admin.users.show', $user)->with('success', 'User created.');
     }
@@ -105,14 +111,26 @@ class UserController extends Controller
             $data['password'] = Hash::make($request->password);
         }
 
+        $wasActive = $user->is_active;
+        $previousRoles = $user->getRoleNames()->sort()->values()->all();
+        $previousPerms = $user->getDirectPermissions()->pluck('name')->sort()->values()->all();
+
         $user->update($data);
 
         if ($request->user()->can('users.assign_roles')) {
             $this->assignments->syncRoles($request->user(), $user->fresh(), $request->input('roles', []));
         }
 
-        if ($request->user()->can('users.assign_permissions')) {
+        if ($request->user()->isSuperAdmin() && $request->user()->can('users.assign_permissions')) {
             $this->assignments->syncDirectPermissions($request->user(), $user->fresh(), $request->input('permissions', []));
+        }
+
+        $user->refresh();
+        $rolesChanged = $previousRoles !== $user->getRoleNames()->sort()->values()->all();
+        $permsChanged = $previousPerms !== $user->getDirectPermissions()->pluck('name')->sort()->values()->all();
+
+        if (! $isActive || $wasActive !== $isActive || $rolesChanged || $permsChanged) {
+            $this->accessRevoker->revoke($user);
         }
 
         return redirect()->route('admin.users.show', $user)->with('success', 'User updated.');
@@ -167,6 +185,7 @@ class UserController extends Controller
                 $user->delete();
             } elseif ($data['action'] === 'deactivate' && $request->user()->can('update', $user)) {
                 $user->update(['is_active' => false]);
+                $this->accessRevoker->revoke($user);
             } elseif ($data['action'] === 'activate' && $request->user()->can('update', $user)) {
                 $user->update(['is_active' => true]);
             }

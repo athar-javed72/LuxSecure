@@ -15,6 +15,14 @@ trait CreatesUsers
 
         $user->syncRoles([$role]);
 
+        if ($user->can('panel.access') && blank($user->two_factor_confirmed_at)) {
+            $user->forceFill([
+                'two_factor_secret' => encrypt('TEST2FASECRET233'),
+                'two_factor_recovery_codes' => encrypt(json_encode(['recovercode1'])),
+                'two_factor_confirmed_at' => now(),
+            ])->save();
+        }
+
         return $user->fresh();
     }
 

@@ -16,6 +16,12 @@ class PhoneOtpService
     {
         $code = (string) random_int(100000, 999999);
 
+        PhoneOtp::query()
+            ->where('user_id', $user->id)
+            ->where('phone', $phone)
+            ->whereNull('consumed_at')
+            ->update(['consumed_at' => now()]);
+
         PhoneOtp::create([
             'user_id' => $user->id,
             'phone' => $phone,
