@@ -2,20 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Property;
+use App\Models\Listing;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class FavoriteController extends Controller
 {
-    public function toggle(Request $request, Property $property): RedirectResponse
+    public function toggle(Request $request, Listing $listing): RedirectResponse
     {
         $user = $request->user();
-        if ($user->favorites()->where('property_id', $property->id)->exists()) {
-            $user->favorites()->detach($property->id);
+        if ($user->favorites()->where('listing_id', $listing->id)->exists()) {
+            $user->favorites()->detach($listing->id);
             $message = 'Removed from favorites.';
         } else {
-            $user->favorites()->attach($property->id);
+            $user->favorites()->attach($listing->id);
             $message = 'Added to favorites.';
         }
 

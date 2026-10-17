@@ -12,7 +12,7 @@ class InquiryController extends Controller
 {
     public function index(Request $request): View
     {
-        $query = ContactInquiry::with('property')->latest();
+        $query = ContactInquiry::with('listing')->latest();
 
         if ($request->filled('search')) {
             $search = $request->string('search')->toString();

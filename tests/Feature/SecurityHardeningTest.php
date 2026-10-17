@@ -2,15 +2,17 @@
 
 namespace Tests\Feature;
 
-use App\Models\Property;
+use App\Models\Listing;
 use App\Models\User;
-use App\Policies\PropertyPolicy;
+use App\Policies\ListingPolicy;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Gate;
+use Tests\Support\CreatesListings;
 use Tests\TestCase;
 
 class SecurityHardeningTest extends TestCase
 {
+    use CreatesListings;
     use RefreshDatabase;
 
     public function test_login_is_rate_limited_after_five_attempts(): void
@@ -30,27 +32,23 @@ class SecurityHardeningTest extends TestCase
 
     public function test_inquiry_stores_property_id_from_listing_form(): void
     {
-        $property = Property::create([
+        $listing = $this->makeListing([
             'title' => 'Linked Villa',
             'location' => 'Lahore',
-            'type' => 'Villa',
-            'price' => 25000000,
-            'description' => 'Test',
-            'is_active' => true,
         ]);
 
         $response = $this->post(route('contact.store'), [
             'name' => 'Buyer',
             'email' => 'buyer@example.com',
             'message' => 'Please contact me about this listing.',
-            'property_id' => $property->id,
+            'listing_id' => $listing->id,
         ]);
 
         $response->assertRedirect();
         $response->assertSessionHas('success');
         $this->assertDatabaseHas('contact_inquiries', [
             'email' => 'buyer@example.com',
-            'property_id' => $property->id,
+            'listing_id' => $listing->id,
         ]);
     }
 
@@ -93,7 +91,7 @@ class SecurityHardeningTest extends TestCase
             'email_verified_at' => now(),
         ]);
 
-        $this->assertFalse(Gate::forUser($user)->allows('viewAny', Property::class));
-        $this->assertFalse((new PropertyPolicy)->viewAny($user));
+        $this->assertFalse(Gate::forUser($user)->allows('viewAny', Listing::class));
+        $this->assertFalse((new ListingPolicy)->viewAny($user));
     }
 }

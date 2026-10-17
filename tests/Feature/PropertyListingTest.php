@@ -2,12 +2,13 @@
 
 namespace Tests\Feature;
 
-use App\Models\Property;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Support\CreatesListings;
 use Tests\TestCase;
 
 class PropertyListingTest extends TestCase
 {
+    use CreatesListings;
     use RefreshDatabase;
 
     public function test_properties_page_returns_200(): void
@@ -18,12 +19,9 @@ class PropertyListingTest extends TestCase
 
     public function test_properties_page_shows_properties_from_database(): void
     {
-        Property::create([
+        $this->makeListing([
             'title' => 'Test House',
             'location' => 'Karachi',
-            'type' => 'House',
-            'price' => 50000000,
-            'is_active' => true,
         ]);
 
         $response = $this->get(route('properties'));

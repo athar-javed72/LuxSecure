@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Property;
+use App\Models\Listing;
 use Illuminate\View\View;
 
 class HomeController extends Controller
 {
     public function __invoke(): View
     {
-        $houses = Property::where('is_active', true)
-            ->with('images')
+        $houses = Listing::query()
+            ->published()
+            ->with(['images', 'listingType'])
             ->latest()
             ->take(12)
             ->get();

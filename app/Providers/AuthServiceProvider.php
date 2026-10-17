@@ -2,9 +2,11 @@
 
 namespace App\Providers;
 
-use App\Models\Property;
+use App\Models\Listing;
+use App\Models\ListingType;
 use App\Models\User;
-use App\Policies\PropertyPolicy;
+use App\Policies\ListingPolicy;
+use App\Policies\ListingTypePolicy;
 use App\Policies\UserPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
@@ -16,7 +18,8 @@ class AuthServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     protected $policies = [
-        Property::class => PropertyPolicy::class,
+        Listing::class => ListingPolicy::class,
+        ListingType::class => ListingTypePolicy::class,
         User::class => UserPolicy::class,
     ];
 

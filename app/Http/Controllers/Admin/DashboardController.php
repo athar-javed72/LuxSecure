@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\ContactInquiry;
-use App\Models\Property;
+use App\Models\Listing;
 use App\Models\User;
 use Illuminate\View\View;
 
@@ -14,10 +14,10 @@ class DashboardController extends Controller
     {
         return view('admin.dashboard', [
             'totalUsers' => User::count(),
-            'totalProperties' => Property::count(),
+            'totalProperties' => Listing::count(),
             'totalInquiries' => ContactInquiry::count(),
             'unreadInquiries' => ContactInquiry::where('is_read', false)->count(),
-            'recentProperties' => Property::latest()->take(5)->get(),
+            'recentProperties' => Listing::with('listingType')->latest()->take(5)->get(),
             'recentInquiries' => ContactInquiry::latest()->take(5)->get(),
         ]);
     }

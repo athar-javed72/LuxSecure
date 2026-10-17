@@ -56,9 +56,14 @@ return [
             'active' => ['admin.dashboard'],
         ],
         [
-            'label' => 'Manage Properties',
-            'route' => 'admin.properties.index',
-            'active' => ['admin.properties.*'],
+            'label' => 'Listings',
+            'route' => 'admin.listings.index',
+            'active' => ['admin.listings.*'],
+        ],
+        [
+            'label' => 'Listing Types',
+            'route' => 'admin.listing-types.index',
+            'active' => ['admin.listing-types.*'],
         ],
         [
             'label' => 'Inquiries',

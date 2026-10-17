@@ -31,7 +31,7 @@
                 <x-select
                     label="Property Type"
                     name="type"
-                    :options="collect(\App\Models\Property::TYPES)->mapWithKeys(fn ($t) => [$t => $t])->all()"
+                    :options="\App\Models\ListingType::query()->where('is_active', true)->orderBy('name')->pluck('name', 'slug')->all()"
                     :selected="request('type')"
                     placeholder="All types"
                 />
@@ -61,20 +61,26 @@
     <x-container>
         <x-section-heading title="Browse by property type" subtitle="Equal tiles for every category" heading-id="types-heading" />
         <div class="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-4">
-            @foreach([
-                ['House', 'M3 10l9-7 9 7v9a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1v-9z'],
-                ['Villa', 'M4 21V10l8-6 8 6v11M9 21v-6h6v6'],
-                ['Apartment', 'M4 21V3h16v18M8 7h2M8 11h2M8 15h2M14 7h2M14 11h2M14 15h2'],
-                ['Bungalow', 'M3 12l9-8 9 8M5 10v10h14V10'],
-            ] as [$label, $path])
-                <a href="{{ route('properties', ['type' => $label]) }}"
+            @php
+                $typeTiles = [
+                    'apartment' => 'M4 21V3h16v18M8 7h2M8 11h2M8 15h2M14 7h2M14 11h2M14 15h2',
+                    'plot' => 'M4 8V4h4M20 8V4h-4M4 16v4h4M20 16v4h-4',
+                    'hotel' => 'M3 21h18M5 21V8l7-4 7 4v13M9 21v-6h6v6',
+                    'house' => 'M3 10l9-7 9 7v9a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1v-9z',
+                ];
+                $homeTypes = \App\Models\ListingType::query()->where('is_active', true)->orderBy('name')->take(4)->get();
+            @endphp
+            @forelse($homeTypes as $homeType)
+                <a href="{{ route('properties', ['type' => $homeType->slug]) }}"
                    class="w-full flex flex-col items-center justify-center gap-3 h-32 rounded-md bg-white shadow-sm hover:shadow-lg transition-shadow duration-150 border border-black/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fs-brand">
                     <span class="inline-flex items-center justify-center w-12 h-12 rounded-sm bg-fs-brand-light text-fs-brand">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="{{ $path }}"/></svg>
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="{{ $typeTiles[$homeType->slug] ?? $typeTiles['house'] }}"/></svg>
                     </span>
-                    <span class="text-sm font-semibold text-fs-primary">{{ $label }}</span>
+                    <span class="text-sm font-semibold text-fs-primary">{{ $homeType->name }}</span>
                 </a>
-            @endforeach
+            @empty
+                <p class="col-span-full text-sm text-fs-muted">Listing types will appear here once configured.</p>
+            @endforelse
         </div>
     </x-container>
 </section>

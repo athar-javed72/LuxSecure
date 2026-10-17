@@ -2,17 +2,17 @@
 
 namespace App\Policies;
 
-use App\Models\Property;
+use App\Models\ListingType;
 use App\Models\User;
 
-class PropertyPolicy
+class ListingTypePolicy
 {
     public function viewAny(User $user): bool
     {
         return $user->isAdmin();
     }
 
-    public function view(User $user, Property $property): bool
+    public function view(User $user, ListingType $listingType): bool
     {
         return $user->isAdmin();
     }
@@ -22,12 +22,12 @@ class PropertyPolicy
         return $user->isAdmin();
     }
 
-    public function update(User $user, Property $property): bool
+    public function update(User $user, ListingType $listingType): bool
     {
         return $user->isAdmin();
     }
 
-    public function delete(User $user, Property $property): bool
+    public function delete(User $user, ListingType $listingType): bool
     {
         return $user->isAdmin();
     }

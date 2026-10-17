@@ -18,8 +18,8 @@
         <p class="text-xs font-semibold uppercase tracking-wide text-fs-muted">Total users</p>
         <p class="mt-2 text-xl font-bold text-fs-primary">{{ $totalUsers }}</p>
     </a>
-    <a href="{{ route('admin.properties.index') }}" class="rounded-md bg-white shadow-sm border border-black/5 p-6 hover:shadow-lg transition-shadow duration-150">
-        <p class="text-xs font-semibold uppercase tracking-wide text-fs-muted">Properties</p>
+    <a href="{{ route('admin.listings.index') }}" class="rounded-md bg-white shadow-sm border border-black/5 p-6 hover:shadow-lg transition-shadow duration-150">
+        <p class="text-xs font-semibold uppercase tracking-wide text-fs-muted">Listings</p>
         <p class="mt-2 text-xl font-bold text-fs-primary">{{ $totalProperties }}</p>
     </a>
     <a href="{{ route('admin.inquiries.index') }}" class="rounded-md bg-white shadow-sm border border-black/5 p-6 hover:shadow-lg transition-shadow duration-150">
@@ -35,8 +35,8 @@
 <div class="mt-8 grid grid-cols-1 xl:grid-cols-2 gap-6">
     <div class="rounded-md bg-white shadow-sm border border-black/5 overflow-hidden">
         <div class="px-4 py-3 border-b border-black/5 flex items-center justify-between gap-2">
-            <h2 class="text-base font-semibold text-fs-primary">Recent properties</h2>
-            <x-button variant="ghost" href="{{ route('admin.properties.index') }}">View all</x-button>
+            <h2 class="text-base font-semibold text-fs-primary">Recent listings</h2>
+            <x-button variant="ghost" href="{{ route('admin.listings.index') }}">View all</x-button>
         </div>
         <div class="overflow-x-auto">
             <table class="w-full text-sm table-fixed">
@@ -52,12 +52,12 @@
                     @forelse($recentProperties as $p)
                         <tr>
                             <td class="px-4 py-3 font-medium text-fs-primary truncate">{{ $p->title }}</td>
-                            <td class="px-4 py-3 text-fs-secondary truncate">{{ $p->type }}</td>
-                            <td class="px-4 py-3 text-fs-secondary whitespace-nowrap">PKR {{ number_format($p->price / 1_00_00_000, 1) }} Cr</td>
-                            <td class="px-4 py-3"><x-badge :tone="$p->is_active ? 'success' : 'muted'">{{ $p->is_active ? 'Active' : 'Off' }}</x-badge></td>
+                            <td class="px-4 py-3 text-fs-secondary truncate">{{ $p->listingType?->name }}</td>
+                            <td class="px-4 py-3 text-fs-secondary whitespace-nowrap">{{ $p->formatted_price }}</td>
+                            <td class="px-4 py-3"><x-badge :tone="$p->status === 'published' ? 'success' : 'muted'">{{ ucfirst($p->status) }}</x-badge></td>
                         </tr>
                     @empty
-                        <tr><td colspan="4" class="px-4 py-6 text-center text-fs-muted">No properties yet.</td></tr>
+                        <tr><td colspan="4" class="px-4 py-6 text-center text-fs-muted">No listings yet.</td></tr>
                     @endforelse
                 </tbody>
             </table>

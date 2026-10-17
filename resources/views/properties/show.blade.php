@@ -5,10 +5,10 @@
 
 @section('content')
 @php
-    $listing = strtolower((string) $property->type) === 'apartment' ? 'rent' : 'sale';
+    $listing = $property->purpose ?? 'sale';
     $gallery = $property->images;
     $mainImage = $property->primary_image_url;
-    $isFav = auth()->check() ? auth()->user()->favorites()->where('property_id', $property->id)->exists() : false;
+    $isFav = auth()->check() ? auth()->user()->favorites()->where('listing_id', $property->id)->exists() : false;
 @endphp
 
 <x-container class="py-8">
@@ -40,7 +40,9 @@
                     </div>
                 @endif
                 <div class="absolute top-4 left-4">
-                    <x-badge :tone="$listing === 'rent' ? 'rent' : 'sale'">{{ $listing === 'rent' ? 'For Rent' : 'For Sale' }}</x-badge>
+                    <x-badge :tone="$listing === 'rent' || $listing === 'short_stay' ? 'rent' : 'sale'">
+                        {{ $listing === 'rent' ? 'For Rent' : ($listing === 'short_stay' ? 'Short Stay' : 'For Sale') }}
+                    </x-badge>
                 </div>
                 @auth
                     <form action="{{ route('favorites.toggle', $property) }}" method="POST" class="absolute top-4 right-4">
@@ -69,7 +71,7 @@
 
             <div class="rounded-md bg-white shadow-sm border border-slate-100 p-6">
                 <div class="flex flex-wrap items-center gap-2 mb-3">
-                    <x-badge tone="muted">{{ $property->type }}</x-badge>
+                    <x-badge tone="muted">{{ $property->type_name }}</x-badge>
                 </div>
                 <h1 class="text-xl md:text-2xl font-bold text-fs-primary">{{ $property->title }}</h1>
                 <p class="mt-2 text-sm text-fs-muted flex items-center gap-1.5">
@@ -81,7 +83,7 @@
                 <div class="mt-6 pt-6 border-t border-slate-100 grid grid-cols-3 gap-4 text-sm text-fs-secondary">
                     <div><span class="block text-xs text-fs-muted mb-1">Beds</span>{{ $property->bedrooms ?? '—' }}</div>
                     <div><span class="block text-xs text-fs-muted mb-1">Baths</span>{{ $property->bathrooms ?? '—' }}</div>
-                    <div><span class="block text-xs text-fs-muted mb-1">Type</span>{{ $property->type }}</div>
+                    <div><span class="block text-xs text-fs-muted mb-1">Type</span>{{ $property->type_name }}</div>
                 </div>
 
                 @if($property->description)
@@ -113,7 +115,8 @@
                 <p class="mt-2 text-sm text-fs-secondary">Ask about availability, viewing times, or financing.</p>
                 <form method="POST" action="{{ route('contact.store') }}" class="mt-4 space-y-4">
                     @csrf
-                    <input type="hidden" name="property_id" value="{{ $property->id }}">
+                    <input type="hidden" name="listing_id" value="{{ $property->id }}">
+                    @error('listing_id')<p class="mt-1 text-xs text-fs-danger">{{ $message }}</p>@enderror
                     <x-input label="Name" name="name" :value="old('name', auth()->user()->name ?? '')" required />
                     <x-input label="Email" name="email" type="email" :value="old('email', auth()->user()->email ?? '')" required />
                     <div>
@@ -121,7 +124,6 @@
                         <textarea id="message" name="message" rows="4" required
                                   class="w-full px-4 py-3 rounded-sm border border-slate-200 bg-white text-sm text-fs-primary placeholder:text-fs-muted focus:border-fs-brand focus:ring-2 focus:ring-fs-brand/20">{{ old('message', 'I am interested in '.$property->title.' ('.$property->location.'). Please contact me.') }}</textarea>
                         @error('message')<p class="mt-1 text-xs text-fs-danger">{{ $message }}</p>@enderror
-                        @error('property_id')<p class="mt-1 text-xs text-fs-danger">{{ $message }}</p>@enderror
                     </div>
                     <x-button type="submit" variant="primary" class="w-full">Request info</x-button>
                 </form>

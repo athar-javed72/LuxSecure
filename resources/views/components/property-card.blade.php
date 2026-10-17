@@ -16,22 +16,19 @@
     if ($property) {
         $title = $property->title;
         $location = $property->location;
-        $price = 'PKR ' . number_format($property->price / 1_00_00_000, 1) . ' Cr';
+        $price = $property->formatted_price;
         $image = $property->primary_image_url;
         $url = route('properties.show', $property);
-        $type = $property->type;
+        $type = $property->type_name;
         $bedrooms = $property->bedrooms;
         $bathrooms = $property->bathrooms;
-        $area = $area ?? (match ($property->type) {
-            'Apartment' => '1,200 sqft',
-            'Villa' => '4,500 sqft',
-            'Bungalow' => '3,800 sqft',
-            default => '2,400 sqft',
-        });
-        $listing = $listing ?? (strtolower((string) $property->type) === 'apartment' ? 'rent' : 'sale');
+        $area = $area ?? ($property->area_size
+            ? rtrim(rtrim(number_format((float) $property->area_size, 2), '0'), '.').' '.str_replace('_', ' ', (string) $property->area_unit)
+            : '—');
+        $listing = $listing ?? $property->purpose;
         $isFav = auth()->check() && auth()->user()->relationLoaded('favorites')
             ? auth()->user()->favorites->contains($property)
-            : (auth()->check() ? auth()->user()->favorites()->where('property_id', $property->id)->exists() : false);
+            : (auth()->check() ? auth()->user()->favorites()->where('listing_id', $property->id)->exists() : false);
     } else {
         $listing = $listing ?? 'sale';
         $isFav = false;
@@ -71,8 +68,8 @@
         @endif
 
         <div class="absolute top-3 left-3 z-20">
-            <x-badge :tone="$listing === 'rent' ? 'rent' : 'sale'">
-                {{ $listing === 'rent' ? 'For Rent' : 'For Sale' }}
+            <x-badge :tone="$listing === 'rent' || $listing === 'short_stay' ? 'rent' : 'sale'">
+                {{ $listing === 'rent' ? 'For Rent' : ($listing === 'short_stay' ? 'Short Stay' : 'For Sale') }}
             </x-badge>
         </div>
 

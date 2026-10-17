@@ -3,15 +3,16 @@
 namespace Tests\Feature;
 
 use App\Models\ContactInquiry;
-use App\Models\Property;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Tests\Support\CreatesListings;
 use Tests\TestCase;
 
 class AdminPanelTest extends TestCase
 {
+    use CreatesListings;
     use RefreshDatabase;
 
     private function makeAdmin(array $overrides = []): User
@@ -57,74 +58,78 @@ class AdminPanelTest extends TestCase
     {
         Storage::fake('public');
         $admin = $this->makeAdmin();
+        $type = $this->makeListingType();
+        $city = $this->makeCity('Lahore');
 
-        $response = $this->actingAs($admin)->post(route('admin.properties.store'), [
+        $response = $this->actingAs($admin)->post(route('admin.listings.store'), [
+            'listing_type_id' => $type->id,
             'title' => 'Audit Test Villa',
             'location' => 'DHA Lahore',
-            'type' => 'Villa',
+            'purpose' => 'sale',
             'price' => 50000000,
+            'price_unit' => 'total',
+            'currency' => 'PKR',
+            'status' => 'published',
+            'city_id' => $city->id,
             'description' => 'A test villa',
-            'bedrooms' => 4,
-            'bathrooms' => 3,
-            'is_active' => 1,
+            'attributes' => [
+                'bedrooms' => 4,
+                'bathrooms' => 3,
+            ],
             'featured_image' => UploadedFile::fake()->create('villa.jpg', 100, 'image/jpeg'),
         ]);
 
-        $response->assertRedirect(route('admin.properties.index'));
-        $this->assertDatabaseHas('properties', [
+        $response->assertRedirect(route('admin.listings.index'));
+        $this->assertDatabaseHas('listings', [
             'title' => 'Audit Test Villa',
             'location' => 'DHA Lahore',
-            'type' => 'Villa',
+            'listing_type_id' => $type->id,
         ]);
     }
 
     public function test_admin_can_update_a_property(): void
     {
         $admin = $this->makeAdmin();
-        $property = Property::create([
+        $listing = $this->makeListing([
             'title' => 'Old Title',
             'location' => 'Karachi',
-            'type' => 'House',
             'price' => 30000000,
-            'description' => 'Old',
-            'is_active' => true,
         ]);
+        $type = $listing->listingType;
 
-        $response = $this->actingAs($admin)->put(route('admin.properties.update', $property), [
+        $response = $this->actingAs($admin)->put(route('admin.listings.update', $listing), [
+            'listing_type_id' => $type->id,
             'title' => 'Updated Title',
             'location' => 'Islamabad',
-            'type' => 'Apartment',
+            'purpose' => 'sale',
             'price' => 40000000,
+            'price_unit' => 'total',
+            'currency' => 'PKR',
+            'status' => 'published',
             'description' => 'Updated description',
-            'bedrooms' => 2,
-            'bathrooms' => 2,
-            'is_active' => 1,
+            'attributes' => [
+                'bedrooms' => 2,
+                'bathrooms' => 2,
+            ],
         ]);
 
-        $response->assertRedirect(route('admin.properties.index'));
-        $this->assertDatabaseHas('properties', [
-            'id' => $property->id,
+        $response->assertRedirect(route('admin.listings.index'));
+        $this->assertDatabaseHas('listings', [
+            'id' => $listing->id,
             'title' => 'Updated Title',
             'location' => 'Islamabad',
-            'type' => 'Apartment',
         ]);
     }
 
     public function test_admin_can_delete_a_property(): void
     {
         $admin = $this->makeAdmin();
-        $property = Property::create([
-            'title' => 'Delete Me',
-            'location' => 'Lahore',
-            'type' => 'Bungalow',
-            'price' => 20000000,
-            'is_active' => true,
-        ]);
+        $listing = $this->makeListing(['title' => 'Delete Me']);
 
-        $response = $this->actingAs($admin)->delete(route('admin.properties.destroy', $property));
+        $response = $this->actingAs($admin)->delete(route('admin.listings.destroy', $listing));
 
-        $response->assertRedirect(route('admin.properties.index'));
-        $this->assertDatabaseMissing('properties', ['id' => $property->id]);
+        $response->assertRedirect(route('admin.listings.index'));
+        $this->assertSoftDeleted('listings', ['id' => $listing->id]);
     }
 
     public function test_admin_can_mark_an_inquiry_as_read(): void

@@ -9,15 +9,15 @@ class Favorite extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'property_id'];
+    protected $fillable = ['user_id', 'listing_id'];
 
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    public function property()
+    public function listing()
     {
-        return $this->belongsTo(Property::class);
+        return $this->belongsTo(Listing::class);
     }
 }

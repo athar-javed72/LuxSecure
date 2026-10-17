@@ -9,14 +9,20 @@ class ContactInquiry extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'email', 'message', 'property_id', 'is_read'];
+    protected $fillable = ['name', 'email', 'message', 'listing_id', 'is_read'];
 
     protected $casts = [
         'is_read' => 'boolean',
     ];
 
+    public function listing()
+    {
+        return $this->belongsTo(Listing::class);
+    }
+
+    /** @deprecated Use listing() */
     public function property()
     {
-        return $this->belongsTo(Property::class);
+        return $this->listing();
     }
 }

@@ -54,8 +54,8 @@
                         <td class="px-3 py-3 font-medium text-fs-primary xl:truncate">{{ $inquiry->name }}</td>
                         <td class="px-3 py-3 text-fs-secondary xl:truncate"><a href="mailto:{{ $inquiry->email }}" class="text-fs-brand">{{ $inquiry->email }}</a></td>
                         <td class="px-3 py-3 text-fs-secondary xl:truncate">
-                            @if($inquiry->property)
-                                <a href="{{ route('admin.properties.show', $inquiry->property) }}" class="text-fs-brand hover:underline">{{ $inquiry->property->title }}</a>
+                            @if($inquiry->listing)
+                                <a href="{{ route('admin.listings.show', $inquiry->listing) }}" class="text-fs-brand hover:underline">{{ $inquiry->listing->title }}</a>
                             @else
                                 <span class="text-fs-muted">—</span>
                             @endif
