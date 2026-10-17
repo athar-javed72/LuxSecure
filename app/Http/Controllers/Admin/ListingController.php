@@ -13,9 +13,9 @@ use App\Models\User;
 use App\Services\ImageOptimizer;
 use App\Services\ListingCacheService;
 use App\Support\CsvExporter;
+use App\Support\StorageDisk;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -74,7 +74,7 @@ class ListingController extends Controller
     {
         $this->authorize('create', Listing::class);
 
-        $data = $request->safe()->except(['featured_image', 'images']);
+        $data = $request->safe()->except(['featured_image', 'images', 'floor_plan', 'private_document']);
         $data['attributes'] = $request->input('attributes', []);
         $data['slug'] = filled($data['slug'] ?? null)
             ? $data['slug']
@@ -84,9 +84,19 @@ class ListingController extends Controller
             $data['featured_image'] = $this->images->store($request->file('featured_image'));
         }
 
+        if ($request->hasFile('floor_plan')) {
+            $data['floor_plan_path'] = $request->file('floor_plan')->store('listings/floor-plans', StorageDisk::uploads());
+        }
+
+        if ($request->hasFile('private_document')) {
+            $data['private_document_path'] = $request->file('private_document')->store('listings/private', StorageDisk::private());
+        }
+
         if (blank($data['agent_id'] ?? null) && $request->user()->hasRole('agent')) {
             $data['agent_id'] = $request->user()->id;
         }
+
+        $data = $this->enforceKycPendingStatus($data, $request->user());
 
         $listing = Listing::create($data);
 
@@ -122,7 +132,7 @@ class ListingController extends Controller
     {
         $this->authorize('update', $listing);
 
-        $data = $request->safe()->except(['featured_image', 'images']);
+        $data = $request->safe()->except(['featured_image', 'images', 'floor_plan', 'private_document']);
         $data['attributes'] = $request->input('attributes', []);
         $data['slug'] = filled($data['slug'] ?? null)
             ? $data['slug']
@@ -130,10 +140,26 @@ class ListingController extends Controller
 
         if ($request->hasFile('featured_image')) {
             if ($listing->featured_image) {
-                Storage::disk('public')->delete($listing->featured_image);
+                StorageDisk::uploadsDisk()->delete($listing->featured_image);
             }
             $data['featured_image'] = $this->images->store($request->file('featured_image'));
         }
+
+        if ($request->hasFile('floor_plan')) {
+            if ($listing->floor_plan_path) {
+                StorageDisk::uploadsDisk()->delete($listing->floor_plan_path);
+            }
+            $data['floor_plan_path'] = $request->file('floor_plan')->store('listings/floor-plans', StorageDisk::uploads());
+        }
+
+        if ($request->hasFile('private_document')) {
+            if ($listing->private_document_path) {
+                StorageDisk::privateDisk()->delete($listing->private_document_path);
+            }
+            $data['private_document_path'] = $request->file('private_document')->store('listings/private', StorageDisk::private());
+        }
+
+        $data = $this->enforceKycPendingStatus($data, $request->user(), $listing);
 
         $listing->update($data);
 
@@ -155,10 +181,16 @@ class ListingController extends Controller
         $this->authorize('delete', $listing);
 
         foreach ($listing->images as $img) {
-            Storage::disk('public')->delete($img->path);
+            StorageDisk::uploadsDisk()->delete($img->path);
         }
         if ($listing->featured_image && ! str_starts_with($listing->featured_image, 'http')) {
-            Storage::disk('public')->delete($listing->featured_image);
+            StorageDisk::uploadsDisk()->delete($listing->featured_image);
+        }
+        if ($listing->floor_plan_path) {
+            StorageDisk::uploadsDisk()->delete($listing->floor_plan_path);
+        }
+        if ($listing->private_document_path) {
+            StorageDisk::privateDisk()->delete($listing->private_document_path);
         }
         $listing->delete();
         $this->listingCache->flush();
@@ -171,7 +203,7 @@ class ListingController extends Controller
         $this->authorize('update', $listing);
         abort_unless((int) $image->listing_id === (int) $listing->id, 404);
 
-        Storage::disk('public')->delete($image->path);
+        StorageDisk::uploadsDisk()->delete($image->path);
         $image->delete();
 
         return back()->with('success', 'Image removed.');
@@ -242,6 +274,34 @@ class ListingController extends Controller
         }
 
         return back()->with('success', 'Bulk action applied to listings.');
+    }
+
+    /**
+     * Unverified agents/landlords cannot publish — force pending.
+     *
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    private function enforceKycPendingStatus(array $data, User $actor, ?Listing $listing = null): array
+    {
+        $agentId = $data['agent_id'] ?? $listing?->agent_id ?? ($actor->hasRole('agent') ? $actor->id : null);
+        $ownerId = $data['owner_id'] ?? $listing?->owner_id ?? ($actor->hasRole('landlord') ? $actor->id : null);
+
+        $needsKyc = false;
+        if ($agentId) {
+            $agent = User::query()->find($agentId);
+            $needsKyc = $agent && ! $agent->isKycVerified() && $agent->hasAnyRole(['agent', 'hotel_manager']);
+        }
+        if (! $needsKyc && $ownerId) {
+            $owner = User::query()->find($ownerId);
+            $needsKyc = $owner && ! $owner->isKycVerified() && $owner->hasRole('landlord');
+        }
+
+        if ($needsKyc && ($data['status'] ?? null) === 'published') {
+            $data['status'] = 'pending';
+        }
+
+        return $data;
     }
 
     /** @return array<string, mixed> */

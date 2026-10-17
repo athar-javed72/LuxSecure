@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\AgentProfile;
 use App\Models\User;
+use App\Support\StorageDisk;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class AgentProfileController extends Controller
@@ -39,7 +39,7 @@ class AgentProfileController extends Controller
 
         $data = $this->validated($request);
         if ($request->hasFile('photo')) {
-            $data['photo_path'] = $request->file('photo')->store('agents', 'public');
+            $data['photo_path'] = $request->file('photo')->store('agents', StorageDisk::uploads());
         }
 
         AgentProfile::create($data);
@@ -62,9 +62,9 @@ class AgentProfileController extends Controller
         $data = $this->validated($request, updating: true);
         if ($request->hasFile('photo')) {
             if ($agent_profile->photo_path && ! str_starts_with($agent_profile->photo_path, 'http')) {
-                Storage::disk('public')->delete($agent_profile->photo_path);
+                StorageDisk::uploadsDisk()->delete($agent_profile->photo_path);
             }
-            $data['photo_path'] = $request->file('photo')->store('agents', 'public');
+            $data['photo_path'] = $request->file('photo')->store('agents', StorageDisk::uploads());
         }
 
         unset($data['user_id']);

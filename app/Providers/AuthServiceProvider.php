@@ -7,11 +7,14 @@ use App\Models\BlogPost;
 use App\Models\Booking;
 use App\Models\ContactInquiry;
 use App\Models\Faq;
+use App\Models\KycDocument;
 use App\Models\Lead;
 use App\Models\Listing;
 use App\Models\ListingType;
 use App\Models\Page;
+use App\Models\Payment;
 use App\Models\RentPayment;
+use App\Models\Review;
 use App\Models\Role;
 use App\Models\RoomType;
 use App\Models\Setting;
@@ -23,10 +26,13 @@ use App\Policies\AgentProfilePolicy;
 use App\Policies\BookingPolicy;
 use App\Policies\CmsPolicy;
 use App\Policies\InquiryPolicy;
+use App\Policies\KycDocumentPolicy;
 use App\Policies\LeadPolicy;
 use App\Policies\ListingPolicy;
 use App\Policies\ListingTypePolicy;
+use App\Policies\PaymentPolicy;
 use App\Policies\RentPaymentPolicy;
+use App\Policies\ReviewPolicy;
 use App\Policies\RolePolicy;
 use App\Policies\RoomTypePolicy;
 use App\Policies\SettingPolicy;
@@ -59,6 +65,9 @@ class AuthServiceProvider extends ServiceProvider
         Faq::class => CmsPolicy::class,
         Testimonial::class => CmsPolicy::class,
         Page::class => CmsPolicy::class,
+        Payment::class => PaymentPolicy::class,
+        Review::class => ReviewPolicy::class,
+        KycDocument::class => KycDocumentPolicy::class,
     ];
 
     public function boot(): void

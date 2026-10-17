@@ -149,6 +149,24 @@ return [
             'permission' => ['bookings.view.any', 'bookings.view.own'],
         ],
         [
+            'label' => 'Payments',
+            'route' => 'admin.payments.index',
+            'active' => ['admin.payments.*'],
+            'permission' => ['payments.view.any', 'payments.view.own'],
+        ],
+        [
+            'label' => 'Reviews',
+            'route' => 'admin.reviews.index',
+            'active' => ['admin.reviews.*'],
+            'permission' => ['reviews.view.any', 'reviews.moderate'],
+        ],
+        [
+            'label' => 'KYC',
+            'route' => 'admin.kyc.index',
+            'active' => ['admin.kyc.*'],
+            'permission' => ['kyc.view.any', 'kyc.review'],
+        ],
+        [
             'label' => 'Users',
             'route' => 'admin.users.index',
             'active' => ['admin.users.*'],

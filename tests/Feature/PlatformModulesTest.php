@@ -194,12 +194,12 @@ class PlatformModulesTest extends TestCase
 
     public function test_gallery_image_delete_and_reorder(): void
     {
-        Storage::fake('public');
         $admin = $this->makeAdmin();
         $listing = $this->makeListing();
 
-        Storage::disk('public')->put('listings/a.jpg', 'fake-image-a');
-        Storage::disk('public')->put('listings/b.jpg', 'fake-image-b');
+        Storage::fake(\App\Support\StorageDisk::uploads());
+        Storage::disk(\App\Support\StorageDisk::uploads())->put('listings/a.jpg', 'fake-image-a');
+        Storage::disk(\App\Support\StorageDisk::uploads())->put('listings/b.jpg', 'fake-image-b');
 
         $img1 = ListingImage::create([
             'listing_id' => $listing->id,
@@ -224,7 +224,7 @@ class PlatformModulesTest extends TestCase
             ->assertRedirect();
 
         $this->assertDatabaseMissing('listing_images', ['id' => $img1->id]);
-        Storage::disk('public')->assertMissing('listings/a.jpg');
+        Storage::disk(\App\Support\StorageDisk::uploads())->assertMissing('listings/a.jpg');
     }
 
     public function test_users_and_leads_csv_export(): void

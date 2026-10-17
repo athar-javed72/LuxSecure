@@ -9,14 +9,6 @@ class Media
      */
     public static function url(?string $path): string
     {
-        if ($path === null || trim($path) === '') {
-            return '';
-        }
-
-        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
-            return $path;
-        }
-
-        return asset('storage/'.ltrim($path, '/'));
+        return StorageDisk::url($path);
     }
 }

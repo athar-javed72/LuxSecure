@@ -153,6 +153,8 @@
                     :image="$agent->photo_url"
                     :listings="$agent->user->agent_listings_count ?? null"
                     :phone="$agent->phone"
+                    :verified="$agent->is_verified || $agent->user?->isKycVerified()"
+                    :rating="$agent->averageRating()"
                     href="#agents"
                 />
             @empty

@@ -23,4 +23,11 @@ return [
         'path' => env('BACKUP_PATH', 'backups'),
         'keep' => (int) env('BACKUP_KEEP', 7),
     ],
+
+    'uploads_disk' => env('UPLOADS_DISK', 'public'),
+    'private_disk' => env('PRIVATE_DISK', 'local'),
+
+    'messaging' => [
+        'default' => env('MESSAGING_DRIVER', 'log'),
+    ],
 ];

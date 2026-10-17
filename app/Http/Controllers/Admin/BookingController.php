@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\UpdateBookingStatusRequest;
 use App\Mail\BookingConfirmationMail;
 use App\Models\Booking;
+use App\Notifications\BookingStatusNotification;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -49,6 +50,7 @@ class BookingController extends Controller
         $booking->load(['user', 'listing', 'roomType']);
 
         Mail::to($booking->user->email)->queue(new BookingConfirmationMail($booking));
+        $booking->user->notify(new BookingStatusNotification($booking));
 
         return back()->with('success', 'Booking status updated.');
     }

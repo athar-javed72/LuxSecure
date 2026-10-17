@@ -2,15 +2,15 @@
 
 namespace App\Services;
 
+use App\Support\StorageDisk;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Intervention\Image\ImageManagerStatic as Image;
 
 class ImageOptimizer
 {
     /**
-     * Store an optimized JPEG on the public disk.
+     * Store an optimized JPEG on the configured uploads disk.
      */
     public function store(UploadedFile $file, string $directory = 'listings', ?int $maxWidth = null, ?int $quality = null): string
     {
@@ -18,6 +18,7 @@ class ImageOptimizer
         $quality ??= (int) config('luxsecure.image.quality', 82);
         $filename = Str::uuid()->toString().'.jpg';
         $path = trim($directory, '/').'/'.$filename;
+        $disk = StorageDisk::uploads();
 
         try {
             Image::configure(['driver' => extension_loaded('imagick') ? 'imagick' : 'gd']);
@@ -30,9 +31,9 @@ class ImageOptimizer
                 })
                 ->encode('jpg', $quality);
 
-            Storage::disk('public')->put($path, (string) $encoded);
+            StorageDisk::uploadsDisk()->put($path, (string) $encoded);
         } catch (\Throwable) {
-            $path = $file->store($directory, 'public');
+            $path = $file->store($directory, $disk);
         }
 
         return $path;

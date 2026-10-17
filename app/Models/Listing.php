@@ -39,6 +39,9 @@ class Listing extends Model
         'agent_id',
         'description',
         'featured_image',
+        'floor_plan_path',
+        'video_url',
+        'private_document_path',
     ];
 
     protected $casts = [
@@ -152,6 +155,23 @@ class Listing extends Model
         return $this->hasMany(Booking::class);
     }
 
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    public function approvedReviews()
+    {
+        return $this->reviews()->approved();
+    }
+
+    public function averageRating(): ?float
+    {
+        $avg = $this->approvedReviews()->avg('rating');
+
+        return $avg !== null ? round((float) $avg, 1) : null;
+    }
+
     public function scopePublished($query)
     {
         return $query->where('status', 'published');
@@ -173,14 +193,10 @@ class Listing extends Model
             ? $this->images->first()
             : $this->images()->first();
         if ($first) {
-            return asset('storage/'.$first->path);
+            return \App\Support\StorageDisk::url($first->path);
         }
         if ($this->featured_image) {
-            if (str_starts_with($this->featured_image, 'http://') || str_starts_with($this->featured_image, 'https://')) {
-                return $this->featured_image;
-            }
-
-            return asset('storage/'.$this->featured_image);
+            return \App\Support\StorageDisk::url($this->featured_image);
         }
 
         return '';

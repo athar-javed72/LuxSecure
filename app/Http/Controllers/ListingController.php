@@ -107,10 +107,14 @@ class ListingController extends Controller
             abort(404);
         }
         $listing->load(['images', 'listingType', 'city', 'area', 'roomTypes', 'agent.agentProfile']);
+        $reviews = $listing->approvedReviews()->with('user')->latest()->get();
 
         return view('properties.show', [
             'property' => $listing,
             'listing' => $listing,
+            'reviews' => $reviews,
+            'averageRating' => $listing->averageRating(),
+            'agentAverageRating' => $listing->agent?->agentProfile?->averageRating(),
         ]);
     }
 }

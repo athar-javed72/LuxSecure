@@ -6,7 +6,7 @@
                 <a href="{{ route('home') }}" class="inline-flex items-center gap-3 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
                     <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-sm bg-fs-brand text-sm font-bold text-white tracking-wide">LS</span>
                     <span class="fs-display text-xl font-semibold tracking-wide">
-                        Lux<span class="text-fs-brand">Secure</span>
+                        {{ $siteName ?? 'LuxSecure' }}
                     </span>
                 </a>
                 <p class="mt-4 max-w-xs text-sm leading-relaxed text-slate-300">
@@ -79,13 +79,13 @@
                 <h2 class="text-xs font-semibold uppercase tracking-wider text-slate-400">Contact</h2>
                 <ul class="mt-4 space-y-2.5 text-sm text-slate-300">
                     <li>
-                        <a href="mailto:support@luxsecure.pk" class="transition-colors duration-150 hover:text-white">
-                            support@luxsecure.pk
+                        <a href="mailto:{{ $siteEmail ?? 'hello@luxsecure.example' }}" class="transition-colors duration-150 hover:text-white">
+                            {{ $siteEmail ?? 'hello@luxsecure.example' }}
                         </a>
                     </li>
                     <li>
-                        <a href="tel:+923000000000" class="transition-colors duration-150 hover:text-white">
-                            +92 300 0000000
+                        <a href="tel:{{ preg_replace('/\s+/', '', $sitePhone ?? '+923000000000') }}" class="transition-colors duration-150 hover:text-white">
+                            {{ $sitePhone ?? '+92 300 0000000' }}
                         </a>
                     </li>
                     <li class="text-slate-400">Mon–Sat, 10:00 AM – 7:00 PM (PKT)</li>
@@ -102,7 +102,7 @@
         </div>
 
         <div class="mt-10 flex flex-col gap-2 border-t border-white/10 pt-5 text-xs text-slate-400 sm:flex-row sm:items-center sm:justify-between">
-            <p>© {{ date('Y') }} LuxSecure. All rights reserved.</p>
+            <p>© {{ date('Y') }} {{ $siteName ?? 'LuxSecure' }}. All rights reserved.</p>
             @include('include.branding', ['brandingClass' => 'text-slate-400', 'strongClass' => 'text-slate-200 font-medium'])
         </div>
     </x-container>

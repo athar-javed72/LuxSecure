@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ContactInquiry;
 use App\Models\Lead;
 use App\Models\User;
+use App\Notifications\LeadAssignedNotification;
 use App\Support\CsvExporter;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -50,6 +51,10 @@ class LeadController extends Controller
             ]
         );
 
+        if ($lead->wasRecentlyCreated && $lead->assigned_agent_id) {
+            $lead->assignedAgent?->notify(new LeadAssignedNotification($lead));
+        }
+
         return redirect()->route('admin.leads.edit', $lead)->with('success', 'Inquiry converted to lead.');
     }
 
@@ -76,7 +81,12 @@ class LeadController extends Controller
             'phone' => ['nullable', 'string', 'max:40'],
         ]);
 
+        $previousAgentId = $lead->assigned_agent_id;
         $lead->update($data);
+
+        if (! empty($data['assigned_agent_id']) && (int) $data['assigned_agent_id'] !== (int) $previousAgentId) {
+            $lead->assignedAgent?->notify(new LeadAssignedNotification($lead->fresh()));
+        }
 
         return back()->with('success', 'Lead updated.');
     }

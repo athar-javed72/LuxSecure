@@ -79,6 +79,9 @@
                     {{ $property->location }}
                 </p>
                 <p class="mt-4 text-lg font-bold text-fs-primary">PKR {{ number_format($property->price / 1_00_00_000, 1) }} Crore</p>
+                @if(($averageRating ?? null) !== null)
+                    <p class="mt-2 text-sm text-fs-secondary">Average rating: <span class="font-semibold text-fs-primary">{{ number_format($averageRating, 1) }}</span>/5 ({{ $reviews->count() }} reviews)</p>
+                @endif
 
                 <div class="mt-6 pt-6 border-t border-slate-100 grid grid-cols-3 gap-4 text-sm text-fs-secondary">
                     <div><span class="block text-xs text-fs-muted mb-1">Beds</span>{{ $property->bedrooms ?? '—' }}</div>
@@ -92,6 +95,43 @@
                         <p class="text-sm text-fs-secondary leading-relaxed max-w-prose">{{ $property->description }}</p>
                     </div>
                 @endif
+
+                @if($property->video_url || $property->floor_plan_path)
+                    <div class="mt-6 pt-6 border-t border-slate-100 space-y-2 text-sm">
+                        <h2 class="text-base font-semibold text-fs-primary mb-2">Media</h2>
+                        @if($property->video_url)
+                            <p><a href="{{ $property->video_url }}" class="text-fs-brand hover:underline" target="_blank" rel="noopener">Watch video tour</a></p>
+                        @endif
+                        @if($property->floor_plan_path)
+                            <p><a href="{{ \App\Support\StorageDisk::url($property->floor_plan_path) }}" class="text-fs-brand hover:underline" target="_blank" rel="noopener">View floor plan</a></p>
+                        @endif
+                    </div>
+                @endif
+
+                <div class="mt-6 pt-6 border-t border-slate-100">
+                    <h2 class="text-base font-semibold text-fs-primary mb-3">Reviews</h2>
+                    <div class="space-y-3">
+                        @forelse($reviews as $review)
+                            <div class="text-sm">
+                                <p class="font-medium text-fs-primary">{{ $review->user?->name }} · {{ $review->rating }}/5</p>
+                                <p class="text-fs-secondary mt-1">{{ $review->body }}</p>
+                            </div>
+                        @empty
+                            <p class="text-sm text-fs-muted">No approved reviews yet.</p>
+                        @endforelse
+                    </div>
+                    @auth
+                        <form method="POST" action="{{ route('reviews.store', $property) }}" class="mt-4 space-y-3 max-w-md">
+                            @csrf
+                            <x-input label="Rating (1-5)" name="rating" type="number" min="1" max="5" :value="old('rating')" required />
+                            <div>
+                                <label class="block text-xs font-semibold text-fs-primary mb-1">Review</label>
+                                <textarea name="body" rows="3" class="w-full rounded-sm border border-black/10 px-3 py-2 text-sm">{{ old('body') }}</textarea>
+                            </div>
+                            <x-button type="submit" variant="ghost">Submit review</x-button>
+                        </form>
+                    @endauth
+                </div>
             </div>
         </div>
 
@@ -107,11 +147,14 @@
                         <div>
                             <h2 class="text-base font-semibold text-fs-primary flex items-center gap-2">
                                 {{ $agentUser->name }}
-                                @if($agentProfile?->is_verified)
+                                @if($agentProfile?->is_verified || $agentUser->isKycVerified())
                                     <span class="text-[10px] uppercase tracking-wide text-fs-brand">Verified</span>
                                 @endif
                             </h2>
                             <p class="text-sm text-fs-secondary">{{ $agentProfile?->display_role ?? 'LuxSecure Agent' }}</p>
+                            @if(($agentAverageRating ?? null) !== null)
+                                <p class="text-xs text-fs-muted mt-1">Agent rating {{ number_format($agentAverageRating, 1) }}/5</p>
+                            @endif
                         </div>
                     </div>
                     @if($agentProfile?->phone)

@@ -49,7 +49,7 @@
             <span class="inline-flex items-center justify-center w-10 h-10 rounded-sm bg-fs-brand text-white font-bold text-sm tracking-wide">LS</span>
             <span class="flex flex-col leading-tight">
                 <span class="fs-display text-xl font-semibold tracking-wide text-white">
-                    Lux<span class="text-fs-brand">Secure</span>
+                    {{ $siteName ?? 'LuxSecure' }}
                 </span>
                 <span class="hidden sm:inline text-[10px] tracking-[0.18em] uppercase text-slate-300/80">
                     {{ $variant === 'admin' ? 'Admin Control' : 'Trusted Property Platform' }}
@@ -82,6 +82,12 @@
                 @if($isAdmin)
                     <x-button variant="secondary" href="{{ route('admin.dashboard') }}">Admin</x-button>
                 @endif
+                <a href="{{ route('notifications.index') }}" class="relative inline-flex items-center justify-center w-11 h-11 rounded-full bg-white/10 text-white hover:bg-white/15" aria-label="Notifications"
+                   x-data="{ count: {{ Auth::user()->unreadNotifications()->count() }} }"
+                   x-init="setInterval(async () => { try { const r = await fetch('{{ route('notifications.unread-count') }}', { headers: { 'Accept': 'application/json' } }); const j = await r.json(); count = j.count ?? 0; } catch (e) {} }, 60000)">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 17h5l-1.4-1.4A2 2 0 0118 14.2V11a6 6 0 10-12 0v3.2c0 .5-.2 1-.6 1.4L4 17h5m6 0a3 3 0 11-6 0"/></svg>
+                    <span x-show="count > 0" x-text="count" class="absolute -top-1 -right-1 min-w-[1.25rem] h-5 px-1 rounded-full bg-fs-brand text-[10px] font-bold flex items-center justify-center"></span>
+                </a>
                 <div class="relative" @click.outside="profileOpen = false">
                     <button
                         type="button"
@@ -96,6 +102,9 @@
                     </button>
                     <div x-cloak x-show="profileOpen" class="absolute right-0 top-full mt-2 w-56 rounded-md bg-white shadow-lg border border-slate-100 py-2 z-50">
                         <a href="{{ route('profile') }}" class="block px-4 py-2.5 text-sm text-fs-secondary hover:bg-slate-50 hover:text-fs-primary">My Profile</a>
+                        <a href="{{ route('notifications.index') }}" class="block px-4 py-2.5 text-sm text-fs-secondary hover:bg-slate-50 hover:text-fs-primary">Notifications</a>
+                        <a href="{{ route('phone.verify') }}" class="block px-4 py-2.5 text-sm text-fs-secondary hover:bg-slate-50 hover:text-fs-primary">Verify phone</a>
+                        <a href="{{ route('kyc.index') }}" class="block px-4 py-2.5 text-sm text-fs-secondary hover:bg-slate-50 hover:text-fs-primary">KYC</a>
                         <a href="{{ route('profile') }}#favorites" class="block px-4 py-2.5 text-sm text-fs-secondary hover:bg-slate-50 hover:text-fs-primary">Saved Properties</a>
                         <form method="POST" action="{{ route('logout') }}" class="border-t border-slate-100 mt-1 pt-1">
                             @csrf

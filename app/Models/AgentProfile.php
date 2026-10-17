@@ -3,9 +3,9 @@
 namespace App\Models;
 
 use App\Models\Concerns\LogsAdminActivity;
+use App\Support\StorageDisk;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Facades\Storage;
 
 class AgentProfile extends Model
 {
@@ -41,10 +41,20 @@ class AgentProfile extends Model
                 return $this->photo_path;
             }
 
-            return Storage::disk('public')->url($this->photo_path);
+            return StorageDisk::url($this->photo_path);
         }
 
         return 'https://ui-avatars.com/api/?name='.urlencode($this->user?->name ?? 'Agent').'&background=0B1C2C&color=C9A227';
+    }
+
+    public function averageRating(): ?float
+    {
+        $avg = Review::query()
+            ->approved()
+            ->where('agent_id', $this->user_id)
+            ->avg('rating');
+
+        return $avg !== null ? round((float) $avg, 1) : null;
     }
 
     public function getDisplayRoleAttribute(): string

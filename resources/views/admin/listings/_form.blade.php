@@ -276,4 +276,24 @@
         </div>
         @error('images.*')<p class="mt-1 text-xs text-fs-danger">{{ $message }}</p>@enderror
     </div>
+
+    <div>
+        <x-input label="Video URL" name="video_url" type="url" :value="old('video_url', $listing?->video_url)" placeholder="https://..." />
+    </div>
+    <div>
+        <label for="floor_plan" class="block text-xs font-semibold text-fs-primary mb-1">Floor plan</label>
+        @if($listing?->floor_plan_path)
+            <p class="mb-1 text-xs text-fs-muted">Current: {{ $listing->floor_plan_path }}</p>
+        @endif
+        <input id="floor_plan" type="file" name="floor_plan" accept=".jpg,.jpeg,.png,.pdf" class="w-full h-12 px-3 rounded-sm border border-dashed border-black/15 bg-white text-sm">
+        @error('floor_plan')<p class="mt-1 text-xs text-fs-danger">{{ $message }}</p>@enderror
+    </div>
+    <div class="md:col-span-2">
+        <label for="private_document" class="block text-xs font-semibold text-fs-primary mb-1">Private document (title deed / NOC)</label>
+        @if($listing?->private_document_path)
+            <p class="mb-1 text-xs text-fs-muted">Stored on private disk</p>
+        @endif
+        <input id="private_document" type="file" name="private_document" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" class="w-full h-12 px-3 rounded-sm border border-dashed border-black/15 bg-white text-sm">
+        @error('private_document')<p class="mt-1 text-xs text-fs-danger">{{ $message }}</p>@enderror
+    </div>
 </div>

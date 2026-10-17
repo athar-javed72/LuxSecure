@@ -20,6 +20,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'phone',
         'password',
         'is_active',
+        'phone_verified_at',
+        'kyc_verified_at',
         'two_factor_secret',
         'two_factor_recovery_codes',
         'two_factor_confirmed_at',
@@ -34,6 +36,8 @@ class User extends Authenticatable implements MustVerifyEmail
 
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'phone_verified_at' => 'datetime',
+        'kyc_verified_at' => 'datetime',
         'password' => 'hashed',
         'is_active' => 'boolean',
         'two_factor_confirmed_at' => 'datetime',
@@ -42,6 +46,26 @@ class User extends Authenticatable implements MustVerifyEmail
     public function hasTwoFactorEnabled(): bool
     {
         return filled($this->two_factor_confirmed_at);
+    }
+
+    public function isPhoneVerified(): bool
+    {
+        return filled($this->phone_verified_at);
+    }
+
+    public function isKycVerified(): bool
+    {
+        return filled($this->kyc_verified_at);
+    }
+
+    public function kycDocuments()
+    {
+        return $this->hasMany(KycDocument::class);
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
     }
 
     public function isSuperAdmin(): bool

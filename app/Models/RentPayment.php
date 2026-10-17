@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Str;
 
 class RentPayment extends Model
@@ -29,6 +30,11 @@ class RentPayment extends Model
     public function tenancy(): BelongsTo
     {
         return $this->belongsTo(Tenancy::class);
+    }
+
+    public function gatewayPayments(): MorphMany
+    {
+        return $this->morphMany(Payment::class, 'payable');
     }
 
     public function markPaid(?string $method = null): void

@@ -40,6 +40,11 @@ Route::get('/blog', [PageController::class, 'blogIndex'])->name('blog.index');
 Route::get('/blog/{slug}', [PageController::class, 'blogShow'])->name('blog.show');
 Route::get('/pages/{slug}', [PageController::class, 'show'])->name('pages.show');
 
+Route::post('/webhooks/payments/jazzcash', [\App\Http\Controllers\PaymentWebhookController::class, 'jazzcash'])
+    ->name('webhooks.payments.jazzcash');
+Route::post('/webhooks/payments/easypaisa', [\App\Http\Controllers\PaymentWebhookController::class, 'easypaisa'])
+    ->name('webhooks.payments.easypaisa');
+
 Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -54,6 +59,25 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/tenancies/mine', [ClientTenancyController::class, 'index'])->name('tenancies.mine');
     Route::get('/tenancies/{tenancy}', [ClientTenancyController::class, 'show'])->name('tenancies.show');
+
+    Route::post('/payments/initiate', [\App\Http\Controllers\PaymentController::class, 'initiate'])->name('payments.initiate');
+    Route::post('/properties/{listing}/reviews', [\App\Http\Controllers\ReviewController::class, 'store'])->name('reviews.store');
+
+    Route::get('/kyc', [\App\Http\Controllers\KycDocumentController::class, 'index'])->name('kyc.index');
+    Route::post('/kyc', [\App\Http\Controllers\KycDocumentController::class, 'store'])->name('kyc.store');
+
+    Route::get('/phone/verify', [\App\Http\Controllers\PhoneVerificationController::class, 'show'])->name('phone.verify');
+    Route::post('/phone/verify/send', [\App\Http\Controllers\PhoneVerificationController::class, 'send'])
+        ->middleware('throttle:3,10')
+        ->name('phone.verify.send');
+    Route::post('/phone/verify', [\App\Http\Controllers\PhoneVerificationController::class, 'verify'])
+        ->middleware('throttle:10,10')
+        ->name('phone.verify.confirm');
+
+    Route::get('/notifications', [\App\Http\Controllers\NotificationController::class, 'index'])->name('notifications.index');
+    Route::get('/notifications/unread-count', [\App\Http\Controllers\NotificationController::class, 'unreadCount'])->name('notifications.unread-count');
+    Route::post('/notifications/{id}/read', [\App\Http\Controllers\NotificationController::class, 'markRead'])->name('notifications.read');
+    Route::post('/notifications/read-all', [\App\Http\Controllers\NotificationController::class, 'markAllRead'])->name('notifications.read-all');
 });
 
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'panel'])->group(function () {
@@ -178,6 +202,25 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'panel'])->group(fun
         Route::get('bookings', [\App\Http\Controllers\Admin\BookingController::class, 'index'])->name('bookings.index');
         Route::get('bookings/{booking}', [\App\Http\Controllers\Admin\BookingController::class, 'show'])->name('bookings.show');
         Route::patch('bookings/{booking}/status', [\App\Http\Controllers\Admin\BookingController::class, 'updateStatus'])->name('bookings.status');
+    });
+
+    Route::middleware('permission:payments.view.any|payments.view.own')->group(function () {
+        Route::get('payments', [\App\Http\Controllers\Admin\PaymentController::class, 'index'])->name('payments.index');
+        Route::get('payments/export', [\App\Http\Controllers\Admin\PaymentController::class, 'export'])->name('payments.export');
+        Route::get('payments/{payment}', [\App\Http\Controllers\Admin\PaymentController::class, 'show'])->name('payments.show');
+        Route::post('payments/{payment}/approve', [\App\Http\Controllers\Admin\PaymentController::class, 'approve'])->name('payments.approve');
+        Route::get('payments/{payment}/invoice', [\App\Http\Controllers\Admin\PaymentController::class, 'downloadInvoice'])->name('payments.invoice');
+    });
+
+    Route::middleware('permission:reviews.view.any|reviews.moderate')->group(function () {
+        Route::get('reviews', [\App\Http\Controllers\Admin\ReviewController::class, 'index'])->name('reviews.index');
+        Route::patch('reviews/{review}', [\App\Http\Controllers\Admin\ReviewController::class, 'moderate'])->name('reviews.moderate');
+    });
+
+    Route::middleware('permission:kyc.view.any|kyc.review')->group(function () {
+        Route::get('kyc', [\App\Http\Controllers\Admin\KycDocumentController::class, 'index'])->name('kyc.index');
+        Route::patch('kyc/{kyc}', [\App\Http\Controllers\Admin\KycDocumentController::class, 'review'])->name('kyc.review');
+        Route::get('kyc/{kyc}/download', [\App\Http\Controllers\Admin\KycDocumentController::class, 'download'])->name('kyc.download');
     });
 
     Route::get('two-factor', [\App\Http\Controllers\Admin\TwoFactorController::class, 'show'])->name('two-factor.show');

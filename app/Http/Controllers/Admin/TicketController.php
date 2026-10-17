@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Ticket;
 use App\Models\TicketReply;
 use App\Models\User;
+use App\Notifications\TicketReplyNotification;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -98,7 +99,7 @@ class TicketController extends Controller
             'is_internal' => ['sometimes', 'boolean'],
         ]);
 
-        TicketReply::create([
+        $reply = TicketReply::create([
             'ticket_id' => $ticket->id,
             'user_id' => $request->user()->id,
             'body' => $data['body'],
@@ -107,6 +108,10 @@ class TicketController extends Controller
 
         if ($ticket->status === 'open') {
             $ticket->update(['status' => 'pending']);
+        }
+
+        if (! $reply->is_internal && (int) $ticket->user_id !== (int) $request->user()->id) {
+            $ticket->user?->notify(new TicketReplyNotification($ticket, $reply));
         }
 
         return back()->with('success', 'Reply added.');
