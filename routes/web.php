@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\BookingController;
+use App\Http\Controllers\Client\TenancyController as ClientTenancyController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\HomeController;
@@ -34,6 +36,16 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::post('/favorites/{listing}', [FavoriteController::class, 'toggle'])->name('favorites.toggle');
+
+    Route::get('/bookings/quote', [BookingController::class, 'quote'])->name('bookings.quote');
+    Route::get('/bookings/mine', [BookingController::class, 'mine'])->name('bookings.mine');
+    Route::get('/properties/{listing}/book', [BookingController::class, 'create'])->name('bookings.create');
+    Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store');
+    Route::get('/bookings/{booking}', [BookingController::class, 'show'])->name('bookings.show');
+    Route::post('/bookings/{booking}/cancel', [BookingController::class, 'cancel'])->name('bookings.cancel');
+
+    Route::get('/tenancies/mine', [ClientTenancyController::class, 'index'])->name('tenancies.mine');
+    Route::get('/tenancies/{tenancy}', [ClientTenancyController::class, 'show'])->name('tenancies.show');
 });
 
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'panel'])->group(function () {
@@ -73,5 +85,28 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'panel'])->group(fun
     Route::middleware('permission:inquiries.view.any|inquiries.view.own')->group(function () {
         Route::get('inquiries', [\App\Http\Controllers\Admin\InquiryController::class, 'index'])->name('inquiries.index');
         Route::patch('inquiries/{inquiry}', [\App\Http\Controllers\Admin\InquiryController::class, 'markRead'])->name('inquiries.markRead');
+    });
+
+    Route::middleware('permission:tenancies.view.any|tenancies.view.own|tenancies.create|tenancies.update.any|tenancies.update.own')->group(function () {
+        Route::get('tenancies/overdue', [\App\Http\Controllers\Admin\TenancyController::class, 'overdue'])->name('tenancies.overdue');
+        Route::resource('tenancies', \App\Http\Controllers\Admin\TenancyController::class);
+        Route::post('rent-payments/{rent_payment}/mark-paid', [\App\Http\Controllers\Admin\RentPaymentController::class, 'markPaid'])
+            ->name('rent-payments.mark-paid');
+    });
+
+    Route::middleware('permission:listings.view.any|listings.view.own')->group(function () {
+        Route::get('room-types', [\App\Http\Controllers\Admin\RoomTypeController::class, 'index'])->name('room-types.index');
+        Route::get('room-types/create', [\App\Http\Controllers\Admin\RoomTypeController::class, 'create'])->name('room-types.create');
+        Route::post('room-types', [\App\Http\Controllers\Admin\RoomTypeController::class, 'store'])->name('room-types.store');
+        Route::get('room-types/{room_type}', [\App\Http\Controllers\Admin\RoomTypeController::class, 'show'])->name('room-types.show');
+        Route::delete('room-types/{room_type}', [\App\Http\Controllers\Admin\RoomTypeController::class, 'destroy'])->name('room-types.destroy');
+        Route::post('rooms', [\App\Http\Controllers\Admin\RoomTypeController::class, 'storeRoom'])->name('rooms.store');
+        Route::post('seasonal-prices', [\App\Http\Controllers\Admin\RoomTypeController::class, 'storeSeasonalPrice'])->name('seasonal-prices.store');
+    });
+
+    Route::middleware('permission:bookings.view.any|bookings.view.own|bookings.update.any|bookings.update.own')->group(function () {
+        Route::get('bookings', [\App\Http\Controllers\Admin\BookingController::class, 'index'])->name('bookings.index');
+        Route::get('bookings/{booking}', [\App\Http\Controllers\Admin\BookingController::class, 'show'])->name('bookings.show');
+        Route::patch('bookings/{booking}/status', [\App\Http\Controllers\Admin\BookingController::class, 'updateStatus'])->name('bookings.status');
     });
 });

@@ -8,9 +8,10 @@ UI redesign + admin hardening — **COMPLETE locally** (push optional)
 
 ### Product
 - **LuxSecure** — property listing & management (Nexora Labs).
-- Public: home, properties, contact, auth, profile + favorites.
-- Admin (`/admin`): dashboard, property CRUD + filters, users, inquiries + filters.
+- Public: home, properties, contact, auth, profile + favorites, hotel booking flow, client tenancy/payment history.
+- Admin (`/admin`): dashboard, listings, listing types, tenancies + rent payments, room types/rooms/seasonal prices, bookings, users/roles (RBAC), inquiries.
 - API: `GET /api/properties` (+ Sanctum favorites).
+- Spatie RBAC roles include landlord, hotel_manager, client with scoped tenancy/booking permissions.
 
 ### Stack
 - Laravel 10, PHP 8.1+, Sanctum, PHPUnit, Pint
@@ -40,9 +41,10 @@ UI redesign + admin hardening — **COMPLETE locally** (push optional)
 |------|--------|
 | Public redesign | Done |
 | Admin redesign + UX fixes | Done |
-| PHPUnit | 18 passed |
+| PHPUnit | 45 passed |
 | `npm run build` | Passing |
-| Pushed to GitHub | No (3 commits ahead) |
+| Rent + hotel modules | Done (local) |
+| Pushed to GitHub | No (awaiting user) |
 
 ---
 

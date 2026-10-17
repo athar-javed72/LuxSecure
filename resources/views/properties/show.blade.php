@@ -110,6 +110,20 @@
                 </div>
             </div>
 
+            @if(($property->purpose === 'short_stay' || $property->roomTypes->isNotEmpty()) && $property->roomTypes->where('is_active', true)->isNotEmpty())
+                <div class="rounded-md bg-white shadow-sm border border-slate-100 p-6">
+                    <h2 class="text-base font-semibold text-fs-primary">Book a stay</h2>
+                    <p class="mt-2 text-sm text-fs-secondary">Check availability and reserve nights online.</p>
+                    <div class="mt-4">
+                        @auth
+                            <x-button variant="primary" href="{{ route('bookings.create', $property) }}" class="w-full">Book now</x-button>
+                        @else
+                            <x-button variant="primary" href="{{ route('login.form') }}" class="w-full">Sign in to book</x-button>
+                        @endauth
+                    </div>
+                </div>
+            @endif
+
             <div class="rounded-md bg-white shadow-lg border border-slate-100 p-6">
                 <h2 class="text-base font-semibold text-fs-primary">Send an inquiry</h2>
                 <p class="mt-2 text-sm text-fs-secondary">Ask about availability, viewing times, or financing.</p>

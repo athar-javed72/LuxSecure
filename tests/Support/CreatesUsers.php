@@ -37,4 +37,14 @@ trait CreatesUsers
     {
         return $this->makeUserWithRole('client', $overrides);
     }
+
+    protected function makeLandlord(array $overrides = []): User
+    {
+        return $this->makeUserWithRole('landlord', $overrides);
+    }
+
+    protected function makeHotelManager(array $overrides = []): User
+    {
+        return $this->makeUserWithRole('hotel_manager', $overrides);
+    }
 }

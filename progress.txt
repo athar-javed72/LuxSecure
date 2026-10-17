@@ -16,9 +16,12 @@ Completed Tasks:
 
 - Theme update (2026-10-17): Replaced monochrome green brand wash with Estate Noir — ink navy + warm brass + stone surfaces; Cormorant Garamond display + DM Sans UI; tokens, buttons, navbar, footer, auth panels, home CTA, badges, admin shell updated to match luxury property positioning.
 
+- Rent + hotel booking modules (2026-10-17): tenancies/rent_payments with auto monthly schedule, mark-paid + overdue; room_types/rooms/seasonal_prices/bookings/booking_payments; transactional availability; public book flow + My bookings / My tenancy; hotel_manager own-listing scoping; queued confirmation mails; RBAC permissions for client/landlord/hotel_manager; feature tests (double-book, overlap, pricing, schedule, boundaries). Verified: pint, 45 PHPUnit tests, npm run build.
+
 Notes / STOP points:
 ---------------------
 - No git commit/push of the redesign yet (awaiting explicit user request).
 - README still mentions Tailwind CDN in places — tracked as PRD Task F1.
 - Re-run php artisan test + npm run build before calling the redesign phase fully closed (PRD Task F2).
+- Re-seed RBAC after pull (`php artisan db:seed --class=RolesAndPermissionsSeeder`) so client/landlord/hotel_manager get new permission grants.
 

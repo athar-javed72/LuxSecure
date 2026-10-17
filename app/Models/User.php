@@ -68,6 +68,21 @@ class User extends Authenticatable implements MustVerifyEmail
             || (int) $listing->owner_id === (int) $this->id;
     }
 
+    public function tenanciesAsTenant()
+    {
+        return $this->hasMany(Tenancy::class, 'tenant_id');
+    }
+
+    public function tenanciesAsLandlord()
+    {
+        return $this->hasMany(Tenancy::class, 'landlord_id');
+    }
+
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class);
+    }
+
     public static function superAdminCount(): int
     {
         return static::role('super_admin')->count();
