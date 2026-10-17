@@ -7,23 +7,29 @@ use App\Models\Listing;
 use App\Models\ListingType;
 use App\Models\Room;
 use App\Models\RoomType;
+use App\Models\SeasonalPrice;
 use App\Models\TypeAttribute;
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 class AdminAndPropertiesSeeder extends Seeder
 {
     public function run(): void
     {
+        if (! app()->environment(['local', 'testing'])) {
+            $this->command?->warn('AdminAndPropertiesSeeder skipped outside local/testing.');
+
+            return;
+        }
+
         $this->call(RolesAndPermissionsSeeder::class);
 
         $admin = User::firstOrCreate(
             ['email' => 'admin@luxsecure.com'],
             [
                 'name' => 'Admin',
-                'password' => Hash::make('password'),
+                'password' => 'password', // hashed via User cast
             ]
         );
         $admin->forceFill([
@@ -143,28 +149,74 @@ class AdminAndPropertiesSeeder extends Seeder
             );
         }
 
-        $hotelListing = Listing::query()->where('slug', 'blue-area-boutique-hotel')->first();
-        if ($hotelListing) {
-            $deluxe = RoomType::updateOrCreate(
-                ['listing_id' => $hotelListing->id, 'name' => 'Deluxe King'],
-                [
-                    'capacity' => 2,
-                    'base_price' => 25000,
-                    'amenities' => ['wifi', 'breakfast'],
-                    'is_active' => true,
-                ]
-            );
+        $this->seedHotelInventory();
+    }
 
-            foreach (['101', '102'] as $number) {
-                Room::updateOrCreate(
-                    ['room_type_id' => $deluxe->id, 'number' => $number],
-                    [
-                        'listing_id' => $hotelListing->id,
-                        'status' => 'available',
-                    ]
-                );
-            }
+    private function seedHotelInventory(): void
+    {
+        $hotelListing = Listing::query()->where('slug', 'blue-area-boutique-hotel')->first();
+        if (! $hotelListing) {
+            return;
         }
+
+        $deluxe = RoomType::updateOrCreate(
+            ['listing_id' => $hotelListing->id, 'name' => 'Deluxe King'],
+            [
+                'capacity' => 2,
+                'base_price' => 25000,
+                'amenities' => ['wifi', 'breakfast', 'city_view'],
+                'is_active' => true,
+            ]
+        );
+
+        $twin = RoomType::updateOrCreate(
+            ['listing_id' => $hotelListing->id, 'name' => 'Executive Twin'],
+            [
+                'capacity' => 3,
+                'base_price' => 32000,
+                'amenities' => ['wifi', 'breakfast', 'workspace'],
+                'is_active' => true,
+            ]
+        );
+
+        foreach (['101', '102', '103'] as $number) {
+            Room::updateOrCreate(
+                ['room_type_id' => $deluxe->id, 'number' => $number],
+                ['listing_id' => $hotelListing->id, 'status' => 'available']
+            );
+        }
+
+        foreach (['201', '202'] as $number) {
+            Room::updateOrCreate(
+                ['room_type_id' => $twin->id, 'number' => $number],
+                ['listing_id' => $hotelListing->id, 'status' => 'available']
+            );
+        }
+
+        $peakStart = now()->addDays(14)->startOfDay();
+        $peakEnd = now()->addDays(44)->endOfDay();
+
+        SeasonalPrice::updateOrCreate(
+            [
+                'room_type_id' => $deluxe->id,
+                'start_date' => $peakStart->toDateString(),
+            ],
+            [
+                'end_date' => $peakEnd->toDateString(),
+                'price_per_night' => 35000,
+            ]
+        );
+
+        SeasonalPrice::updateOrCreate(
+            [
+                'room_type_id' => $twin->id,
+                'start_date' => $peakStart->toDateString(),
+            ],
+            [
+                'end_date' => $peakEnd->toDateString(),
+                'price_per_night' => 42000,
+            ]
+        );
     }
 
     /**

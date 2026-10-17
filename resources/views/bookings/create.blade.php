@@ -26,8 +26,14 @@
     >
         <x-page-header
             :title="'Book '.$listing->title"
-            subtitle="Select dates to see live pricing and availability."
+            subtitle="Select dates to see live pricing and availability. A short hold is placed until you pay."
         />
+
+        @if ($errors->any())
+            <x-alert tone="error" class="mb-4">
+                <ul class="space-y-1">@foreach ($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>
+            </x-alert>
+        @endif
 
         <form method="POST" action="{{ route('bookings.store') }}" class="space-y-4">
             @csrf

@@ -80,7 +80,13 @@ npm run build
 php artisan serve
 ```
 
-Default seeded admin (see seeder): check `DatabaseSeeder` / README seed output — typically `admin@luxsecure.com` / `password`.
+**Seeding safety:** `migrate:fresh --seed` always installs roles/permissions. Demo accounts, listings, hotel rooms/seasonal prices, and settings seed **only when `APP_ENV` is `local` or `testing`**. In production, create the first super admin with:
+
+```bash
+php artisan luxsecure:create-super-admin
+```
+
+Local demo admin after seed: `admin@luxsecure.com` / `password` (change immediately).
 
 ### Important env keys
 
@@ -99,6 +105,8 @@ Default seeded admin (see seeder): check `DatabaseSeeder` / README seed output �
 php artisan schedule:work
 # luxsecure:backup @ 02:00
 # luxsecure:notify-rent-due @ 08:00
+# luxsecure:expire-booking-holds every 5 minutes
+# luxsecure:create-super-admin — first production super_admin (interactive)
 ```
 
 ## Usage

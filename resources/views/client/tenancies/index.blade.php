@@ -14,7 +14,7 @@
             <x-panel class="flex flex-wrap justify-between gap-4">
                 <div class="min-w-0">
                     <div class="flex flex-wrap items-center gap-2">
-                        <h2 class="font-semibold text-fs-primary">{{ $tenancy->listing->title }}</h2>
+                        <h2 class="fs-display text-lg text-fs-primary">{{ $tenancy->listing->title }}</h2>
                         <x-status-badge :status="$tenancy->status" />
                     </div>
                     <p class="text-sm text-fs-secondary mt-1">

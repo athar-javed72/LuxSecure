@@ -8,10 +8,14 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        $this->call([
-            AdminAndPropertiesSeeder::class,
-            SettingsSeeder::class,
-        ]);
+        $this->call(RolesAndPermissionsSeeder::class);
 
+        // Demo users, listings, hotel inventory, and site settings — never in production.
+        if (app()->environment(['local', 'testing'])) {
+            $this->call([
+                AdminAndPropertiesSeeder::class,
+                SettingsSeeder::class,
+            ]);
+        }
     }
 }

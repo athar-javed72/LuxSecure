@@ -93,17 +93,20 @@ class LedgerHardeningTest extends TestCase
         $guest = $this->makeClient();
         [$listing, $roomType] = $this->makeHotelFixture();
 
-        $this->actingAs($guest)->post(route('bookings.store'), [
+        $response = $this->actingAs($guest)->post(route('bookings.store'), [
             'room_type_id' => $roomType->id,
             'check_in' => now()->addDays(3)->toDateString(),
             'check_out' => now()->addDays(5)->toDateString(),
             'guests' => 1,
             'cancellation_policy' => 'flexible',
-        ])->assertRedirect(route('bookings.mine'));
+        ]);
+
+        $booking = Booking::query()->first();
+        $response->assertRedirect(route('bookings.show', $booking));
 
         $this->assertDatabaseCount('booking_payments', 0);
         $this->assertDatabaseCount('payments', 1);
-        $this->assertNotNull(Booking::first()->hold_expires_at);
+        $this->assertNotNull($booking->hold_expires_at);
     }
 
     public function test_cancel_and_refund_go_through_ledger_service(): void

@@ -163,4 +163,10 @@
     .fs-sticky-save {
         @apply sticky bottom-0 z-20 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-4 bg-white/95 backdrop-blur border-t border-black/10 shadow-lg;
     }
+
+    .fs-lottie {
+        width: 260px;
+        height: 260px;
+        display: block;
+    }
 }

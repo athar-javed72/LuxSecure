@@ -69,7 +69,7 @@
                 <div class="flex flex-wrap items-center gap-2 mb-3">
                     <x-badge tone="muted">{{ $property->type_name }}</x-badge>
                 </div>
-                <h1 class="text-xl md:text-2xl font-bold text-fs-primary">{{ $property->title }}</h1>
+                <h1 class="fs-display text-2xl md:text-3xl text-fs-primary">{{ $property->title }}</h1>
                 <p class="mt-2 text-sm text-fs-muted flex items-center gap-1.5">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M17.657 16.657L13.414 20.9a2 2 0 01-2.828 0l-4.243-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                     {{ $property->location }}

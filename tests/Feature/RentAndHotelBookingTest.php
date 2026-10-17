@@ -319,13 +319,16 @@ class RentAndHotelBookingTest extends TestCase
             'status' => 'available',
         ]);
 
-        $this->actingAs($guest)->post(route('bookings.store'), [
+        $response = $this->actingAs($guest)->post(route('bookings.store'), [
             'room_type_id' => $roomType->id,
             'check_in' => now()->addDays(3)->toDateString(),
             'check_out' => now()->addDays(5)->toDateString(),
             'guests' => 2,
             'cancellation_policy' => 'moderate',
-        ])->assertRedirect(route('bookings.mine'));
+        ]);
+
+        $booking = Booking::query()->first();
+        $response->assertRedirect(route('bookings.show', $booking));
 
         $this->assertDatabaseCount('bookings', 1);
         $this->assertDatabaseCount('payments', 1);

@@ -26,6 +26,10 @@ Completed Tasks:
 
 - Step 1 production UI smoke (2026-10-17): APP_ENV=production + built assets; CSP script-src has nonce only (no unsafe-eval/unsafe-inline). Alpine CSP components OK: authCard switch, navBar mobile menu, filtersOpen drawer, adminShell sidebar, permissionMatrix select-all, confirmDelete modal, notifCount present. Blockers fixed during smoke: stale public/hot, multiple artisan serve PIDs with APP_ENV=local, HTTPS force-redirect skipped when APP_URL is http. Booking date picker not exercised (seeded hotel has 0 room types).
 
+- Production Alpine CSP hardening (2026-10-17): Moved remaining eval-prone Alpine into named `Alpine.data` components with `data-alpine-config` JSON (no inline x-data object literals). Fixed gallery Up/Down (`moveUp`/`moveDown`), testimonial slider template-literal `:style`, listing-form `??`/`String()` expressions, modal `if` event handlers, navbar multi-statement escape, properties `onchange` inline submit, gallery `onsubmit=confirm`. Seeded Deluxe King + 2 rooms for Blue Area Boutique Hotel. Added `ProductionAlpineCspTest` (production render of listed pages; assert no `{` in x-data; every `<script>` has nonce; CSP has nonce / no unsafe-eval). `phpunit.xml` forces APP_ENV=testing. Verified: pint, 106 PHPUnit tests, npm run build. Browser smoke: auth mode switch + replaceState, filters drawer, prod CSP nonce scripts OK.
+
+- Seed + booking + UI polish (2026-10-17): Hotel seed now includes Deluxe King + Executive Twin, 5 rooms, peak seasonal prices. DatabaseSeeder skips demo users/listings outside local/testing; `luxsecure:create-super-admin` creates first super_admin with strong password. Booking UX: redirect to show after create, hold expiry alert, payment history, cancel refund preview, bank proof form. UI polish: inquiries → x-table stack, profile/contact/bookings/tenancies/auth Lottie/section-heading tokens. `SeederSafetyTest` added. Verified: pint, 109 tests, npm run build, migrate:fresh --seed.
+
 Notes / STOP points:
 ---------------------
 - No git commit/push unless user requests.

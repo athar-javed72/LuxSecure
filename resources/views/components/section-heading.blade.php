@@ -10,7 +10,7 @@
 @endphp
 
 <div {{ $attributes->merge(['class' => 'max-w-prose ' . $alignClass]) }}>
-    <h2 @if($headingId) id="{{ $headingId }}" @endif class="text-xl md:text-2xl font-bold text-fs-primary">
+    <h2 @if($headingId) id="{{ $headingId }}" @endif class="fs-display text-xl md:text-2xl text-fs-primary">
         {{ $title }}
     </h2>
     @if($subtitle)

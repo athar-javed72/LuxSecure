@@ -3,18 +3,16 @@
 @section('title', 'My Profile')
 
 @section('content')
-<x-container class="py-12">
-    @if (session('success'))
-        <div class="mb-4 p-4 rounded-sm bg-fs-brand-light text-fs-brand text-sm">{{ session('success') }}</div>
-    @endif
+<x-container class="py-8 md:py-12">
+    <x-page-header
+        title="My profile"
+        subtitle="Manage your account and saved properties"
+    />
 
-    <h1 class="text-xl md:text-2xl font-bold text-fs-primary">My profile</h1>
-    <p class="mt-2 text-sm text-fs-secondary">Manage your account and saved properties</p>
-
-    <div class="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div class="rounded-md bg-white shadow-sm border border-slate-100 p-6">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+        <x-panel>
             @if(isset($showEdit) && $showEdit)
-                <h2 class="text-base font-semibold text-fs-primary mb-4">Update profile</h2>
+                <h2 class="fs-display text-lg text-fs-primary mb-4">Update profile</h2>
                 <form method="POST" action="{{ route('profile.update') }}" class="space-y-4">
                     @csrf
                     @method('PUT')
@@ -27,50 +25,63 @@
                     </div>
                 </form>
             @else
-                <h2 class="text-base font-semibold text-fs-primary mb-4">Profile information</h2>
+                <h2 class="fs-display text-lg text-fs-primary mb-4">Profile information</h2>
                 <dl class="space-y-4 text-sm">
                     <div>
-                        <dt class="text-xs font-semibold text-fs-muted">Name</dt>
+                        <dt class="text-xs font-semibold uppercase tracking-wide text-fs-muted">Name</dt>
                         <dd class="mt-1 text-fs-primary">{{ $user->name }}</dd>
                     </div>
                     <div>
-                        <dt class="text-xs font-semibold text-fs-muted">Email</dt>
+                        <dt class="text-xs font-semibold uppercase tracking-wide text-fs-muted">Email</dt>
                         <dd class="mt-1 text-fs-primary">{{ $user->email }}</dd>
                     </div>
                     @if($user->phone)
                         <div>
-                            <dt class="text-xs font-semibold text-fs-muted">Phone</dt>
+                            <dt class="text-xs font-semibold uppercase tracking-wide text-fs-muted">Phone</dt>
                             <dd class="mt-1 text-fs-primary">{{ $user->phone }}</dd>
                         </div>
                     @endif
                 </dl>
-                <div class="mt-6">
+                <div class="mt-6 flex flex-wrap gap-2">
                     <x-button variant="secondary" href="{{ route('profile', ['edit' => 1]) }}">Edit profile</x-button>
+                    <x-button variant="ghost" href="{{ route('kyc.index') }}">KYC</x-button>
+                    <x-button variant="ghost" href="{{ route('bookings.mine') }}">My bookings</x-button>
                 </div>
             @endif
-        </div>
+        </x-panel>
 
-        <div class="rounded-md bg-slate-50 border border-slate-100 p-6">
-            <h2 class="text-base font-semibold text-fs-primary">Quick links</h2>
+        <x-panel class="bg-fs-surface/60">
+            <h2 class="fs-display text-lg text-fs-primary">Quick links</h2>
             <div class="mt-4 space-y-2">
                 <x-button variant="ghost" href="{{ route('properties') }}" class="w-full">Browse properties</x-button>
+                <x-button variant="ghost" href="{{ route('notifications.index') }}" class="w-full">Notifications</x-button>
                 <x-button variant="ghost" href="{{ route('contact') }}" class="w-full">Contact support</x-button>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <x-button type="submit" variant="ghost" class="w-full !text-fs-danger">Logout</x-button>
                 </form>
             </div>
-        </div>
+        </x-panel>
     </div>
 
     <section id="favorites" class="mt-12 scroll-mt-[72px]">
-        <h2 class="text-xl font-bold text-fs-primary">Saved properties</h2>
-        <p class="mt-2 text-sm text-fs-secondary">Properties you have added to your wishlist</p>
-            <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-6">
+        <x-section-heading
+            title="Saved properties"
+            subtitle="Properties you have added to your wishlist"
+            heading-id="favorites-heading"
+        />
+        <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             @forelse($user->favorites as $property)
                 <x-property-card :property="$property" />
             @empty
-                <p class="col-span-full text-sm text-fs-secondary">No saved properties yet.</p>
+                <div class="col-span-full">
+                    <x-empty-state
+                        title="No saved properties yet"
+                        description="Browse listings and tap the heart to save favorites here."
+                        action-label="Browse properties"
+                        :action-href="route('properties')"
+                    />
+                </div>
             @endforelse
         </div>
     </section>

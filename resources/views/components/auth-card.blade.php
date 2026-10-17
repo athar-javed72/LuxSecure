@@ -28,7 +28,7 @@
                 src="https://assets2.lottiefiles.com/packages/lf20_ktwnwv5m.json"
                 background="transparent"
                 speed="1"
-                style="width: 260px; height: 260px;"
+                class="fs-lottie"
                 loop
                 autoplay
                 aria-hidden="true"
@@ -39,7 +39,7 @@
                 src="https://assets2.lottiefiles.com/packages/lf20_4kx2q32n.json"
                 background="transparent"
                 speed="1"
-                style="width: 260px; height: 260px;"
+                class="fs-lottie"
                 loop
                 autoplay
                 aria-hidden="true"
@@ -50,7 +50,7 @@
                 src="https://assets2.lottiefiles.com/packages/lf20_jcikwtux.json"
                 background="transparent"
                 speed="1"
-                style="width: 260px; height: 260px;"
+                class="fs-lottie"
                 loop
                 autoplay
                 aria-hidden="true"

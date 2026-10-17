@@ -78,8 +78,8 @@ class BookingController extends Controller
         Mail::to($booking->user->email)->queue(new BookingConfirmationMail($booking));
 
         return redirect()
-            ->route('bookings.mine')
-            ->with('success', 'Booking submitted. Confirmation email queued.');
+            ->route('bookings.show', $booking)
+            ->with('success', 'Booking submitted. Complete payment before the hold expires. Confirmation email queued.');
     }
 
     public function mine(Request $request): View

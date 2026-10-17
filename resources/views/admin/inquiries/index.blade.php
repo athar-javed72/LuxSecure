@@ -8,85 +8,90 @@
     ['label' => 'Inquiries'],
 ]" />
 
-<div class="flex flex-wrap justify-between items-start gap-4 mb-6">
-    <div>
-        <h1 class="text-xl md:text-2xl font-bold text-fs-primary">Inquiries</h1>
-        <p class="mt-2 text-sm text-fs-secondary max-w-prose">Contact form submissions</p>
-    </div>
-    <x-button variant="ghost" href="{{ route('admin.dashboard') }}">Dashboard</x-button>
-</div>
+<x-page-header title="Inquiries" subtitle="Contact form submissions">
+    <x-slot:actions>
+        <x-button variant="ghost" href="{{ route('admin.dashboard') }}">Dashboard</x-button>
+    </x-slot:actions>
+</x-page-header>
 
-<form method="GET" action="{{ route('admin.inquiries.index') }}" class="mb-6 rounded-md bg-white shadow-sm border border-black/5 p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 items-end w-full max-w-5xl">
-    <x-input label="Search" name="search" :value="request('search')" placeholder="Name, email, or message" />
-    <x-select
-        label="Status"
-        name="read"
-        :options="['unread' => 'Unread', 'read' => 'Read']"
-        :selected="request('read')"
-        placeholder="All"
+<x-panel class="mb-6 max-w-5xl">
+    <form method="GET" action="{{ route('admin.inquiries.index') }}" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 items-end">
+        <x-input label="Search" name="search" :value="request('search')" placeholder="Name, email, or message" />
+        <x-select
+            label="Status"
+            name="read"
+            :options="['unread' => 'Unread', 'read' => 'Read']"
+            :selected="request('read')"
+            placeholder="All"
+        />
+        <div class="flex flex-wrap gap-2">
+            <x-button type="submit" variant="primary">Filter</x-button>
+            @if(request()->hasAny(['search', 'read']))
+                <x-button variant="ghost" href="{{ route('admin.inquiries.index') }}">Clear</x-button>
+            @endif
+        </div>
+    </form>
+</x-panel>
+
+@if($inquiries->isEmpty())
+    <x-empty-state
+        title="No inquiries found"
+        description="Contact form submissions will appear here."
     />
-    <div class="flex flex-wrap gap-2">
-        <x-button type="submit" variant="primary">Filter</x-button>
-        @if(request()->hasAny(['search', 'read']))
-            <x-button variant="ghost" href="{{ route('admin.inquiries.index') }}">Clear</x-button>
-        @endif
-    </div>
-</form>
-
-<div class="rounded-md bg-white shadow-sm border border-black/5 overflow-hidden">
-    <div class="overflow-x-auto">
-        <table class="w-full text-sm xl:table-fixed">
-            <thead class="bg-fs-surface text-left text-xs uppercase tracking-wide text-fs-muted">
-                <tr>
-                    <th class="px-3 py-3 font-semibold xl:w-[12%]">Date</th>
-                    <th class="px-3 py-3 font-semibold xl:w-[12%]">Name</th>
-                    <th class="px-3 py-3 font-semibold xl:w-[16%]">Email</th>
-                    <th class="px-3 py-3 font-semibold xl:w-[16%]">Property</th>
-                    <th class="px-3 py-3 font-semibold xl:w-[24%]">Message</th>
-                    <th class="px-3 py-3 font-semibold xl:w-[10%]">Read</th>
-                    <th class="px-3 py-3 font-semibold text-right xl:w-[10%]">Actions</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-black/5">
-                @forelse($inquiries as $inquiry)
-                    <tr class="{{ $inquiry->is_read ? '' : 'bg-fs-brand-light/40' }}">
-                        <td class="px-3 py-3 text-fs-secondary whitespace-nowrap">{{ $inquiry->created_at->format('M j, Y H:i') }}</td>
-                        <td class="px-3 py-3 font-medium text-fs-primary xl:truncate">{{ $inquiry->name }}</td>
-                        <td class="px-3 py-3 text-fs-secondary xl:truncate"><a href="mailto:{{ $inquiry->email }}" class="text-fs-brand">{{ $inquiry->email }}</a></td>
-                        <td class="px-3 py-3 text-fs-secondary xl:truncate">
-                            @if($inquiry->listing)
-                                <a href="{{ route('admin.listings.show', $inquiry->listing) }}" class="text-fs-brand hover:underline">{{ $inquiry->listing->title }}</a>
-                            @else
-                                <span class="text-fs-muted">—</span>
-                            @endif
-                        </td>
-                        <td class="px-3 py-3 text-fs-secondary xl:truncate">{{ Str::limit($inquiry->message, 80) }}</td>
-                        <td class="px-3 py-3">
-                            <x-badge :tone="$inquiry->is_read ? 'muted' : 'success'">{{ $inquiry->is_read ? 'Read' : 'New' }}</x-badge>
-                        </td>
-                        <td class="px-3 py-3 text-right space-y-1">
+@else
+    <x-table caption="Inquiries" class="fs-table-stack">
+        <thead>
+            <tr>
+                <th scope="col">Date</th>
+                <th scope="col">Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Property</th>
+                <th scope="col">Message</th>
+                <th scope="col">Read</th>
+                <th scope="col" class="text-right">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($inquiries as $inquiry)
+                <tr class="{{ $inquiry->is_read ? '' : 'bg-fs-brand-light/40' }}">
+                    <td data-label="Date" class="text-fs-secondary whitespace-nowrap">{{ $inquiry->created_at->format('M j, Y H:i') }}</td>
+                    <td data-label="Name" class="font-medium text-fs-primary">{{ $inquiry->name }}</td>
+                    <td data-label="Email" class="text-fs-secondary">
+                        <a href="mailto:{{ $inquiry->email }}" class="text-fs-brand hover:underline">{{ $inquiry->email }}</a>
+                    </td>
+                    <td data-label="Property" class="text-fs-secondary">
+                        @if($inquiry->listing)
+                            <a href="{{ route('admin.listings.show', $inquiry->listing) }}" class="text-fs-brand hover:underline">{{ $inquiry->listing->title }}</a>
+                        @else
+                            <span class="text-fs-muted">—</span>
+                        @endif
+                    </td>
+                    <td data-label="Message" class="text-fs-secondary">{{ Str::limit($inquiry->message, 80) }}</td>
+                    <td data-label="Read">
+                        <x-badge :tone="$inquiry->is_read ? 'muted' : 'success'">{{ $inquiry->is_read ? 'Read' : 'New' }}</x-badge>
+                    </td>
+                    <td data-label="Actions">
+                        <div class="flex flex-wrap justify-end gap-1">
                             @can('create', App\Models\Lead::class)
                                 <form action="{{ route('admin.leads.convert', $inquiry) }}" method="POST" class="inline">
                                     @csrf
                                     <x-button type="submit" variant="ghost" class="!px-3">To lead</x-button>
                                 </form>
                             @endcan
-                            @if(!$inquiry->is_read)
+                            @if(! $inquiry->is_read)
                                 <form action="{{ route('admin.inquiries.markRead', $inquiry) }}" method="POST" class="inline">
                                     @csrf
                                     @method('PATCH')
                                     <x-button type="submit" variant="secondary" class="!px-3">Mark read</x-button>
                                 </form>
                             @endif
-                        </td>
-                    </tr>
-                @empty
-                    <tr><td colspan="7" class="px-4 py-8 text-center text-fs-muted">No inquiries found.</td></tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
-</div>
+                        </div>
+                    </td>
+                </tr>
+            @endforeach
+        </tbody>
+    </x-table>
+@endif
 
 @if($inquiries->hasPages())
     <div class="mt-4">{{ $inquiries->links() }}</div>
