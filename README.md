@@ -64,7 +64,23 @@ Fonts: Cormorant Garamond (display) + DM Sans (UI). Shared `x-*` Blade component
 
 ## Requirements
 
-- PHP 8.3–8.5, Composer, Node.js & NPM, MySQL (or SQLite for local/tests)
+- **PHP 8.4.1–8.5** (Composer lock / Symfony 8 require `>= 8.4.1`; PHP 8.2 will fatal on `artisan`)
+- Composer, Node.js & NPM, MySQL (or SQLite for local/tests)
+
+### Windows: wrong `php` on PATH
+
+If `php -v` shows **8.2.x**, artisan fails with `Composer dependencies require a PHP version ">= 8.4.1"`. This repo expects PHP at:
+
+`C:\php\php-8.5.11-nts-Win32-vs17-x64`
+
+In the **current** PowerShell session:
+
+```powershell
+. .\scripts\use-php85.ps1
+php -v   # must be 8.5.x
+```
+
+Cursor/VS Code terminals pick this up via `.vscode/settings.json` after you **open a new terminal**. Put that folder **first** on your system PATH (before Laragon/XAMPP PHP 8.2) so external terminals work too.
 
 ## Installation
 
