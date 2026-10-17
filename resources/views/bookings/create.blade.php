@@ -3,14 +3,17 @@
 @section('title', 'Book '.$listing->title)
 
 @section('content')
+@php
+    $roomTypeOptions = $roomTypes->mapWithKeys(fn ($type) => [
+        $type->id => $type->name.' · up to '.$type->capacity.' · from '.number_format((float) $type->base_price, 0).'/night',
+    ])->all();
+@endphp
+
 <x-container class="py-8">
-    <nav class="mb-6 text-sm text-fs-secondary" aria-label="Breadcrumb">
-        <ol class="flex flex-wrap items-center gap-2">
-            <li><a href="{{ route('properties.show', $listing) }}" class="hover:text-fs-brand">{{ $listing->title }}</a></li>
-            <li aria-hidden="true">/</li>
-            <li class="text-fs-primary font-medium">Book</li>
-        </ol>
-    </nav>
+    <x-breadcrumbs :items="[
+        ['label' => $listing->title, 'href' => route('properties.show', $listing)],
+        ['label' => 'Book'],
+    ]" />
 
     <div class="max-w-xl"
          x-data="bookingQuote({
@@ -18,67 +21,80 @@
             roomTypeId: {{ (int) $selectedRoomTypeId }},
             csrf: @js(csrf_token())
          })">
-        <h1 class="text-2xl font-bold text-fs-primary">Book {{ $listing->title }}</h1>
-        <p class="mt-2 text-sm text-fs-secondary">Select dates to see live pricing and availability.</p>
+        <x-page-header
+            :title="'Book '.$listing->title"
+            subtitle="Select dates to see live pricing and availability."
+        />
 
-        <form method="POST" action="{{ route('bookings.store') }}" class="mt-6 space-y-4 rounded-md bg-white border border-black/5 p-6">
+        <form method="POST" action="{{ route('bookings.store') }}" class="space-y-4">
             @csrf
-            <div>
-                <label class="block text-xs font-semibold text-fs-primary mb-1" for="room_type_id">Room type</label>
-                <select id="room_type_id" name="room_type_id" x-model.number="roomTypeId" @change="fetchQuote()"
-                        class="w-full px-4 py-3 rounded-sm border border-slate-200 bg-white text-sm">
-                    @foreach ($roomTypes as $type)
-                        <option value="{{ $type->id }}" @selected((int) $selectedRoomTypeId === (int) $type->id)>
-                            {{ $type->name }} · up to {{ $type->capacity }} · from {{ number_format((float) $type->base_price, 0) }}/night
-                        </option>
-                    @endforeach
-                </select>
-            </div>
+            <x-panel>
+                <x-select
+                    label="Room type"
+                    name="room_type_id"
+                    id="room_type_id"
+                    :options="$roomTypeOptions"
+                    :selected="$selectedRoomTypeId"
+                    x-model.number="roomTypeId"
+                    @change="fetchQuote()"
+                    required
+                />
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-xs font-semibold text-fs-primary mb-1" for="check_in">Check-in</label>
-                    <input id="check_in" name="check_in" type="date" x-model="checkIn" @change="fetchQuote()"
-                           value="{{ old('check_in') }}" required
-                           class="w-full px-4 py-3 rounded-sm border border-slate-200 text-sm">
-                    @error('check_in')<p class="mt-1 text-xs text-fs-danger">{{ $message }}</p>@enderror
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+                    <x-input
+                        label="Check-in"
+                        name="check_in"
+                        id="check_in"
+                        type="date"
+                        :value="old('check_in')"
+                        x-model="checkIn"
+                        @change="fetchQuote()"
+                        required
+                    />
+                    <x-input
+                        label="Check-out"
+                        name="check_out"
+                        id="check_out"
+                        type="date"
+                        :value="old('check_out')"
+                        x-model="checkOut"
+                        @change="fetchQuote()"
+                        required
+                    />
                 </div>
-                <div>
-                    <label class="block text-xs font-semibold text-fs-primary mb-1" for="check_out">Check-out</label>
-                    <input id="check_out" name="check_out" type="date" x-model="checkOut" @change="fetchQuote()"
-                           value="{{ old('check_out') }}" required
-                           class="w-full px-4 py-3 rounded-sm border border-slate-200 text-sm">
-                    @error('check_out')<p class="mt-1 text-xs text-fs-danger">{{ $message }}</p>@enderror
+
+                <div class="mt-4">
+                    <x-input label="Guests" name="guests" type="number" min="1" :value="old('guests', 1)" required />
                 </div>
-            </div>
 
-            <x-input label="Guests" name="guests" type="number" min="1" :value="old('guests', 1)" required />
+                <div class="mt-4">
+                    <x-select
+                        label="Cancellation policy"
+                        name="cancellation_policy"
+                        :options="collect(App\Models\Booking::CANCELLATION_POLICIES)->mapWithKeys(fn ($p) => [$p => ucfirst($p)])->all()"
+                        :selected="old('cancellation_policy', 'flexible')"
+                    />
+                </div>
 
-            <x-select
-                label="Cancellation policy"
-                name="cancellation_policy"
-                :options="collect(App\Models\Booking::CANCELLATION_POLICIES)->mapWithKeys(fn ($p) => [$p => ucfirst($p)])->all()"
-                :selected="old('cancellation_policy', 'flexible')"
-            />
+                <div class="mt-4 rounded-sm bg-fs-surface p-4 text-sm" x-show="loaded" x-cloak>
+                    <template x-if="available">
+                        <p>
+                            <span class="font-semibold text-fs-primary" x-text="nights + ' night(s)'"></span>
+                            · Total <span class="font-semibold text-fs-brand" x-text="totalLabel"></span>
+                            · <span x-text="availableRooms + ' room(s) left'"></span>
+                        </p>
+                    </template>
+                    <template x-if="!available && checkIn && checkOut">
+                        <p class="text-fs-danger">Those dates are not available.</p>
+                    </template>
+                </div>
 
-            <div class="rounded-sm bg-fs-surface p-4 text-sm" x-show="loaded" x-cloak>
-                <template x-if="available">
-                    <p>
-                        <span class="font-semibold" x-text="nights + ' night(s)'"></span>
-                        · Total <span class="font-semibold text-fs-brand" x-text="totalLabel"></span>
-                        · <span x-text="availableRooms + ' room(s) left'"></span>
-                    </p>
-                </template>
-                <template x-if="!available && checkIn && checkOut">
-                    <p class="text-fs-danger">Those dates are not available.</p>
-                </template>
-            </div>
-
-            <button type="submit"
-                    class="inline-flex items-center justify-center min-h-11 px-5 rounded-sm bg-fs-brand text-white text-sm font-semibold w-full disabled:opacity-50"
-                    :disabled="!available">
-                Confirm booking
-            </button>
+                <div class="mt-4">
+                    <x-button type="submit" variant="primary" class="w-full" x-bind:disabled="!available">
+                        Confirm booking
+                    </x-button>
+                </div>
+            </x-panel>
         </form>
     </div>
 </x-container>

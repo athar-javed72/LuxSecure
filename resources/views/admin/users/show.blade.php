@@ -9,22 +9,23 @@
     ['label' => $user->name],
 ]" />
 
-<div class="flex flex-wrap justify-between items-start gap-4 mb-6">
-    <h1 class="text-xl md:text-2xl font-bold text-fs-primary">User details</h1>
-    <x-button variant="ghost" href="{{ route('admin.users.index') }}">Back</x-button>
-</div>
+<x-page-header title="User details">
+    <x-slot:actions>
+        <x-button variant="ghost" href="{{ route('admin.users.index') }}">Back</x-button>
+    </x-slot:actions>
+</x-page-header>
 
-<div class="rounded-md bg-white shadow-sm border border-black/5 p-6 w-full max-w-5xl">
-    <h2 class="text-lg font-bold text-fs-primary mb-6">{{ $user->name }}</h2>
+<x-panel class="w-full max-w-5xl">
+    <h2 class="fs-display text-lg font-semibold text-fs-primary mb-6">{{ $user->name }}</h2>
     <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-        <div><dt class="text-xs text-fs-muted">ID</dt><dd class="mt-1">{{ $user->id }}</dd></div>
-        <div><dt class="text-xs text-fs-muted">Email</dt><dd class="mt-1">{{ $user->email }}</dd></div>
-        <div><dt class="text-xs text-fs-muted">Phone</dt><dd class="mt-1">{{ $user->phone ?? '—' }}</dd></div>
-        <div><dt class="text-xs text-fs-muted">Roles</dt><dd class="mt-1">{{ $user->getRoleNames()->implode(', ') ?: '—' }}</dd></div>
-        <div><dt class="text-xs text-fs-muted">Direct permissions</dt><dd class="mt-1">{{ $user->getDirectPermissions()->pluck('name')->implode(', ') ?: '—' }}</dd></div>
-        <div><dt class="text-xs text-fs-muted">Active</dt><dd class="mt-1"><x-badge :tone="$user->is_active ? 'success' : 'muted'">{{ $user->is_active ? 'Yes' : 'No' }}</x-badge></dd></div>
-        <div><dt class="text-xs text-fs-muted">Verified</dt><dd class="mt-1">{{ $user->hasVerifiedEmail() ? 'Yes' : 'No' }}</dd></div>
-        <div><dt class="text-xs text-fs-muted">Registered</dt><dd class="mt-1">{{ $user->created_at->format('M j, Y H:i') }}</dd></div>
+        <div><dt class="text-xs font-semibold uppercase tracking-wide text-fs-muted">ID</dt><dd class="mt-1">{{ $user->id }}</dd></div>
+        <div><dt class="text-xs font-semibold uppercase tracking-wide text-fs-muted">Email</dt><dd class="mt-1">{{ $user->email }}</dd></div>
+        <div><dt class="text-xs font-semibold uppercase tracking-wide text-fs-muted">Phone</dt><dd class="mt-1">{{ $user->phone ?? '—' }}</dd></div>
+        <div><dt class="text-xs font-semibold uppercase tracking-wide text-fs-muted">Roles</dt><dd class="mt-1">{{ $user->getRoleNames()->implode(', ') ?: '—' }}</dd></div>
+        <div><dt class="text-xs font-semibold uppercase tracking-wide text-fs-muted">Direct permissions</dt><dd class="mt-1">{{ $user->getDirectPermissions()->pluck('name')->implode(', ') ?: '—' }}</dd></div>
+        <div><dt class="text-xs font-semibold uppercase tracking-wide text-fs-muted">Active</dt><dd class="mt-1"><x-status-badge :status="$user->is_active ? 'active' : 'inactive'">{{ $user->is_active ? 'Yes' : 'No' }}</x-status-badge></dd></div>
+        <div><dt class="text-xs font-semibold uppercase tracking-wide text-fs-muted">Verified</dt><dd class="mt-1">{{ $user->hasVerifiedEmail() ? 'Yes' : 'No' }}</dd></div>
+        <div><dt class="text-xs font-semibold uppercase tracking-wide text-fs-muted">Registered</dt><dd class="mt-1">{{ $user->created_at->format('M j, Y H:i') }}</dd></div>
     </dl>
     <div class="mt-6 flex flex-wrap gap-2">
         @can('update', $user)
@@ -42,5 +43,5 @@
             </x-confirm-delete>
         @endcan
     </div>
-</div>
+</x-panel>
 @endsection

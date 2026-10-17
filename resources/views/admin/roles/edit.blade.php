@@ -9,12 +9,9 @@
     ['label' => 'Edit'],
 ]" />
 
-<div class="mb-6">
-    <h1 class="text-xl md:text-2xl font-bold text-fs-primary">Edit role</h1>
-    <p class="mt-2 text-sm text-fs-secondary">{{ $role->name }}</p>
-</div>
+<x-page-header title="Edit role" :subtitle="$role->name" />
 
-<div class="rounded-md bg-white shadow-sm border border-black/5 p-6 w-full max-w-5xl">
+<x-panel class="w-full max-w-5xl">
     <form method="POST" action="{{ route('admin.roles.update', $role) }}">
         @csrf
         @method('PUT')
@@ -33,5 +30,5 @@
             <x-button variant="secondary" href="{{ route('admin.roles.matrix', $role) }}">Open matrix</x-button>
         </div>
     </form>
-</div>
+</x-panel>
 @endsection

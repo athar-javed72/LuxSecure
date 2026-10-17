@@ -8,91 +8,78 @@
     ['label' => 'Dashboard'],
 ]" />
 
-<div class="mb-8">
-    <h1 class="text-xl md:text-2xl font-bold text-fs-primary">Dashboard</h1>
-    <p class="mt-2 text-sm text-fs-secondary max-w-prose">Overview of your LuxSecure admin panel</p>
-</div>
+<x-page-header title="Dashboard" subtitle="Overview of your LuxSecure admin panel" />
 
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-    <a href="{{ route('admin.users.index') }}" class="rounded-md bg-white shadow-sm border border-black/5 p-6 hover:shadow-lg transition-shadow duration-150">
-        <p class="text-xs font-semibold uppercase tracking-wide text-fs-muted">Total users</p>
-        <p class="mt-2 text-xl font-bold text-fs-primary">{{ $totalUsers }}</p>
-    </a>
-    <a href="{{ route('admin.listings.index') }}" class="rounded-md bg-white shadow-sm border border-black/5 p-6 hover:shadow-lg transition-shadow duration-150">
-        <p class="text-xs font-semibold uppercase tracking-wide text-fs-muted">Listings</p>
-        <p class="mt-2 text-xl font-bold text-fs-primary">{{ $totalProperties }}</p>
-    </a>
-    <a href="{{ route('admin.inquiries.index') }}" class="rounded-md bg-white shadow-sm border border-black/5 p-6 hover:shadow-lg transition-shadow duration-150">
-        <p class="text-xs font-semibold uppercase tracking-wide text-fs-muted">Inquiries</p>
-        <p class="mt-2 text-xl font-bold text-fs-primary">{{ $totalInquiries }}</p>
-    </a>
-    <div class="rounded-md bg-white shadow-sm border border-black/5 p-6">
-        <p class="text-xs font-semibold uppercase tracking-wide text-fs-muted">Unread</p>
-        <p class="mt-2 text-xl font-bold text-fs-primary">{{ $unreadInquiries }}</p>
-    </div>
+    <x-stat-card label="Total users" :value="$totalUsers" :href="route('admin.users.index')" />
+    <x-stat-card label="Listings" :value="$totalProperties" :href="route('admin.listings.index')" />
+    <x-stat-card label="Inquiries" :value="$totalInquiries" :href="route('admin.inquiries.index')" />
+    <x-stat-card label="Unread" :value="$unreadInquiries" hint="Unread inquiries" />
 </div>
 
 <div class="mt-8 grid grid-cols-1 xl:grid-cols-2 gap-6">
-    <div class="rounded-md bg-white shadow-sm border border-black/5 overflow-hidden">
+    <x-panel :padding="false">
         <div class="px-4 py-3 border-b border-black/5 flex items-center justify-between gap-2">
-            <h2 class="text-base font-semibold text-fs-primary">Recent listings</h2>
+            <h2 class="fs-display text-base font-semibold text-fs-primary">Recent listings</h2>
             <x-button variant="ghost" href="{{ route('admin.listings.index') }}">View all</x-button>
         </div>
-        <div class="overflow-x-auto">
-            <table class="w-full text-sm table-fixed">
-                <thead class="bg-fs-surface text-left text-xs uppercase tracking-wide text-fs-muted">
-                    <tr>
-                        <th class="px-4 py-3 font-semibold w-[40%]">Title</th>
-                        <th class="px-4 py-3 font-semibold w-[25%]">Type</th>
-                        <th class="px-4 py-3 font-semibold w-[20%]">Price</th>
-                        <th class="px-4 py-3 font-semibold w-[15%]">Status</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-black/5">
-                    @forelse($recentProperties as $p)
+        @if($recentProperties->isEmpty())
+            <x-empty-state title="No listings yet" description="Published listings will appear here." action-label="Manage listings" :action-href="route('admin.listings.index')" class="border-0 shadow-none rounded-none" />
+        @else
+            <x-table caption="Recent listings" class="fs-table-stack">
+                    <thead class="bg-fs-surface text-left text-xs uppercase tracking-wide text-fs-muted">
                         <tr>
-                            <td class="px-4 py-3 font-medium text-fs-primary truncate">{{ $p->title }}</td>
-                            <td class="px-4 py-3 text-fs-secondary truncate">{{ $p->listingType?->name }}</td>
-                            <td class="px-4 py-3 text-fs-secondary whitespace-nowrap">{{ $p->formatted_price }}</td>
-                            <td class="px-4 py-3"><x-badge :tone="$p->status === 'published' ? 'success' : 'muted'">{{ ucfirst($p->status) }}</x-badge></td>
+                            <th>Title</th>
+                            <th>Type</th>
+                            <th>Price</th>
+                            <th>Status</th>
                         </tr>
-                    @empty
-                        <tr><td colspan="4" class="px-4 py-6 text-center text-fs-muted">No listings yet.</td></tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-    </div>
+                    </thead>
+                    <tbody>
+                        @foreach($recentProperties as $p)
+                            <tr>
+                                <td data-label="Title" class="font-medium text-fs-primary truncate">{{ $p->title }}</td>
+                                <td data-label="Type" class="text-fs-secondary truncate">{{ $p->listingType?->name }}</td>
+                                <td data-label="Price" class="text-fs-secondary whitespace-nowrap">{{ $p->formatted_price }}</td>
+                                <td data-label="Status"><x-status-badge :status="$p->status" /></td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </x-table>
+        @endif
+    </x-panel>
 
-    <div class="rounded-md bg-white shadow-sm border border-black/5 overflow-hidden">
+    <x-panel :padding="false">
         <div class="px-4 py-3 border-b border-black/5 flex items-center justify-between gap-2">
-            <h2 class="text-base font-semibold text-fs-primary">Recent inquiries</h2>
+            <h2 class="fs-display text-base font-semibold text-fs-primary">Recent inquiries</h2>
             <x-button variant="ghost" href="{{ route('admin.inquiries.index') }}">View all</x-button>
         </div>
-        <div class="overflow-x-auto">
-            <table class="w-full text-sm table-fixed">
-                <thead class="bg-fs-surface text-left text-xs uppercase tracking-wide text-fs-muted">
-                    <tr>
-                        <th class="px-4 py-3 font-semibold w-[30%]">Name</th>
-                        <th class="px-4 py-3 font-semibold w-[40%]">Email</th>
-                        <th class="px-4 py-3 font-semibold w-[15%]">Date</th>
-                        <th class="px-4 py-3 font-semibold w-[15%]">Read</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-black/5">
-                    @forelse($recentInquiries as $inquiry)
+        @if($recentInquiries->isEmpty())
+            <x-empty-state title="No inquiries yet" description="New contact requests will show up here." action-label="View inquiries" :action-href="route('admin.inquiries.index')" class="border-0 shadow-none rounded-none" />
+        @else
+            <x-table caption="Recent inquiries" class="fs-table-stack">
+                    <thead class="bg-fs-surface text-left text-xs uppercase tracking-wide text-fs-muted">
                         <tr>
-                            <td class="px-4 py-3 font-medium text-fs-primary truncate">{{ $inquiry->name }}</td>
-                            <td class="px-4 py-3 text-fs-secondary truncate">{{ $inquiry->email }}</td>
-                            <td class="px-4 py-3 text-fs-secondary whitespace-nowrap">{{ $inquiry->created_at->format('M j') }}</td>
-                            <td class="px-4 py-3"><x-badge :tone="$inquiry->is_read ? 'muted' : 'success'">{{ $inquiry->is_read ? 'Read' : 'New' }}</x-badge></td>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Date</th>
+                            <th>Read</th>
                         </tr>
-                    @empty
-                        <tr><td colspan="4" class="px-4 py-6 text-center text-fs-muted">No inquiries yet.</td></tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-    </div>
+                    </thead>
+                    <tbody>
+                        @foreach($recentInquiries as $inquiry)
+                            <tr>
+                                <td data-label="Name" class="font-medium text-fs-primary truncate">{{ $inquiry->name }}</td>
+                                <td data-label="Email" class="text-fs-secondary truncate">{{ $inquiry->email }}</td>
+                                <td data-label="Date" class="text-fs-secondary whitespace-nowrap">{{ $inquiry->created_at->format('M j') }}</td>
+                                <td data-label="Read">
+                                    <x-status-badge :status="$inquiry->is_read ? 'closed' : 'new'">{{ $inquiry->is_read ? 'Read' : 'New' }}</x-status-badge>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </x-table>
+        @endif
+    </x-panel>
 </div>
 @endsection

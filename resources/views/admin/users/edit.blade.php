@@ -9,17 +9,14 @@
     ['label' => 'Edit'],
 ]" />
 
-<div class="flex flex-wrap justify-between items-start gap-4 mb-6">
-    <h1 class="text-xl md:text-2xl font-bold text-fs-primary">Edit user</h1>
-    <x-button variant="ghost" href="{{ route('admin.users.show', $user) }}">Back</x-button>
-</div>
+<x-page-header title="Edit user">
+    <x-slot:actions>
+        <x-button variant="ghost" href="{{ route('admin.users.show', $user) }}">Back</x-button>
+    </x-slot:actions>
+</x-page-header>
 
-@if(session('error'))
-    <div class="mb-4 p-4 rounded-sm bg-red-50 text-fs-danger text-sm">{{ session('error') }}</div>
-@endif
-
-<div class="rounded-md bg-white shadow-sm border border-black/5 p-6 w-full max-w-5xl">
-    <h2 class="text-base font-semibold text-fs-primary mb-6">{{ $user->name }}</h2>
+<x-panel class="w-full max-w-5xl">
+    <h2 class="fs-display text-base font-semibold text-fs-primary mb-6">{{ $user->name }}</h2>
     <form method="POST" action="{{ route('admin.users.update', $user) }}">
         @csrf
         @method('PUT')
@@ -41,5 +38,5 @@
             <x-button variant="ghost" href="{{ route('admin.users.show', $user) }}">Cancel</x-button>
         </div>
     </form>
-</div>
+</x-panel>
 @endsection

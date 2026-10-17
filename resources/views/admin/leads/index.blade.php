@@ -3,53 +3,60 @@
 @section('title', 'Leads')
 
 @section('content')
-<div class="flex flex-wrap justify-between gap-4 mb-6">
-    <div>
-        <h1 class="text-xl font-bold text-fs-primary">Leads</h1>
-        <p class="text-sm text-fs-secondary mt-1">Pipeline from inquiries and assignments</p>
-    </div>
-    <x-button variant="ghost" href="{{ route('admin.leads.export') }}">Export CSV</x-button>
-</div>
+<x-breadcrumbs :items="[
+    ['label' => 'Admin', 'href' => route('admin.dashboard')],
+    ['label' => 'Leads'],
+]" />
+
+<x-page-header title="Leads" subtitle="Pipeline from inquiries and assignments">
+    <x-slot:actions>
+        <x-button variant="ghost" href="{{ route('admin.leads.export') }}">Export CSV</x-button>
+    </x-slot:actions>
+</x-page-header>
 
 <form method="POST" action="{{ route('admin.leads.bulk') }}" class="space-y-4">
     @csrf
-    <div class="flex flex-wrap gap-2 items-end">
-        <x-select label="Bulk" name="action" :options="['status' => 'Set status', 'assign' => 'Assign agent', 'delete' => 'Delete']" :selected="'status'" />
-        <x-select label="Status" name="status" :options="collect(App\Models\Lead::STATUSES)->mapWithKeys(fn ($s) => [$s => ucfirst($s)])->all()" :selected="'contacted'" />
-        <x-select label="Agent" name="assigned_agent_id" :options="$agents->mapWithKeys(fn ($a) => [$a->id => $a->name])->all()" :selected="null" placeholder="—" />
-        <x-button type="submit" variant="secondary">Apply</x-button>
-    </div>
+    <x-panel>
+        <div class="flex flex-wrap gap-2 items-end">
+            <x-select label="Bulk" name="action" :options="['status' => 'Set status', 'assign' => 'Assign agent', 'delete' => 'Delete']" :selected="'status'" />
+            <x-select label="Status" name="status" :options="collect(App\Models\Lead::STATUSES)->mapWithKeys(fn ($s) => [$s => ucfirst($s)])->all()" :selected="'contacted'" />
+            <x-select label="Agent" name="assigned_agent_id" :options="$agents->mapWithKeys(fn ($a) => [$a->id => $a->name])->all()" :selected="null" placeholder="—" />
+            <x-button type="submit" variant="secondary">Apply</x-button>
+        </div>
+    </x-panel>
 
-    <div class="rounded-md bg-white border border-black/5 overflow-hidden">
-        <table class="w-full text-sm">
-            <thead class="bg-fs-surface text-xs uppercase text-fs-muted text-left">
-                <tr>
-                    <th class="px-3 py-3"></th>
-                    <th class="px-3 py-3">Name</th>
-                    <th class="px-3 py-3">Status</th>
-                    <th class="px-3 py-3">Listing</th>
-                    <th class="px-3 py-3">Agent</th>
-                    <th class="px-3 py-3">Follow-up</th>
-                    <th class="px-3 py-3"></th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-black/5">
-                @forelse ($leads as $lead)
+    @if($leads->isEmpty())
+        <x-empty-state title="No leads yet" description="Inquiries and assignments will populate your pipeline." />
+    @else
+        <x-table caption="Leads" class="fs-table-stack">
+                <thead class="bg-fs-surface text-left text-xs uppercase tracking-wide text-fs-muted">
                     <tr>
-                        <td class="px-3 py-3"><input type="checkbox" name="ids[]" value="{{ $lead->id }}"></td>
-                        <td class="px-3 py-3">{{ $lead->name }}<div class="text-xs text-fs-muted">{{ $lead->email }}</div></td>
-                        <td class="px-3 py-3 capitalize">{{ $lead->status }}</td>
-                        <td class="px-3 py-3">{{ $lead->listing?->title ?? '—' }}</td>
-                        <td class="px-3 py-3">{{ $lead->assignedAgent?->name ?? '—' }}</td>
-                        <td class="px-3 py-3">{{ optional($lead->follow_up_at)->toDateString() ?? '—' }}</td>
-                        <td class="px-3 py-3 text-right"><a href="{{ route('admin.leads.edit', $lead) }}" class="text-fs-brand hover:underline">Edit</a></td>
+                        <th><span class="sr-only">Select</span></th>
+                        <th>Name</th>
+                        <th>Status</th>
+                        <th>Listing</th>
+                        <th>Agent</th>
+                        <th>Follow-up</th>
+                        <th class="text-right">Actions</th>
                     </tr>
-                @empty
-                    <tr><td colspan="7" class="px-4 py-8 text-center text-fs-muted">No leads yet.</td></tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
+                </thead>
+                <tbody>
+                    @foreach ($leads as $lead)
+                        <tr>
+                            <td data-label="Select"><input type="checkbox" name="ids[]" value="{{ $lead->id }}" class="rounded-sm border-black/20 text-fs-brand focus:ring-fs-brand"></td>
+                            <td data-label="Name">{{ $lead->name }}<div class="text-xs text-fs-muted">{{ $lead->email }}</div></td>
+                            <td data-label="Status"><x-status-badge :status="$lead->status" /></td>
+                            <td data-label="Listing">{{ $lead->listing?->title ?? '—' }}</td>
+                            <td data-label="Agent">{{ $lead->assignedAgent?->name ?? '—' }}</td>
+                            <td data-label="Follow-up">{{ optional($lead->follow_up_at)->toDateString() ?? '—' }}</td>
+                            <td data-label="Actions" class="text-right">
+                                <x-button variant="ghost" href="{{ route('admin.leads.edit', $lead) }}" class="!px-3">Edit</x-button>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </x-table>
+    @endif
 </form>
 <div class="mt-4">{{ $leads->links() }}</div>
 @endsection

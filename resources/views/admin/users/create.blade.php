@@ -9,12 +9,9 @@
     ['label' => 'Create'],
 ]" />
 
-<div class="mb-6">
-    <h1 class="text-xl md:text-2xl font-bold text-fs-primary">Create user</h1>
-    <p class="mt-2 text-sm text-fs-secondary">Staff and agents are created here; public registration is client-only.</p>
-</div>
+<x-page-header title="Create user" subtitle="Staff and agents are created here; public registration is client-only." />
 
-<div class="rounded-md bg-white shadow-sm border border-black/5 p-6 w-full max-w-5xl">
+<x-panel class="w-full max-w-5xl">
     <form method="POST" action="{{ route('admin.users.store') }}">
         @csrf
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -35,5 +32,5 @@
             <x-button variant="ghost" href="{{ route('admin.users.index') }}">Cancel</x-button>
         </div>
     </form>
-</div>
+</x-panel>
 @endsection

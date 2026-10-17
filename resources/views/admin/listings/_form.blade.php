@@ -140,8 +140,8 @@
         @error('description')<p class="mt-1 text-xs text-fs-danger">{{ $message }}</p>@enderror
     </div>
 
-    <div class="md:col-span-2 rounded-md border border-black/5 bg-fs-surface/60 p-4 space-y-3" x-show="dynamicAttributes.length" x-cloak>
-        <h3 class="text-sm font-semibold text-fs-primary">Type attributes</h3>
+    <x-panel class="md:col-span-2 bg-fs-surface/60 space-y-3" x-show="dynamicAttributes.length" x-cloak>
+        <h3 class="fs-display text-sm font-semibold text-fs-primary">Type attributes</h3>
         <template x-for="attr in dynamicAttributes" :key="attr.key">
             <div>
                 <label class="block text-xs font-semibold text-fs-primary mb-1" :for="'attr_' + attr.key">
@@ -201,35 +201,33 @@
                 </template>
             </div>
         </template>
-    </div>
+    </x-panel>
 
-    <div class="md:col-span-2 space-y-3">
-        <label for="featured_image" class="block text-xs font-semibold text-fs-primary mb-1">Featured image</label>
+    <x-panel class="md:col-span-2 space-y-3">
+        <h3 class="fs-display text-sm font-semibold text-fs-primary">Featured image</h3>
         @if($featuredUrl !== '')
             <div class="flex items-start gap-3">
                 <img src="{{ $featuredUrl }}" alt="Current featured image" width="160" height="120" class="w-40 h-28 object-cover rounded-sm border border-black/10 bg-fs-surface">
                 <p class="text-xs text-fs-muted">Current featured image. Upload a new file to replace it.</p>
             </div>
         @endif
-        <input
-            id="featured_image"
-            type="file"
+        <x-file-upload
+            label="Upload featured image"
             name="featured_image"
+            id="featured_image"
             accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"
-            class="w-full h-12 px-3 rounded-sm border border-dashed border-black/15 bg-white text-sm text-fs-secondary file:mr-3 file:py-2 file:px-3 file:rounded-sm file:border-0 file:bg-fs-brand-light file:text-fs-brand file:text-xs file:font-semibold"
             @change="onFeaturedChange($event)"
-        >
+        />
         <template x-if="featuredPreview">
             <div class="flex items-start gap-3">
                 <img :src="featuredPreview" alt="Preview of new featured image upload" width="160" height="120" class="w-40 h-28 object-cover rounded-sm border border-black/10 bg-fs-surface">
                 <p class="text-xs text-fs-muted">New featured image preview</p>
             </div>
         </template>
-        @error('featured_image')<p class="mt-1 text-xs text-fs-danger">{{ $message }}</p>@enderror
-    </div>
+    </x-panel>
 
-    <div class="md:col-span-2 space-y-3">
-        <label for="images" class="block text-xs font-semibold text-fs-primary mb-1">More images</label>
+    <x-panel class="md:col-span-2 space-y-3">
+        <h3 class="fs-display text-sm font-semibold text-fs-primary">Gallery</h3>
         @if($listing && $listing->relationLoaded('images') && $listing->images->isNotEmpty())
             <div class="space-y-3" x-data="{ order: {{ $listing->images->pluck('id')->values()->toJson() }} }">
                 <div class="flex flex-wrap gap-3">
@@ -260,40 +258,41 @@
                 </form>
             </div>
         @endif
-        <input
-            id="images"
-            type="file"
+        <x-file-upload
+            label="Add gallery images"
             name="images[]"
+            id="images"
             accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"
             multiple
-            class="w-full h-12 px-3 rounded-sm border border-dashed border-black/15 bg-white text-sm text-fs-secondary file:mr-3 file:py-2 file:px-3 file:rounded-sm file:border-0 file:bg-fs-surface file:text-fs-secondary file:text-xs file:font-semibold"
             @change="onGalleryChange($event)"
-        >
+        />
         <div class="flex flex-wrap gap-2" x-show="galleryPreviews.length" x-cloak>
             <template x-for="(src, index) in galleryPreviews" :key="index">
                 <img :src="src" :alt="'Preview of new gallery image ' + (index + 1)" width="96" height="72" class="w-24 h-[72px] object-cover rounded-sm border border-black/10 bg-fs-surface">
             </template>
         </div>
         @error('images.*')<p class="mt-1 text-xs text-fs-danger">{{ $message }}</p>@enderror
-    </div>
+    </x-panel>
 
-    <div>
-        <x-input label="Video URL" name="video_url" type="url" :value="old('video_url', $listing?->video_url)" placeholder="https://..." />
-    </div>
-    <div>
-        <label for="floor_plan" class="block text-xs font-semibold text-fs-primary mb-1">Floor plan</label>
-        @if($listing?->floor_plan_path)
-            <p class="mb-1 text-xs text-fs-muted">Current: {{ $listing->floor_plan_path }}</p>
-        @endif
-        <input id="floor_plan" type="file" name="floor_plan" accept=".jpg,.jpeg,.png,.pdf" class="w-full h-12 px-3 rounded-sm border border-dashed border-black/15 bg-white text-sm">
-        @error('floor_plan')<p class="mt-1 text-xs text-fs-danger">{{ $message }}</p>@enderror
-    </div>
-    <div class="md:col-span-2">
-        <label for="private_document" class="block text-xs font-semibold text-fs-primary mb-1">Private document (title deed / NOC)</label>
+    <x-panel class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+            <h3 class="fs-display text-sm font-semibold text-fs-primary mb-3">Video</h3>
+            <x-input label="Video URL" name="video_url" type="url" :value="old('video_url', $listing?->video_url)" placeholder="https://..." />
+        </div>
+        <div>
+            <h3 class="fs-display text-sm font-semibold text-fs-primary mb-3">Floor plan</h3>
+            @if($listing?->floor_plan_path)
+                <p class="mb-2 text-xs text-fs-muted">Current: {{ $listing->floor_plan_path }}</p>
+            @endif
+            <x-file-upload label="Upload floor plan" name="floor_plan" id="floor_plan" accept=".jpg,.jpeg,.png,.pdf" />
+        </div>
+    </x-panel>
+
+    <x-panel class="md:col-span-2 space-y-3">
+        <h3 class="fs-display text-sm font-semibold text-fs-primary">Private document (title deed / NOC)</h3>
         @if($listing?->private_document_path)
-            <p class="mb-1 text-xs text-fs-muted">Stored on private disk</p>
+            <p class="text-xs text-fs-muted">Stored on private disk</p>
         @endif
-        <input id="private_document" type="file" name="private_document" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" class="w-full h-12 px-3 rounded-sm border border-dashed border-black/15 bg-white text-sm">
-        @error('private_document')<p class="mt-1 text-xs text-fs-danger">{{ $message }}</p>@enderror
-    </div>
+        <x-file-upload label="Upload private document" name="private_document" id="private_document" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" />
+    </x-panel>
 </div>

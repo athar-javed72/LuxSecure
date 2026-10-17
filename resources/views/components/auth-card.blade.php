@@ -86,13 +86,22 @@
 
     {{-- Right panel: forms swap without leaving the page --}}
     <div class="w-full md:w-1/2 p-6 sm:p-8 flex flex-col justify-center relative min-h-[480px]">
-        @if(session('success') || session('status'))
-            <div class="mb-4 p-4 rounded-sm bg-fs-brand-light text-fs-primary text-sm">{{ session('success') ?? session('status') }}</div>
-        @endif
-        @if($errors->any())
-            <div class="mb-4 p-4 rounded-sm bg-red-50 text-fs-danger text-sm">
-                <ul class="space-y-1">@foreach($errors->all() as $e)<li>{{ $e }}</li>@endforeach</ul>
+        @php
+            $deactivated = $errors->has('email') && str_contains(strtolower($errors->first('email') ?? ''), 'deactivated');
+        @endphp
+        @if($deactivated)
+            <div class="mb-6">
+                <x-empty-state
+                    title="Account suspended"
+                    description="This account has been deactivated. Contact support if you need access restored."
+                    action-label="Back to home"
+                    :action-href="route('home')"
+                />
             </div>
+        @elseif($errors->any())
+            <x-alert tone="error" class="mb-4">
+                <ul class="space-y-1">@foreach($errors->all() as $e)<li>{{ $e }}</li>@endforeach</ul>
+            </x-alert>
         @endif
 
         {{-- LOGIN --}}

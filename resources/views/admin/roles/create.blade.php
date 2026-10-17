@@ -9,11 +9,9 @@
     ['label' => 'Create'],
 ]" />
 
-<div class="mb-6">
-    <h1 class="text-xl md:text-2xl font-bold text-fs-primary">Create role</h1>
-</div>
+<x-page-header title="Create role" />
 
-<div class="rounded-md bg-white shadow-sm border border-black/5 p-6 w-full max-w-5xl">
+<x-panel class="w-full max-w-5xl">
     <form method="POST" action="{{ route('admin.roles.store') }}">
         @csrf
         <x-input label="Name *" name="name" :value="old('name')" placeholder="e.g. regional_manager" required />
@@ -26,5 +24,5 @@
             <x-button variant="ghost" href="{{ route('admin.roles.index') }}">Cancel</x-button>
         </div>
     </form>
-</div>
+</x-panel>
 @endsection

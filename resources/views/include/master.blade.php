@@ -16,6 +16,19 @@
     @include('include.navbar')
 
     <main id="main-content" class="flex-1 pt-[72px]">
+        @if (session('success') || session('error') || session('status'))
+            <x-container class="pt-4">
+                @if (session('success'))
+                    <x-alert tone="success" class="mb-2" dismissible>{{ session('success') }}</x-alert>
+                @endif
+                @if (session('error'))
+                    <x-alert tone="error" class="mb-2" dismissible>{{ session('error') }}</x-alert>
+                @endif
+                @if (session('status'))
+                    <x-alert tone="info" class="mb-2" dismissible>{{ session('status') }}</x-alert>
+                @endif
+            </x-container>
+        @endif
         @yield('home_content')
         @yield('content')
     </main>

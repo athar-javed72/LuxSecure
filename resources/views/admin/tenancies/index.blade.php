@@ -8,57 +8,50 @@
     ['label' => 'Tenancies'],
 ]" />
 
-<div class="flex flex-wrap justify-between items-start gap-4 mb-6">
-    <div>
-        <h1 class="text-xl md:text-2xl font-bold text-fs-primary">Tenancies</h1>
-        <p class="mt-2 text-sm text-fs-secondary">Create leases and track rent schedules</p>
-    </div>
-    <div class="flex flex-wrap gap-2">
+<x-page-header title="Tenancies" subtitle="Create leases and track rent schedules">
+    <x-slot:actions>
         <x-button variant="ghost" href="{{ route('admin.tenancies.overdue') }}">Overdue</x-button>
         @can('create', App\Models\Tenancy::class)
             <x-button variant="primary" href="{{ route('admin.tenancies.create') }}">New tenancy</x-button>
         @endcan
-    </div>
-</div>
+    </x-slot:actions>
+</x-page-header>
 
-@if (session('success'))
-    <div class="mb-4 p-4 rounded-sm bg-fs-brand-light text-fs-brand text-sm">{{ session('success') }}</div>
-@endif
-
-<div class="rounded-md bg-white shadow-sm border border-black/5 overflow-hidden">
-    <div class="overflow-x-auto">
-        <table class="w-full text-sm">
+@if($tenancies->isEmpty())
+    <x-empty-state
+        title="No tenancies yet"
+        description="Create a lease to generate a monthly rent schedule."
+        action-label="New tenancy"
+        :action-href="route('admin.tenancies.create')"
+    />
+@else
+    <x-table caption="Tenancies" class="fs-table-stack">
             <thead class="bg-fs-surface text-left text-xs uppercase tracking-wide text-fs-muted">
                 <tr>
-                    <th class="px-4 py-3">Listing</th>
-                    <th class="px-4 py-3">Tenant</th>
-                    <th class="px-4 py-3">Rent</th>
-                    <th class="px-4 py-3">Period</th>
-                    <th class="px-4 py-3">Status</th>
-                    <th class="px-4 py-3"></th>
+                    <th>Listing</th>
+                    <th>Tenant</th>
+                    <th>Rent</th>
+                    <th>Period</th>
+                    <th>Status</th>
+                    <th class="text-right">Actions</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-black/5">
-                @forelse ($tenancies as $tenancy)
+            <tbody>
+                @foreach ($tenancies as $tenancy)
                     <tr>
-                        <td class="px-4 py-3 font-medium">{{ $tenancy->listing->title }}</td>
-                        <td class="px-4 py-3">{{ $tenancy->tenant->name }}</td>
-                        <td class="px-4 py-3">{{ number_format((float) $tenancy->monthly_rent, 0) }}</td>
-                        <td class="px-4 py-3 text-fs-secondary">{{ $tenancy->start_date->toDateString() }} → {{ optional($tenancy->end_date)->toDateString() ?? 'open' }}</td>
-                        <td class="px-4 py-3 capitalize">{{ $tenancy->status }}</td>
-                        <td class="px-4 py-3 text-right">
-                            <a href="{{ route('admin.tenancies.show', $tenancy) }}" class="text-fs-brand hover:underline">View</a>
+                        <td data-label="Listing" class="font-medium">{{ $tenancy->listing->title }}</td>
+                        <td data-label="Tenant">{{ $tenancy->tenant->name }}</td>
+                        <td data-label="Rent">{{ number_format((float) $tenancy->monthly_rent, 0) }}</td>
+                        <td data-label="Period" class="text-fs-secondary">{{ $tenancy->start_date->toDateString() }} → {{ optional($tenancy->end_date)->toDateString() ?? 'open' }}</td>
+                        <td data-label="Status"><x-status-badge :status="$tenancy->status" /></td>
+                        <td data-label="Actions" class="text-right">
+                            <x-button variant="ghost" href="{{ route('admin.tenancies.show', $tenancy) }}" class="!px-3">View</x-button>
                         </td>
                     </tr>
-                @empty
-                    <tr>
-                        <td colspan="6" class="px-4 py-8 text-center text-fs-muted">No tenancies yet.</td>
-                    </tr>
-                @endforelse
+                @endforeach
             </tbody>
-        </table>
-    </div>
-</div>
+        </x-table>
+@endif
 
 <div class="mt-4">{{ $tenancies->links() }}</div>
 @endsection

@@ -22,10 +22,6 @@
         </ol>
     </nav>
 
-    @if (session('success'))
-        <div class="mb-4 p-4 rounded-sm bg-fs-brand-light text-fs-brand text-sm">{{ session('success') }}</div>
-    @endif
-
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         <div class="lg:col-span-8 space-y-6">
             <div class="relative aspect-[4/3] rounded-md overflow-hidden bg-slate-100 shadow-sm">
@@ -108,28 +104,43 @@
                     </div>
                 @endif
 
-                <div class="mt-6 pt-6 border-t border-slate-100">
-                    <h2 class="text-base font-semibold text-fs-primary mb-3">Reviews</h2>
-                    <div class="space-y-3">
+                <div class="mt-6 pt-6 border-t border-black/5">
+                    <h2 class="fs-display text-lg text-fs-primary mb-4">Reviews</h2>
+                    <div class="space-y-4">
                         @forelse($reviews as $review)
-                            <div class="text-sm">
+                            <div class="text-sm border-b border-black/5 pb-4 last:border-0 last:pb-0">
                                 <p class="font-medium text-fs-primary">{{ $review->user?->name }} · {{ $review->rating }}/5</p>
                                 <p class="text-fs-secondary mt-1">{{ $review->body }}</p>
                             </div>
                         @empty
-                            <p class="text-sm text-fs-muted">No approved reviews yet.</p>
+                            <x-empty-state
+                                title="No reviews yet"
+                                description="Be the first to share your experience with this property."
+                            />
                         @endforelse
                     </div>
                     @auth
-                        <form method="POST" action="{{ route('reviews.store', $property) }}" class="mt-4 space-y-3 max-w-md">
-                            @csrf
-                            <x-input label="Rating (1-5)" name="rating" type="number" min="1" max="5" :value="old('rating')" required />
-                            <div>
-                                <label class="block text-xs font-semibold text-fs-primary mb-1">Review</label>
-                                <textarea name="body" rows="3" class="w-full rounded-sm border border-black/10 px-3 py-2 text-sm">{{ old('body') }}</textarea>
-                            </div>
-                            <x-button type="submit" variant="ghost">Submit review</x-button>
-                        </form>
+                        <x-panel class="mt-6 max-w-md !p-4 sm:!p-5">
+                            <h3 class="text-sm font-semibold text-fs-primary">Write a review</h3>
+                            <form method="POST" action="{{ route('reviews.store', $property) }}" class="mt-3 space-y-3">
+                                @csrf
+                                <x-input label="Rating (1–5)" name="rating" type="number" min="1" max="5" :value="old('rating')" required />
+                                <div class="w-full">
+                                    <label for="review-body" class="block text-xs font-semibold text-fs-primary mb-1">Review</label>
+                                    <textarea
+                                        id="review-body"
+                                        name="body"
+                                        rows="3"
+                                        required
+                                        class="w-full min-h-[5rem] px-4 py-3 rounded-sm border border-slate-200 bg-white text-sm text-fs-primary placeholder:text-fs-muted transition-colors duration-150 focus:border-fs-brand focus:ring-2 focus:ring-fs-brand/20"
+                                    >{{ old('body') }}</textarea>
+                                    @error('body')
+                                        <p class="mt-1 text-xs text-fs-danger">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                                <x-button type="submit" variant="primary">Submit review</x-button>
+                            </form>
+                        </x-panel>
                     @endauth
                 </div>
             </div>

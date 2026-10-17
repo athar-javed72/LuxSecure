@@ -3,39 +3,53 @@
 @section('title', 'Tickets')
 
 @section('content')
-<div class="flex flex-wrap justify-between gap-4 mb-6">
-    <h1 class="text-xl font-bold text-fs-primary">Support tickets</h1>
-    @can('create', App\Models\Ticket::class)
-        <x-button variant="primary" href="{{ route('admin.tickets.create') }}">New ticket</x-button>
-    @endcan
-</div>
-<div class="rounded-md bg-white border border-black/5 overflow-hidden">
-    <table class="w-full text-sm">
-        <thead class="bg-fs-surface text-xs uppercase text-fs-muted text-left">
-            <tr>
-                <th class="px-3 py-3">Subject</th>
-                <th class="px-3 py-3">Requester</th>
-                <th class="px-3 py-3">Priority</th>
-                <th class="px-3 py-3">Status</th>
-                <th class="px-3 py-3">Assignee</th>
-                <th class="px-3 py-3"></th>
-            </tr>
-        </thead>
-        <tbody class="divide-y divide-black/5">
-            @forelse ($tickets as $ticket)
+<x-breadcrumbs :items="[
+    ['label' => 'Admin', 'href' => route('admin.dashboard')],
+    ['label' => 'Tickets'],
+]" />
+
+<x-page-header title="Support tickets">
+    <x-slot:actions>
+        @can('create', App\Models\Ticket::class)
+            <x-button variant="primary" href="{{ route('admin.tickets.create') }}">New ticket</x-button>
+        @endcan
+    </x-slot:actions>
+</x-page-header>
+
+@if($tickets->isEmpty())
+    <x-empty-state
+        title="No tickets"
+        description="Support requests from users will appear here."
+        action-label="New ticket"
+        :action-href="route('admin.tickets.create')"
+    />
+@else
+    <x-table caption="Support tickets" class="fs-table-stack">
+            <thead class="bg-fs-surface text-left text-xs uppercase tracking-wide text-fs-muted">
                 <tr>
-                    <td class="px-3 py-3 font-medium">{{ $ticket->subject }}</td>
-                    <td class="px-3 py-3">{{ $ticket->user->name }}</td>
-                    <td class="px-3 py-3 capitalize">{{ $ticket->priority }}</td>
-                    <td class="px-3 py-3 capitalize">{{ $ticket->status }}</td>
-                    <td class="px-3 py-3">{{ $ticket->assignee?->name ?? '—' }}</td>
-                    <td class="px-3 py-3 text-right"><a class="text-fs-brand hover:underline" href="{{ route('admin.tickets.show', $ticket) }}">Open</a></td>
+                    <th>Subject</th>
+                    <th>Requester</th>
+                    <th>Priority</th>
+                    <th>Status</th>
+                    <th>Assignee</th>
+                    <th class="text-right">Actions</th>
                 </tr>
-            @empty
-                <tr><td colspan="6" class="px-4 py-8 text-center text-fs-muted">No tickets.</td></tr>
-            @endforelse
-        </tbody>
-    </table>
-</div>
+            </thead>
+            <tbody>
+                @foreach ($tickets as $ticket)
+                    <tr>
+                        <td data-label="Subject" class="font-medium">{{ $ticket->subject }}</td>
+                        <td data-label="Requester">{{ $ticket->user->name }}</td>
+                        <td data-label="Priority" class="capitalize">{{ $ticket->priority }}</td>
+                        <td data-label="Status"><x-status-badge :status="$ticket->status" /></td>
+                        <td data-label="Assignee">{{ $ticket->assignee?->name ?? '—' }}</td>
+                        <td data-label="Actions" class="text-right">
+                            <x-button variant="ghost" href="{{ route('admin.tickets.show', $ticket) }}" class="!px-3">Open</x-button>
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </x-table>
+@endif
 <div class="mt-4">{{ $tickets->links() }}</div>
 @endsection

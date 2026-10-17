@@ -8,57 +8,59 @@
     ['label' => 'Reviews'],
 ]" />
 
-<h1 class="fs-display text-2xl text-fs-primary mb-6">Reviews</h1>
+<x-page-header title="Reviews" />
 
-<form method="GET" class="mb-4 flex flex-wrap gap-3">
-    <x-select label="Status" name="status" :options="['pending' => 'Pending', 'approved' => 'Approved', 'rejected' => 'Rejected']" :selected="request('status')" placeholder="All" />
-    <div class="flex items-end"><x-button type="submit" variant="primary">Filter</x-button></div>
-</form>
+<x-panel class="mb-4">
+    <form method="GET" class="flex flex-wrap gap-3 items-end">
+        <x-select label="Status" name="status" :options="['pending' => 'Pending', 'approved' => 'Approved', 'rejected' => 'Rejected']" :selected="request('status')" placeholder="All" />
+        <x-button type="submit" variant="primary">Filter</x-button>
+    </form>
+</x-panel>
 
-<div class="overflow-x-auto rounded-md bg-white border border-black/5">
-    <table class="min-w-full text-sm">
-        <thead class="bg-fs-surface text-left text-xs uppercase tracking-wide text-fs-muted">
-            <tr>
-                <th class="px-3 py-3">Listing</th>
-                <th class="px-3 py-3">User</th>
-                <th class="px-3 py-3">Rating</th>
-                <th class="px-3 py-3">Status</th>
-                <th class="px-3 py-3">Body</th>
-                <th class="px-3 py-3 text-right">Moderate</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse($reviews as $review)
-                <tr class="border-t border-black/5 align-top">
-                    <td class="px-3 py-3">{{ $review->listing?->title }}</td>
-                    <td class="px-3 py-3">{{ $review->user?->name }}</td>
-                    <td class="px-3 py-3">{{ $review->rating }}/5</td>
-                    <td class="px-3 py-3">{{ $review->status }}</td>
-                    <td class="px-3 py-3 max-w-xs">{{ Str::limit($review->body, 80) }}</td>
-                    <td class="px-3 py-3 text-right space-x-2">
-                        @if($review->status !== 'approved')
-                            <form method="POST" action="{{ route('admin.reviews.moderate', $review) }}" class="inline">
-                                @csrf
-                                @method('PATCH')
-                                <input type="hidden" name="status" value="approved">
-                                <button type="submit" class="text-fs-brand hover:underline">Approve</button>
-                            </form>
-                        @endif
-                        @if($review->status !== 'rejected')
-                            <form method="POST" action="{{ route('admin.reviews.moderate', $review) }}" class="inline">
-                                @csrf
-                                @method('PATCH')
-                                <input type="hidden" name="status" value="rejected">
-                                <button type="submit" class="text-fs-danger hover:underline">Reject</button>
-                            </form>
-                        @endif
-                    </td>
+@if($reviews->isEmpty())
+    <x-empty-state title="No reviews" description="Listing reviews awaiting moderation will appear here." />
+@else
+    <x-table caption="Reviews" class="fs-table-stack">
+            <thead class="bg-fs-surface text-left text-xs uppercase tracking-wide text-fs-muted">
+                <tr>
+                    <th>Listing</th>
+                    <th>User</th>
+                    <th>Rating</th>
+                    <th>Status</th>
+                    <th>Body</th>
+                    <th class="text-right">Moderate</th>
                 </tr>
-            @empty
-                <tr><td colspan="6" class="px-3 py-8 text-center text-fs-muted">No reviews.</td></tr>
-            @endforelse
-        </tbody>
-    </table>
-</div>
+            </thead>
+            <tbody>
+                @foreach($reviews as $review)
+                    <tr class="align-top">
+                        <td data-label="Listing">{{ $review->listing?->title }}</td>
+                        <td data-label="User">{{ $review->user?->name }}</td>
+                        <td data-label="Rating">{{ $review->rating }}/5</td>
+                        <td data-label="Status"><x-status-badge :status="$review->status" /></td>
+                        <td data-label="Body" class="max-w-xs">{{ Str::limit($review->body, 80) }}</td>
+                        <td data-label="Moderate" class="text-right space-x-2">
+                            @if($review->status !== 'approved')
+                                <form method="POST" action="{{ route('admin.reviews.moderate', $review) }}" class="inline">
+                                    @csrf
+                                    @method('PATCH')
+                                    <input type="hidden" name="status" value="approved">
+                                    <x-button type="submit" variant="ghost" class="!px-2">Approve</x-button>
+                                </form>
+                            @endif
+                            @if($review->status !== 'rejected')
+                                <form method="POST" action="{{ route('admin.reviews.moderate', $review) }}" class="inline">
+                                    @csrf
+                                    @method('PATCH')
+                                    <input type="hidden" name="status" value="rejected">
+                                    <x-button type="submit" variant="ghost" class="!px-2 !text-fs-danger">Reject</x-button>
+                                </form>
+                            @endif
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </x-table>
+@endif
 <div class="mt-4">{{ $reviews->links() }}</div>
 @endsection

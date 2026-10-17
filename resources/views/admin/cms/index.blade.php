@@ -3,23 +3,17 @@
 @section('title', 'CMS')
 
 @section('content')
-<h1 class="text-xl font-bold mb-6">Content</h1>
+<x-breadcrumbs :items="[
+    ['label' => 'Admin', 'href' => route('admin.dashboard')],
+    ['label' => 'Content'],
+]" />
+
+<x-page-header title="Content" subtitle="Manage site pages, blog, FAQs, and testimonials" />
+
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-    <a href="{{ route('admin.cms.posts.index') }}" class="rounded-md bg-white border border-black/5 p-5 hover:border-fs-brand">
-        <p class="text-xs uppercase text-fs-muted">Blog posts</p>
-        <p class="text-2xl font-bold mt-2">{{ $counts['posts'] }}</p>
-    </a>
-    <a href="{{ route('admin.cms.faqs.index') }}" class="rounded-md bg-white border border-black/5 p-5 hover:border-fs-brand">
-        <p class="text-xs uppercase text-fs-muted">FAQs</p>
-        <p class="text-2xl font-bold mt-2">{{ $counts['faqs'] }}</p>
-    </a>
-    <a href="{{ route('admin.cms.testimonials.index') }}" class="rounded-md bg-white border border-black/5 p-5 hover:border-fs-brand">
-        <p class="text-xs uppercase text-fs-muted">Testimonials</p>
-        <p class="text-2xl font-bold mt-2">{{ $counts['testimonials'] }}</p>
-    </a>
-    <a href="{{ route('admin.cms.pages.index') }}" class="rounded-md bg-white border border-black/5 p-5 hover:border-fs-brand">
-        <p class="text-xs uppercase text-fs-muted">Pages</p>
-        <p class="text-2xl font-bold mt-2">{{ $counts['pages'] }}</p>
-    </a>
+    <x-stat-card label="Blog posts" :value="$counts['posts']" :href="route('admin.cms.posts.index')" />
+    <x-stat-card label="FAQs" :value="$counts['faqs']" :href="route('admin.cms.faqs.index')" />
+    <x-stat-card label="Testimonials" :value="$counts['testimonials']" :href="route('admin.cms.testimonials.index')" />
+    <x-stat-card label="Pages" :value="$counts['pages']" :href="route('admin.cms.pages.index')" />
 </div>
 @endsection

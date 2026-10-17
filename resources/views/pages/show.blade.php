@@ -5,7 +5,9 @@
 
 @section('content')
 <x-container class="py-10 max-w-3xl">
-    <h1 class="text-3xl font-bold text-fs-primary">{{ $page->title }}</h1>
-    <div class="mt-6 prose prose-sm max-w-none text-fs-secondary whitespace-pre-wrap">{{ $page->body }}</div>
+    <x-page-header :title="$page->title" />
+    <x-panel>
+        <div class="text-sm leading-relaxed text-fs-secondary whitespace-pre-wrap">{{ $page->body }}</div>
+    </x-panel>
 </x-container>
 @endsection

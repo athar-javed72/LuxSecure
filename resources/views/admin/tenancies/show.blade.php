@@ -9,70 +9,58 @@
     ['label' => $tenancy->listing->title],
 ]" />
 
-@if (session('success'))
-    <div class="mb-4 p-4 rounded-sm bg-fs-brand-light text-fs-brand text-sm">{{ session('success') }}</div>
-@endif
-
-<div class="flex flex-wrap justify-between gap-4 mb-6">
-    <div>
-        <h1 class="text-xl md:text-2xl font-bold text-fs-primary">{{ $tenancy->listing->title }}</h1>
-        <p class="mt-2 text-sm text-fs-secondary">Tenant: {{ $tenancy->tenant->name }} · Landlord: {{ $tenancy->landlord->name }}</p>
-    </div>
-    <div class="flex flex-wrap gap-2">
+<x-page-header :title="$tenancy->listing->title" :subtitle="'Tenant: '.$tenancy->tenant->name.' · Landlord: '.$tenancy->landlord->name">
+    <x-slot:actions>
         @can('update', $tenancy)
             <x-button variant="ghost" href="{{ route('admin.tenancies.edit', $tenancy) }}">Edit</x-button>
         @endcan
-    </div>
-</div>
+    </x-slot:actions>
+</x-page-header>
 
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-    <div class="rounded-md bg-white border border-black/5 p-4">
-        <p class="text-xs uppercase text-fs-muted">Monthly rent</p>
-        <p class="mt-1 text-lg font-semibold">{{ number_format((float) $tenancy->monthly_rent, 0) }}</p>
-    </div>
-    <div class="rounded-md bg-white border border-black/5 p-4">
-        <p class="text-xs uppercase text-fs-muted">Deposit</p>
-        <p class="mt-1 text-lg font-semibold">{{ number_format((float) $tenancy->security_deposit, 0) }}</p>
-    </div>
-    <div class="rounded-md bg-white border border-black/5 p-4">
-        <p class="text-xs uppercase text-fs-muted">Status</p>
-        <p class="mt-1 text-lg font-semibold capitalize">{{ $tenancy->status }}</p>
-    </div>
+    <x-stat-card label="Monthly rent" :value="number_format((float) $tenancy->monthly_rent, 0)" />
+    <x-stat-card label="Deposit" :value="number_format((float) $tenancy->security_deposit, 0)" />
+    <x-panel class="flex flex-col justify-center">
+        <p class="text-xs font-semibold uppercase tracking-wide text-fs-muted">Status</p>
+        <div class="mt-2"><x-status-badge :status="$tenancy->status" class="!text-sm !h-8 !px-3" /></div>
+    </x-panel>
 </div>
 
-<div class="rounded-md bg-white border border-black/5 overflow-hidden">
-    <div class="px-4 py-3 border-b border-black/5 font-semibold">Rent schedule</div>
-    <div class="overflow-x-auto">
-        <table class="w-full text-sm">
-            <thead class="bg-fs-surface text-left text-xs uppercase text-fs-muted">
+<x-panel :padding="false">
+    <div class="px-4 py-3 border-b border-black/5 fs-display font-semibold text-fs-primary">Rent schedule</div>
+    <x-table class="fs-table-stack">
+            <thead class="bg-fs-surface text-left text-xs uppercase tracking-wide text-fs-muted">
                 <tr>
-                    <th class="px-4 py-3">Due</th>
-                    <th class="px-4 py-3">Amount</th>
-                    <th class="px-4 py-3">Status</th>
-                    <th class="px-4 py-3">Receipt</th>
-                    <th class="px-4 py-3"></th>
+                    <th>Due</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Receipt</th>
+                    <th class="text-right">Actions</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-black/5">
-                @foreach ($tenancy->payments as $payment)
+            <tbody>
+                @forelse ($tenancy->payments as $payment)
                     <tr>
-                        <td class="px-4 py-3">{{ $payment->due_date->toDateString() }}</td>
-                        <td class="px-4 py-3">{{ number_format((float) $payment->amount, 0) }}</td>
-                        <td class="px-4 py-3 capitalize {{ $payment->isOverdue() ? 'text-fs-danger' : '' }}">{{ $payment->status }}</td>
-                        <td class="px-4 py-3">{{ $payment->receipt_no ?? '—' }}</td>
-                        <td class="px-4 py-3 text-right">
+                        <td data-label="Due">{{ $payment->due_date->toDateString() }}</td>
+                        <td data-label="Amount">{{ number_format((float) $payment->amount, 0) }}</td>
+                        <td data-label="Status">
+                            <x-status-badge :status="$payment->isOverdue() ? 'overdue' : $payment->status" />
+                        </td>
+                        <td data-label="Receipt">{{ $payment->receipt_no ?? '—' }}</td>
+                        <td data-label="Actions" class="text-right">
                             @if ($payment->status !== 'paid' && auth()->user()->can('update', $payment))
-                                <form method="POST" action="{{ route('admin.rent-payments.mark-paid', $payment) }}" class="inline-flex gap-2 items-center">
+                                <form method="POST" action="{{ route('admin.rent-payments.mark-paid', $payment) }}" class="inline-flex">
                                     @csrf
                                     <input type="hidden" name="method" value="cash">
-                                    <button type="submit" class="text-fs-brand hover:underline text-sm">Mark paid</button>
+                                    <x-button type="submit" variant="ghost" class="!px-3">Mark paid</x-button>
                                 </form>
                             @endif
                         </td>
                     </tr>
-                @endforeach
+                @empty
+                    <tr><td colspan="5" class="px-4 py-6 text-center text-fs-muted">No scheduled payments.</td></tr>
+                @endforelse
             </tbody>
-        </table>
-    </div>
-</div>
+        </x-table>
+</x-panel>
 @endsection

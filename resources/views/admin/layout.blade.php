@@ -98,10 +98,10 @@
         <main class="flex-1 p-4 sm:p-6 lg:p-8">
             <div class="w-full max-w-[1600px]">
                 @if (session('success'))
-                    <div class="mb-4 p-4 rounded-sm bg-fs-brand-light text-fs-primary text-sm">{{ session('success') }}</div>
+                    <x-alert tone="success" class="mb-4" dismissible>{{ session('success') }}</x-alert>
                 @endif
                 @if (session('error'))
-                    <div class="mb-4 p-4 rounded-sm bg-fs-danger/10 text-fs-danger text-sm">{{ session('error') }}</div>
+                    <x-alert tone="error" class="mb-4" dismissible>{{ session('error') }}</x-alert>
                 @endif
                 @yield('content')
             </div>
