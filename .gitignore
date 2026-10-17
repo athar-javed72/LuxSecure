@@ -8,7 +8,11 @@
 .env
 .env.backup
 .env.production
+.env.smoke-bak
 .phpunit.result.cache
+/storage/app/qa-screenshots
+*.sql
+luxsecure_db.sql
 Homestead.json
 Homestead.yaml
 auth.json

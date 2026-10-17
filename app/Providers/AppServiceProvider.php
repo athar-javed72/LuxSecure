@@ -50,12 +50,14 @@ class AppServiceProvider extends ServiceProvider
         View::composer(['include.footer', 'include.navbar', 'include.master'], function ($view) {
             try {
                 $view->with('siteName', \App\Models\Setting::getValue('site.name', config('app.name', 'LuxSecure')));
-                $view->with('siteEmail', \App\Models\Setting::getValue('site.email', 'hello@luxsecure.example'));
-                $view->with('sitePhone', \App\Models\Setting::getValue('site.phone', '+92 300 0000000'));
+                $view->with('siteEmail', \App\Models\Setting::getValue('site.email', '[PLACEHOLDER: CONTACT_EMAIL]'));
+                $view->with('sitePhone', \App\Models\Setting::getValue('site.phone', '[PLACEHOLDER: CONTACT_PHONE]'));
+                $view->with('siteHours', \App\Models\Setting::getValue('site.hours', '[PLACEHOLDER: BUSINESS_HOURS]'));
             } catch (\Throwable) {
                 $view->with('siteName', config('app.name', 'LuxSecure'));
-                $view->with('siteEmail', 'hello@luxsecure.example');
-                $view->with('sitePhone', '+92 300 0000000');
+                $view->with('siteEmail', '[PLACEHOLDER: CONTACT_EMAIL]');
+                $view->with('sitePhone', '[PLACEHOLDER: CONTACT_PHONE]');
+                $view->with('siteHours', '[PLACEHOLDER: BUSINESS_HOURS]');
             }
         });
     }

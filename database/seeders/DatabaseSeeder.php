@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
             $this->call([
                 AdminAndPropertiesSeeder::class,
                 SettingsSeeder::class,
+                CmsPagesSeeder::class,
             ]);
         }
     }

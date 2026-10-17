@@ -3,9 +3,11 @@
 namespace Tests\Feature;
 
 use App\Models\Listing;
+use App\Models\Page;
 use App\Models\Room;
 use App\Models\RoomType;
 use App\Models\SeasonalPrice;
+use App\Models\Setting;
 use App\Models\User;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -32,6 +34,7 @@ class SeederSafetyTest extends TestCase
         $this->assertDatabaseMissing('users', ['email' => 'admin@luxsecure.com']);
         $this->assertSame(0, Listing::query()->count());
         $this->assertSame(0, RoomType::query()->count());
+        $this->assertSame(0, Page::query()->count());
     }
 
     public function test_local_demo_seeder_creates_hotel_inventory_for_booking_flow(): void
@@ -49,6 +52,24 @@ class SeederSafetyTest extends TestCase
         $this->assertGreaterThanOrEqual(2, $roomTypes->count());
         $this->assertGreaterThanOrEqual(5, Room::query()->where('listing_id', $hotel->id)->count());
         $this->assertGreaterThanOrEqual(2, SeasonalPrice::query()->count());
+    }
+
+    public function test_local_seeder_creates_draft_cms_policy_pages_and_placeholder_contact_settings(): void
+    {
+        $this->app['env'] = 'testing';
+
+        $this->seed(DatabaseSeeder::class);
+
+        foreach (['privacy-policy', 'terms-of-service', 'refund-and-cancellation-policy'] as $slug) {
+            $page = Page::query()->where('slug', $slug)->first();
+            $this->assertNotNull($page, "Missing CMS page {$slug}");
+            $this->assertFalse((bool) $page->is_published);
+            $this->assertStringContainsString('[PLACEHOLDER:', (string) $page->body);
+        }
+
+        $this->assertSame('[PLACEHOLDER: CONTACT_EMAIL]', Setting::getValue('site.email'));
+        $this->assertSame('[PLACEHOLDER: CONTACT_PHONE]', Setting::getValue('site.phone'));
+        $this->assertSame('[PLACEHOLDER: BUSINESS_HOURS]', Setting::getValue('site.hours'));
     }
 
     public function test_create_super_admin_command_enforces_strong_password_and_creates_first_admin(): void

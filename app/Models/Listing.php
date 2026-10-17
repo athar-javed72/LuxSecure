@@ -69,6 +69,23 @@ class Listing extends Model
         });
     }
 
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
+
+    public function resolveRouteBinding($value, $field = null)
+    {
+        $field ??= $this->getRouteKeyName();
+
+        // Web URLs use slugs; API clients may still pass numeric ids.
+        if ($field === 'slug' && ctype_digit((string) $value)) {
+            return $this->whereKey($value)->firstOrFail();
+        }
+
+        return parent::resolveRouteBinding($value, $field);
+    }
+
     public static function uniqueSlug(string $title, ?int $ignoreId = null): string
     {
         $base = Str::slug($title) ?: 'listing';

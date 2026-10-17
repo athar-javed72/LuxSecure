@@ -33,6 +33,21 @@
                             Contact
                         </a>
                     </li>
+                    <li>
+                        <a href="{{ route('pages.show', 'privacy-policy') }}" class="inline-flex min-h-10 items-center text-slate-200 transition-colors duration-150 hover:text-white">
+                            Privacy Policy
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('pages.show', 'terms-of-service') }}" class="inline-flex min-h-10 items-center text-slate-200 transition-colors duration-150 hover:text-white">
+                            Terms of Service
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('pages.show', 'refund-and-cancellation-policy') }}" class="inline-flex min-h-10 items-center text-slate-200 transition-colors duration-150 hover:text-white">
+                            Refund &amp; Cancellation
+                        </a>
+                    </li>
                 </ul>
             </div>
 
@@ -79,16 +94,23 @@
                 <h2 class="text-xs font-semibold uppercase tracking-wider text-slate-400">Contact</h2>
                 <ul class="mt-4 space-y-2.5 text-sm text-slate-300">
                     <li>
-                        <a href="mailto:{{ $siteEmail ?? 'hello@luxsecure.example' }}" class="transition-colors duration-150 hover:text-white">
-                            {{ $siteEmail ?? 'hello@luxsecure.example' }}
+                        <a href="mailto:{{ $siteEmail ?? '[PLACEHOLDER: CONTACT_EMAIL]' }}" class="transition-colors duration-150 hover:text-white">
+                            {{ $siteEmail ?? '[PLACEHOLDER: CONTACT_EMAIL]' }}
                         </a>
                     </li>
                     <li>
-                        <a href="tel:{{ preg_replace('/\s+/', '', $sitePhone ?? '+923000000000') }}" class="transition-colors duration-150 hover:text-white">
-                            {{ $sitePhone ?? '+92 300 0000000' }}
-                        </a>
+                        @php
+                            $phoneDisplay = $sitePhone ?? '[PLACEHOLDER: CONTACT_PHONE]';
+                        @endphp
+                        @if(str_starts_with($phoneDisplay, '[PLACEHOLDER'))
+                            <span class="text-slate-400">{{ $phoneDisplay }}</span>
+                        @else
+                            <a href="tel:{{ preg_replace('/\s+/', '', $phoneDisplay) }}" class="transition-colors duration-150 hover:text-white">
+                                {{ $phoneDisplay }}
+                            </a>
+                        @endif
                     </li>
-                    <li class="text-slate-400">Mon–Sat, 10:00 AM – 7:00 PM (PKT)</li>
+                    <li class="text-slate-400">{{ $siteHours ?? '[PLACEHOLDER: BUSINESS_HOURS]' }}</li>
                 </ul>
                 <div class="mt-5">
                     <a
