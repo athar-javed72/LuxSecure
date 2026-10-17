@@ -7,6 +7,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ListingController;
+use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -32,6 +33,10 @@ Route::get('/properties/{listing}', [ListingController::class, 'show'])->name('p
 Route::get('/contact', [ContactController::class, 'show'])->name('contact');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 
+Route::get('/blog', [PageController::class, 'blogIndex'])->name('blog.index');
+Route::get('/blog/{slug}', [PageController::class, 'blogShow'])->name('blog.show');
+Route::get('/pages/{slug}', [PageController::class, 'show'])->name('pages.show');
+
 Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -53,6 +58,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'panel'])->group(fun
 
     Route::middleware('permission:users.view|users.create|users.update|users.delete')->group(function () {
         Route::get('users', [\App\Http\Controllers\Admin\UserController::class, 'index'])->name('users.index');
+        Route::get('users/export', [\App\Http\Controllers\Admin\UserController::class, 'export'])->name('users.export');
+        Route::post('users/bulk', [\App\Http\Controllers\Admin\UserController::class, 'bulk'])->name('users.bulk');
         Route::get('users/create', [\App\Http\Controllers\Admin\UserController::class, 'create'])->name('users.create');
         Route::post('users', [\App\Http\Controllers\Admin\UserController::class, 'store'])->name('users.store');
         Route::get('users/{user}', [\App\Http\Controllers\Admin\UserController::class, 'show'])->name('users.show');
@@ -74,6 +81,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'panel'])->group(fun
 
     Route::middleware('permission:listings.view.any|listings.view.own|listings.create|listings.update.any|listings.update.own|listings.delete.any|listings.delete.own')
         ->group(function () {
+            Route::get('listings/export', [\App\Http\Controllers\Admin\ListingController::class, 'export'])->name('listings.export');
+            Route::post('listings/bulk', [\App\Http\Controllers\Admin\ListingController::class, 'bulk'])->name('listings.bulk');
+            Route::delete('listings/{listing}/images/{image}', [\App\Http\Controllers\Admin\ListingController::class, 'destroyImage'])->name('listings.images.destroy');
+            Route::post('listings/{listing}/images/reorder', [\App\Http\Controllers\Admin\ListingController::class, 'reorderImages'])->name('listings.images.reorder');
             Route::resource('listings', \App\Http\Controllers\Admin\ListingController::class);
         });
 
@@ -85,6 +96,62 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'panel'])->group(fun
     Route::middleware('permission:inquiries.view.any|inquiries.view.own')->group(function () {
         Route::get('inquiries', [\App\Http\Controllers\Admin\InquiryController::class, 'index'])->name('inquiries.index');
         Route::patch('inquiries/{inquiry}', [\App\Http\Controllers\Admin\InquiryController::class, 'markRead'])->name('inquiries.markRead');
+    });
+
+    Route::middleware('permission:leads.view.any|leads.view.own|leads.create|leads.update.any|leads.update.own')->group(function () {
+        Route::get('leads', [\App\Http\Controllers\Admin\LeadController::class, 'index'])->name('leads.index');
+        Route::get('leads/export', [\App\Http\Controllers\Admin\LeadController::class, 'export'])->name('leads.export');
+        Route::post('leads/bulk', [\App\Http\Controllers\Admin\LeadController::class, 'bulk'])->name('leads.bulk');
+        Route::post('leads/convert/{inquiry}', [\App\Http\Controllers\Admin\LeadController::class, 'convert'])->name('leads.convert');
+        Route::get('leads/{lead}/edit', [\App\Http\Controllers\Admin\LeadController::class, 'edit'])->name('leads.edit');
+        Route::put('leads/{lead}', [\App\Http\Controllers\Admin\LeadController::class, 'update'])->name('leads.update');
+        Route::delete('leads/{lead}', [\App\Http\Controllers\Admin\LeadController::class, 'destroy'])->name('leads.destroy');
+    });
+
+    Route::middleware('permission:tickets.view.any|tickets.view.own|tickets.create|tickets.update.any|tickets.update.own')->group(function () {
+        Route::get('tickets', [\App\Http\Controllers\Admin\TicketController::class, 'index'])->name('tickets.index');
+        Route::get('tickets/create', [\App\Http\Controllers\Admin\TicketController::class, 'create'])->name('tickets.create');
+        Route::post('tickets', [\App\Http\Controllers\Admin\TicketController::class, 'store'])->name('tickets.store');
+        Route::get('tickets/{ticket}', [\App\Http\Controllers\Admin\TicketController::class, 'show'])->name('tickets.show');
+        Route::put('tickets/{ticket}', [\App\Http\Controllers\Admin\TicketController::class, 'update'])->name('tickets.update');
+        Route::post('tickets/{ticket}/reply', [\App\Http\Controllers\Admin\TicketController::class, 'reply'])->name('tickets.reply');
+    });
+
+    Route::middleware('permission:agents.view|agents.update|agents.manage')->group(function () {
+        Route::resource('agents', \App\Http\Controllers\Admin\AgentProfileController::class)
+            ->parameters(['agents' => 'agent_profile'])
+            ->except(['show']);
+    });
+
+    Route::middleware('permission:cms.view|cms.create|cms.update|cms.delete')->group(function () {
+        Route::get('cms', [\App\Http\Controllers\Admin\CmsController::class, 'dashboard'])->name('cms.index');
+        Route::get('cms/posts', [\App\Http\Controllers\Admin\CmsController::class, 'posts'])->name('cms.posts.index');
+        Route::get('cms/posts/create', [\App\Http\Controllers\Admin\CmsController::class, 'createPost'])->name('cms.posts.create');
+        Route::post('cms/posts', [\App\Http\Controllers\Admin\CmsController::class, 'storePost'])->name('cms.posts.store');
+        Route::get('cms/posts/{post}/edit', [\App\Http\Controllers\Admin\CmsController::class, 'editPost'])->name('cms.posts.edit');
+        Route::put('cms/posts/{post}', [\App\Http\Controllers\Admin\CmsController::class, 'updatePost'])->name('cms.posts.update');
+        Route::delete('cms/posts/{post}', [\App\Http\Controllers\Admin\CmsController::class, 'destroyPost'])->name('cms.posts.destroy');
+        Route::get('cms/faqs', [\App\Http\Controllers\Admin\CmsController::class, 'faqs'])->name('cms.faqs.index');
+        Route::post('cms/faqs', [\App\Http\Controllers\Admin\CmsController::class, 'storeFaq'])->name('cms.faqs.store');
+        Route::put('cms/faqs/{faq}', [\App\Http\Controllers\Admin\CmsController::class, 'updateFaq'])->name('cms.faqs.update');
+        Route::delete('cms/faqs/{faq}', [\App\Http\Controllers\Admin\CmsController::class, 'destroyFaq'])->name('cms.faqs.destroy');
+        Route::get('cms/testimonials', [\App\Http\Controllers\Admin\CmsController::class, 'testimonials'])->name('cms.testimonials.index');
+        Route::post('cms/testimonials', [\App\Http\Controllers\Admin\CmsController::class, 'storeTestimonial'])->name('cms.testimonials.store');
+        Route::put('cms/testimonials/{testimonial}', [\App\Http\Controllers\Admin\CmsController::class, 'updateTestimonial'])->name('cms.testimonials.update');
+        Route::delete('cms/testimonials/{testimonial}', [\App\Http\Controllers\Admin\CmsController::class, 'destroyTestimonial'])->name('cms.testimonials.destroy');
+        Route::get('cms/pages', [\App\Http\Controllers\Admin\CmsController::class, 'pages'])->name('cms.pages.index');
+        Route::post('cms/pages', [\App\Http\Controllers\Admin\CmsController::class, 'storePage'])->name('cms.pages.store');
+        Route::put('cms/pages/{page}', [\App\Http\Controllers\Admin\CmsController::class, 'updatePage'])->name('cms.pages.update');
+        Route::delete('cms/pages/{page}', [\App\Http\Controllers\Admin\CmsController::class, 'destroyPage'])->name('cms.pages.destroy');
+    });
+
+    Route::middleware('permission:settings.view|settings.update')->group(function () {
+        Route::get('settings', [\App\Http\Controllers\Admin\SettingController::class, 'edit'])->name('settings.edit');
+        Route::put('settings', [\App\Http\Controllers\Admin\SettingController::class, 'update'])->name('settings.update');
+    });
+
+    Route::middleware('permission:activity_log.view')->group(function () {
+        Route::get('activity', [\App\Http\Controllers\Admin\ActivityLogController::class, 'index'])->name('activity.index');
     });
 
     Route::middleware('permission:tenancies.view.any|tenancies.view.own|tenancies.create|tenancies.update.any|tenancies.update.own')->group(function () {

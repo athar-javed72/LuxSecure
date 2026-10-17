@@ -106,7 +106,7 @@ class ListingController extends Controller
         if ($listing->status !== 'published') {
             abort(404);
         }
-        $listing->load(['images', 'listingType', 'city', 'area', 'roomTypes']);
+        $listing->load(['images', 'listingType', 'city', 'area', 'roomTypes', 'agent.agentProfile']);
 
         return view('properties.show', [
             'property' => $listing,

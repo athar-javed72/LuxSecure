@@ -7,12 +7,14 @@ use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use App\Services\RoleAssignmentService;
+use App\Support\CsvExporter;
 use App\Support\Rbac;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class UserController extends Controller
 {
@@ -127,6 +129,50 @@ class UserController extends Controller
         $user->delete();
 
         return redirect()->route('admin.users.index')->with('success', 'User deleted.');
+    }
+
+    public function export(Request $request): StreamedResponse
+    {
+        $this->authorize('viewAny', User::class);
+
+        $rows = User::query()->with('roles')->orderBy('id')->get()->map(fn (User $u) => [
+            'id' => $u->id,
+            'name' => $u->name,
+            'email' => $u->email,
+            'phone' => $u->phone,
+            'roles' => $u->getRoleNames()->implode('|'),
+            'is_active' => $u->is_active ? '1' : '0',
+        ]);
+
+        return CsvExporter::download('users.csv', ['id', 'name', 'email', 'phone', 'roles', 'is_active'], $rows);
+    }
+
+    public function bulk(Request $request): RedirectResponse
+    {
+        $this->authorize('viewAny', User::class);
+
+        $data = $request->validate([
+            'ids' => ['required', 'array'],
+            'ids.*' => ['integer', 'exists:users,id'],
+            'action' => ['required', 'in:deactivate,activate,delete'],
+        ]);
+
+        $users = User::query()->whereIn('id', $data['ids'])->get();
+
+        foreach ($users as $user) {
+            if ($user->id === Auth::id() || $user->isLastSuperAdmin()) {
+                continue;
+            }
+            if ($data['action'] === 'delete' && $request->user()->can('delete', $user)) {
+                $user->delete();
+            } elseif ($data['action'] === 'deactivate' && $request->user()->can('update', $user)) {
+                $user->update(['is_active' => false]);
+            } elseif ($data['action'] === 'activate' && $request->user()->can('update', $user)) {
+                $user->update(['is_active' => true]);
+            }
+        }
+
+        return back()->with('success', 'Bulk action applied to users.');
     }
 
     /** @return array<string, mixed> */

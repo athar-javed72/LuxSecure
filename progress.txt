@@ -17,6 +17,7 @@ Completed Tasks:
 - Theme update (2026-10-17): Replaced monochrome green brand wash with Estate Noir — ink navy + warm brass + stone surfaces; Cormorant Garamond display + DM Sans UI; tokens, buttons, navbar, footer, auth panels, home CTA, badges, admin shell updated to match luxury property positioning.
 
 - Rent + hotel booking modules (2026-10-17): tenancies/rent_payments with auto monthly schedule, mark-paid + overdue; room_types/rooms/seasonal_prices/bookings/booking_payments; transactional availability; public book flow + My bookings / My tenancy; hotel_manager own-listing scoping; queued confirmation mails; RBAC permissions for client/landlord/hotel_manager; feature tests (double-book, overlap, pricing, schedule, boundaries). Verified: pint, 45 PHPUnit tests, npm run build.
+- Platform modules (2026-10-17): agent_profiles (replace hardcoded home/property agent UI); leads from inquiries; support tickets + replies; CMS (blog/FAQ/testimonials/pages + SEO); spatie/laravel-activitylog + admin viewer; settings table + UI; CSV export/bulk for listings/users/leads; listing gallery delete/reorder; RBAC for leads/agents/activity_log. Verified: pint, 53 PHPUnit tests, npm run build.
 
 Notes / STOP points:
 ---------------------

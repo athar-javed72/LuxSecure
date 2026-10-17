@@ -64,7 +64,13 @@
                         <td class="px-3 py-3">
                             <x-badge :tone="$inquiry->is_read ? 'muted' : 'success'">{{ $inquiry->is_read ? 'Read' : 'New' }}</x-badge>
                         </td>
-                        <td class="px-3 py-3 text-right">
+                        <td class="px-3 py-3 text-right space-y-1">
+                            @can('create', App\Models\Lead::class)
+                                <form action="{{ route('admin.leads.convert', $inquiry) }}" method="POST" class="inline">
+                                    @csrf
+                                    <x-button type="submit" variant="ghost" class="!px-3">To lead</x-button>
+                                </form>
+                            @endcan
                             @if(!$inquiry->is_read)
                                 <form action="{{ route('admin.inquiries.markRead', $inquiry) }}" method="POST" class="inline">
                                     @csrf

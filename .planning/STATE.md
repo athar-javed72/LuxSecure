@@ -41,9 +41,10 @@ UI redesign + admin hardening — **COMPLETE locally** (push optional)
 |------|--------|
 | Public redesign | Done |
 | Admin redesign + UX fixes | Done |
-| PHPUnit | 45 passed |
+| PHPUnit | 53 passed |
 | `npm run build` | Passing |
 | Rent + hotel modules | Done (local) |
+| Agents / leads / tickets / CMS / settings / activity | Done (local) |
 | Pushed to GitHub | No (awaiting user) |
 
 ---

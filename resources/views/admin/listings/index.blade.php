@@ -14,6 +14,7 @@
         <p class="mt-2 text-sm text-fs-secondary max-w-prose">Manage all listing inventory</p>
     </div>
     <div class="flex flex-wrap gap-2">
+        <x-button variant="ghost" href="{{ route('admin.listings.export') }}">Export CSV</x-button>
         <x-button variant="ghost" href="{{ route('admin.dashboard') }}">Dashboard</x-button>
         <x-button variant="primary" href="{{ route('admin.listings.create') }}">Add listing</x-button>
     </div>
@@ -43,42 +44,61 @@
     </div>
 </form>
 
-<div class="rounded-md bg-white shadow-sm border border-black/5 overflow-hidden">
-    <div class="overflow-x-auto">
-        <table class="w-full text-sm xl:table-fixed">
-            <thead class="bg-fs-surface text-left text-xs uppercase tracking-wide text-fs-muted">
-                <tr>
-                    <th class="px-3 py-3 font-semibold">Title</th>
-                    <th class="px-3 py-3 font-semibold">Type</th>
-                    <th class="px-3 py-3 font-semibold">Purpose</th>
-                    <th class="px-3 py-3 font-semibold">Price</th>
-                    <th class="px-3 py-3 font-semibold">Status</th>
-                    <th class="px-3 py-3 font-semibold text-right">Actions</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-black/5">
-                @forelse($listings as $listing)
+<form method="POST" action="{{ route('admin.listings.bulk') }}" class="mb-4 flex flex-wrap gap-2 items-end">
+    @csrf
+    <x-select
+        label="Bulk action"
+        name="action"
+        :options="['status' => 'Set status', 'delete' => 'Delete']"
+        :selected="'status'"
+    />
+    <x-select
+        label="Status"
+        name="status"
+        :options="collect(\App\Models\Listing::STATUSES)->mapWithKeys(fn ($s) => [$s => ucfirst($s)])->all()"
+        :selected="'published'"
+    />
+    <x-button type="submit" variant="secondary">Apply to selected</x-button>
+
+    <div class="rounded-md bg-white shadow-sm border border-black/5 overflow-hidden w-full mt-4">
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm xl:table-fixed">
+                <thead class="bg-fs-surface text-left text-xs uppercase tracking-wide text-fs-muted">
                     <tr>
-                        <td class="px-3 py-3 font-medium text-fs-primary">{{ $listing->title }}</td>
-                        <td class="px-3 py-3 text-fs-secondary">{{ $listing->listingType?->name }}</td>
-                        <td class="px-3 py-3 text-fs-secondary">{{ ucfirst(str_replace('_', ' ', $listing->purpose)) }}</td>
-                        <td class="px-3 py-3 text-fs-secondary whitespace-nowrap">{{ $listing->formatted_price }}</td>
-                        <td class="px-3 py-3"><x-badge :tone="$listing->status === 'published' ? 'success' : 'muted'">{{ ucfirst($listing->status) }}</x-badge></td>
-                        <td class="px-3 py-3 text-right">
-                            <div class="inline-flex flex-wrap gap-2 justify-end">
-                                <x-button variant="ghost" href="{{ route('admin.listings.show', $listing) }}" class="!px-3">View</x-button>
-                                <x-button variant="secondary" href="{{ route('admin.listings.edit', $listing) }}" class="!px-3">Edit</x-button>
-                                <x-confirm-delete :action="route('admin.listings.destroy', $listing)" label="Delete" />
-                            </div>
-                        </td>
+                        <th class="px-3 py-3 w-10"></th>
+                        <th class="px-3 py-3 font-semibold">Title</th>
+                        <th class="px-3 py-3 font-semibold">Type</th>
+                        <th class="px-3 py-3 font-semibold">Purpose</th>
+                        <th class="px-3 py-3 font-semibold">Price</th>
+                        <th class="px-3 py-3 font-semibold">Status</th>
+                        <th class="px-3 py-3 font-semibold text-right">Actions</th>
                     </tr>
-                @empty
-                    <tr><td colspan="6" class="px-4 py-8 text-center text-fs-muted">No listings found.</td></tr>
-                @endforelse
-            </tbody>
-        </table>
+                </thead>
+                <tbody class="divide-y divide-black/5">
+                    @forelse($listings as $listing)
+                        <tr>
+                            <td class="px-3 py-3"><input type="checkbox" name="ids[]" value="{{ $listing->id }}"></td>
+                            <td class="px-3 py-3 font-medium text-fs-primary">{{ $listing->title }}</td>
+                            <td class="px-3 py-3 text-fs-secondary">{{ $listing->listingType?->name }}</td>
+                            <td class="px-3 py-3 text-fs-secondary">{{ ucfirst(str_replace('_', ' ', $listing->purpose)) }}</td>
+                            <td class="px-3 py-3 text-fs-secondary whitespace-nowrap">{{ $listing->formatted_price }}</td>
+                            <td class="px-3 py-3"><x-badge :tone="$listing->status === 'published' ? 'success' : 'muted'">{{ ucfirst($listing->status) }}</x-badge></td>
+                            <td class="px-3 py-3 text-right">
+                                <div class="inline-flex flex-wrap gap-2 justify-end">
+                                    <x-button variant="ghost" href="{{ route('admin.listings.show', $listing) }}" class="!px-3">View</x-button>
+                                    <x-button variant="secondary" href="{{ route('admin.listings.edit', $listing) }}" class="!px-3">Edit</x-button>
+                                    <x-confirm-delete :action="route('admin.listings.destroy', $listing)" label="Delete" />
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr><td colspan="7" class="px-4 py-8 text-center text-fs-muted">No listings found.</td></tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
     </div>
-</div>
+</form>
 
 @if($listings->hasPages())
     <div class="mt-4">{{ $listings->links() }}</div>

@@ -20,6 +20,11 @@ class ContactInquiry extends Model
         return $this->belongsTo(Listing::class);
     }
 
+    public function lead()
+    {
+        return $this->hasOne(Lead::class);
+    }
+
     /** @deprecated Use listing() */
     public function property()
     {

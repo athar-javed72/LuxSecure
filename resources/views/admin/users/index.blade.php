@@ -14,6 +14,7 @@
         <p class="mt-2 text-sm text-fs-secondary max-w-prose">Search and manage accounts</p>
     </div>
     <div class="flex flex-wrap gap-2">
+        <x-button variant="ghost" href="{{ route('admin.users.export') }}">Export CSV</x-button>
         <x-button variant="ghost" href="{{ route('admin.dashboard') }}">Dashboard</x-button>
         @can('create', App\Models\User::class)
             <x-button variant="primary" href="{{ route('admin.users.create') }}">Add user</x-button>

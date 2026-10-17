@@ -231,13 +231,33 @@
     <div class="md:col-span-2 space-y-3">
         <label for="images" class="block text-xs font-semibold text-fs-primary mb-1">More images</label>
         @if($listing && $listing->relationLoaded('images') && $listing->images->isNotEmpty())
-            <div class="flex flex-wrap gap-2">
-                @foreach($listing->images as $image)
-                    @php $galleryUrl = Media::url($image->path); @endphp
-                    @if($galleryUrl !== '')
-                        <img src="{{ $galleryUrl }}" alt="Gallery image {{ $loop->iteration }}" width="96" height="72" class="w-24 h-[72px] object-cover rounded-sm border border-black/10 bg-fs-surface">
-                    @endif
-                @endforeach
+            <div class="space-y-3" x-data="{ order: {{ $listing->images->pluck('id')->values()->toJson() }} }">
+                <div class="flex flex-wrap gap-3">
+                    @foreach($listing->images as $image)
+                        @php $galleryUrl = Media::url($image->path); @endphp
+                        <div class="relative w-28 space-y-1">
+                            @if($galleryUrl !== '')
+                                <img src="{{ $galleryUrl }}" alt="Gallery image {{ $loop->iteration }}" width="112" height="84" class="w-28 h-[84px] object-cover rounded-sm border border-black/10 bg-fs-surface">
+                            @endif
+                            <div class="flex gap-1">
+                                <button type="button" class="text-[10px] text-fs-brand underline" @click="const i = order.indexOf({{ $image->id }}); if (i > 0) { const t = order[i-1]; order[i-1]=order[i]; order[i]=t; }">Up</button>
+                                <button type="button" class="text-[10px] text-fs-brand underline" @click="const i = order.indexOf({{ $image->id }}); if (i < order.length-1) { const t = order[i+1]; order[i+1]=order[i]; order[i]=t; }">Down</button>
+                            </div>
+                            <form method="POST" action="{{ route('admin.listings.images.destroy', [$listing, $image]) }}" onsubmit="return confirm('Delete this image?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="text-[10px] text-fs-danger underline">Delete</button>
+                            </form>
+                        </div>
+                    @endforeach
+                </div>
+                <form method="POST" action="{{ route('admin.listings.images.reorder', $listing) }}" class="inline">
+                    @csrf
+                    <template x-for="id in order" :key="id">
+                        <input type="hidden" name="order[]" :value="id">
+                    </template>
+                    <x-button type="submit" variant="ghost">Save gallery order</x-button>
+                </form>
             </div>
         @endif
         <input

@@ -146,10 +146,18 @@
     <x-container>
         <x-section-heading title="Meet our agents" subtitle="Local experts ready to help" heading-id="agents-heading" />
         <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            <x-agent-card name="Ayesha Khan" role="Senior Agent · Lahore" image="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=600&q=80" listings="42" phone="+92 300 1112233" />
-            <x-agent-card name="Bilal Ahmed" role="Luxury Specialist · Karachi" image="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=600&q=80" listings="38" phone="+92 321 4455667" />
-            <x-agent-card name="Sana Malik" role="Rentals · Islamabad" image="https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=600&q=80" listings="51" phone="+92 333 7788990" />
-            <x-agent-card name="Omar Farooq" role="Investment Advisor" image="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=600&q=80" listings="29" phone="+92 345 1122334" />
+            @forelse ($agents as $agent)
+                <x-agent-card
+                    :name="$agent->user->name"
+                    :role="$agent->display_role"
+                    :image="$agent->photo_url"
+                    :listings="$agent->user->agent_listings_count ?? null"
+                    :phone="$agent->phone"
+                    href="#agents"
+                />
+            @empty
+                <p class="text-sm text-fs-muted col-span-full">Agent profiles will appear here once published.</p>
+            @endforelse
         </div>
     </x-container>
 </section>
@@ -158,31 +166,31 @@
 <section class="py-16" aria-labelledby="testimonials-heading" x-data="{ slide: 0 }">
     <x-container>
         <x-section-heading title="What clients say" subtitle="Trusted by buyers and investors" heading-id="testimonials-heading" align="center" class="mx-auto" />
-        <div class="mt-6 hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <x-testimonial-card quote="LuxSecure made comparing verified homes simple. We closed on our family house in weeks." name="Sarah K." role="Homebuyer · Lahore" />
-            <x-testimonial-card quote="Clear pricing and responsive agents. Exactly what I needed as an investor." name="Ahmed R." role="Investor · Karachi" />
-            <x-testimonial-card quote="The mobile experience is excellent — I shortlisted apartments on the commute." name="Fatima M." role="Renter · Islamabad" />
-        </div>
-        <div class="mt-6 md:hidden">
-            <div class="relative overflow-hidden">
-                <div class="flex transition-transform duration-200" :style="`transform: translateX(-${slide * 100}%)`">
-                    <div class="w-full shrink-0 px-1"><x-testimonial-card quote="LuxSecure made comparing verified homes simple. We closed on our family house in weeks." name="Sarah K." role="Homebuyer · Lahore" /></div>
-                    <div class="w-full shrink-0 px-1"><x-testimonial-card quote="Clear pricing and responsive agents. Exactly what I needed as an investor." name="Ahmed R." role="Investor · Karachi" /></div>
-                    <div class="w-full shrink-0 px-1"><x-testimonial-card quote="The mobile experience is excellent — I shortlisted apartments on the commute." name="Fatima M." role="Renter · Islamabad" /></div>
+        @if($testimonials->isNotEmpty())
+            <div class="mt-6 hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                @foreach ($testimonials->take(3) as $item)
+                    <x-testimonial-card :quote="$item->quote" :name="$item->name" :role="$item->role" />
+                @endforeach
+            </div>
+            <div class="mt-6 md:hidden">
+                <div class="relative overflow-hidden">
+                    <div class="flex transition-transform duration-200" :style="`transform: translateX(-${slide * 100}%)`">
+                        @foreach ($testimonials as $item)
+                            <div class="w-full shrink-0 px-1"><x-testimonial-card :quote="$item->quote" :name="$item->name" :role="$item->role" /></div>
+                        @endforeach
+                    </div>
+                </div>
+                <div class="mt-4 flex justify-center gap-2">
+                    @foreach ($testimonials as $index => $item)
+                        <button type="button" class="inline-flex items-center justify-center w-11 h-11" @click="slide = {{ $index }}" aria-label="Show testimonial {{ $index + 1 }}">
+                            <span class="w-2.5 h-2.5 rounded-full" :class="slide === {{ $index }} ? 'bg-fs-brand' : 'bg-slate-300'"></span>
+                        </button>
+                    @endforeach
                 </div>
             </div>
-            <div class="mt-4 flex justify-center gap-2">
-                <button type="button" class="inline-flex items-center justify-center w-11 h-11" @click="slide = 0" aria-label="Show testimonial 1">
-                    <span class="w-2.5 h-2.5 rounded-full" :class="slide === 0 ? 'bg-fs-brand' : 'bg-slate-300'"></span>
-                </button>
-                <button type="button" class="inline-flex items-center justify-center w-11 h-11" @click="slide = 1" aria-label="Show testimonial 2">
-                    <span class="w-2.5 h-2.5 rounded-full" :class="slide === 1 ? 'bg-fs-brand' : 'bg-slate-300'"></span>
-                </button>
-                <button type="button" class="inline-flex items-center justify-center w-11 h-11" @click="slide = 2" aria-label="Show testimonial 3">
-                    <span class="w-2.5 h-2.5 rounded-full" :class="slide === 2 ? 'bg-fs-brand' : 'bg-slate-300'"></span>
-                </button>
-            </div>
-        </div>
+        @else
+            <p class="mt-6 text-center text-sm text-fs-muted">Client stories coming soon.</p>
+        @endif
     </x-container>
 </section>
 
@@ -191,10 +199,22 @@
     <x-container>
         <x-section-heading title="From the blog" subtitle="Market tips and neighborhood guides" heading-id="blog-heading" />
         <div class="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <x-blog-card title="How to budget for your first home" excerpt="A practical checklist for down payments, fees, and monthly costs." image="https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=800&q=80" date="2026-09-12" category="Guides" />
-            <x-blog-card title="Karachi neighborhoods to watch" excerpt="Where demand is rising and what buyers should compare." image="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80" date="2026-08-28" category="Markets" />
-            <x-blog-card title="Renting vs buying in 2026" excerpt="Key trade-offs if you are deciding between flexibility and equity." image="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80" date="2026-08-04" category="Insights" />
+            @forelse ($posts as $post)
+                <x-blog-card
+                    :title="$post->title"
+                    :excerpt="$post->excerpt"
+                    :image="$post->featured_image ?: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=800&q=80'"
+                    :date="optional($post->published_at)->toDateString()"
+                    :category="$post->category"
+                    :href="route('blog.show', $post->slug)"
+                />
+            @empty
+                <p class="text-sm text-fs-muted col-span-full">No blog posts published yet.</p>
+            @endforelse
         </div>
+        @if($posts->isNotEmpty())
+            <div class="mt-6"><x-button variant="ghost" href="{{ route('blog.index') }}">View all posts</x-button></div>
+        @endif
     </x-container>
 </section>
 
@@ -203,10 +223,11 @@
     <x-container>
         <x-section-heading title="Frequently asked questions" subtitle="Quick answers before you reach out" heading-id="faq-heading" />
         <div class="mt-6 max-w-3xl space-y-3">
-            <x-faq-item question="Are listings on LuxSecure verified?" answer="Yes. Active listings are reviewed before they appear in search results." :open="true" />
-            <x-faq-item question="How do I contact an agent?" answer="Open any property page and use the inquiry card, or visit the Contact page." />
-            <x-faq-item question="Can I save favorites?" answer="Create a free account, then tap the heart on any property card." />
-            <x-faq-item question="How do I list my property?" answer="Use the List Property button in the header and send us your details." />
+            @forelse ($faqs as $index => $faq)
+                <x-faq-item :question="$faq->question" :answer="$faq->answer" :open="$index === 0" />
+            @empty
+                <p class="text-sm text-fs-muted">FAQs will appear here once published.</p>
+            @endforelse
         </div>
     </x-container>
 </section>

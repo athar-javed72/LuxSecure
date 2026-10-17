@@ -96,19 +96,40 @@
         </div>
 
         <aside class="lg:col-span-4 space-y-4 lg:sticky lg:top-24">
-            <div class="rounded-md bg-white shadow-sm border border-slate-100 p-6">
-                <div class="flex items-center gap-3">
-                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=200&q=80" alt="Listing agent Ayesha Khan" loading="lazy" width="56" height="56" class="w-14 h-14 rounded-full object-cover">
-                    <div>
-                        <h2 class="text-base font-semibold text-fs-primary">Ayesha Khan</h2>
-                        <p class="text-sm text-fs-secondary">LuxSecure Agent</p>
+            @php
+                $agentUser = $property->agent;
+                $agentProfile = $agentUser?->agentProfile;
+            @endphp
+            @if($agentUser)
+                <div class="rounded-md bg-white shadow-sm border border-slate-100 p-6">
+                    <div class="flex items-center gap-3">
+                        <img src="{{ $agentProfile?->photo_url ?? 'https://ui-avatars.com/api/?name='.urlencode($agentUser->name).'&background=0B1C2C&color=C9A227' }}" alt="{{ $agentUser->name }}" loading="lazy" width="56" height="56" class="w-14 h-14 rounded-full object-cover">
+                        <div>
+                            <h2 class="text-base font-semibold text-fs-primary flex items-center gap-2">
+                                {{ $agentUser->name }}
+                                @if($agentProfile?->is_verified)
+                                    <span class="text-[10px] uppercase tracking-wide text-fs-brand">Verified</span>
+                                @endif
+                            </h2>
+                            <p class="text-sm text-fs-secondary">{{ $agentProfile?->display_role ?? 'LuxSecure Agent' }}</p>
+                        </div>
+                    </div>
+                    @if($agentProfile?->phone)
+                        <p class="mt-4 text-sm text-fs-secondary">{{ $agentProfile->phone }}</p>
+                    @elseif($agentUser->phone)
+                        <p class="mt-4 text-sm text-fs-secondary">{{ $agentUser->phone }}</p>
+                    @endif
+                    @if($agentProfile?->whatsapp)
+                        <p class="mt-1 text-sm"><a class="text-fs-brand hover:underline" href="https://wa.me/{{ preg_replace('/\D+/', '', $agentProfile->whatsapp) }}" target="_blank" rel="noopener">WhatsApp</a></p>
+                    @endif
+                    @if($agentProfile?->bio)
+                        <p class="mt-3 text-sm text-fs-secondary">{{ Str::limit($agentProfile->bio, 140) }}</p>
+                    @endif
+                    <div class="mt-4">
+                        <x-button variant="ghost" href="{{ route('home') }}#agents" class="w-full">View agents</x-button>
                     </div>
                 </div>
-                <p class="mt-4 text-sm text-fs-secondary">+92 300 1112233</p>
-                <div class="mt-4">
-                    <x-button variant="ghost" href="{{ route('home') }}#agents" class="w-full">View agent profile</x-button>
-                </div>
-            </div>
+            @endif
 
             @if(($property->purpose === 'short_stay' || $property->roomTypes->isNotEmpty()) && $property->roomTypes->where('is_active', true)->isNotEmpty())
                 <div class="rounded-md bg-white shadow-sm border border-slate-100 p-6">

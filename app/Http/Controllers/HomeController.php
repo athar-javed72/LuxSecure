@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AgentProfile;
+use App\Models\BlogPost;
+use App\Models\Faq;
 use App\Models\Listing;
+use App\Models\Testimonial;
 use Illuminate\View\View;
 
 class HomeController extends Controller
@@ -16,6 +20,18 @@ class HomeController extends Controller
             ->take(12)
             ->get();
 
-        return view('home', compact('houses'));
+        $agents = AgentProfile::query()
+            ->with(['user' => fn ($q) => $q->withCount('agentListings')])
+            ->whereHas('user', fn ($u) => $u->role('agent')->where('is_active', true))
+            ->orderByDesc('is_featured')
+            ->orderBy('sort_order')
+            ->take(8)
+            ->get();
+
+        $testimonials = Testimonial::published()->take(6)->get();
+        $posts = BlogPost::published()->latest('published_at')->take(3)->get();
+        $faqs = Faq::published()->take(8)->get();
+
+        return view('home', compact('houses', 'agents', 'testimonials', 'posts', 'faqs'));
     }
 }

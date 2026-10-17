@@ -85,11 +85,48 @@ return [
             'permission' => ['inquiries.view.any', 'inquiries.view.own'],
         ],
         [
+            'label' => 'Leads',
+            'route' => 'admin.leads.index',
+            'active' => ['admin.leads.*'],
+            'permission' => ['leads.view.any', 'leads.view.own'],
+        ],
+        [
+            'label' => 'Tickets',
+            'route' => 'admin.tickets.index',
+            'active' => ['admin.tickets.*'],
+            'permission' => ['tickets.view.any', 'tickets.view.own'],
+        ],
+        [
+            'label' => 'Agents',
+            'route' => 'admin.agents.index',
+            'active' => ['admin.agents.*'],
+            'permission' => ['agents.view', 'agents.manage'],
+        ],
+        [
+            'label' => 'CMS',
+            'route' => 'admin.cms.index',
+            'active' => ['admin.cms.*'],
+            'permission' => 'cms.view',
+        ],
+        [
+            'label' => 'Settings',
+            'route' => 'admin.settings.edit',
+            'active' => ['admin.settings.*'],
+            'permission' => 'settings.view',
+        ],
+        [
+            'label' => 'Activity',
+            'route' => 'admin.activity.index',
+            'active' => ['admin.activity.*'],
+            'permission' => 'activity_log.view',
+        ],
+        [
             'label' => 'Tenancies',
             'route' => 'admin.tenancies.index',
             'active' => ['admin.tenancies.*'],
             'permission' => ['tenancies.view.any', 'tenancies.view.own'],
         ],
+
         [
             'label' => 'Room types',
             'route' => 'admin.room-types.index',

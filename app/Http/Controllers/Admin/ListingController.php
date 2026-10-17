@@ -10,10 +10,12 @@ use App\Models\Listing;
 use App\Models\ListingImage;
 use App\Models\ListingType;
 use App\Models\User;
+use App\Support\CsvExporter;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ListingController extends Controller
 {
@@ -150,6 +152,84 @@ class ListingController extends Controller
         $listing->delete();
 
         return redirect()->route('admin.listings.index')->with('success', 'Listing deleted.');
+    }
+
+    public function destroyImage(Listing $listing, ListingImage $image): RedirectResponse
+    {
+        $this->authorize('update', $listing);
+        abort_unless((int) $image->listing_id === (int) $listing->id, 404);
+
+        Storage::disk('public')->delete($image->path);
+        $image->delete();
+
+        return back()->with('success', 'Image removed.');
+    }
+
+    public function reorderImages(Request $request, Listing $listing): RedirectResponse
+    {
+        $this->authorize('update', $listing);
+
+        $data = $request->validate([
+            'order' => ['required', 'array'],
+            'order.*' => ['integer', 'exists:listing_images,id'],
+        ]);
+
+        foreach (array_values($data['order']) as $index => $imageId) {
+            ListingImage::query()
+                ->where('listing_id', $listing->id)
+                ->where('id', $imageId)
+                ->update(['sort_order' => $index]);
+        }
+
+        return back()->with('success', 'Gallery order saved.');
+    }
+
+    public function export(Request $request): StreamedResponse
+    {
+        $this->authorize('viewAny', Listing::class);
+
+        $query = Listing::query()->with(['listingType', 'city']);
+        if (! $request->user()->can('listings.view.any')) {
+            $user = $request->user();
+            $query->where(fn ($q) => $q->where('agent_id', $user->id)->orWhere('owner_id', $user->id));
+        }
+
+        $rows = $query->latest()->get()->map(fn (Listing $l) => [
+            'id' => $l->id,
+            'title' => $l->title,
+            'location' => $l->location,
+            'purpose' => $l->purpose,
+            'price' => $l->price,
+            'status' => $l->status,
+            'type' => $l->listingType?->name,
+            'city' => $l->city?->name,
+        ]);
+
+        return CsvExporter::download('listings.csv', ['id', 'title', 'location', 'purpose', 'price', 'status', 'type', 'city'], $rows);
+    }
+
+    public function bulk(Request $request): RedirectResponse
+    {
+        $this->authorize('viewAny', Listing::class);
+
+        $data = $request->validate([
+            'ids' => ['required', 'array'],
+            'ids.*' => ['integer', 'exists:listings,id'],
+            'action' => ['required', 'in:delete,status'],
+            'status' => ['nullable', 'in:'.implode(',', Listing::STATUSES)],
+        ]);
+
+        $listings = Listing::query()->whereIn('id', $data['ids'])->get();
+
+        foreach ($listings as $listing) {
+            if ($data['action'] === 'delete' && $request->user()->can('delete', $listing)) {
+                $listing->delete();
+            } elseif ($data['action'] === 'status' && ! empty($data['status']) && $request->user()->can('update', $listing)) {
+                $listing->update(['status' => $data['status']]);
+            }
+        }
+
+        return back()->with('success', 'Bulk action applied to listings.');
     }
 
     /** @return array<string, mixed> */

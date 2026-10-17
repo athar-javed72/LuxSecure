@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\LogsAdminActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -9,7 +10,7 @@ use Illuminate\Support\Str;
 
 class Listing extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, LogsAdminActivity, SoftDeletes;
 
     public const PURPOSES = ['sale', 'rent', 'short_stay'];
 
