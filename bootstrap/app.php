@@ -22,6 +22,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull;
+use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Foundation\Http\Middleware\ValidatePostSize;
 use Illuminate\Http\Middleware\HandleCors;
 use Illuminate\Http\Request;
@@ -52,7 +53,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->web(replace: [
             EncryptCookies::class => App\Http\Middleware\EncryptCookies::class,
-            Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class => VerifyCsrfToken::class,
+            PreventRequestForgery::class => VerifyCsrfToken::class,
         ]);
 
         $middleware->web(append: [
@@ -60,7 +61,7 @@ return Application::configure(basePath: dirname(__DIR__))
             EnsureLegalAcceptance::class,
         ]);
 
-        $middleware->validateCsrfTokens(except: [
+        $middleware->preventRequestForgery(except: [
             'webhooks/payments/*',
         ]);
 

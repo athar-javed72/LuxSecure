@@ -10,14 +10,14 @@ LuxSecure is an **in-house product** of **Nexora Labs**. Features and architectu
 
 ## Tech stack
 
-- **Backend:** Laravel 10.x, PHP 8.1+, Sanctum 3.x, Spatie Permission + Activity Log
+- **Backend:** Laravel 13.x, PHP 8.3–8.5, Sanctum 4.x, Spatie Permission + Activity Log
 - **Frontend:** Blade, Tailwind CSS 4 via Vite (`@tailwindcss/vite`), Alpine.js — **no Bootstrap, no Tailwind CDN**
 - **Database:** MySQL (primary); SQLite for tests
 - **Media:** Intervention Image; uploads via configurable `UPLOADS_DISK` / `PRIVATE_DISK`
 - **Payments PDF:** barryvdh/laravel-dompdf
 - **API docs:** Scribe (`/docs`)
 - **Errors (optional):** Sentry (`SENTRY_LARAVEL_DSN` empty = off)
-- **Quality:** PHPUnit 10, Laravel Pint
+- **Quality:** PHPUnit 12, Laravel Pint
 
 ## Roles (Spatie RBAC)
 
@@ -64,7 +64,7 @@ Fonts: Cormorant Garamond (display) + DM Sans (UI). Shared `x-*` Blade component
 
 ## Requirements
 
-- PHP 8.1+, Composer, Node.js & NPM, MySQL (or SQLite for local/tests)
+- PHP 8.3–8.5, Composer, Node.js & NPM, MySQL (or SQLite for local/tests)
 
 ## Installation
 
@@ -98,6 +98,8 @@ Local demo admin after seed: `admin@luxsecure.com` / `password` (change immediat
 | `SENTRY_LARAVEL_DSN` | Leave empty to disable Sentry |
 | `LISTING_CACHE_*` | Listing query cache |
 | `BACKUP_*` | Scheduled DB backup |
+| `CACHE_PREFIX` / `SESSION_COOKIE` / `REDIS_PREFIX` | Pin cache/session key names across Laravel upgrades |
+| `TRUSTED_PROXIES` | Comma-separated proxy IPs/CIDRs; empty = trust none |
 
 ### Scheduled commands
 
