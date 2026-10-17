@@ -1,0 +1,593 @@
+openapi: 3.0.3
+info:
+  title: 'LuxSecure API Documentation'
+  description: 'LuxSecure API v1 — Sanctum token auth, listings, bookings, favorites, and profile.'
+  version: 1.0.0
+servers:
+  -
+    url: 'http://localhost'
+tags:
+  -
+    name: Auth
+    description: ''
+  -
+    name: Bookings
+    description: ''
+  -
+    name: Endpoints
+    description: ''
+  -
+    name: Favorites
+    description: ''
+  -
+    name: Listings
+    description: ''
+  -
+    name: Profile
+    description: ''
+  -
+    name: 'Two-factor authentication'
+    description: ''
+components:
+  securitySchemes:
+    default:
+      type: http
+      scheme: bearer
+      description: 'Obtain a token via <code>POST /api/v1/auth/login</code> or <code>POST /api/v1/auth/register</code>. Send as <code>Authorization: Bearer {token}</code>.'
+security:
+  -
+    default: []
+paths:
+  /api/v1/auth/register:
+    post:
+      summary: 'Register a client account.'
+      operationId: registerAClientAccount
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: 'Must not be greater than 120 characters.'
+                  example: vmqeopfuudtdsufvyvddq
+                  nullable: false
+                email:
+                  type: string
+                  description: 'Must be a valid email address. Must not be greater than 255 characters.'
+                  example: kunde.eloisa@example.com
+                  nullable: false
+                phone:
+                  type: string
+                  description: 'Must not be greater than 40 characters.'
+                  example: hfqcoynlazghdtqtqxbaj
+                  nullable: true
+                password:
+                  type: string
+                  description: ''
+                  example: consequatur
+                  nullable: false
+              required:
+                - name
+                - email
+                - password
+      security: []
+  /api/v1/auth/login:
+    post:
+      summary: 'Login and receive a Sanctum token.'
+      operationId: loginAndReceiveASanctumToken
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: 'Must be a valid email address.'
+                  example: qkunze@example.com
+                  nullable: false
+                password:
+                  type: string
+                  description: ''
+                  example: 'O[2UZ5ij-e/dl4m{o,'
+                  nullable: false
+                device_name:
+                  type: string
+                  description: 'Must not be greater than 80 characters.'
+                  example: dqamniihfqcoynlazghdt
+                  nullable: true
+                two_factor_code:
+                  type: string
+                  description: ''
+                  example: consequatur
+                  nullable: true
+              required:
+                - email
+                - password
+      security: []
+  /api/v1/auth/two-factor-challenge:
+    post:
+      summary: 'Complete a two-factor challenge from login.'
+      operationId: completeATwoFactorChallengeFromLogin
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                two_factor_token:
+                  type: string
+                  description: ''
+                  example: consequatur
+                  nullable: false
+                code:
+                  type: string
+                  description: ''
+                  example: consequatur
+                  nullable: false
+                device_name:
+                  type: string
+                  description: 'Must not be greater than 80 characters.'
+                  example: mqeopfuudtdsufvyvddqa
+                  nullable: true
+              required:
+                - two_factor_token
+                - code
+      security: []
+  /api/v1/auth/logout:
+    post:
+      summary: 'Logout current token.'
+      operationId: logoutCurrentToken
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Auth
+  /api/v1/bookings:
+    get:
+      summary: "List the authenticated user's bookings."
+      operationId: listTheAuthenticatedUsersBookings
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: Unauthenticated.
+                  code: unauthenticated
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Unauthenticated.
+                  code:
+                    type: string
+                    example: unauthenticated
+      tags:
+        - Bookings
+    post:
+      summary: 'Create a booking (availability checked in a transaction).'
+      operationId: createABookingavailabilityCheckedInATransaction
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Bookings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                room_type_id:
+                  type: string
+                  description: 'The <code>id</code> of an existing record in the room_types table.'
+                  example: consequatur
+                  nullable: false
+                check_in:
+                  type: string
+                  description: 'Must be a valid date. Must be a date after or equal to <code>today</code>.'
+                  example: '2107-11-15'
+                  nullable: false
+                check_out:
+                  type: string
+                  description: 'Must be a valid date. Must be a date after <code>check_in</code>.'
+                  example: '2097-02-15'
+                  nullable: false
+                guests:
+                  type: integer
+                  description: 'Must be at least 1. Must not be greater than 50.'
+                  example: 13
+                  nullable: false
+                cancellation_policy:
+                  type: string
+                  description: ''
+                  example: null
+                  nullable: true
+                notes:
+                  type: string
+                  description: 'Must not be greater than 1000 characters.'
+                  example: qeopfuudtdsufvyvddqam
+                  nullable: true
+              required:
+                - room_type_id
+                - check_in
+                - check_out
+                - guests
+  '/api/v1/bookings/{id}':
+    get:
+      summary: "Show one of the user's bookings."
+      operationId: showOneOfTheUsersBookings
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: Unauthenticated.
+                  code: unauthenticated
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Unauthenticated.
+                  code:
+                    type: string
+                    example: unauthenticated
+      tags:
+        - Bookings
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the booking.'
+        example: 17
+        required: true
+        schema:
+          type: integer
+  '/api/v1/bookings/{booking_id}/cancel':
+    post:
+      summary: 'Cancel an own pending/confirmed booking.'
+      operationId: cancelAnOwnPendingconfirmedBooking
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Bookings
+    parameters:
+      -
+        in: path
+        name: booking_id
+        description: 'The ID of the booking.'
+        example: 17
+        required: true
+        schema:
+          type: integer
+  /api/properties:
+    get:
+      summary: ''
+      operationId: getApiProperties
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  data: []
+                  meta:
+                    current_page: 1
+                    last_page: 1
+                    per_page: 15
+                    total: 0
+                properties:
+                  data:
+                    type: array
+                    example: []
+                  meta:
+                    type: object
+                    properties:
+                      current_page:
+                        type: integer
+                        example: 1
+                      last_page:
+                        type: integer
+                        example: 1
+                      per_page:
+                        type: integer
+                        example: 15
+                      total:
+                        type: integer
+                        example: 0
+      tags:
+        - Endpoints
+      security: []
+  /api/v1/favorites:
+    get:
+      summary: 'List favorited listings.'
+      operationId: listFavoritedListings
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: Unauthenticated.
+                  code: unauthenticated
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Unauthenticated.
+                  code:
+                    type: string
+                    example: unauthenticated
+      tags:
+        - Favorites
+  '/api/v1/favorites/{listing_id}':
+    post:
+      summary: 'Toggle favorite for a listing.'
+      operationId: toggleFavoriteForAListing
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Favorites
+    parameters:
+      -
+        in: path
+        name: listing_id
+        description: 'The ID of the listing.'
+        example: 17
+        required: true
+        schema:
+          type: integer
+  /api/v1/listings:
+    get:
+      summary: 'Paginated published listings.'
+      operationId: paginatedPublishedListings
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: true
+                  data: []
+                  meta:
+                    current_page: 1
+                    last_page: 1
+                    per_page: 15
+                    total: 0
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    example: []
+                  meta:
+                    type: object
+                    properties:
+                      current_page:
+                        type: integer
+                        example: 1
+                      last_page:
+                        type: integer
+                        example: 1
+                      per_page:
+                        type: integer
+                        example: 15
+                      total:
+                        type: integer
+                        example: 0
+      tags:
+        - Listings
+      security: []
+  '/api/v1/listings/{id}':
+    get:
+      summary: 'Show a published listing.'
+      operationId: showAPublishedListing
+      description: ''
+      parameters: []
+      responses:
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: 'No query results for model [App\Models\Listing].'
+                  code: not_found
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'No query results for model [App\Models\Listing].'
+                  code:
+                    type: string
+                    example: not_found
+      tags:
+        - Listings
+      security: []
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the listing.'
+        example: 17
+        required: true
+        schema:
+          type: integer
+  /api/v1/profile:
+    get:
+      summary: 'Get the authenticated profile.'
+      operationId: getTheAuthenticatedProfile
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: Unauthenticated.
+                  code: unauthenticated
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Unauthenticated.
+                  code:
+                    type: string
+                    example: unauthenticated
+      tags:
+        - Profile
+    put:
+      summary: 'Update profile fields.'
+      operationId: updateProfileFields
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Profile
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: 'Must not be greater than 120 characters.'
+                  example: vmqeopfuudtdsufvyvddq
+                  nullable: false
+                email:
+                  type: string
+                  description: 'Must be a valid email address. Must not be greater than 255 characters.'
+                  example: kunde.eloisa@example.com
+                  nullable: false
+                phone:
+                  type: string
+                  description: 'Must not be greater than 40 characters.'
+                  example: hfqcoynlazghdtqtqxbaj
+                  nullable: true
+                password:
+                  type: string
+                  description: ''
+                  example: null
+                  nullable: true
+  /api/v1/two-factor/setup:
+    post:
+      summary: 'Begin 2FA setup (admin roles only).'
+      operationId: begin2FASetupadminRolesOnly
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - 'Two-factor authentication'
+  /api/v1/two-factor/confirm:
+    post:
+      summary: 'Confirm 2FA with a code from the authenticator.'
+      operationId: confirm2FAWithACodeFromTheAuthenticator
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - 'Two-factor authentication'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code:
+                  type: string
+                  description: ''
+                  example: consequatur
+                  nullable: false
+              required:
+                - code
+  /api/v1/two-factor/disable:
+    post:
+      summary: 'Disable 2FA.'
+      operationId: disable2FA
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - 'Two-factor authentication'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code:
+                  type: string
+                  description: ''
+                  example: consequatur
+                  nullable: false
+              required:
+                - code

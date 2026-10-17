@@ -20,18 +20,29 @@ class User extends Authenticatable implements MustVerifyEmail
         'phone',
         'password',
         'is_active',
+        'two_factor_secret',
+        'two_factor_recovery_codes',
+        'two_factor_confirmed_at',
     ];
 
     protected $hidden = [
         'password',
         'remember_token',
+        'two_factor_secret',
+        'two_factor_recovery_codes',
     ];
 
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
         'is_active' => 'boolean',
+        'two_factor_confirmed_at' => 'datetime',
     ];
+
+    public function hasTwoFactorEnabled(): bool
+    {
+        return filled($this->two_factor_confirmed_at);
+    }
 
     public function isSuperAdmin(): bool
     {

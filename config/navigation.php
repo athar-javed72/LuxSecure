@@ -121,6 +121,14 @@ return [
             'permission' => 'activity_log.view',
         ],
         [
+            'label' => '2FA',
+            'route' => 'admin.two-factor.show',
+            'active' => ['admin.two-factor.*'],
+            'permission' => 'panel.access',
+            'roles' => ['super_admin', 'admin'],
+        ],
+
+        [
             'label' => 'Tenancies',
             'route' => 'admin.tenancies.index',
             'active' => ['admin.tenancies.*'],

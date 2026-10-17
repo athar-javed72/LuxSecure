@@ -18,6 +18,8 @@ Completed Tasks:
 
 - Rent + hotel booking modules (2026-10-17): tenancies/rent_payments with auto monthly schedule, mark-paid + overdue; room_types/rooms/seasonal_prices/bookings/booking_payments; transactional availability; public book flow + My bookings / My tenancy; hotel_manager own-listing scoping; queued confirmation mails; RBAC permissions for client/landlord/hotel_manager; feature tests (double-book, overlap, pricing, schedule, boundaries). Verified: pint, 45 PHPUnit tests, npm run build.
 - Platform modules (2026-10-17): agent_profiles (replace hardcoded home/property agent UI); leads from inquiries; support tickets + replies; CMS (blog/FAQ/testimonials/pages + SEO); spatie/laravel-activitylog + admin viewer; settings table + UI; CSV export/bulk for listings/users/leads; listing gallery delete/reorder; RBAC for leads/agents/activity_log. Verified: pint, 53 PHPUnit tests, npm run build.
+- API v1 + ops (2026-10-17): Sanctum token auth (register/login/logout/2FA challenge), listings/bookings/favorites/profile Resources, consistent JSON errors, api/api-auth rate limits, Scribe OpenAPI at /docs, admin TOTP 2FA (web+API), listing query cache, Intervention image optimization, queued ContactInquiry mail, luxsecure:backup + docs/BACKUP.md. Verified: pint, 61 PHPUnit tests, npm run build, scribe:generate.
+
 
 Notes / STOP points:
 ---------------------

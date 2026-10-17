@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Models\User;
+use App\Services\TwoFactorService;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\Request;
@@ -36,7 +37,7 @@ class AuthController extends Controller
         return view('auth.reset-password', ['token' => $token]);
     }
 
-    public function login(LoginRequest $request)
+    public function login(LoginRequest $request, TwoFactorService $twoFactor)
     {
         if (Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
             $user = Auth::user();
@@ -44,6 +45,14 @@ class AuthController extends Controller
                 Auth::logout();
 
                 return back()->withErrors(['email' => 'This account has been deactivated.']);
+            }
+
+            if ($twoFactor->requiresTwoFactor($user)) {
+                Auth::logout();
+                $request->session()->put('login.two_factor_user_id', $user->id);
+                $request->session()->put('login.two_factor_remember', $request->boolean('remember'));
+
+                return redirect()->route('two-factor.challenge');
             }
 
             $request->session()->regenerate();
@@ -56,6 +65,36 @@ class AuthController extends Controller
         }
 
         return back()->withErrors(['email' => 'Invalid credentials']);
+    }
+
+    public function showTwoFactorChallenge()
+    {
+        if (! session()->has('login.two_factor_user_id')) {
+            return redirect()->route('login.form');
+        }
+
+        return view('auth.two-factor-challenge');
+    }
+
+    public function verifyTwoFactorChallenge(Request $request, TwoFactorService $twoFactor)
+    {
+        $request->validate(['code' => ['required', 'string']]);
+        $userId = $request->session()->get('login.two_factor_user_id');
+        $user = $userId ? User::find($userId) : null;
+
+        if (! $user || ! $twoFactor->verifyUser($user, $request->string('code')->toString())) {
+            return back()->withErrors(['code' => 'Invalid authentication code.']);
+        }
+
+        Auth::login($user, (bool) $request->session()->pull('login.two_factor_remember'));
+        $request->session()->forget('login.two_factor_user_id');
+        $request->session()->regenerate();
+
+        if ($user->can('panel.access')) {
+            return redirect()->intended(route('admin.dashboard'));
+        }
+
+        return redirect()->intended(route('profile'));
     }
 
     public function register(RegisterRequest $request)

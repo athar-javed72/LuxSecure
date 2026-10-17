@@ -7,9 +7,12 @@
     "require": {
         "php": "^8.1",
         "guzzlehttp/guzzle": "^7.2",
+        "intervention/image": "2.7",
+        "knuckleswtf/scribe": "5.2",
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
+        "pragmarx/google2fa": "8.0",
         "spatie/laravel-activitylog": "4.8",
         "spatie/laravel-permission": "^6.25"
     },
@@ -62,6 +65,9 @@
         "allow-plugins": {
             "pestphp/pest-plugin": true,
             "php-http/discovery": true
+        },
+        "audit": {
+            "block-insecure": false
         }
     },
     "minimum-stability": "stable",

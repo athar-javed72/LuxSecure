@@ -10,6 +10,8 @@ use App\Models\Listing;
 use App\Models\ListingImage;
 use App\Models\ListingType;
 use App\Models\User;
+use App\Services\ImageOptimizer;
+use App\Services\ListingCacheService;
 use App\Support\CsvExporter;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -19,6 +21,11 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ListingController extends Controller
 {
+    public function __construct(
+        private readonly ImageOptimizer $images,
+        private readonly ListingCacheService $listingCache,
+    ) {}
+
     public function index(Request $request): View
     {
         $this->authorize('viewAny', Listing::class);
@@ -74,7 +81,7 @@ class ListingController extends Controller
             : Listing::uniqueSlug($data['title']);
 
         if ($request->hasFile('featured_image')) {
-            $data['featured_image'] = $request->file('featured_image')->store('listings', 'public');
+            $data['featured_image'] = $this->images->store($request->file('featured_image'));
         }
 
         if (blank($data['agent_id'] ?? null) && $request->user()->hasRole('agent')) {
@@ -85,10 +92,12 @@ class ListingController extends Controller
 
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $i => $file) {
-                $path = $file->store('listings', 'public');
+                $path = $this->images->store($file);
                 ListingImage::create(['listing_id' => $listing->id, 'path' => $path, 'sort_order' => $i]);
             }
         }
+
+        $this->listingCache->flush();
 
         return redirect()->route('admin.listings.index')->with('success', 'Listing created.');
     }
@@ -123,7 +132,7 @@ class ListingController extends Controller
             if ($listing->featured_image) {
                 Storage::disk('public')->delete($listing->featured_image);
             }
-            $data['featured_image'] = $request->file('featured_image')->store('listings', 'public');
+            $data['featured_image'] = $this->images->store($request->file('featured_image'));
         }
 
         $listing->update($data);
@@ -131,10 +140,12 @@ class ListingController extends Controller
         if ($request->hasFile('images')) {
             $sortStart = (int) $listing->images()->max('sort_order') + 1;
             foreach ($request->file('images') as $i => $file) {
-                $path = $file->store('listings', 'public');
+                $path = $this->images->store($file);
                 ListingImage::create(['listing_id' => $listing->id, 'path' => $path, 'sort_order' => $sortStart + $i]);
             }
         }
+
+        $this->listingCache->flush();
 
         return redirect()->route('admin.listings.index')->with('success', 'Listing updated.');
     }
@@ -150,6 +161,7 @@ class ListingController extends Controller
             Storage::disk('public')->delete($listing->featured_image);
         }
         $listing->delete();
+        $this->listingCache->flush();
 
         return redirect()->route('admin.listings.index')->with('success', 'Listing deleted.');
     }

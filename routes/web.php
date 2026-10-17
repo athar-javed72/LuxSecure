@@ -17,8 +17,11 @@ Route::get('/', [HomeController::class, '__invoke'])->name('home');
 
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login.form')->middleware('guest');
 Route::post('/login', [AuthController::class, 'login'])->name('login')->middleware('throttle:login');
+Route::get('/two-factor-challenge', [AuthController::class, 'showTwoFactorChallenge'])->name('two-factor.challenge')->middleware('guest');
+Route::post('/two-factor-challenge', [AuthController::class, 'verifyTwoFactorChallenge'])->name('two-factor.verify')->middleware('guest');
 Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register.form')->middleware('guest');
 Route::post('/register', [AuthController::class, 'register'])->name('register')->middleware('throttle:6,1');
+
 Route::get('/forgot-password', [AuthController::class, 'showForgotForm'])->name('password.request')->middleware('guest');
 Route::post('/forgot-password', [AuthController::class, 'sendResetLink'])->name('password.email')->middleware('throttle:6,1');
 Route::get('/reset-password/{token}', [AuthController::class, 'showResetForm'])->name('password.reset')->middleware('guest');
@@ -176,4 +179,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'panel'])->group(fun
         Route::get('bookings/{booking}', [\App\Http\Controllers\Admin\BookingController::class, 'show'])->name('bookings.show');
         Route::patch('bookings/{booking}/status', [\App\Http\Controllers\Admin\BookingController::class, 'updateStatus'])->name('bookings.status');
     });
+
+    Route::get('two-factor', [\App\Http\Controllers\Admin\TwoFactorController::class, 'show'])->name('two-factor.show');
+    Route::get('two-factor/enable', [\App\Http\Controllers\Admin\TwoFactorController::class, 'enable'])->name('two-factor.enable');
+    Route::post('two-factor/confirm', [\App\Http\Controllers\Admin\TwoFactorController::class, 'confirm'])->name('two-factor.confirm');
+    Route::post('two-factor/disable', [\App\Http\Controllers\Admin\TwoFactorController::class, 'disable'])->name('two-factor.disable');
 });
