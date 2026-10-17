@@ -33,10 +33,12 @@ Production hardening (ledger / holds / CSP / Sanctum / SMS) — **COMPLETE local
 
 | Area | Status |
 |------|--------|
-| PHPUnit | **105 passed** |
+| PHPUnit | **110 passed** |
 | `npm run build` | Passing |
-| `migrate:fresh --seed` | Passing |
+| `migrate:fresh --seed` | Passing (demo + CMS drafts local/testing only) |
 | Ledger / holds / CSP / Sanctum / SMS | Done (local) |
+| CMS policy drafts + footer links | Seeded drafts; publish after legal review |
+| QA screenshots | `storage/app/qa-screenshots/` (gitignored) |
 | Pushed to GitHub | No (awaiting user) |
 
 ---
@@ -44,8 +46,10 @@ Production hardening (ledger / holds / CSP / Sanctum / SMS) — **COMPLETE local
 ## 3. Known gaps
 
 1. Push / commit when user requests.
-2. Real JazzCash/Easypaisa + SMS HTTP gateway credentials for live calls.
-3. Drop `booking_payments` table only after a later deprecation window.
+2. **Repo hygiene:** tracked `.env.smoke-bak` (has `APP_KEY`) and `luxsecure_db.sql` — remove from git history / untrack; now in `.gitignore`.
+3. Real JazzCash/Easypaisa + SMS HTTP gateway credentials for live calls.
+4. Drop `booking_payments` table only after a later deprecation window.
+5. Replace `[PLACEHOLDER:*]` contact/hours and CMS legal drafts before public publish.
 
 ---
 
