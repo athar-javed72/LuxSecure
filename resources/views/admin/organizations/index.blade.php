@@ -42,6 +42,9 @@
                     <td class="px-3 py-3"><x-badge :tone="$org->is_active ? 'success' : 'muted'">{{ $org->is_active ? 'Yes' : 'No' }}</x-badge></td>
                     <td class="px-3 py-3 text-right">
                         <div class="inline-flex flex-wrap gap-2 justify-end">
+                            @can('organizations.view')
+                                <x-button variant="ghost" href="{{ route('admin.organizations.report', $org) }}" class="!px-3">Report</x-button>
+                            @endcan
                             @can('organizations.update')
                                 <x-button variant="secondary" href="{{ route('admin.organizations.edit', $org) }}" class="!px-3">Edit</x-button>
                             @endcan

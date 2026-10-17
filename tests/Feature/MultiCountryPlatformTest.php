@@ -219,4 +219,39 @@ class MultiCountryPlatformTest extends TestCase
         $this->assertStringContainsString('nonce-', $csp);
         $this->assertStringNotContainsString('unsafe-eval', $csp);
     }
+
+    public function test_published_legal_version_requires_reacceptance(): void
+    {
+        $user = $this->makeClient();
+        $page = Page::query()->updateOrCreate(
+            ['slug' => 'terms-pub-v1', 'country_id' => null, 'locale' => 'en'],
+            [
+                'title' => 'Terms',
+                'type' => 'terms',
+                'body' => 'v1 [PLACEHOLDER: BUSINESS_NAME]',
+                'status' => 'published',
+                'is_published' => true,
+                'version' => '1.0',
+            ]
+        );
+
+        \App\Models\LegalAcceptance::record($user, $page, '127.0.0.1');
+        $this->assertFalse(\App\Support\LegalAcceptanceService::requiresAcceptance($user->fresh()));
+
+        $page->update(['version' => '2.0']);
+        $this->assertTrue(\App\Support\LegalAcceptanceService::requiresAcceptance($user->fresh()));
+
+        $this->actingAs($user)
+            ->get(route('bookings.mine'))
+            ->assertRedirect(route('legal.accept'));
+    }
+
+    public function test_organization_report_is_available_to_super_admin(): void
+    {
+        $org = Organization::query()->firstOrFail();
+        $this->actingAs($this->makeSuperAdmin())
+            ->get(route('admin.organizations.report', $org))
+            ->assertOk()
+            ->assertSee('report', false);
+    }
 }

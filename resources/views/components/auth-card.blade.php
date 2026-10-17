@@ -146,6 +146,8 @@
                 <x-input label="Phone" name="phone" :value="old('phone')" placeholder="Optional" />
                 <x-input label="Password" name="password" id="register-password" type="password" required />
                 <x-input label="Confirm password" name="password_confirmation" type="password" required />
+                @php($legal = \App\Support\LegalAcceptanceService::currentPublished())
+                <x-legal-acceptances :terms="$legal['terms']" :privacy="$legal['privacy']" />
                 <x-button type="submit" variant="primary" class="w-full">Register</x-button>
             </form>
 

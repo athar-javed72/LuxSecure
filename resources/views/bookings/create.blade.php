@@ -76,14 +76,39 @@
                     <x-input label="Guests" name="guests" type="number" min="1" :value="old('guests', 1)" required />
                 </div>
 
+                @php
+                    $policyOptions = $cancellationPolicy
+                        ? [$cancellationPolicy->slug => $cancellationPolicy->name]
+                        : collect(App\Models\Booking::CANCELLATION_POLICIES)->mapWithKeys(fn ($p) => [$p => ucfirst($p)])->all();
+                @endphp
                 <div class="mt-4">
                     <x-select
                         label="Cancellation policy"
                         name="cancellation_policy"
-                        :options="collect(App\Models\Booking::CANCELLATION_POLICIES)->mapWithKeys(fn ($p) => [$p => ucfirst($p)])->all()"
-                        :selected="old('cancellation_policy', 'flexible')"
+                        :options="$policyOptions"
+                        :selected="old('cancellation_policy', $cancellationPolicy?->slug ?? 'flexible')"
                     />
+                    @if($cancellationPolicy)
+                        <input type="hidden" name="cancellation_policy_id" value="{{ $cancellationPolicy->id }}">
+                    @endif
                 </div>
+
+                @if(($policyRules ?? collect())->isNotEmpty())
+                    <div class="mt-4 rounded-sm border border-black/10 p-4 text-sm text-fs-secondary">
+                        <p class="font-semibold text-fs-primary mb-2">{{ $cancellationPolicy->name }} — refund rules</p>
+                        <ul class="space-y-1">
+                            @foreach($policyRules->sortByDesc('days_before_min') as $rule)
+                                <li>
+                                    {{ (int) $rule->days_before_min }}+ days before check-in:
+                                    <span class="font-semibold text-fs-brand">{{ number_format((float) $rule->refund_percent, 0) }}%</span> refund
+                                    @if($rule->fee_fixed)
+                                        (fee {{ \App\Support\Money::format($rule->fee_fixed, $listing->currency) }})
+                                    @endif
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
 
                 <div class="mt-4 rounded-sm bg-fs-surface p-4 text-sm" x-show="loaded" x-cloak>
                     <template x-if="available">
@@ -96,6 +121,10 @@
                     <template x-if="showUnavailable">
                         <p class="text-fs-danger">Those dates are not available.</p>
                     </template>
+                </div>
+
+                <div class="mt-4">
+                    <x-legal-acceptances :terms="$legalTerms ?? null" :privacy="$legalPrivacy ?? null" />
                 </div>
 
                 <div class="mt-4">

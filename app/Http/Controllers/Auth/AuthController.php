@@ -122,12 +122,14 @@ class AuthController extends Controller
 
         $user->assignRole('client');
 
-        foreach (['terms' => 'accept_terms', 'privacy' => 'accept_privacy'] as $type => $field) {
-            $page = \App\Models\Page::resolveLegal($type);
-            if ($page && ($page->is_published || $page->status === 'published') && $request->boolean($field)) {
-                \App\Models\LegalAcceptance::record($user, $page, $request->ip());
-            }
-        }
+        \App\Support\LegalAcceptanceService::recordFromRequest(
+            $user,
+            [
+                'accept_terms' => $request->boolean('accept_terms'),
+                'accept_privacy' => $request->boolean('accept_privacy'),
+            ],
+            $request->ip()
+        );
 
         event(new \Illuminate\Auth\Events\Registered($user));
 

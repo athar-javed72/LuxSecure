@@ -34,6 +34,8 @@ Completed Tasks:
 
 - Multi-country platform (2026-10-17): countries/currencies/languages/country_settings/organizations/branch fields; cancellation_policies + rules; RefundCalculator DB-driven; KYC types + payment methods per country; legal pages type/country/locale/version + legal_acceptances; country_admin + organization_admin roles; Money helper + navbar country/currency/locale (Alpine navBar); en/ur RTL; API country filter; Pakistan backfill + seed. Verified: pint, PHPUnit green, npm run build, migrate:fresh --seed.
 
+- Multi-country gaps closed (2026-10-17): legal acceptance UI (register/booking) + re-accept middleware; CMS page fields (type/country/locale/version/status); org combined report; booking policy rules text; contact/footer no fake numbers; booking/payment country policy scope. Verified: pint, 123 tests, npm run build, migrate:fresh --seed.
+
 Notes / STOP points:
 ---------------------
 - No git commit/push unless user requests.

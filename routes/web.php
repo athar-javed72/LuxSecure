@@ -49,6 +49,9 @@ Route::post('/webhooks/payments/easypaisa', [\App\Http\Controllers\PaymentWebhoo
     ->name('webhooks.payments.easypaisa');
 
 Route::middleware(['auth', 'active'])->group(function () {
+    Route::get('/legal/accept', [\App\Http\Controllers\LegalAcceptanceController::class, 'show'])->name('legal.accept');
+    Route::post('/legal/accept', [\App\Http\Controllers\LegalAcceptanceController::class, 'store'])->name('legal.accept.store');
+
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::post('/favorites/{listing}', [FavoriteController::class, 'toggle'])->name('favorites.toggle');
@@ -244,6 +247,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'active', 'panel', '
     });
 
     Route::middleware('permission:organizations.view|organizations.create|organizations.update|organizations.delete')->group(function () {
+        Route::get('organizations/{organization}/report', [\App\Http\Controllers\Admin\OrganizationReportController::class, 'show'])->name('organizations.report');
         Route::resource('organizations', \App\Http\Controllers\Admin\OrganizationController::class)->except(['show']);
     });
 

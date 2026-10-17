@@ -190,16 +190,10 @@ class CmsController extends Controller
     public function storePage(Request $request): RedirectResponse
     {
         Gate::authorize('create', Page::class);
-        $data = $request->validate([
-            'title' => ['required', 'string', 'max:200'],
-            'slug' => ['nullable', 'string', 'max:200'],
-            'body' => ['nullable', 'string'],
-            'is_published' => ['sometimes', 'boolean'],
-            'meta_title' => ['nullable', 'string', 'max:255'],
-            'meta_description' => ['nullable', 'string', 'max:300'],
-        ]);
+        $data = $this->pageRules($request, false);
         $data['slug'] = $data['slug'] ?: Str::slug($data['title']);
-        $data['is_published'] = $request->boolean('is_published');
+        $data['is_published'] = ($data['status'] ?? 'draft') === 'published';
+        $data['country_id'] = $data['country_id'] ?: null;
         Page::create($data);
 
         return back()->with('success', 'Page created.');
@@ -208,15 +202,9 @@ class CmsController extends Controller
     public function updatePage(Request $request, Page $page): RedirectResponse
     {
         Gate::authorize('update', $page);
-        $data = $request->validate([
-            'title' => ['required', 'string', 'max:200'],
-            'slug' => ['required', 'string', 'max:200'],
-            'body' => ['nullable', 'string'],
-            'is_published' => ['sometimes', 'boolean'],
-            'meta_title' => ['nullable', 'string', 'max:255'],
-            'meta_description' => ['nullable', 'string', 'max:300'],
-        ]);
-        $data['is_published'] = $request->boolean('is_published');
+        $data = $this->pageRules($request, true);
+        $data['is_published'] = ($data['status'] ?? 'draft') === 'published';
+        $data['country_id'] = $data['country_id'] ?: null;
         $page->update($data);
 
         return back()->with('success', 'Page updated.');
@@ -228,6 +216,24 @@ class CmsController extends Controller
         $page->delete();
 
         return back()->with('success', 'Page deleted.');
+    }
+
+    /** @return array<string, mixed> */
+    private function pageRules(Request $request, bool $requireSlug): array
+    {
+        return $request->validate([
+            'title' => ['required', 'string', 'max:200'],
+            'slug' => [$requireSlug ? 'required' : 'nullable', 'string', 'max:200'],
+            'type' => ['nullable', 'string', 'in:'.implode(',', Page::TYPES)],
+            'country_id' => ['nullable', 'exists:countries,id'],
+            'locale' => ['nullable', 'string', 'max:12'],
+            'version' => ['nullable', 'string', 'max:32'],
+            'effective_from' => ['nullable', 'date'],
+            'status' => ['required', 'in:draft,published'],
+            'body' => ['nullable', 'string'],
+            'meta_title' => ['nullable', 'string', 'max:255'],
+            'meta_description' => ['nullable', 'string', 'max:300'],
+        ]);
     }
 
     /** @return array<string, mixed> */

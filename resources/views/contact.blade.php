@@ -41,18 +41,25 @@
 
             <x-panel class="bg-fs-surface/60 space-y-4">
                 <h2 class="fs-display text-lg text-fs-primary">Get in touch</h2>
-                <p class="text-sm text-fs-secondary">{{ $siteAddress ?? 'Islamabad · Lahore · Karachi' }}</p>
-                <p class="text-sm text-fs-secondary">
-                    <a href="tel:{{ preg_replace('/\s+/', '', $sitePhone ?? '+923000000000') }}" class="hover:text-fs-brand transition-colors duration-150">
-                        {{ $sitePhone ?? '+92 300 0000000' }}
-                    </a>
-                </p>
-                <p class="text-sm text-fs-secondary">
-                    <a href="mailto:{{ $siteEmail ?? 'hello@luxsecure.example' }}" class="hover:text-fs-brand transition-colors duration-150">
-                        {{ $siteEmail ?? 'hello@luxsecure.example' }}
-                    </a>
-                </p>
-                <p class="text-xs text-fs-muted">Mon–Sat, 10:00 AM – 7:00 PM (PKT)</p>
+                @if(!empty($siteAddress))
+                    <p class="text-sm text-fs-secondary">{{ $siteAddress }}</p>
+                @endif
+                @if(!empty($sitePhone))
+                    <p class="text-sm text-fs-secondary">
+                        <a href="tel:{{ preg_replace('/\s+/', '', $sitePhone) }}" class="hover:text-fs-brand transition-colors duration-150">{{ $sitePhone }}</a>
+                    </p>
+                @endif
+                @if(!empty($siteEmail))
+                    <p class="text-sm text-fs-secondary">
+                        <a href="mailto:{{ $siteEmail }}" class="hover:text-fs-brand transition-colors duration-150">{{ $siteEmail }}</a>
+                    </p>
+                @endif
+                @if(!empty($siteHours))
+                    <p class="text-xs text-fs-muted">{{ $siteHours }}</p>
+                @endif
+                @if(empty($siteAddress) && empty($sitePhone) && empty($siteEmail) && empty($siteHours))
+                    <p class="text-sm text-fs-muted">{{ __('Use the contact form to reach us.') }}</p>
+                @endif
             </x-panel>
         </div>
     </div>

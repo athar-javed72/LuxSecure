@@ -31,10 +31,17 @@ class BookingController extends Controller
         $roomTypes = $listing->roomTypes()->where('is_active', true)->with('seasonalPrices')->get();
         abort_if($roomTypes->isEmpty(), 404);
 
+        $policy = \App\Models\CancellationPolicy::resolveForListing($listing);
+        $legal = \App\Support\LegalAcceptanceService::currentPublished();
+
         return view('bookings.create', [
             'listing' => $listing,
             'roomTypes' => $roomTypes,
             'selectedRoomTypeId' => $request->integer('room_type_id') ?: $roomTypes->first()->id,
+            'cancellationPolicy' => $policy,
+            'policyRules' => $policy?->rules ?? collect(),
+            'legalTerms' => $legal['terms'],
+            'legalPrivacy' => $legal['privacy'],
         ]);
     }
 
@@ -68,9 +75,19 @@ class BookingController extends Controller
             'user_id' => $request->user()->id,
             'guests' => $data['guests'],
             'cancellation_policy' => $data['cancellation_policy'] ?? 'flexible',
+            'cancellation_policy_id' => $data['cancellation_policy_id'] ?? null,
             'notes' => $data['notes'] ?? null,
             'status' => 'pending',
         ]);
+
+        \App\Support\LegalAcceptanceService::recordFromRequest(
+            $request->user(),
+            [
+                'accept_terms' => $request->boolean('accept_terms'),
+                'accept_privacy' => $request->boolean('accept_privacy'),
+            ],
+            $request->ip()
+        );
 
         $this->ledger->createPendingForBooking($booking);
 

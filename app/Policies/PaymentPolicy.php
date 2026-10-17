@@ -14,7 +14,7 @@ class PaymentPolicy
 
     public function view(User $user, Payment $payment): bool
     {
-        if ($user->can('payments.view.any')) {
+        if ($user->can('payments.view.any') && $this->inCountryScope($user, $payment)) {
             return true;
         }
 
@@ -29,7 +29,7 @@ class PaymentPolicy
 
     public function update(User $user, Payment $payment): bool
     {
-        if ($user->can('payments.update.any')) {
+        if ($user->can('payments.update.any') && $this->inCountryScope($user, $payment)) {
             return true;
         }
 
@@ -39,12 +39,29 @@ class PaymentPolicy
 
     public function delete(User $user, Payment $payment): bool
     {
-        if ($user->can('payments.delete.any')) {
+        if ($user->can('payments.delete.any') && $this->inCountryScope($user, $payment)) {
             return true;
         }
 
         return $user->can('payments.delete.own')
             && (int) $payment->user_id === (int) $user->id;
+    }
+
+    private function inCountryScope(User $user, Payment $payment): bool
+    {
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
+        if ($user->hasRole('admin') && blank($user->country_id)) {
+            return true;
+        }
+
+        if (filled($user->country_id)) {
+            return (int) $payment->country_id === (int) $user->country_id;
+        }
+
+        return true;
     }
 
     public function approve(User $user, Payment $payment): bool

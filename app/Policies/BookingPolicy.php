@@ -14,7 +14,7 @@ class BookingPolicy
 
     public function view(User $user, Booking $booking): bool
     {
-        if ($user->can('bookings.view.any')) {
+        if ($user->can('bookings.view.any') && $this->inCountryScope($user, $booking)) {
             return true;
         }
 
@@ -33,7 +33,7 @@ class BookingPolicy
 
     public function update(User $user, Booking $booking): bool
     {
-        if ($user->can('bookings.update.any')) {
+        if ($user->can('bookings.update.any') && $this->inCountryScope($user, $booking)) {
             return true;
         }
 
@@ -43,7 +43,7 @@ class BookingPolicy
 
     public function delete(User $user, Booking $booking): bool
     {
-        if ($user->can('bookings.delete.any')) {
+        if ($user->can('bookings.delete.any') && $this->inCountryScope($user, $booking)) {
             return true;
         }
 
@@ -55,5 +55,22 @@ class BookingPolicy
     {
         return (int) $booking->user_id === (int) $user->id
             && in_array($booking->status, ['pending', 'confirmed'], true);
+    }
+
+    private function inCountryScope(User $user, Booking $booking): bool
+    {
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
+        if ($user->hasRole('admin') && blank($user->country_id)) {
+            return true;
+        }
+
+        if (filled($user->country_id)) {
+            return (int) $booking->country_id === (int) $user->country_id;
+        }
+
+        return true;
     }
 }
