@@ -4,9 +4,12 @@ namespace App\Policies;
 
 use App\Models\KycDocument;
 use App\Models\User;
+use App\Policies\Concerns\ChecksCountryScope;
 
 class KycDocumentPolicy
 {
+    use ChecksCountryScope;
+
     public function viewAny(User $user): bool
     {
         return $user->can('kyc.view.any') || $user->can('kyc.review') || $user->can('kyc.view.own');
@@ -14,7 +17,8 @@ class KycDocumentPolicy
 
     public function view(User $user, KycDocument $document): bool
     {
-        if ($user->can('kyc.view.any') || $user->can('kyc.review')) {
+        if (($user->can('kyc.view.any') || $user->can('kyc.review'))
+            && $this->inCountryScope($user, $document->user)) {
             return true;
         }
 
@@ -29,6 +33,6 @@ class KycDocumentPolicy
 
     public function review(User $user, KycDocument $document): bool
     {
-        return $user->can('kyc.review');
+        return $user->can('kyc.review') && $this->inCountryScope($user, $document->user);
     }
 }

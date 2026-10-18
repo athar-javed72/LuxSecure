@@ -86,7 +86,12 @@ class ListingController extends Controller
             if ($attr->input_type === 'boolean') {
                 $query->where("attributes->{$attr->key}", filter_var($value, FILTER_VALIDATE_BOOLEAN) ? true : false);
             } elseif ($attr->input_type === 'number') {
-                $query->where("attributes->{$attr->key}", (float) $value);
+                $num = (float) $value;
+                // SQLite JSON stores whole numbers as ints; float compare misses them.
+                $query->where(
+                    "attributes->{$attr->key}",
+                    fmod($num, 1.0) === 0.0 ? (int) $num : $num
+                );
             } else {
                 $query->where("attributes->{$attr->key}", $value);
             }

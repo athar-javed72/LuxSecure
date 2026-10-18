@@ -3,9 +3,12 @@
 namespace App\Policies;
 
 use App\Models\User;
+use App\Policies\Concerns\ChecksCountryScope;
 
 class UserPolicy
 {
+    use ChecksCountryScope;
+
     public function viewAny(User $user): bool
     {
         return $user->can('users.view');
@@ -13,7 +16,7 @@ class UserPolicy
 
     public function view(User $user, User $model): bool
     {
-        return $user->can('users.view');
+        return $user->can('users.view') && $this->inCountryScope($user, $model);
     }
 
     public function create(User $user): bool
@@ -27,7 +30,7 @@ class UserPolicy
             return false;
         }
 
-        return $user->can('users.update');
+        return $user->can('users.update') && $this->inCountryScope($user, $model);
     }
 
     public function delete(User $user, User $model): bool
@@ -44,7 +47,7 @@ class UserPolicy
             return false;
         }
 
-        return $user->can('users.delete');
+        return $user->can('users.delete') && $this->inCountryScope($user, $model);
     }
 
     public function assignRoles(User $user): bool

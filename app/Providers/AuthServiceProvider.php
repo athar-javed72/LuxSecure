@@ -11,6 +11,7 @@ use App\Models\KycDocument;
 use App\Models\Lead;
 use App\Models\Listing;
 use App\Models\ListingType;
+use App\Models\Organization;
 use App\Models\Page;
 use App\Models\Payment;
 use App\Models\RentPayment;
@@ -30,6 +31,7 @@ use App\Policies\KycDocumentPolicy;
 use App\Policies\LeadPolicy;
 use App\Policies\ListingPolicy;
 use App\Policies\ListingTypePolicy;
+use App\Policies\OrganizationPolicy;
 use App\Policies\PaymentPolicy;
 use App\Policies\RentPaymentPolicy;
 use App\Policies\ReviewPolicy;
@@ -58,6 +60,7 @@ class AuthServiceProvider extends ServiceProvider
         Booking::class => BookingPolicy::class,
         RoomType::class => RoomTypePolicy::class,
         Lead::class => LeadPolicy::class,
+        Organization::class => OrganizationPolicy::class,
         Ticket::class => TicketPolicy::class,
         AgentProfile::class => AgentProfilePolicy::class,
         Setting::class => SettingPolicy::class,

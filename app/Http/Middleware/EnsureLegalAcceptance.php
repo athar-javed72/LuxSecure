@@ -16,18 +16,33 @@ class EnsureLegalAcceptance
             return $next($request);
         }
 
-        if ($request->routeIs('legal.accept*', 'logout', 'pages.show', 'login*', 'register*', 'password.*', 'verification.*', 'two-factor.*')) {
+        if ($request->routeIs(
+            'legal.accept*',
+            'logout',
+            'pages.show',
+            'login*',
+            'register*',
+            'password.*',
+            'verification.*',
+            'two-factor.*',
+            'api.v1.auth.*',
+            'webhooks.*'
+        ) || $request->is('webhooks/*')) {
+            return $next($request);
+        }
+
+        if (! LegalAcceptanceService::requiresAcceptance($user)) {
             return $next($request);
         }
 
         if ($request->is('api/*') || $request->expectsJson()) {
-            return $next($request);
+            return response()->json([
+                'success' => false,
+                'message' => 'Legal acceptance required.',
+                'code' => 'legal_acceptance_required',
+            ], 403);
         }
 
-        if (LegalAcceptanceService::requiresAcceptance($user)) {
-            return redirect()->guest(route('legal.accept'));
-        }
-
-        return $next($request);
+        return redirect()->guest(route('legal.accept'));
     }
 }

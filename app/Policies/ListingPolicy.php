@@ -4,9 +4,12 @@ namespace App\Policies;
 
 use App\Models\Listing;
 use App\Models\User;
+use App\Policies\Concerns\ChecksCountryScope;
 
 class ListingPolicy
 {
+    use ChecksCountryScope;
+
     public function viewAny(User $user): bool
     {
         return $user->can('listings.view.any') || $user->can('listings.view.own');
@@ -42,22 +45,5 @@ class ListingPolicy
         }
 
         return $user->can('listings.delete.own') && $user->ownsListing($listing);
-    }
-
-    private function inCountryScope(User $user, Listing $listing): bool
-    {
-        if ($user->isSuperAdmin()) {
-            return true;
-        }
-
-        if ($user->hasRole('admin') && blank($user->country_id)) {
-            return true;
-        }
-
-        if (filled($user->country_id)) {
-            return (int) $listing->country_id === (int) $user->country_id;
-        }
-
-        return true;
     }
 }

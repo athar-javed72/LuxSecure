@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Concerns\LogsAdminActivity;
 use App\Support\CountryContext;
+use App\Support\Scopes\CountryScoped;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -13,6 +14,7 @@ use Illuminate\Support\Str;
 
 class Payment extends Model
 {
+    use CountryScoped;
     use LogsAdminActivity;
     use SoftDeletes;
 

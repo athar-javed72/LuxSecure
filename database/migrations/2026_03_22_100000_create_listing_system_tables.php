@@ -92,7 +92,11 @@ return new class extends Migration
                 $table->dropForeign(['property_id']);
             });
             Schema::rename('property_images', 'listing_images');
-            DB::statement('ALTER TABLE listing_images CHANGE property_id listing_id BIGINT UNSIGNED NOT NULL');
+            if (Schema::hasColumn('listing_images', 'property_id')) {
+                Schema::table('listing_images', function (Blueprint $table) {
+                    $table->renameColumn('property_id', 'listing_id');
+                });
+            }
             Schema::table('listing_images', function (Blueprint $table) {
                 $table->foreign('listing_id')->references('id')->on('listings')->cascadeOnDelete();
             });
@@ -117,7 +121,11 @@ return new class extends Migration
             } catch (Throwable) {
                 // Index already absent or differently named.
             }
-            DB::statement('ALTER TABLE favorites CHANGE property_id listing_id BIGINT UNSIGNED NOT NULL');
+            if (Schema::hasColumn('favorites', 'property_id')) {
+                Schema::table('favorites', function (Blueprint $table) {
+                    $table->renameColumn('property_id', 'listing_id');
+                });
+            }
             Schema::table('favorites', function (Blueprint $table) {
                 $table->foreign('listing_id')->references('id')->on('listings')->cascadeOnDelete();
                 $table->unique(['user_id', 'listing_id']);
@@ -128,7 +136,9 @@ return new class extends Migration
             Schema::table('contact_inquiries', function (Blueprint $table) {
                 $table->dropForeign(['property_id']);
             });
-            DB::statement('ALTER TABLE contact_inquiries CHANGE property_id listing_id BIGINT UNSIGNED NULL');
+            Schema::table('contact_inquiries', function (Blueprint $table) {
+                $table->renameColumn('property_id', 'listing_id');
+            });
             Schema::table('contact_inquiries', function (Blueprint $table) {
                 $table->foreign('listing_id')->references('id')->on('listings')->nullOnDelete();
             });

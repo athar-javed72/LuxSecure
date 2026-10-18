@@ -20,12 +20,25 @@ class RoomTypeController extends Controller
     {
         $this->authorize('viewAny', RoomType::class);
 
+        $user = $request->user();
         $query = RoomType::query()->with(['listing', 'rooms'])->withCount('rooms');
 
-        if (! $request->user()->can('rooms.view.any')) {
-            $query->whereHas('listing', function ($q) use ($request) {
-                $q->where('owner_id', $request->user()->id)
-                    ->orWhere('agent_id', $request->user()->id);
+        if ($user->isCountryScoped()) {
+            $query->whereHas('listing', fn ($q) => $q->where('country_id', $user->country_id));
+        }
+
+        if (! $user->can('rooms.view.any')) {
+            $query->whereHas('listing', function ($q) use ($user) {
+                $q->where('owner_id', $user->id)
+                    ->orWhere('agent_id', $user->id)
+                    ->orWhere('manager_id', $user->id)
+                    ->orWhere(function ($org) use ($user) {
+                        if ($user->hasRole('organization_admin') && $user->organization_id) {
+                            $org->where('organization_id', $user->organization_id);
+                        } else {
+                            $org->whereRaw('1 = 0');
+                        }
+                    });
             });
         }
 
@@ -47,7 +60,13 @@ class RoomTypeController extends Controller
         $data = $request->validated();
         $listing = Listing::findOrFail($data['listing_id']);
 
-        if (! $request->user()->can('rooms.update.any') && ! $request->user()->ownsListing($listing)) {
+        $actor = $request->user();
+        if ($actor->can('rooms.update.any')) {
+            abort_unless(
+                ! $actor->isCountryScoped() || (int) $listing->country_id === (int) $actor->country_id,
+                403
+            );
+        } elseif (! $actor->ownsListing($listing)) {
             abort(403);
         }
 

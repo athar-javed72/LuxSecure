@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\Scopes\CountryScoped;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,6 +12,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Booking extends Model
 {
+    use CountryScoped;
     use SoftDeletes;
 
     public const STATUSES = ['pending', 'confirmed', 'cancelled', 'completed'];
@@ -71,12 +73,16 @@ class Booking extends Model
             return true;
         }
 
-        if ($user->organization_id && $this->listing?->organization_id) {
-            return (int) $user->organization_id === (int) $this->listing->organization_id
-                && $user->hasAnyRole(['hotel_manager', 'organization_admin']);
+        // Fallback for unloaded listing edge cases — prefer ownsListing rules.
+        if ($user->hasRole('organization_admin')
+            && $user->organization_id
+            && $this->listing?->organization_id
+            && (int) $user->organization_id === (int) $this->listing->organization_id) {
+            return true;
         }
 
-        return false;
+        return $user->hasRole('hotel_manager')
+            && (int) $this->listing?->manager_id === (int) $user->id;
     }
 
     public function roomType(): BelongsTo

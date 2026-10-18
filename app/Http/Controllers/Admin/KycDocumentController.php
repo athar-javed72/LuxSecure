@@ -19,7 +19,12 @@ class KycDocumentController extends Controller
     {
         $this->authorize('viewAny', KycDocument::class);
 
+        $user = $request->user();
         $query = KycDocument::query()->with(['user', 'reviewer'])->latest();
+
+        if ($user->isCountryScoped()) {
+            $query->whereHas('user', fn ($q) => $q->where('country_id', $user->country_id));
+        }
 
         if ($request->filled('status') && in_array($request->status, KycDocument::STATUSES, true)) {
             $query->where('status', $request->status);

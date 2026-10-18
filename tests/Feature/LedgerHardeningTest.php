@@ -290,7 +290,7 @@ class LedgerHardeningTest extends TestCase
         $moderate->save();
         $partial = $calc->forBooking($moderate, 1000);
         $this->assertSame('partial', $partial['action']);
-        $this->assertSame('500.00', $partial['refund_amount']);
+        $this->assertSame('500', $partial['refund_amount']);
 
         $strict = $flexible->replicate();
         $strict->cancellation_policy = 'strict';

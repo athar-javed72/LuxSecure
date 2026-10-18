@@ -80,7 +80,8 @@ class MultiCountryPlatformTest extends TestCase
         // Hotel Flexible: 3–6 days before → 50%.
         $result = app(RefundCalculator::class)->forBooking($booking, 10000);
         $this->assertSame(50.0, $result['refund_percent']);
-        $this->assertSame('5000.00', $result['refund_amount']);
+        // PKR decimals=0 in reference data.
+        $this->assertSame('5000', $result['refund_amount']);
     }
 
     public function test_legal_page_fallback_country_then_global(): void

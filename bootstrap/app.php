@@ -61,6 +61,12 @@ return Application::configure(basePath: dirname(__DIR__))
             EnsureLegalAcceptance::class,
         ]);
 
+        $middleware->api(append: [
+            EnsureLegalAcceptance::class,
+        ]);
+
+        $middleware->throttleApi('api');
+
         $middleware->preventRequestForgery(except: [
             'webhooks/payments/*',
         ]);

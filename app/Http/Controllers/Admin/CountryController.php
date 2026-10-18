@@ -7,6 +7,7 @@ use App\Models\Country;
 use App\Models\CountrySetting;
 use App\Models\Currency;
 use App\Models\Language;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -72,6 +73,7 @@ class CountryController extends Controller
     public function update(Request $request, Country $country): RedirectResponse
     {
         Gate::authorize('countries.update');
+        $this->assertCountryAccess($request->user(), $country);
 
         $country->update($this->validated($request, $country));
 
@@ -81,6 +83,7 @@ class CountryController extends Controller
     public function settings(Country $country): View
     {
         Gate::authorize('countries.view');
+        $this->assertCountryAccess(request()->user(), $country);
 
         $existing = $country->settings()->pluck('value', 'key');
         $settings = collect(self::SETTING_KEYS)->map(fn ($meta, $key) => [
@@ -96,6 +99,7 @@ class CountryController extends Controller
     public function updateSettings(Request $request, Country $country): RedirectResponse
     {
         Gate::authorize('countries.update');
+        $this->assertCountryAccess($request->user(), $country);
 
         $data = $request->validate([
             'settings' => ['required', 'array'],
@@ -153,5 +157,14 @@ class CountryController extends Controller
             : [$data['default_locale']];
 
         return $data;
+    }
+
+    private function assertCountryAccess(?User $user, Country $country): void
+    {
+        if (! $user || ! $user->isCountryScoped()) {
+            return;
+        }
+
+        abort_unless((int) $user->country_id === (int) $country->id, 403);
     }
 }

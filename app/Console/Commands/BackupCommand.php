@@ -82,23 +82,34 @@ class BackupCommand extends Command
 
     private function backupStorage(string $dir): void
     {
-        $source = storage_path('app/public');
-        if (! File::isDirectory($source)) {
-            $this->warn('No public storage directory to archive.');
+        if (! class_exists(ZipArchive::class)) {
+            File::put($dir.'/storage-README.txt', 'ZipArchive unavailable; copy storage manually.');
 
             return;
         }
 
-        $zipPath = $dir.'/storage-public.zip';
-        if (! class_exists(ZipArchive::class)) {
-            File::put($dir.'/storage-README.txt', 'ZipArchive unavailable; copy storage/app/public manually.');
+        $this->archiveDirectory($dir.'/storage-public.zip', storage_path('app/public'), 'Public storage');
+        $this->archiveDirectory($dir.'/storage-private.zip', storage_path('app/private'), 'Private storage');
 
+        // Default local private disk root (KYC, proofs, invoices) when PRIVATE_DISK=local.
+        $localRoot = storage_path('app');
+        foreach (['kyc', 'invoices', 'payments', 'proofs', 'private'] as $folder) {
+            $path = $localRoot.DIRECTORY_SEPARATOR.$folder;
+            if (File::isDirectory($path)) {
+                $this->archiveDirectory($dir.'/'.$folder.'.zip', $path, $folder);
+            }
+        }
+    }
+
+    private function archiveDirectory(string $zipPath, string $source, string $label): void
+    {
+        if (! File::isDirectory($source)) {
             return;
         }
 
         $zip = new ZipArchive;
         if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
-            $this->warn('Could not create storage zip.');
+            $this->warn("Could not create {$label} zip.");
 
             return;
         }
@@ -107,7 +118,7 @@ class BackupCommand extends Command
             $zip->addFile($file->getRealPath(), $file->getRelativePathname());
         }
         $zip->close();
-        $this->line('Public storage archived.');
+        $this->line("{$label} archived.");
     }
 
     private function pruneOldBackups(): void

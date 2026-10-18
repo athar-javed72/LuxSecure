@@ -30,7 +30,8 @@ class UserController extends Controller
     {
         $this->authorize('viewAny', User::class);
 
-        $query = User::query()->with('roles')->orderBy('created_at', 'desc');
+        $query = User::query()->with('roles')->orderBy('created_at', 'desc')
+            ->forUserCountry($request->user());
 
         if ($request->filled('search')) {
             $q = $request->search;
@@ -154,7 +155,7 @@ class UserController extends Controller
     {
         $this->authorize('viewAny', User::class);
 
-        $rows = User::query()->with('roles')->orderBy('id')->get()->map(fn (User $u) => [
+        $rows = User::query()->with('roles')->forUserCountry($request->user())->orderBy('id')->get()->map(fn (User $u) => [
             'id' => $u->id,
             'name' => $u->name,
             'email' => $u->email,

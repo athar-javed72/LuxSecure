@@ -4,9 +4,12 @@ namespace App\Policies;
 
 use App\Models\Booking;
 use App\Models\User;
+use App\Policies\Concerns\ChecksCountryScope;
 
 class BookingPolicy
 {
+    use ChecksCountryScope;
+
     public function viewAny(User $user): bool
     {
         return $user->can('bookings.view.any') || $user->can('bookings.view.own');
@@ -55,22 +58,5 @@ class BookingPolicy
     {
         return (int) $booking->user_id === (int) $user->id
             && in_array($booking->status, ['pending', 'confirmed'], true);
-    }
-
-    private function inCountryScope(User $user, Booking $booking): bool
-    {
-        if ($user->isSuperAdmin()) {
-            return true;
-        }
-
-        if ($user->hasRole('admin') && blank($user->country_id)) {
-            return true;
-        }
-
-        if (filled($user->country_id)) {
-            return (int) $booking->country_id === (int) $user->country_id;
-        }
-
-        return true;
     }
 }

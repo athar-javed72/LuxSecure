@@ -18,12 +18,21 @@ class BookingController extends Controller
     {
         $this->authorize('viewAny', Booking::class);
 
-        $query = Booking::query()->with(['user', 'listing', 'roomType', 'room']);
+        $user = $request->user();
+        $query = Booking::query()->with(['user', 'listing', 'roomType', 'room'])->forUserCountry($user);
 
-        if (! $request->user()->can('bookings.view.any')) {
-            $query->whereHas('listing', function ($q) use ($request) {
-                $q->where('owner_id', $request->user()->id)
-                    ->orWhere('agent_id', $request->user()->id);
+        if (! $user->can('bookings.view.any')) {
+            $query->whereHas('listing', function ($q) use ($user) {
+                $q->where('owner_id', $user->id)
+                    ->orWhere('agent_id', $user->id)
+                    ->orWhere('manager_id', $user->id)
+                    ->orWhere(function ($org) use ($user) {
+                        if ($user->hasRole('organization_admin') && $user->organization_id) {
+                            $org->where('organization_id', $user->organization_id);
+                        } else {
+                            $org->whereRaw('1 = 0');
+                        }
+                    });
             });
         }
 

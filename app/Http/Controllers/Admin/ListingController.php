@@ -240,10 +240,19 @@ class ListingController extends Controller
     {
         $this->authorize('viewAny', Listing::class);
 
-        $query = Listing::query()->with(['listingType', 'city']);
-        if (! $request->user()->can('listings.view.any')) {
-            $user = $request->user();
-            $query->where(fn ($q) => $q->where('agent_id', $user->id)->orWhere('owner_id', $user->id));
+        $user = $request->user();
+        $query = Listing::query()->with(['listingType', 'city'])->forUserCountry($user);
+        if (! $user->can('listings.view.any')) {
+            $query->where(fn ($q) => $q->where('agent_id', $user->id)
+                ->orWhere('owner_id', $user->id)
+                ->orWhere('manager_id', $user->id)
+                ->orWhere(function ($org) use ($user) {
+                    if ($user->hasRole('organization_admin') && $user->organization_id) {
+                        $org->where('organization_id', $user->organization_id);
+                    } else {
+                        $org->whereRaw('1 = 0');
+                    }
+                }));
         }
 
         $rows = $query->latest()->get()->map(fn (Listing $l) => [
@@ -289,12 +298,7 @@ class ListingController extends Controller
 
     public function downloadPrivateDocument(Listing $listing): StreamedResponse
     {
-        $user = request()->user();
-        $allowed = $user->can('listings.view.any')
-            || (int) $listing->owner_id === (int) $user->id
-            || (int) $listing->agent_id === (int) $user->id;
-
-        abort_unless($allowed, 403);
+        $this->authorize('view', $listing);
         abort_unless(filled($listing->private_document_path), 404);
 
         return StorageDisk::privateDisk()->download($listing->private_document_path);

@@ -4,6 +4,7 @@ namespace App\Services\Payments;
 
 use App\Models\Booking;
 use App\Models\CancellationPolicy;
+use App\Models\Currency;
 use Carbon\Carbon;
 
 class RefundCalculator
@@ -32,8 +33,11 @@ class RefundCalculator
 
         $percent = (float) ($rule['refund_percent'] ?? 0);
         $fee = isset($rule['fee_fixed']) && $rule['fee_fixed'] !== null ? (float) $rule['fee_fixed'] : 0.0;
-        $raw = max(0, round($paidAmount * ($percent / 100) - $fee, 2));
-        $amount = number_format($raw, 2, '.', '');
+        $decimals = (int) (Currency::query()
+            ->where('code', strtoupper((string) ($booking->currency ?: 'PKR')))
+            ->value('decimals') ?? 2);
+        $raw = max(0, round($paidAmount * ($percent / 100) - $fee, $decimals));
+        $amount = number_format($raw, $decimals, '.', '');
 
         $action = match (true) {
             $percent >= 100.0 && $fee <= 0 => 'full',

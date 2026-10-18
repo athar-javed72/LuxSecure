@@ -21,6 +21,8 @@ class InquiryController extends Controller
             $query->whereHas('listing', function ($q) use ($user) {
                 $q->where('agent_id', $user->id)->orWhere('owner_id', $user->id);
             });
+        } elseif ($user->isCountryScoped()) {
+            $query->whereHas('listing', fn ($q) => $q->where('country_id', $user->country_id));
         }
 
         if ($request->filled('search')) {

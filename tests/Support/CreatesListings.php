@@ -3,6 +3,7 @@
 namespace Tests\Support;
 
 use App\Models\City;
+use App\Models\Country;
 use App\Models\Listing;
 use App\Models\ListingType;
 use App\Models\TypeAttribute;
@@ -56,6 +57,21 @@ trait CreatesListings
             : $this->makeListingType();
 
         $city = $this->makeCity();
+        if (! array_key_exists('country_id', $overrides) || blank($overrides['country_id'])) {
+            $overrides['country_id'] = Country::query()->firstOrCreate(
+                ['iso2' => 'PK'],
+                [
+                    'name' => 'Pakistan',
+                    'currency_code' => 'PKR',
+                    'default_locale' => 'en',
+                    'timezone' => 'Asia/Karachi',
+                    'phone_code' => '+92',
+                    'area_units' => ['sq_ft', 'marla'],
+                    'is_active' => true,
+                    'sort_order' => 1,
+                ]
+            )->id;
+        }
 
         return Listing::create(array_merge([
             'listing_type_id' => $type->id,

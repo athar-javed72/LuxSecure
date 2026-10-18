@@ -4,9 +4,12 @@ namespace App\Policies;
 
 use App\Models\Review;
 use App\Models\User;
+use App\Policies\Concerns\ChecksCountryScope;
 
 class ReviewPolicy
 {
+    use ChecksCountryScope;
+
     public function viewAny(User $user): bool
     {
         return $user->can('reviews.view.any') || $user->can('reviews.moderate');
@@ -14,7 +17,8 @@ class ReviewPolicy
 
     public function view(User $user, Review $review): bool
     {
-        if ($user->can('reviews.view.any') || $user->can('reviews.moderate')) {
+        if (($user->can('reviews.view.any') || $user->can('reviews.moderate'))
+            && $this->reviewInCountry($user, $review)) {
             return true;
         }
 
@@ -29,16 +33,24 @@ class ReviewPolicy
 
     public function update(User $user, Review $review): bool
     {
-        return $user->can('reviews.moderate');
+        return $user->can('reviews.moderate') && $this->reviewInCountry($user, $review);
     }
 
     public function delete(User $user, Review $review): bool
     {
-        return $user->can('reviews.moderate') || $user->can('reviews.delete.any');
+        return ($user->can('reviews.moderate') || $user->can('reviews.delete.any'))
+            && $this->reviewInCountry($user, $review);
     }
 
     public function moderate(User $user): bool
     {
         return $user->can('reviews.moderate');
+    }
+
+    private function reviewInCountry(User $user, Review $review): bool
+    {
+        $review->loadMissing('listing');
+
+        return $this->inCountryScope($user, $review->listing?->country_id ?? $review->country_id ?? null);
     }
 }

@@ -14,7 +14,12 @@ class ReviewController extends Controller
     {
         $this->authorize('viewAny', Review::class);
 
+        $user = $request->user();
         $query = Review::query()->with(['listing', 'user', 'agent'])->latest();
+
+        if ($user->isCountryScoped()) {
+            $query->whereHas('listing', fn ($q) => $q->where('country_id', $user->country_id));
+        }
 
         if ($request->filled('status') && in_array($request->status, Review::STATUSES, true)) {
             $query->where('status', $request->status);
@@ -27,7 +32,7 @@ class ReviewController extends Controller
 
     public function moderate(Request $request, Review $review): RedirectResponse
     {
-        $this->authorize('moderate', Review::class);
+        $this->authorize('update', $review);
 
         $data = $request->validate([
             'status' => ['required', 'in:approved,rejected'],

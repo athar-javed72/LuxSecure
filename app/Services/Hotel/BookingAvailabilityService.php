@@ -21,11 +21,12 @@ class BookingAvailabilityService
         $checkIn = Carbon::parse($checkIn)->toDateString();
         $checkOut = Carbon::parse($checkOut)->toDateString();
 
+        // Use whereDate so SQLite datetime casts do not make checkout==next-checkin overlap.
         return Booking::query()
             ->where('room_type_id', $roomTypeId)
             ->blockingInventory()
-            ->where('check_in', '<', $checkOut)
-            ->where('check_out', '>', $checkIn)
+            ->whereDate('check_in', '<', $checkOut)
+            ->whereDate('check_out', '>', $checkIn)
             ->when($ignoreBookingId, fn ($q) => $q->where('id', '!=', $ignoreBookingId));
     }
 

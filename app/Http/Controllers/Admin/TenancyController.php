@@ -25,10 +25,13 @@ class TenancyController extends Controller
     {
         $this->authorize('viewAny', Tenancy::class);
 
+        $user = $request->user();
         $query = Tenancy::query()->with(['listing', 'tenant', 'landlord']);
 
-        if (! $request->user()->can('tenancies.view.any')) {
-            $query->where('landlord_id', $request->user()->id);
+        if (! $user->can('tenancies.view.any')) {
+            $query->where('landlord_id', $user->id);
+        } elseif ($user->isCountryScoped()) {
+            $query->whereHas('listing', fn ($q) => $q->where('country_id', $user->country_id));
         }
 
         if ($request->filled('status')) {
@@ -48,8 +51,11 @@ class TenancyController extends Controller
             ->with(['listing', 'tenant', 'payments' => fn ($q) => $q->whereIn('status', ['pending', 'overdue'])->whereDate('due_date', '<', now()->toDateString())])
             ->whereHas('payments', fn ($q) => $q->whereIn('status', ['pending', 'overdue'])->whereDate('due_date', '<', now()->toDateString()));
 
-        if (! $request->user()->can('tenancies.view.any')) {
-            $query->where('landlord_id', $request->user()->id);
+        $user = $request->user();
+        if (! $user->can('tenancies.view.any')) {
+            $query->where('landlord_id', $user->id);
+        } elseif ($user->isCountryScoped()) {
+            $query->whereHas('listing', fn ($q) => $q->where('country_id', $user->country_id));
         }
 
         $tenancies = $query->latest()->paginate(15);
@@ -62,7 +68,10 @@ class TenancyController extends Controller
         $this->authorize('create', Tenancy::class);
 
         $listings = $this->scopedListings($request->user());
-        $tenants = User::role('client')->orderBy('name')->get(['id', 'name', 'email']);
+        $tenants = User::role('client')
+            ->forUserCountry($request->user())
+            ->orderBy('name')
+            ->get(['id', 'name', 'email']);
 
         return view('admin.tenancies.create', compact('listings', 'tenants'));
     }
@@ -133,7 +142,7 @@ class TenancyController extends Controller
 
     private function scopedListings(User $user)
     {
-        $query = Listing::query()->orderBy('title');
+        $query = Listing::query()->forUserCountry($user)->orderBy('title');
 
         if (! $user->can('listings.view.any')) {
             $query->where(function ($q) use ($user) {

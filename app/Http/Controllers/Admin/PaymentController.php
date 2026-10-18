@@ -19,10 +19,25 @@ class PaymentController extends Controller
     {
         $this->authorize('viewAny', Payment::class);
 
+        $user = $request->user();
         $query = Payment::query()->with(['user', 'invoice', 'payable'])->latest();
+        $query->forUserCountry($user);
 
-        if (! $request->user()->can('payments.view.any')) {
-            $query->where('user_id', $request->user()->id);
+        if (! $user->can('payments.view.any')) {
+            $query->where(function ($q) use ($user) {
+                $q->where('user_id', $user->id)
+                    ->orWhereHasMorph('payable', ['App\\Models\\Booking'], function ($b) use ($user) {
+                        $b->whereHas('listing', function ($l) use ($user) {
+                            $l->where('owner_id', $user->id)
+                                ->orWhere('agent_id', $user->id)
+                                ->orWhere('manager_id', $user->id)
+                                ->orWhere(function ($org) use ($user) {
+                                    $org->where('organization_id', $user->organization_id)
+                                        ->whereNotNull('organization_id');
+                                });
+                        });
+                    });
+            });
         }
 
         if ($request->filled('status') && in_array($request->status, Payment::STATUSES, true)) {
@@ -96,9 +111,10 @@ class PaymentController extends Controller
             403
         );
 
-        $query = Payment::query()->with('user');
-        if (! $request->user()->can('payments.view.any')) {
-            $query->where('user_id', $request->user()->id);
+        $user = $request->user();
+        $query = Payment::query()->with('user')->forUserCountry($user);
+        if (! $user->can('payments.view.any')) {
+            $query->where('user_id', $user->id);
         }
         if ($request->filled('status')) {
             $query->where('status', $request->status);

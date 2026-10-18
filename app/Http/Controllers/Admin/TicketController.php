@@ -17,13 +17,16 @@ class TicketController extends Controller
     {
         $this->authorize('viewAny', Ticket::class);
 
+        $user = $request->user();
         $query = Ticket::query()->with(['user', 'assignee'])->latest();
 
-        if (! $request->user()->can('tickets.view.any')) {
-            $query->where(function ($q) use ($request) {
-                $q->where('user_id', $request->user()->id)
-                    ->orWhere('assigned_to', $request->user()->id);
+        if (! $user->can('tickets.view.any')) {
+            $query->where(function ($q) use ($user) {
+                $q->where('user_id', $user->id)
+                    ->orWhere('assigned_to', $user->id);
             });
+        } elseif ($user->isCountryScoped()) {
+            $query->whereHas('user', fn ($q) => $q->where('country_id', $user->country_id));
         }
 
         if ($request->filled('status')) {
@@ -40,7 +43,10 @@ class TicketController extends Controller
         $this->authorize('create', Ticket::class);
 
         return view('admin.tickets.create', [
-            'supportUsers' => User::role('support')->orderBy('name')->get(['id', 'name']),
+            'supportUsers' => User::role('support')
+                ->forUserCountry(request()->user())
+                ->orderBy('name')
+                ->get(['id', 'name']),
         ]);
     }
 

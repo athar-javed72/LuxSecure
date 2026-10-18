@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Concerns\LogsAdminActivity;
+use App\Support\Scopes\CountryScoped;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -12,7 +13,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasApiTokens, HasFactory, HasRoles, LogsAdminActivity, Notifiable;
+    use CountryScoped, HasApiTokens, HasFactory, HasRoles, LogsAdminActivity, Notifiable;
 
     protected $fillable = [
         'name',
@@ -114,18 +115,29 @@ class User extends Authenticatable implements MustVerifyEmail
             return true;
         }
 
-        if ($this->organization_id && $listing->organization_id
-            && (int) $this->organization_id === (int) $listing->organization_id
-            && $this->hasAnyRole(['hotel_manager', 'organization_admin'])) {
+        // organization_admin: all branches in their org.
+        if ($this->hasRole('organization_admin')
+            && $this->organization_id
+            && $listing->organization_id
+            && (int) $this->organization_id === (int) $listing->organization_id) {
             return true;
         }
 
+        // hotel_manager: only assigned branch (manager_id), not whole org.
         return false;
     }
 
     public function isCountryScoped(): bool
     {
-        return filled($this->country_id) && ! $this->isSuperAdmin();
+        if ($this->isSuperAdmin()) {
+            return false;
+        }
+
+        if ($this->hasRole('admin') && blank($this->country_id)) {
+            return false;
+        }
+
+        return $this->hasRole('country_admin') || filled($this->country_id);
     }
 
     public function tenanciesAsTenant()

@@ -21,3 +21,7 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
+
+luxsecure_db.zip
+luxsecure_db.sql
+

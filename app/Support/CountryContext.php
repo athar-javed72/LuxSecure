@@ -6,11 +6,16 @@ use App\Models\Country;
 use App\Models\CountrySetting;
 use App\Models\Setting;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Schema;
 
 class CountryContext
 {
     public static function current(): ?Country
     {
+        if (! Schema::hasTable('countries')) {
+            return null;
+        }
+
         $id = session('country_id') ?: Auth::user()?->country_id;
         if ($id) {
             return Country::query()->where('is_active', true)->find($id);
@@ -22,6 +27,10 @@ class CountryContext
 
     public static function set(?int $countryId, ?string $currency = null, ?string $locale = null): void
     {
+        if (! Schema::hasTable('countries')) {
+            return;
+        }
+
         $country = $countryId
             ? Country::query()->where('is_active', true)->find($countryId)
             : null;
@@ -39,11 +48,15 @@ class CountryContext
     public static function setting(string $key, mixed $default = null): mixed
     {
         $country = self::current();
-        if ($country) {
+        if ($country && Schema::hasTable('country_settings')) {
             $value = CountrySetting::getValue($country->id, $key);
             if ($value !== null && $value !== '') {
                 return $value;
             }
+        }
+
+        if (! Schema::hasTable('settings')) {
+            return $default;
         }
 
         return Setting::getValue($key, $default);
@@ -71,6 +84,6 @@ class CountryContext
             default => 'commerce.commission_rate',
         };
 
-        return (float) self::setting($key, Setting::getValue($key, Setting::getValue('commerce.commission_rate', 0)));
+        return (float) self::setting($key, Schema::hasTable('settings') ? Setting::getValue($key, Setting::getValue('commerce.commission_rate', 0)) : 0);
     }
 }

@@ -4,9 +4,12 @@ namespace App\Policies;
 
 use App\Models\Payment;
 use App\Models\User;
+use App\Policies\Concerns\ChecksCountryScope;
 
 class PaymentPolicy
 {
+    use ChecksCountryScope;
+
     public function viewAny(User $user): bool
     {
         return $user->can('payments.view.any') || $user->can('payments.view.own');
@@ -18,8 +21,19 @@ class PaymentPolicy
             return true;
         }
 
-        return $user->can('payments.view.own')
-            && (int) $payment->user_id === (int) $user->id;
+        if ($user->can('payments.view.own') && (int) $payment->user_id === (int) $user->id) {
+            return true;
+        }
+
+        // Managers: own listing payments.
+        if ($user->can('payments.view.own') && $payment->payable) {
+            $listing = $payment->payable->listing ?? null;
+            if ($listing && $user->ownsListing($listing)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function create(User $user): bool
@@ -47,30 +61,13 @@ class PaymentPolicy
             && (int) $payment->user_id === (int) $user->id;
     }
 
-    private function inCountryScope(User $user, Payment $payment): bool
-    {
-        if ($user->isSuperAdmin()) {
-            return true;
-        }
-
-        if ($user->hasRole('admin') && blank($user->country_id)) {
-            return true;
-        }
-
-        if (filled($user->country_id)) {
-            return (int) $payment->country_id === (int) $user->country_id;
-        }
-
-        return true;
-    }
-
     public function approve(User $user, Payment $payment): bool
     {
-        return $user->can('payments.update.any');
+        return $user->can('payments.update.any') && $this->inCountryScope($user, $payment);
     }
 
     public function refund(User $user, Payment $payment): bool
     {
-        return $user->can('payments.refund');
+        return $user->can('payments.refund') && $this->inCountryScope($user, $payment);
     }
 }

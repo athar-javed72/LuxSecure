@@ -7,6 +7,7 @@ use App\Models\CancellationPolicy;
 use App\Models\CancellationPolicyRule;
 use App\Models\Country;
 use App\Models\Organization;
+use App\Models\User;
 use App\Services\Payments\RefundCalculator;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -20,17 +21,28 @@ class CancellationPolicyController extends Controller
 {
     public function __construct(private readonly RefundCalculator $refunds) {}
 
-    public function index(): View
+    public function index(Request $request): View
     {
         Gate::authorize('cancellation_policies.view');
 
-        $policies = CancellationPolicy::query()
+        $user = $request->user();
+        $query = CancellationPolicy::query()
             ->with(['country', 'organization'])
             ->withCount('rules')
-            ->orderBy('name')
-            ->paginate(20);
+            ->orderBy('name');
 
-        return view('admin.cancellation-policies.index', compact('policies'));
+        if ($user->hasRole('organization_admin') && $user->organization_id) {
+            $query->where('organization_id', $user->organization_id);
+        } elseif ($user->isCountryScoped()) {
+            $query->where(function ($q) use ($user) {
+                $q->where('country_id', $user->country_id)
+                    ->orWhereNull('country_id');
+            });
+        }
+
+        return view('admin.cancellation-policies.index', [
+            'policies' => $query->paginate(20),
+        ]);
     }
 
     public function create(): View
@@ -57,6 +69,7 @@ class CancellationPolicyController extends Controller
     public function edit(CancellationPolicy $cancellation_policy): View
     {
         Gate::authorize('cancellation_policies.update');
+        $this->assertPolicyAccess(request()->user(), $cancellation_policy);
 
         $cancellation_policy->load('rules');
         $preview = $this->refunds->previewTable($cancellation_policy);
@@ -70,6 +83,7 @@ class CancellationPolicyController extends Controller
     public function update(Request $request, CancellationPolicy $cancellation_policy): RedirectResponse
     {
         Gate::authorize('cancellation_policies.update');
+        $this->assertPolicyAccess($request->user(), $cancellation_policy);
 
         $data = $this->validated($request, $cancellation_policy);
 
@@ -85,6 +99,7 @@ class CancellationPolicyController extends Controller
     public function destroy(CancellationPolicy $cancellation_policy): RedirectResponse
     {
         Gate::authorize('cancellation_policies.delete');
+        $this->assertPolicyAccess(request()->user(), $cancellation_policy);
 
         $cancellation_policy->delete();
 
@@ -94,6 +109,7 @@ class CancellationPolicyController extends Controller
     public function preview(CancellationPolicy $cancellation_policy): View
     {
         Gate::authorize('cancellation_policies.view');
+        $this->assertPolicyAccess(request()->user(), $cancellation_policy);
 
         $cancellation_policy->load('rules');
         $preview = $this->refunds->previewTable($cancellation_policy);
@@ -109,10 +125,42 @@ class CancellationPolicyController extends Controller
      */
     private function formData(): array
     {
+        $user = request()->user();
+        $countries = Country::query()->orderBy('name');
+        $organizations = Organization::query()->orderBy('name');
+
+        if ($user?->hasRole('organization_admin') && $user->organization_id) {
+            $organizations->where('id', $user->organization_id);
+        } elseif ($user?->isCountryScoped()) {
+            $countries->where('id', $user->country_id);
+            $organizations->where('country_id', $user->country_id);
+        }
+
         return [
-            'countries' => Country::query()->orderBy('name')->pluck('name', 'id'),
-            'organizations' => Organization::query()->orderBy('name')->pluck('name', 'id'),
+            'countries' => $countries->pluck('name', 'id'),
+            'organizations' => $organizations->pluck('name', 'id'),
         ];
+    }
+
+    private function assertPolicyAccess(?User $user, CancellationPolicy $policy): void
+    {
+        if (! $user) {
+            abort(403);
+        }
+
+        if ($user->hasRole('organization_admin')) {
+            abort_unless(
+                $policy->organization_id
+                && (int) $policy->organization_id === (int) $user->organization_id,
+                403
+            );
+
+            return;
+        }
+
+        if ($user->isCountryScoped() && $policy->country_id) {
+            abort_unless((int) $policy->country_id === (int) $user->country_id, 403);
+        }
     }
 
     /**

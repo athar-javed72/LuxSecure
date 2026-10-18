@@ -19,10 +19,18 @@ class LeadController extends Controller
     {
         $this->authorize('viewAny', Lead::class);
 
+        $user = $request->user();
         $query = Lead::query()->with(['listing', 'assignedAgent'])->latest();
 
-        if (! $request->user()->can('leads.view.any')) {
-            $query->where('assigned_agent_id', $request->user()->id);
+        if ($user->isCountryScoped()) {
+            $query->where(function ($q) use ($user) {
+                $q->whereHas('listing', fn ($l) => $l->where('country_id', $user->country_id))
+                    ->orWhereHas('assignedAgent', fn ($a) => $a->where('country_id', $user->country_id));
+            });
+        }
+
+        if (! $user->can('leads.view.any')) {
+            $query->where('assigned_agent_id', $user->id);
         }
 
         if ($request->filled('status')) {
@@ -31,7 +39,7 @@ class LeadController extends Controller
 
         return view('admin.leads.index', [
             'leads' => $query->paginate(20)->withQueryString(),
-            'agents' => User::role('agent')->orderBy('name')->get(['id', 'name']),
+            'agents' => User::role('agent')->forUserCountry($user)->orderBy('name')->get(['id', 'name']),
         ]);
     }
 
@@ -104,9 +112,16 @@ class LeadController extends Controller
         $this->authorize('viewAny', Lead::class);
         abort_unless($request->user()->can('reports.export') || $request->user()->can('leads.view.any') || $request->user()->can('leads.view.own'), 403);
 
+        $user = $request->user();
         $query = Lead::query()->with(['listing', 'assignedAgent']);
-        if (! $request->user()->can('leads.view.any')) {
-            $query->where('assigned_agent_id', $request->user()->id);
+        if ($user->isCountryScoped()) {
+            $query->where(function ($q) use ($user) {
+                $q->whereHas('listing', fn ($l) => $l->where('country_id', $user->country_id))
+                    ->orWhereHas('assignedAgent', fn ($a) => $a->where('country_id', $user->country_id));
+            });
+        }
+        if (! $user->can('leads.view.any')) {
+            $query->where('assigned_agent_id', $user->id);
         }
 
         $rows = $query->latest()->get()->map(fn (Lead $l) => [
