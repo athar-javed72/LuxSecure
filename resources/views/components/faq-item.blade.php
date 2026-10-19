@@ -11,17 +11,17 @@
 <div
     x-data="faqItem"
     data-alpine-config="{{ json_encode($faqConfig, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) }}"
-    {{ $attributes->merge(['class' => 'rounded-sm border border-slate-200 px-5 py-4']) }}
+    {{ $attributes->merge(['class' => 'rounded-[var(--radius-card)] border border-[var(--color-border)] bg-white px-5 py-4']) }}
 >
     <button
         type="button"
-        class="flex w-full items-center justify-between gap-4 text-left min-h-11 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fs-brand"
+        class="flex w-full items-center justify-between gap-4 text-left min-h-11 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-forest)]"
         @click="toggle()"
         :aria-expanded="ariaExpanded()"
     >
-        <h3 class="text-base font-semibold text-fs-primary">{{ $question }}</h3>
+        <h3 class="text-base font-semibold text-[var(--color-ink)]">{{ $question }}</h3>
         <svg
-            class="w-5 h-5 shrink-0 text-fs-secondary transition-transform duration-150"
+            class="w-5 h-5 shrink-0 text-[var(--color-muted)] transition-transform duration-150"
             :class="chevronClass()"
             fill="none"
             stroke="currentColor"
@@ -31,7 +31,7 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M19 9l-7 7-7-7"/>
         </svg>
     </button>
-    <div x-show="open" x-cloak class="mt-3 text-sm text-fs-secondary">
+    <div x-show="open" x-cloak class="mt-3 text-sm text-[var(--color-muted)] max-w-prose">
         {{ $answer }}
     </div>
 </div>

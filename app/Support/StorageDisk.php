@@ -37,6 +37,11 @@ class StorageDisk
             return $path;
         }
 
+        // Public web paths (e.g. /images/listings/...) — not storage disk keys
+        if (str_starts_with($path, '/')) {
+            return $path;
+        }
+
         $disk = static::uploads();
 
         try {

@@ -30,12 +30,14 @@ class MaskanoorReferenceDataTest extends TestCase
     {
         $this->seed(ReferenceDataSeeder::class);
 
-        Setting::setValue('site.name', 'Edited Brand', 'site', 'string', 'Site name');
+        Setting::setValue('site.email', 'owner-edited@example.com', 'site', 'string', 'Contact email');
         Country::query()->where('iso2', 'PK')->update(['tax_percent' => 7.5]);
 
         $this->seed(ReferenceDataSeeder::class);
 
-        $this->assertSame('Edited Brand', Setting::getValue('site.name'));
+        // Non-brand settings must not be overwritten; brand identity keys are force-synced on rebrand.
+        $this->assertSame('owner-edited@example.com', Setting::getValue('site.email'));
+        $this->assertSame('Maskanoor Group', Setting::getValue('site.name'));
         $this->assertEqualsWithDelta(7.5, (float) Country::query()->where('iso2', 'PK')->value('tax_percent'), 0.0001);
     }
 

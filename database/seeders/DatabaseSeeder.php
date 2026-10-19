@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
                 SettingsSeeder::class,
                 CmsPagesSeeder::class,
                 DemoOrganizationSeeder::class,
+                FaqSeeder::class,
             ]);
         }
     }

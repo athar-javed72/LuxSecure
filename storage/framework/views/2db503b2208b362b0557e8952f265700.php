@@ -32,7 +32,7 @@ foreach ($attributes->all() as $__key => $__value) {
 
 unset($__defined_vars, $__key, $__value); ?>
 
-<<?php echo e($as); ?> <?php echo e($attributes->merge(['class' => 'w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12'])); ?>>
+<<?php echo e($as); ?> <?php echo e($attributes->merge(['class' => 'fs-container'])); ?>>
     <?php echo e($slot); ?>
 
 </<?php echo e($as); ?>>

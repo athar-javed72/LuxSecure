@@ -1,28 +1,67 @@
-@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,400;1,500&family=Manrope:wght@400;500;600;700&display=swap");
 @import "tailwindcss";
 
 /*
- | Maskanoor — Estate Noir theme
- | Deep ink navy for trust/structure · warm brass for luxury CTAs · stone surfaces
- | Suited to high-end property listing sites (not a monochrome green brand wash).
+ | Maskanoor Group — Forest / Gold / Ivory
+ | Single source of truth for marketing + shared UI tokens.
+ | Tailwind `fs-*` aliases map to these so existing Blade classes keep working.
  */
+:root {
+    --color-forest: #142A25;
+    --color-forest-shadow: #0D1D19;
+    --color-gold: #D6B779;
+    --color-gold-dark: #876A2F;
+    --color-ivory: #F5F0E6;
+    --color-ivory-50: #FBF8F2;
+    --color-stone: #E5DED1;
+    --color-sage: #B8C5BC;
+    --color-ink: #202723;
+    --color-muted: #5B655F;
+    --color-white: #FFFFFF;
+    --color-border: rgba(20, 42, 37, 0.12);
+
+    --font-display: "Cormorant Garamond", Georgia, serif;
+    --font-body: "Manrope", Arial, sans-serif;
+
+    --radius-card: 8px;
+    --radius-button: 10px;
+    --radius-input: 8px;
+
+    --container-max: 1280px;
+    --gutter: 24px;
+    --section-y: clamp(64px, 8vw, 112px);
+    --header-h: 72px;
+
+    --header-bg: transparent;
+    --header-fg: var(--color-ivory);
+    --shadow-card: 0 1px 2px rgba(13, 29, 25, 0.06);
+}
+
+@media (min-width: 768px) {
+    :root {
+        --gutter: 32px;
+    }
+}
+
+@media (min-width: 1280px) {
+    :root {
+        --gutter: 48px;
+    }
+}
+
 @theme {
-    --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
-    --font-display: "Cormorant Garamond", ui-serif, Georgia, serif;
+    --font-sans: "Manrope", Arial, sans-serif;
+    --font-display: "Cormorant Garamond", Georgia, serif;
 
-    /* Ink — structure, nav, footer, headings */
-    --color-fs-primary: #0b1426;
-    --color-fs-secondary: #4b5568;
-    --color-fs-muted: #94a3b8;
-
-    /* Brass — luxury accent / primary CTAs */
-    --color-fs-brand: #9a7b4f;
-    --color-fs-brand-dark: #7a623e;
-    --color-fs-brand-light: #f0e6d4;
-
-    /* Supporting */
-    --color-fs-accent: #1e3a5f;
-    --color-fs-surface: #f5f4f1;
+    /* Map legacy fs-* to Forest/Gold/Ivory (no navy) */
+    --color-fs-primary: #142A25;
+    --color-fs-secondary: #5B655F;
+    --color-fs-muted: #5B655F;
+    --color-fs-brand: #876A2F;
+    --color-fs-brand-dark: #6E5626;
+    --color-fs-brand-light: #F5F0E6;
+    --color-fs-accent: #142A25;
+    --color-fs-surface: #F5F0E6;
     --color-fs-danger: #b91c1c;
 
     --text-xs: 12px;
@@ -37,11 +76,11 @@
     --text-xl--line-height: 1.25;
     --text-2xl: 40px;
     --text-2xl--line-height: 1.15;
-    --text-hero: 34px;
-    --text-hero--line-height: 1.15;
+    --text-hero: 40px;
+    --text-hero--line-height: 1.05;
 
-    --radius-sm: 6px;
-    --radius-md: 12px;
+    --radius-sm: 8px;
+    --radius-md: 8px;
     --radius-full: 9999px;
 
     --spacing-1: 4px;
@@ -53,8 +92,8 @@
     --spacing-16: 64px;
     --spacing-24: 96px;
 
-    --shadow-sm: 0 1px 2px 0 rgb(11 20 38 / 0.05), 0 1px 3px 0 rgb(11 20 38 / 0.06);
-    --shadow-lg: 0 12px 24px -8px rgb(11 20 38 / 0.14), 0 4px 8px -4px rgb(11 20 38 / 0.08);
+    --shadow-sm: 0 1px 2px rgba(13, 29, 25, 0.06);
+    --shadow-lg: 0 1px 2px rgba(13, 29, 25, 0.06);
 
     --breakpoint-sm: 640px;
     --breakpoint-md: 768px;
@@ -62,26 +101,54 @@
     --breakpoint-xl: 1280px;
     --breakpoint-2xl: 1536px;
 
-    --max-width-prose: 65ch;
+    --max-width-prose: 56ch;
 }
 
 @layer base {
     html {
         scroll-behavior: smooth;
+        scroll-padding-top: calc(var(--header-h) + 16px);
         overflow-x: hidden;
+        background-color: var(--color-ivory);
+        min-height: 100%;
     }
 
     body {
-        @apply font-sans text-base text-fs-primary bg-fs-surface antialiased;
+        font-family: var(--font-body);
+        font-size: clamp(16px, 1.05vw, 17px);
+        color: var(--color-ink);
+        background-color: var(--color-ivory);
+        -webkit-font-smoothing: antialiased;
         overflow-x: hidden;
+        min-height: 100%;
+        min-height: 100svh;
     }
 
     h1,
     h2,
+    h3,
     .fs-display {
         font-family: var(--font-display);
         font-weight: 600;
         letter-spacing: -0.01em;
+        color: var(--color-ink);
+    }
+
+    h1 {
+        font-size: clamp(40px, 5vw, 76px);
+        line-height: 1.05;
+    }
+
+    h2 {
+        font-size: clamp(32px, 3.5vw, 48px);
+        line-height: 1.12;
+    }
+
+    h3 {
+        font-size: clamp(20px, 1.5vw, 24px);
+        line-height: 1.25;
+        font-family: var(--font-body);
+        font-weight: 600;
     }
 
     [x-cloak] {
@@ -89,7 +156,8 @@
     }
 
     :focus-visible {
-        @apply outline-2 outline-offset-2 outline-fs-brand;
+        outline: 2px solid var(--color-forest);
+        outline-offset: 2px;
     }
 
     a {
@@ -103,6 +171,67 @@
 }
 
 @layer components {
+    .fs-container {
+        width: 100%;
+        max-width: var(--container-max);
+        margin-inline: auto;
+        padding-inline: var(--gutter);
+    }
+
+    .fs-section {
+        padding-block: var(--section-y);
+    }
+
+    .fs-section-ivory {
+        background-color: var(--color-ivory);
+    }
+
+    .fs-section-ivory-50 {
+        background-color: var(--color-ivory-50);
+    }
+
+    .fs-eyebrow {
+        font-family: var(--font-body);
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--color-gold-dark);
+    }
+
+    .fs-eyebrow-on-dark {
+        color: var(--color-gold);
+    }
+
+    .fs-lead {
+        font-size: clamp(16px, 1.1vw, 17px);
+        line-height: 1.6;
+        color: var(--color-muted);
+        max-width: 56ch;
+    }
+
+    .fs-card {
+        background: var(--color-white);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-card);
+        box-shadow: var(--shadow-card);
+        transition: border-color 200ms ease, transform 200ms ease;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .fs-card:hover {
+            border-color: color-mix(in srgb, var(--color-gold-dark) 40%, transparent);
+            transform: translateY(-2px);
+        }
+    }
+
+    .fs-line-clamp-1 {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 1;
+        overflow: hidden;
+    }
+
     .fs-line-clamp-2 {
         display: -webkit-box;
         -webkit-box-orient: vertical;
@@ -119,54 +248,143 @@
         display: none;
     }
 
-    /* Subtle property-site atmosphere on light sections */
     .fs-surface-panel {
-        @apply bg-white border border-black/5 shadow-sm;
+        background: var(--color-white);
+        border: 1px solid var(--color-border);
+        box-shadow: var(--shadow-card);
+        border-radius: var(--radius-card);
     }
 
     .fs-table-wrap thead {
-        @apply bg-fs-surface text-left text-xs uppercase tracking-wide text-fs-muted;
+        background: var(--color-ivory-50);
+        text-align: left;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--color-muted);
     }
 
     .fs-table-wrap th {
-        @apply px-3 py-3 font-semibold whitespace-nowrap;
+        padding: 0.75rem;
+        font-weight: 600;
+        white-space: nowrap;
     }
 
     .fs-table-wrap td {
-        @apply px-3 py-3 border-t border-black/5 align-middle;
+        padding: 0.75rem;
+        border-top: 1px solid var(--color-border);
+        vertical-align: middle;
     }
 
     .fs-table-wrap tbody tr {
-        @apply hover:bg-fs-surface/60 transition-colors duration-150;
+        transition: background-color 150ms ease;
     }
 
-    /* Mobile card-stack for dense admin tables (opt-in via .fs-table-stack) */
+    .fs-table-wrap tbody tr:hover {
+        background: color-mix(in srgb, var(--color-ivory) 60%, transparent);
+    }
+
     @media (max-width: 639px) {
         .fs-table-stack thead {
-            @apply sr-only;
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
         }
 
         .fs-table-stack tbody tr {
-            @apply block border border-black/5 rounded-sm mb-3 bg-white;
+            display: block;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-card);
+            margin-bottom: 0.75rem;
+            background: var(--color-white);
         }
 
         .fs-table-stack tbody td {
-            @apply flex justify-between gap-3 border-0 border-b border-black/5 px-4 py-2.5 last:border-b-0;
+            display: flex;
+            justify-content: space-between;
+            gap: 0.75rem;
+            border: 0;
+            border-bottom: 1px solid var(--color-border);
+            padding: 0.625rem 1rem;
+        }
+
+        .fs-table-stack tbody td:last-child {
+            border-bottom: 0;
         }
 
         .fs-table-stack tbody td::before {
             content: attr(data-label);
-            @apply font-semibold text-fs-muted text-xs uppercase tracking-wide shrink-0;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--color-muted);
+            flex-shrink: 0;
         }
     }
 
     .fs-sticky-save {
-        @apply sticky bottom-0 z-20 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-4 bg-white/95 backdrop-blur border-t border-black/10 shadow-lg;
+        position: sticky;
+        bottom: 0;
+        z-index: 20;
+        margin-inline: -1rem;
+        padding: 1rem;
+        background: color-mix(in srgb, var(--color-white) 95%, transparent);
+        backdrop-filter: blur(8px);
+        border-top: 1px solid var(--color-border);
+        box-shadow: var(--shadow-card);
+    }
+
+    @media (min-width: 640px) {
+        .fs-sticky-save {
+            margin-inline: -1.5rem;
+            padding-inline: 1.5rem;
+        }
     }
 
     .fs-lottie {
         width: 260px;
         height: 260px;
         display: block;
+    }
+
+    .fs-reveal {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .fs-reveal.is-visible {
+            opacity: 1;
+            transform: none;
+            transition: opacity 400ms ease, transform 400ms ease;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .fs-reveal {
+            opacity: 1;
+            transform: none;
+        }
+    }
+
+    .fs-hero-overlay {
+        background:
+            linear-gradient(90deg, rgba(13, 29, 25, 0.78) 0%, rgba(13, 29, 25, 0.45) 55%, rgba(13, 29, 25, 0.15) 100%),
+            linear-gradient(0deg, rgba(13, 29, 25, 0.55) 0%, transparent 40%);
+    }
+
+    .fs-break-overlay {
+        background: rgba(13, 29, 25, 0.45);
+    }
+
+    .fs-photo-placeholder {
+        background: color-mix(in srgb, var(--color-forest) 8%, var(--color-ivory));
     }
 }

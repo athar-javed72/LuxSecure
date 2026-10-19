@@ -30,6 +30,7 @@ final class BrandAssets
 
         return match ($layout) {
             'stacked', 'primary' => "/brand/logos/maskanoor-group-primary-{$suffix}.svg",
+            'compact' => "/brand/logos/maskanoor-group-horizontal-compact-{$suffix}.svg",
             'monogram' => "/brand/monogram/maskanoor-monogram-two-tone-{$suffix}.svg",
             'monogram-nostar' => "/brand/monogram/maskanoor-monogram-nostar-two-tone-{$suffix}.svg",
             default => "/brand/logos/maskanoor-group-horizontal-{$suffix}.svg",

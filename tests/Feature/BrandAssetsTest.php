@@ -16,6 +16,8 @@ class BrandAssetsTest extends TestCase
         foreach ([
             BrandAssets::logo('horizontal', 'dark'),
             BrandAssets::logo('horizontal', 'light'),
+            BrandAssets::logo('compact', 'dark'),
+            BrandAssets::logo('compact', 'light'),
             BrandAssets::logo('stacked', 'dark'),
             BrandAssets::logo('monogram-nostar', 'dark'),
             BrandAssets::logo('stacked', 'dark', 'hotels'),
@@ -46,14 +48,16 @@ class BrandAssetsTest extends TestCase
             ->assertSee('/brand/divisions/maskanoor-living-for-dark-bg.svg', false);
     }
 
-    public function test_home_uses_brand_favicon_and_horizontal_lockup(): void
+    public function test_home_uses_brand_favicon_and_compact_lockup(): void
     {
         $this->seed(DatabaseSeeder::class);
 
         $this->get('/')
             ->assertOk()
             ->assertSee('/brand/favicon/favicon.svg', false)
-            ->assertSee('/brand/logos/maskanoor-group-horizontal-for-dark-bg.svg', false)
-            ->assertDontSee('concept logo', false);
+            ->assertSee('/brand/logos/maskanoor-group-horizontal-compact-for-dark-bg.svg', false)
+            ->assertDontSee('concept logo', false)
+            ->assertDontSee('Enterprise-grade security', false)
+            ->assertDontSee('Equal tiles for every category', false);
     }
 }

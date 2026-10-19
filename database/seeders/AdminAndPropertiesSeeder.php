@@ -89,7 +89,7 @@ class AdminAndPropertiesSeeder extends Seeder
                 'area_size' => 1200,
                 'area_unit' => 'sq_ft',
                 'attributes' => ['bedrooms' => 2, 'bathrooms' => 2, 'floor' => 5, 'furnished' => true],
-                'featured_image' => 'https://images.unsplash.com/photo-1502673530728-f79b4cab31b1?auto=format&fit=crop&w=1200&q=80',
+                'featured_image' => '/images/listings/apartment-1.jpg',
             ],
             [
                 'title' => 'DHA Apartment for Rent',
@@ -102,7 +102,7 @@ class AdminAndPropertiesSeeder extends Seeder
                 'area_size' => 1400,
                 'area_unit' => 'sq_ft',
                 'attributes' => ['bedrooms' => 3, 'bathrooms' => 2, 'floor' => 8, 'furnished' => false],
-                'featured_image' => 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1200&q=80',
+                'featured_image' => '/images/listings/apartment-2.jpg',
             ],
             [
                 'title' => 'Model Town Family House',
@@ -115,7 +115,7 @@ class AdminAndPropertiesSeeder extends Seeder
                 'area_size' => 10,
                 'area_unit' => 'marla',
                 'attributes' => ['bedrooms' => 5, 'bathrooms' => 4, 'garage' => true],
-                'featured_image' => 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=1200&q=80',
+                'featured_image' => '/images/listings/house-1.jpg',
             ],
             [
                 'title' => 'Bahria Town Residential Plot',
@@ -128,7 +128,7 @@ class AdminAndPropertiesSeeder extends Seeder
                 'area_size' => 10,
                 'area_unit' => 'marla',
                 'attributes' => ['plot_number' => 'B-214', 'facing' => 'North'],
-                'featured_image' => 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
+                'featured_image' => '/images/listings/plot-1.jpg',
             ],
             [
                 'title' => 'Blue Area Boutique Hotel',
@@ -141,7 +141,7 @@ class AdminAndPropertiesSeeder extends Seeder
                 'area_size' => 8000,
                 'area_unit' => 'sq_ft',
                 'attributes' => ['star_rating' => '5', 'rooms' => 42, 'breakfast_included' => true],
-                'featured_image' => 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80',
+                'featured_image' => '/images/listings/hotel-1.jpg',
             ],
         ];
 
@@ -159,7 +159,7 @@ class AdminAndPropertiesSeeder extends Seeder
                     'slug' => $slug,
                     'owner_id' => $admin->id,
                     'agent_id' => $admin->id,
-                    'description' => 'A carefully verified Maskanoor listing with modern finishes and a prime location.',
+                    'description' => 'A curated Maskanoor sample listing with modern finishes and a prime location.',
                 ])
             );
         }

@@ -17,16 +17,17 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('styles')
 </head>
-<body class="min-h-screen flex flex-col bg-fs-surface text-fs-primary {{ !empty($isRtl) ? 'rtl' : '' }}">
-    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-3 focus:bg-fs-brand focus:text-white focus:rounded-sm">
+@php $isHome = request()->routeIs('home'); @endphp
+<body class="min-h-screen flex flex-col bg-[var(--color-ivory)] text-[var(--color-ink)] {{ !empty($isRtl) ? 'rtl' : '' }}">
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-3 focus:bg-[var(--color-forest)] focus:text-[var(--color-ivory)] focus:rounded-[var(--radius-button)]">
         Skip to main content
     </a>
 
     @include('include.navbar')
 
-    <main id="main-content" class="flex-1 pt-[72px]">
+    <main id="main-content" class="flex-1 {{ $isHome ? 'pt-0' : 'pt-[var(--header-h)]' }}">
         @if (session('success') || session('error') || session('status'))
-            <x-container class="pt-4">
+            <x-container class="pt-4 {{ $isHome ? 'pt-[calc(var(--header-h)+1rem)]' : '' }}">
                 @if (session('success'))
                     <x-alert tone="success" class="mb-2" dismissible>{{ session('success') }}</x-alert>
                 @endif

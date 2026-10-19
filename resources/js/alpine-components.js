@@ -86,9 +86,16 @@ export function registerAlpineComponents(Alpine) {
             };
             onScroll();
             window.addEventListener('scroll', onScroll, { passive: true });
+            this.$watch('navOpen', (open) => {
+                document.body.style.overflow = open ? 'hidden' : '';
+            });
         },
         openNav() {
             this.navOpen = true;
+            this.$nextTick(() => {
+                const panel = document.getElementById('mobile-nav-panel');
+                panel?.querySelector('button, a')?.focus?.();
+            });
         },
         closeNav() {
             this.navOpen = false;
@@ -109,6 +116,27 @@ export function registerAlpineComponents(Alpine) {
             this.navOpen = false;
             this.profileOpen = false;
             this.localeOpen = false;
+        },
+        trapFocus(event) {
+            const panel = document.getElementById('mobile-nav-panel');
+            if (!panel || !this.navOpen) {
+                return;
+            }
+            const focusable = panel.querySelectorAll(
+                'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
+            );
+            if (!focusable.length) {
+                return;
+            }
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+            if (event.shiftKey && document.activeElement === first) {
+                event.preventDefault();
+                last.focus();
+            } else if (!event.shiftKey && document.activeElement === last) {
+                event.preventDefault();
+                first.focus();
+            }
         },
         profileExpanded() {
             return this.profileOpen ? 'true' : 'false';
@@ -153,6 +181,24 @@ export function registerAlpineComponents(Alpine) {
         show: true,
         dismiss() {
             this.show = false;
+        },
+    }));
+
+    Alpine.data('revealOnView', () => ({
+        init() {
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                this.$el.classList.add('is-visible');
+                return;
+            }
+            const io = new IntersectionObserver((entries) => {
+                entries.forEach((e) => {
+                    if (e.isIntersecting) {
+                        e.target.classList.add('is-visible');
+                        io.unobserve(e.target);
+                    }
+                });
+            }, { threshold: 0.2 });
+            io.observe(this.$el);
         },
     }));
 

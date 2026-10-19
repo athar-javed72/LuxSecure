@@ -71,7 +71,7 @@ class SeederSafetyTest extends TestCase
 
         $this->assertSame('pmobie264@gmail.com', Setting::getValue('site.email'));
         $this->assertSame('+923228439536', Setting::getValue('site.phone'));
-        $this->assertSame('24 hours', Setting::getValue('site.hours'));
+        $this->assertSame('Available 24 hours', Setting::getValue('site.hours'));
         $this->assertSame('Maskanoor Group', Setting::getValue('site.name'));
     }
 

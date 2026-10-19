@@ -1,37 +1,67 @@
 @extends('include.master')
 
-@section('title', 'Find Your Dream Home')
+@section('title', 'Elevating Spaces. Enriching Stays.')
 @section('meta_description')
-{{ ($siteName ?? config('app.name')).' — Browse verified homes, villas, and apartments. Search by location, type, and budget.' }}
+{{ ($siteName ?? config('app.name')).' — Hotels, residences and thoughtfully selected properties, presented with care.' }}
 @endsection
 
+@push('styles')
+<link rel="preload" as="image" href="{{ config('site-images.hero.desktop') }}" fetchpriority="high">
+@endpush
+
 @section('home_content')
-{{-- Hero: fits one 1920×950 viewport with search visible --}}
-<section class="relative w-full h-[min(900px,calc(100vh-72px))] flex items-center overflow-hidden">
-    <img
-        src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1920&q=80"
-        alt="Modern home exterior"
-        width="1920"
-        height="1080"
-        class="absolute inset-0 w-full h-full object-cover"
-    >
-    <div class="absolute inset-0 bg-gradient-to-r from-fs-primary/85 via-fs-primary/65 to-fs-primary/40"></div>
+@php
+    $img = config('site-images');
+    $featuredSale = $houses->where('purpose', '!=', 'short_stay')->take(4);
+    $featuredStays = $houses->where('purpose', 'short_stay')->take(4);
+    $typeIcons = [
+        'apartment' => 'M4 21V3h16v18M8 7h2M8 11h2M8 15h2M14 7h2M14 11h2M14 15h2',
+        'plot' => 'M4 8V4h4M20 8V4h-4M4 16v4h4M20 16v4h-4',
+        'hotel' => 'M3 21h18M5 21V8l7-4 7 4v13M9 21v-6h6v6',
+        'house' => 'M3 10l9-7 9 7v9a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1v-9z',
+        'commercial' => 'M4 21V7l8-4 8 4v14M9 21v-6h6v6',
+    ];
+@endphp
 
-    <x-container class="relative z-10 w-full py-8 md:py-12">
-        <div class="max-w-prose">
-            <h1 class="text-hero md:text-2xl font-bold text-white">
-                Secure Your Dream Property
+{{-- 5.1 Hero --}}
+<section class="relative w-full min-h-[600px] h-[min(92svh,820px)] flex flex-col justify-end overflow-hidden -mt-[var(--header-h)] pt-[var(--header-h)]">
+    <picture class="absolute inset-0">
+        <source media="(max-width: 767px)" srcset="{{ $img['hero']['mobile'] }}">
+        <img
+            src="{{ $img['hero']['desktop'] }}"
+            alt="{{ $img['hero']['alt'] }}"
+            width="2400"
+            height="1350"
+            fetchpriority="high"
+            decoding="async"
+            class="absolute inset-0 w-full h-full object-cover"
+            style="object-position: {{ $img['hero']['object_position'] }};"
+        >
+    </picture>
+    <div class="absolute inset-0 fs-hero-overlay" aria-hidden="true"></div>
+
+    <x-container class="relative z-10 w-full pb-24 md:pb-28 pt-8">
+        <div class="max-w-[640px]">
+            <p class="fs-eyebrow-on-dark">Hospitality · Property · Living</p>
+            <h1 class="mt-4 text-[var(--color-ivory)]">
+                Elevating Spaces. Enriching Stays.
             </h1>
-            <p class="mt-4 text-base text-slate-200 max-w-prose">
-                Enterprise-grade security meets curated luxury. Verified listings across Pakistan.
+            <p class="mt-4 text-base md:text-[17px] text-[var(--color-sage)] max-w-[56ch]">
+                Hotels, residences and thoughtfully selected properties, presented with care.
             </p>
+            <div class="mt-8 flex flex-col sm:flex-row gap-3">
+                <x-button variant="primary" href="{{ route('properties') }}" surface="dark">Explore Properties</x-button>
+                <x-button variant="secondary" href="{{ route('contact') }}" surface="dark">Start a Conversation</x-button>
+            </div>
         </div>
+    </x-container>
 
-        <form action="{{ route('properties') }}" method="GET" class="mt-6 md:mt-8 w-full max-w-5xl mx-auto bg-white rounded-md shadow-lg p-4 sm:p-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-start">
+    <x-container class="relative z-[5] w-full -mb-14">
+        <form action="{{ route('properties') }}" method="GET" class="w-full bg-white rounded-[var(--radius-card)] border border-[var(--color-border)] shadow-[var(--shadow-card)] p-4 sm:p-5 mx-0 max-md:mx-0">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
                 <x-input label="Location" name="search" :value="request('search')" placeholder="City or area" />
                 <x-select
-                    label="Property Type"
+                    label="Property type"
                     name="type"
                     :options="\App\Models\ListingType::query()->where('is_active', true)->orderBy('name')->pluck('name', 'slug')->all()"
                     :selected="request('type')"
@@ -49,106 +79,274 @@
                     :selected="request('price')"
                     placeholder="Any budget"
                 />
-                <div class="flex flex-col">
-                    <span class="block text-xs font-semibold text-fs-primary mb-1 opacity-0 select-none" aria-hidden="true">Search</span>
-                    <x-button type="submit" variant="primary" class="w-full !h-12">Search</x-button>
-                </div>
+                <x-button type="submit" variant="primary" surface="light" class="w-full">Search</x-button>
             </div>
         </form>
     </x-container>
 </section>
 
-{{-- Property type tiles --}}
-<section class="py-16" aria-labelledby="types-heading">
+{{-- 5.2 Brand intro --}}
+<section class="fs-section-ivory pt-[calc(var(--section-y)+56px)] pb-[var(--section-y)]" aria-labelledby="intro-heading">
+    <x-container class="grid lg:grid-cols-2 gap-8 lg:gap-16 items-start">
+        <div>
+            <p class="fs-eyebrow">Maskanoor Group</p>
+            <h2 id="intro-heading" class="mt-4">Spaces shape how we live, travel, and connect.</h2>
+        </div>
+        <div>
+            <p class="fs-lead text-[var(--color-muted)]">
+                We bring hospitality and property together through a thoughtful, detail-led approach.
+            </p>
+            <a href="{{ route('home') }}#about" class="mt-6 inline-flex items-center min-h-11 text-sm font-semibold text-[var(--color-gold-dark)] hover:underline">
+                About us →
+            </a>
+        </div>
+    </x-container>
+</section>
+
+{{-- 5.3 Divisions --}}
+<section class="fs-section fs-section-ivory-50" aria-labelledby="divisions-heading">
     <x-container>
-        <x-section-heading title="Browse by property type" subtitle="Equal tiles for every category" heading-id="types-heading" />
-        <div class="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <x-section-heading
+            eyebrow="Our divisions"
+            title="Three ways to experience Maskanoor"
+            lead="Hospitality, property and living — each with its own character."
+            heading-id="divisions-heading"
+        />
+        <div class="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6">
+            @foreach([
+                [
+                    'key' => 'hotels',
+                    'name' => 'Hotels',
+                    'href' => route('divisions.hospitality'),
+                    'copy' => 'Considered guest experiences, built around comfort, character and thoughtful service.',
+                    'cta' => 'Discover Hotels',
+                ],
+                [
+                    'key' => 'properties',
+                    'name' => 'Properties',
+                    'href' => route('properties'),
+                    'copy' => 'A considered approach to property opportunities, ownership, leasing and management.',
+                    'cta' => 'Discover Properties',
+                ],
+                [
+                    'key' => 'living',
+                    'name' => 'Living',
+                    'href' => route('divisions.living'),
+                    'copy' => 'Refined residences for stays that feel effortless, short-term or extended.',
+                    'cta' => 'Discover Living',
+                ],
+            ] as $div)
+                <article class="group relative rounded-[var(--radius-card)] overflow-hidden">
+                    <a href="{{ $div['href'] }}" class="absolute inset-0 z-10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-gold)] rounded-[var(--radius-card)]" aria-label="{{ $div['cta'] }}">
+                        <span class="sr-only">{{ $div['cta'] }}</span>
+                    </a>
+                    <div class="relative aspect-[16/10] lg:aspect-[4/5]">
+                        <img
+                            src="{{ $img['divisions'][$div['key']]['src'] }}"
+                            alt="{{ $img['divisions'][$div['key']]['alt'] }}"
+                            width="1200"
+                            height="1500"
+                            loading="lazy"
+                            decoding="async"
+                            class="absolute inset-0 w-full h-full object-cover"
+                        >
+                        <div class="absolute inset-0 bg-gradient-to-t from-[rgba(13,29,25,.88)] via-[rgba(13,29,25,.35)] to-transparent" aria-hidden="true"></div>
+                        <div class="absolute inset-x-0 bottom-0 p-5 md:p-6 text-[var(--color-ivory)]">
+                            <h3 class="font-[family-name:var(--font-display)] text-[28px] font-semibold text-[var(--color-ivory)]">{{ $div['name'] }}</h3>
+                            <p class="mt-2 text-sm text-[var(--color-sage)] max-w-[36ch]">{{ $div['copy'] }}</p>
+                            <span class="mt-4 inline-flex text-sm font-semibold text-[var(--color-gold)]">{{ $div['cta'] }} →</span>
+                        </div>
+                    </div>
+                </article>
+            @endforeach
+        </div>
+    </x-container>
+</section>
+
+{{-- 5.4 Browse by property type --}}
+<section class="fs-section fs-section-ivory" aria-labelledby="types-heading">
+    <x-container>
+        <x-section-heading
+            title="Browse by property type"
+            lead="Start with what you are looking for."
+            heading-id="types-heading"
+        />
+        <div class="mt-10 grid grid-cols-2 lg:grid-cols-4 gap-4">
             @php
-                $typeTiles = [
-                    'apartment' => 'M4 21V3h16v18M8 7h2M8 11h2M8 15h2M14 7h2M14 11h2M14 15h2',
-                    'plot' => 'M4 8V4h4M20 8V4h-4M4 16v4h4M20 16v4h-4',
-                    'hotel' => 'M3 21h18M5 21V8l7-4 7 4v13M9 21v-6h6v6',
-                    'house' => 'M3 10l9-7 9 7v9a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1v-9z',
-                ];
                 $homeTypes = \App\Models\ListingType::query()->where('is_active', true)->orderBy('name')->take(4)->get();
             @endphp
-            @forelse($homeTypes as $homeType)
-                <a href="{{ route('properties', ['type' => $homeType->slug]) }}"
-                   class="w-full flex flex-col items-center justify-center gap-3 h-32 rounded-md bg-white shadow-sm hover:shadow-lg transition-shadow duration-150 border border-black/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fs-brand">
-                    <span class="inline-flex items-center justify-center w-12 h-12 rounded-sm bg-fs-brand-light text-fs-brand">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="{{ $typeTiles[$homeType->slug] ?? $typeTiles['house'] }}"/></svg>
+            @foreach($homeTypes as $homeType)
+                @php
+                    $href = $homeType->slug === 'hotel'
+                        ? route('divisions.hospitality')
+                        : route('properties', ['type' => $homeType->slug]);
+                    $count = \App\Models\Listing::query()->published()->where('listing_type_id', $homeType->id)->count();
+                @endphp
+                <a href="{{ $href }}"
+                   class="flex items-center gap-3 h-24 px-4 rounded-[var(--radius-card)] bg-white border border-[var(--color-border)] hover:border-[color-mix(in_srgb,var(--color-gold-dark)_40%,transparent)] transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-forest)]">
+                    <span class="inline-flex items-center justify-center w-10 h-10 shrink-0 text-[var(--color-forest)]" aria-hidden="true">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="{{ $typeIcons[$homeType->slug] ?? $typeIcons['house'] }}"/></svg>
                     </span>
-                    <span class="text-sm font-semibold text-fs-primary">{{ $homeType->name }}</span>
+                    <span class="min-w-0">
+                        <span class="block text-sm font-semibold text-[var(--color-ink)]">{{ $homeType->name }}</span>
+                        @if($count > 0)
+                            <span class="block text-xs text-[var(--color-muted)] mt-0.5">{{ $count }} {{ \Illuminate\Support\Str::plural('listing', $count) }}</span>
+                        @endif
+                    </span>
                 </a>
-            @empty
-                <p class="col-span-full text-sm text-fs-muted">Listing types will appear here once configured.</p>
-            @endforelse
+            @endforeach
         </div>
     </x-container>
 </section>
 
-{{-- Featured properties --}}
-<section class="pb-16" aria-labelledby="featured-heading">
+{{-- 5.5 Featured properties --}}
+@if($featuredSale->isNotEmpty())
+<section class="fs-section fs-section-ivory-50" aria-labelledby="featured-heading">
     <x-container>
-        <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
-            <x-section-heading title="Featured properties" subtitle="Handpicked listings ready to explore" heading-id="featured-heading" />
-            <x-button variant="ghost" href="{{ route('properties') }}">View all</x-button>
-        </div>
-        <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            @forelse($houses->take(8) as $house)
+        <x-section-heading
+            title="Featured properties"
+            lead="A selection of curated listings ready to explore."
+            heading-id="featured-heading"
+            action-href="{{ route('properties') }}"
+            action-label="View all"
+        />
+        {{-- TODO owner: confirm verification claim — using "curated" until a real verification process is confirmed. --}}
+        <div class="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            @foreach($featuredSale as $house)
                 <x-property-card :property="$house" />
-            @empty
-                <p class="col-span-full text-sm text-fs-secondary max-w-prose">No properties available yet.</p>
-            @endforelse
+            @endforeach
         </div>
     </x-container>
 </section>
+@endif
 
-{{-- About --}}
-<section id="about" class="bg-slate-50 py-16 scroll-mt-[72px]" aria-labelledby="about-heading">
-    <x-container class="grid lg:grid-cols-2 gap-12 items-center">
-        <div>
-            <x-section-heading :title="'About '.($siteName ?? config('app.name'))" subtitle="A cleaner way to discover verified real estate" heading-id="about-heading" />
-            <p class="mt-6 text-sm text-fs-secondary max-w-prose">
-                {{ $siteName ?? config('app.name') }} helps buyers and renters explore curated homes with clear pricing, trusted agents, and a responsive experience on every device.
-            </p>
-            <ul class="mt-6 space-y-3 text-sm text-fs-secondary max-w-prose">
-                <li class="flex gap-2"><span class="text-fs-brand font-bold">✓</span> Verified inventory across major Pakistani cities</li>
-                <li class="flex gap-2"><span class="text-fs-brand font-bold">✓</span> Secure inquiries and saved favorites</li>
-                <li class="flex gap-2"><span class="text-fs-brand font-bold">✓</span> Agents who understand local markets</li>
-            </ul>
-        </div>
-        <div class="aspect-[4/3] w-full rounded-md overflow-hidden shadow-sm">
-            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80" alt="Bright living room interior" loading="lazy" width="1200" height="900" class="w-full h-full object-cover">
-        </div>
-    </x-container>
-</section>
-
-{{-- Services --}}
-<section id="services" class="py-16 scroll-mt-[72px]" aria-labelledby="services-heading">
+{{-- 5.6 Featured stays --}}
+@if($featuredStays->isNotEmpty())
+<section class="fs-section fs-section-ivory" aria-labelledby="stays-heading">
     <x-container>
-        <x-section-heading title="Our services" subtitle="Support from search to closing" heading-id="services-heading" align="center" class="mx-auto" />
-        <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <x-section-heading
+            title="Featured stays"
+            lead="Short stays with the same care as a private residence."
+            heading-id="stays-heading"
+            action-href="{{ route('properties', ['purpose' => 'short_stay']) }}"
+            action-label="View all"
+        />
+        <div class="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            @foreach($featuredStays as $stay)
+                <x-property-card :property="$stay" />
+            @endforeach
+        </div>
+    </x-container>
+</section>
+@endif
+
+{{-- 5.7 About + principles --}}
+<section id="about" class="fs-section fs-section-ivory-50 scroll-mt-[calc(var(--header-h)+16px)]" aria-labelledby="about-heading">
+    <x-container class="grid lg:grid-cols-2 gap-10 lg:gap-16 items-start">
+        <div class="aspect-[4/5] w-full rounded-[var(--radius-card)] overflow-hidden order-2 lg:order-1">
+            <img
+                src="{{ $img['about']['src'] }}"
+                alt="{{ $img['about']['alt'] }}"
+                width="1200"
+                height="1500"
+                loading="lazy"
+                decoding="async"
+                class="w-full h-full object-cover"
+            >
+        </div>
+        <div class="order-1 lg:order-2">
+            <x-section-heading
+                eyebrow="Why Maskanoor"
+                title="A quieter, more considered way to find a place."
+                heading-id="about-heading"
+            />
+            <div class="mt-10 space-y-6">
+                @foreach([
+                    ['01', 'Thoughtful by design', 'Every detail — from materials to messaging — is chosen with care.'],
+                    ['02', 'Personal by nature', 'We favour clarity and conversation over volume and noise.'],
+                    ['03', 'International in outlook', 'A multi-country platform with local context at every step.'],
+                ] as [$num, $label, $copy])
+                    <div class="pt-5 border-t border-[var(--color-border)]">
+                        <p class="font-[family-name:var(--font-display)] text-xl text-[var(--color-gold-dark)]">{{ $num }}</p>
+                        <h3 class="mt-2 text-[var(--color-ink)]">{{ $label }}</h3>
+                        <p class="mt-2 text-sm text-[var(--color-muted)] max-w-[48ch]">{{ $copy }}</p>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </x-container>
+</section>
+
+{{-- 5.8 How we help --}}
+<section id="services" class="fs-section fs-section-ivory scroll-mt-[calc(var(--header-h)+16px)]" aria-labelledby="services-heading">
+    <x-container>
+        <x-section-heading title="How we help" heading-id="services-heading" />
+        <div class="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-6">
             @foreach([
-                ['Buying guidance', 'Shortlist homes that match your budget, lifestyle, and timeline.'],
-                ['Rental support', 'Compare apartments and negotiate with confidence.'],
-                ['Listing help', 'Get your property in front of serious buyers and renters.'],
-            ] as [$title, $copy])
-                <div class="rounded-md bg-white shadow-sm p-6 border border-slate-100">
-                    <h3 class="text-base font-semibold text-fs-primary">{{ $title }}</h3>
-                    <p class="mt-2 text-sm text-fs-secondary max-w-prose">{{ $copy }}</p>
+                [
+                    'title' => 'Buying guidance',
+                    'copy' => 'Shortlist homes that match your budget, lifestyle, and timeline.',
+                    'href' => route('contact', ['enquiry' => 'buying']),
+                    'icon' => 'M3 10l9-7 9 7v9a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1v-9z',
+                ],
+                [
+                    'title' => 'Rental support',
+                    'copy' => 'Compare apartments and residences with clear pricing and next steps.',
+                    'href' => route('contact', ['enquiry' => 'rental']),
+                    'icon' => 'M4 21V3h16v18M8 7h2M8 11h2M14 7h2M14 11h2',
+                ],
+                [
+                    'title' => 'Listing help',
+                    'copy' => 'Present your property with care to serious buyers and renters.',
+                    'href' => route('contact', ['enquiry' => 'listing']),
+                    'icon' => 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2',
+                ],
+            ] as $service)
+                <div class="fs-card p-8 h-full flex flex-col">
+                    <span class="inline-flex text-[var(--color-forest)]" aria-hidden="true">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="{{ $service['icon'] }}"/></svg>
+                    </span>
+                    <h3 class="mt-5">{{ $service['title'] }}</h3>
+                    <p class="mt-2 text-sm text-[var(--color-muted)] flex-1">{{ $service['copy'] }}</p>
+                    <a href="{{ $service['href'] }}" class="mt-6 inline-flex items-center min-h-11 text-sm font-semibold text-[var(--color-gold-dark)] hover:underline">Talk to us →</a>
                 </div>
             @endforeach
         </div>
     </x-container>
 </section>
 
-{{-- Agents --}}
-<section id="agents" class="bg-slate-50 py-16 scroll-mt-[72px]" aria-labelledby="agents-heading">
+{{-- 5.9 Full-width image break --}}
+<section class="relative w-full overflow-hidden" aria-label="Brand statement">
+    <picture>
+        <source media="(max-width: 767px)" srcset="{{ $img['break']['mobile'] }}">
+        <img
+            src="{{ $img['break']['desktop'] }}"
+            alt="{{ $img['break']['alt'] }}"
+            width="2400"
+            height="1030"
+            loading="lazy"
+            decoding="async"
+            class="w-full aspect-[4/5] md:aspect-[21/9] object-cover"
+        >
+    </picture>
+    <div class="absolute inset-0 fs-break-overlay flex items-center justify-center px-6" aria-hidden="true"></div>
+    <div class="absolute inset-0 flex items-center justify-center px-6">
+                        <p
+            class="fs-reveal font-[family-name:var(--font-display)] font-medium text-[var(--color-ivory)] text-center text-[clamp(28px,4vw,52px)] leading-tight max-w-[18ch]"
+            x-data="revealOnView"
+        >
+            A quieter expression of luxury.
+        </p>
+    </div>
+</section>
+
+{{-- 5.10 Conditional: agents --}}
+@if($agents->isNotEmpty())
+<section id="agents" class="fs-section fs-section-ivory scroll-mt-[calc(var(--header-h)+16px)]" aria-labelledby="agents-heading">
     <x-container>
-        <x-section-heading title="Meet our agents" subtitle="Local experts ready to help" heading-id="agents-heading" />
-        <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            @forelse ($agents as $agent)
+        <x-section-heading title="Meet our agents" heading-id="agents-heading" />
+        <div class="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            @foreach ($agents->take(4) as $agent)
                 <x-agent-card
                     :name="$agent->user->name"
                     :role="$agent->display_role"
@@ -159,93 +357,83 @@
                     :rating="$agent->averageRating()"
                     href="#agents"
                 />
-            @empty
-                <p class="text-sm text-fs-muted col-span-full">Agent profiles will appear here once published.</p>
-            @endforelse
+            @endforeach
         </div>
     </x-container>
 </section>
+@endif
 
 {{-- Testimonials --}}
-<section class="py-16" aria-labelledby="testimonials-heading" x-data="testimonialSlider">
+@if($testimonials->isNotEmpty())
+<section class="fs-section fs-section-ivory-50" aria-labelledby="testimonials-heading">
     <x-container>
-        <x-section-heading title="What clients say" subtitle="Trusted by buyers and investors" heading-id="testimonials-heading" align="center" class="mx-auto" />
-        @if($testimonials->isNotEmpty())
-            <div class="mt-6 hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                @foreach ($testimonials->take(3) as $item)
-                    <x-testimonial-card :quote="$item->quote" :name="$item->name" :role="$item->role" />
-                @endforeach
-            </div>
-            <div class="mt-6 md:hidden">
-                <div class="relative overflow-hidden">
-                    <div class="flex transition-transform duration-200" :style="trackStyle">
-                        @foreach ($testimonials as $item)
-                            <div class="w-full shrink-0 px-1"><x-testimonial-card :quote="$item->quote" :name="$item->name" :role="$item->role" /></div>
-                        @endforeach
-                    </div>
-                </div>
-                <div class="mt-4 flex justify-center gap-2">
-                    @foreach ($testimonials as $index => $item)
-                        <button type="button" class="inline-flex items-center justify-center w-11 h-11" @click="setSlide({{ (int) $index }})" aria-label="Show testimonial {{ $index + 1 }}">
-                            <span class="w-2.5 h-2.5 rounded-full" :class="dotClass({{ (int) $index }})"></span>
-                        </button>
-                    @endforeach
-                </div>
-            </div>
-        @else
-            <p class="mt-6 text-center text-sm text-fs-muted">Client stories coming soon.</p>
-        @endif
+        <x-section-heading title="What clients say" heading-id="testimonials-heading" />
+        <div class="mt-10 grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            @foreach ($testimonials->take(3) as $item)
+                <x-testimonial-card :quote="$item->quote" :name="$item->name" :role="$item->role" />
+            @endforeach
+        </div>
     </x-container>
 </section>
+@endif
 
 {{-- Blog --}}
-<section id="blog" class="bg-slate-50 py-16 scroll-mt-[72px]" aria-labelledby="blog-heading">
+@if($posts->isNotEmpty())
+<section id="blog" class="fs-section fs-section-ivory scroll-mt-[calc(var(--header-h)+16px)]" aria-labelledby="blog-heading">
     <x-container>
-        <x-section-heading title="From the blog" subtitle="Market tips and neighborhood guides" heading-id="blog-heading" />
-        <div class="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            @forelse ($posts as $post)
+        <x-section-heading
+            title="From the blog"
+            heading-id="blog-heading"
+            action-href="{{ route('blog.index') }}"
+            action-label="View all"
+        />
+        <div class="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6">
+            @foreach ($posts as $post)
                 <x-blog-card
                     :title="$post->title"
                     :excerpt="$post->excerpt"
-                    :image="$post->featured_image ?: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=800&q=80'"
+                    :image="$post->featured_image"
                     :date="optional($post->published_at)->toDateString()"
                     :category="$post->category"
                     :href="route('blog.show', $post->slug)"
                 />
-            @empty
-                <p class="text-sm text-fs-muted col-span-full">No blog posts published yet.</p>
-            @endforelse
+            @endforeach
         </div>
-        @if($posts->isNotEmpty())
-            <div class="mt-6"><x-button variant="ghost" href="{{ route('blog.index') }}">View all posts</x-button></div>
-        @endif
     </x-container>
 </section>
+@endif
 
-{{-- FAQ --}}
-<section class="py-16" aria-labelledby="faq-heading">
-    <x-container>
-        <x-section-heading title="Frequently asked questions" subtitle="Quick answers before you reach out" heading-id="faq-heading" />
-        <div class="mt-6 max-w-3xl space-y-3">
-            @forelse ($faqs as $index => $faq)
+{{-- 5.10 FAQ — always render --}}
+<section id="faq" class="fs-section fs-section-ivory-50 scroll-mt-[calc(var(--header-h)+16px)]" aria-labelledby="faq-heading">
+    <x-container class="grid lg:grid-cols-12 gap-10 lg:gap-16">
+        <div class="lg:col-span-4">
+            <x-section-heading
+                title="Frequently asked questions"
+                lead="Quick answers before you reach out."
+                heading-id="faq-heading"
+            />
+            {{-- TODO owner: confirm FAQ answers match real process and response times. --}}
+        </div>
+        <div class="lg:col-span-8 space-y-3">
+            @foreach ($faqs as $index => $faq)
                 <x-faq-item :question="$faq->question" :answer="$faq->answer" :open="$index === 0" />
-            @empty
-                <p class="text-sm text-fs-muted">FAQs will appear here once published.</p>
-            @endforelse
+            @endforeach
         </div>
     </x-container>
 </section>
 
-{{-- CTA --}}
-<section class="pb-16">
+{{-- 5.11 CTA band --}}
+<section class="fs-section-ivory pb-24 pt-8">
     <x-container>
-        <div class="rounded-md bg-fs-primary px-6 py-12 text-center text-white border border-white/5 shadow-lg">
-            <p class="text-[10px] font-semibold uppercase tracking-[0.2em] text-fs-brand">{{ $siteName ?? config('app.name') }}</p>
-            <h2 class="mt-3 text-xl md:text-2xl font-bold">Ready to find your next property?</h2>
-            <p class="mt-3 text-sm text-slate-300 max-w-prose mx-auto">Browse verified listings or talk to a {{ $siteName ?? config('app.name') }} agent today.</p>
-            <div class="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
-                <x-button variant="primary" href="{{ route('properties') }}">Browse properties</x-button>
-                <x-button variant="ghost" href="{{ route('contact') }}" class="!border-white/30 !text-white hover:!bg-white/10">Contact us</x-button>
+        <div class="rounded-[var(--radius-card)] bg-[var(--color-forest-shadow)] px-6 py-12 md:px-12 md:py-14 border-t border-[color-mix(in_srgb,var(--color-gold)_40%,transparent)]">
+            <p class="fs-eyebrow-on-dark">Maskanoor Group</p>
+            <h2 class="mt-4 text-[var(--color-ivory)]">Let's shape what comes next.</h2>
+            <p class="mt-3 text-[var(--color-sage)] max-w-[56ch]">
+                Tell us whether you are exploring a stay, a property, or a potential partnership.
+            </p>
+            <div class="mt-8 flex flex-col sm:flex-row gap-3">
+                <x-button variant="primary" href="{{ route('contact') }}" surface="dark">Start a Conversation</x-button>
+                <x-button variant="secondary" href="{{ route('properties') }}" surface="dark">Browse properties</x-button>
             </div>
         </div>
     </x-container>

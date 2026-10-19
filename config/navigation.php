@@ -3,11 +3,6 @@
 return [
     'public' => [
         [
-            'label' => 'Home',
-            'route' => 'home',
-            'active' => ['home'],
-        ],
-        [
             'label' => 'Properties',
             'route' => 'properties',
             'active' => ['properties', 'properties.*'],
@@ -21,6 +16,12 @@ return [
             'label' => 'Living',
             'route' => 'divisions.living',
             'active' => ['divisions.living'],
+        ],
+        [
+            'label' => 'About',
+            'route' => 'home',
+            'anchor' => '#about',
+            'active' => [],
         ],
         [
             'label' => 'Contact',
@@ -31,11 +32,6 @@ return [
 
     'user' => [
         [
-            'label' => 'Home',
-            'route' => 'home',
-            'active' => ['home'],
-        ],
-        [
             'label' => 'Properties',
             'route' => 'properties',
             'active' => ['properties', 'properties.*'],
@@ -49,6 +45,12 @@ return [
             'label' => 'Living',
             'route' => 'divisions.living',
             'active' => ['divisions.living'],
+        ],
+        [
+            'label' => 'About',
+            'route' => 'home',
+            'anchor' => '#about',
+            'active' => [],
         ],
         [
             'label' => 'Favorites',

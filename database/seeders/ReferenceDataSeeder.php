@@ -57,7 +57,8 @@ class ReferenceDataSeeder extends Seeder
             ['group' => 'site', 'key' => 'site.favicon', 'value' => '/brand/favicon/favicon.svg', 'type' => 'string', 'label' => 'Favicon path'],
             ['group' => 'site', 'key' => 'site.email', 'value' => 'pmobie264@gmail.com', 'type' => 'string', 'label' => 'Contact email'],
             ['group' => 'site', 'key' => 'site.phone', 'value' => '+923228439536', 'type' => 'string', 'label' => 'Contact phone'],
-            ['group' => 'site', 'key' => 'site.hours', 'value' => '24 hours', 'type' => 'string', 'label' => 'Business hours label'],
+            // TODO owner: confirm public hours copy; keep a clear phrase (not a bare "24 hours").
+            ['group' => 'site', 'key' => 'site.hours', 'value' => 'Available 24 hours', 'type' => 'string', 'label' => 'Business hours label'],
             ['group' => 'site', 'key' => 'site.hours_structured', 'value' => $hoursJson, 'type' => 'json', 'label' => 'Business hours (structured)'],
             ['group' => 'commerce', 'key' => 'commerce.commission_hotel', 'value' => '10', 'type' => 'number', 'label' => 'Hotel commission (%)'],
             ['group' => 'commerce', 'key' => 'commerce.commission_rent', 'value' => '5', 'type' => 'number', 'label' => 'Rent commission (%)'],
@@ -246,7 +247,7 @@ class ReferenceDataSeeder extends Seeder
         foreach ([
             ['key' => 'site.email', 'value' => 'pmobie264@gmail.com', 'type' => 'string', 'label' => 'Email'],
             ['key' => 'site.phone', 'value' => '+923228439536', 'type' => 'string', 'label' => 'Phone'],
-            ['key' => 'site.hours', 'value' => '24 hours', 'type' => 'string', 'label' => 'Hours'],
+            ['key' => 'site.hours', 'value' => 'Available 24 hours', 'type' => 'string', 'label' => 'Hours'],
             ['key' => 'site.hours_structured', 'value' => $hoursJson, 'type' => 'json', 'label' => 'Hours structured'],
             ['key' => 'commerce.commission_hotel', 'value' => '10', 'type' => 'number', 'label' => 'Hotel commission (%)'],
             ['key' => 'commerce.commission_rent', 'value' => '5', 'type' => 'number', 'label' => 'Rent commission (%)'],

@@ -1,4 +1,10 @@
-<footer class="mt-0 border-t border-white/10 bg-[#142A25] text-white">
+<?php
+    // TODO owner: replace personal Gmail with a business address in Settings (site.email).
+    $contactEmail = $siteEmail ?? null;
+    $isPersonalEmail = $contactEmail && str_ends_with(strtolower($contactEmail), '@gmail.com');
+?>
+
+<footer class="mt-0 bg-[var(--color-forest-shadow)] text-[var(--color-ivory)] border-t border-[color-mix(in_srgb,var(--color-gold)_40%,transparent)]">
     <?php if (isset($component)) { $__componentOriginala766c2d312d6f7864fe218e2500d2bba = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginala766c2d312d6f7864fe218e2500d2bba = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.container','data' => ['class' => 'py-12 md:py-14']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
@@ -9,19 +15,19 @@
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
 <?php $component->withAttributes(['class' => 'py-12 md:py-14']); ?>
-        <div class="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-x-10 lg:gap-y-0">
+        <div class="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-x-10">
             <div>
-                <a href="<?php echo e(route('home')); ?>" class="inline-flex flex-col items-start gap-2 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
+                <a href="<?php echo e(route('home')); ?>" class="inline-flex flex-col items-start rounded-[var(--radius-button)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-gold)]">
                     <?php if (isset($component)) { $__componentOriginal8741a05e11b0c77d19ec61b6b35b26b3 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal8741a05e11b0c77d19ec61b6b35b26b3 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.brand-logo','data' => ['layout' => 'stacked','surface' => 'dark','class' => '[&_img]:h-16 [&_img]:min-w-[140px]']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.brand-logo','data' => ['layout' => 'stacked','surface' => 'dark','width' => 190,'class' => '[&_img]:!h-[72px] [&_img]:!min-w-[180px] [&_img]:!max-w-[200px]']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('brand-logo'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['layout' => 'stacked','surface' => 'dark','class' => '[&_img]:h-16 [&_img]:min-w-[140px]']); ?>
+<?php $component->withAttributes(['layout' => 'stacked','surface' => 'dark','width' => 190,'class' => '[&_img]:!h-[72px] [&_img]:!min-w-[180px] [&_img]:!max-w-[200px]']); ?>
 <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginal8741a05e11b0c77d19ec61b6b35b26b3)): ?>
@@ -33,92 +39,37 @@
 <?php unset($__componentOriginal8741a05e11b0c77d19ec61b6b35b26b3); ?>
 <?php endif; ?>
                 </a>
-                <p class="mt-4 max-w-xs fs-display text-base italic leading-relaxed text-[#D6B779]">
+                <p class="mt-5 max-w-xs font-[family-name:var(--font-display)] text-[20px] italic font-normal leading-snug text-[var(--color-ivory)]">
                     <?php echo e(\App\Support\BrandAssets::TAGLINE); ?>
 
                 </p>
-                <?php if(!empty($siteTagline) && $siteTagline !== \App\Support\BrandAssets::TAGLINE): ?>
-                    <p class="mt-2 max-w-xs text-sm leading-relaxed text-slate-300"><?php echo e($siteTagline); ?></p>
-                <?php endif; ?>
             </div>
 
             <div>
-                <h2 class="text-xs font-semibold uppercase tracking-wider text-slate-400">Explore</h2>
-                <ul class="mt-4 space-y-1 text-sm">
-                    <li>
-                        <a href="<?php echo e(route('properties')); ?>" class="inline-flex min-h-10 items-center text-slate-200 transition-colors duration-150 hover:text-white">
-                            Properties
-                        </a>
-                    </li>
-                    <li>
-                        <a href="<?php echo e(route('home')); ?>#about" class="inline-flex min-h-10 items-center text-slate-200 transition-colors duration-150 hover:text-white">
-                            Why <?php echo e($siteName ?? config('app.name')); ?>
-
-                        </a>
-                    </li>
-                    <li>
-                        <a href="<?php echo e(route('contact')); ?>" class="inline-flex min-h-10 items-center text-slate-200 transition-colors duration-150 hover:text-white">
-                            Contact
-                        </a>
-                    </li>
-                    <?php if($legalPrivacy ?? null): ?>
-                        <li>
-                            <a href="<?php echo e(route('pages.show', $legalPrivacy->slug)); ?>" class="inline-flex min-h-10 items-center text-slate-200 transition-colors duration-150 hover:text-white">
-                                <?php echo e($legalPrivacy->title); ?>
-
-                            </a>
-                        </li>
-                    <?php endif; ?>
-                    <?php if($legalTerms ?? null): ?>
-                        <li>
-                            <a href="<?php echo e(route('pages.show', $legalTerms->slug)); ?>" class="inline-flex min-h-10 items-center text-slate-200 transition-colors duration-150 hover:text-white">
-                                <?php echo e($legalTerms->title); ?>
-
-                            </a>
-                        </li>
-                    <?php endif; ?>
-                    <?php if($legalRefund ?? null): ?>
-                        <li>
-                            <a href="<?php echo e(route('pages.show', $legalRefund->slug)); ?>" class="inline-flex min-h-10 items-center text-slate-200 transition-colors duration-150 hover:text-white">
-                                <?php echo e($legalRefund->title); ?>
-
-                            </a>
-                        </li>
-                    <?php endif; ?>
+                <h2 class="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--color-sage)]">Explore</h2>
+                <ul class="mt-4 space-y-1 text-[15px]">
+                    <li><a href="<?php echo e(route('properties')); ?>" class="inline-flex min-h-11 items-center text-[var(--color-ivory)] hover:underline">Properties</a></li>
+                    <li><a href="<?php echo e(route('divisions.hospitality')); ?>" class="inline-flex min-h-11 items-center text-[var(--color-ivory)] hover:underline">Hotels</a></li>
+                    <li><a href="<?php echo e(route('divisions.living')); ?>" class="inline-flex min-h-11 items-center text-[var(--color-ivory)] hover:underline">Living</a></li>
+                    <li><a href="<?php echo e(route('home')); ?>#about" class="inline-flex min-h-11 items-center text-[var(--color-ivory)] hover:underline">About</a></li>
+                    <li><a href="<?php echo e(route('contact')); ?>" class="inline-flex min-h-11 items-center text-[var(--color-ivory)] hover:underline">Contact</a></li>
+                    <li><a href="<?php echo e(route('home')); ?>#faq" class="inline-flex min-h-11 items-center text-[var(--color-ivory)] hover:underline">FAQ</a></li>
                 </ul>
             </div>
 
             <div>
-                <h2 class="text-xs font-semibold uppercase tracking-wider text-slate-400">Account</h2>
-                <ul class="mt-4 space-y-1 text-sm">
+                <h2 class="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--color-sage)]">Account</h2>
+                <ul class="mt-4 space-y-1 text-[15px]">
                     <?php if(auth()->guard()->guest()): ?>
-                        <li>
-                            <a href="<?php echo e(route('login.form')); ?>" class="inline-flex min-h-10 items-center text-slate-200 transition-colors duration-150 hover:text-white">
-                                Login
-                            </a>
-                        </li>
-                        <li>
-                            <a href="<?php echo e(route('register.form')); ?>" class="inline-flex min-h-10 items-center text-slate-200 transition-colors duration-150 hover:text-white">
-                                Register
-                            </a>
-                        </li>
+                        <li><a href="<?php echo e(route('login.form')); ?>" class="inline-flex min-h-11 items-center text-[var(--color-ivory)] hover:underline">Login</a></li>
+                        <li><a href="<?php echo e(route('register.form')); ?>" class="inline-flex min-h-11 items-center text-[var(--color-ivory)] hover:underline">Register</a></li>
                     <?php else: ?>
-                        <li>
-                            <a href="<?php echo e(route('profile')); ?>" class="inline-flex min-h-10 items-center text-slate-200 transition-colors duration-150 hover:text-white">
-                                My Profile
-                            </a>
-                        </li>
-                        <li>
-                            <a href="<?php echo e(route('profile')); ?>#favorites" class="inline-flex min-h-10 items-center text-slate-200 transition-colors duration-150 hover:text-white">
-                                Saved Properties
-                            </a>
-                        </li>
+                        <li><a href="<?php echo e(route('profile')); ?>" class="inline-flex min-h-11 items-center text-[var(--color-ivory)] hover:underline">My Profile</a></li>
+                        <li><a href="<?php echo e(route('profile')); ?>#favorites" class="inline-flex min-h-11 items-center text-[var(--color-ivory)] hover:underline">Saved Properties</a></li>
                         <li>
                             <form method="POST" action="<?php echo e(route('logout')); ?>">
                                 <?php echo csrf_field(); ?>
-                                <button type="submit" class="inline-flex min-h-10 items-center text-slate-200 transition-colors duration-150 hover:text-white">
-                                    Logout
-                                </button>
+                                <button type="submit" class="inline-flex min-h-11 items-center text-[var(--color-ivory)] hover:underline">Logout</button>
                             </form>
                         </li>
                     <?php endif; ?>
@@ -126,42 +77,78 @@
             </div>
 
             <div>
-                <h2 class="text-xs font-semibold uppercase tracking-wider text-slate-400">Contact</h2>
-                <ul class="mt-4 space-y-2.5 text-sm text-slate-300">
-                    <?php if(!empty($siteEmail)): ?>
+                <h2 class="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--color-sage)]">Contact</h2>
+                <ul class="mt-4 space-y-3 text-[15px] text-[var(--color-sage)]">
+                    <?php if(!empty($contactEmail)): ?>
                         <li>
-                            <a href="mailto:<?php echo e($siteEmail); ?>" class="transition-colors duration-150 hover:text-white"><?php echo e($siteEmail); ?></a>
+                            <span class="block text-xs uppercase tracking-[0.14em] text-[var(--color-sage)] mb-1">Email</span>
+                            <a href="mailto:<?php echo e($contactEmail); ?>" class="text-[var(--color-ivory)] hover:underline"><?php echo e($contactEmail); ?></a>
+                            <?php if($isPersonalEmail): ?>
+                                
+                            <?php endif; ?>
                         </li>
                     <?php endif; ?>
                     <?php if(!empty($sitePhone)): ?>
                         <li>
-                            <a href="tel:<?php echo e(preg_replace('/\s+/', '', $sitePhone)); ?>" class="transition-colors duration-150 hover:text-white"><?php echo e($sitePhone); ?></a>
+                            <span class="block text-xs uppercase tracking-[0.14em] text-[var(--color-sage)] mb-1">Phone</span>
+                            <a href="tel:<?php echo e(preg_replace('/\s+/', '', $sitePhone)); ?>" class="text-[var(--color-ivory)] hover:underline"><?php echo e($sitePhone); ?></a>
                         </li>
                     <?php endif; ?>
                     <?php if(!empty($siteHours)): ?>
-                        <li class="text-slate-400"><?php echo e($siteHours); ?></li>
+                        <li>
+                            <span class="block text-xs uppercase tracking-[0.14em] text-[var(--color-sage)] mb-1">Hours</span>
+                            <span class="text-[var(--color-ivory)]"><?php echo e($siteHours); ?></span>
+                        </li>
                     <?php endif; ?>
                     <?php if(!empty($siteAddress)): ?>
-                        <li class="text-slate-400"><?php echo e($siteAddress); ?></li>
+                        <li>
+                            <span class="block text-xs uppercase tracking-[0.14em] text-[var(--color-sage)] mb-1">Address</span>
+                            <span class="text-[var(--color-ivory)]"><?php echo e($siteAddress); ?></span>
+                        </li>
                     <?php endif; ?>
-                    <?php if(empty($siteEmail) && empty($sitePhone) && empty($siteHours) && empty($siteAddress)): ?>
-                        <li class="text-slate-500"><?php echo e(__('Use the contact form to reach us.')); ?></li>
+                    <?php if(empty($contactEmail) && empty($sitePhone) && empty($siteHours) && empty($siteAddress)): ?>
+                        <li class="text-[var(--color-sage)]"><?php echo e(__('Use the contact form to reach us.')); ?></li>
                     <?php endif; ?>
                 </ul>
                 <div class="mt-5">
-                    <a
-                        href="<?php echo e(route('contact')); ?>"
-                        class="inline-flex h-10 items-center justify-center rounded-sm bg-fs-brand px-4 text-sm font-semibold text-white transition-colors duration-150 hover:bg-fs-brand-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-                    >
-                        Send a message
-                    </a>
+                    <?php if (isset($component)) { $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.button','data' => ['variant' => 'primary','href' => ''.e(route('contact')).'','surface' => 'dark']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('button'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['variant' => 'primary','href' => ''.e(route('contact')).'','surface' => 'dark']); ?>Send a message <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561)): ?>
+<?php $attributes = $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561; ?>
+<?php unset($__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginald0f1fd2689e4bb7060122a5b91fe8561)): ?>
+<?php $component = $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561; ?>
+<?php unset($__componentOriginald0f1fd2689e4bb7060122a5b91fe8561); ?>
+<?php endif; ?>
                 </div>
             </div>
         </div>
 
-        <div class="mt-10 flex flex-col gap-2 border-t border-white/10 pt-5 text-xs text-slate-400 sm:flex-row sm:items-center sm:justify-between">
-            <p>© <?php echo e(date('Y')); ?> <?php echo e($siteLegalName ?? $siteName ?? config('app.name')); ?>. All rights reserved.</p>
-            <?php echo $__env->make('include.branding', ['brandingClass' => 'text-slate-400', 'strongClass' => 'text-slate-200 font-medium'], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+        <div class="mt-10 flex flex-col gap-3 border-t border-white/10 pt-5 text-xs text-[var(--color-sage)] sm:flex-row sm:items-center sm:justify-between">
+            <p>© <?php echo e(date('Y')); ?> <?php echo e($siteLegalName ?? $siteName ?? 'Maskanoor Group'); ?>. All rights reserved.</p>
+            <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
+                <?php if($legalPrivacy ?? null): ?>
+                    <a href="<?php echo e(route('pages.show', $legalPrivacy->slug)); ?>" class="hover:text-[var(--color-ivory)] hover:underline">Privacy</a>
+                <?php else: ?>
+                    <a href="<?php echo e(url('/pages/privacy-policy')); ?>" class="hover:text-[var(--color-ivory)] hover:underline">Privacy</a>
+                <?php endif; ?>
+                <?php if($legalTerms ?? null): ?>
+                    <a href="<?php echo e(route('pages.show', $legalTerms->slug)); ?>" class="hover:text-[var(--color-ivory)] hover:underline">Terms</a>
+                <?php else: ?>
+                    <a href="<?php echo e(url('/pages/terms-of-service')); ?>" class="hover:text-[var(--color-ivory)] hover:underline">Terms</a>
+                <?php endif; ?>
+                <?php echo $__env->make('include.branding', ['brandingClass' => 'text-[var(--color-sage)]', 'strongClass' => 'text-[var(--color-ivory)] font-medium'], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+            </div>
         </div>
      <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
