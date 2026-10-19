@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\CancellationPolicyController;
 use App\Http\Controllers\Admin\CmsController;
 use App\Http\Controllers\Admin\CountryController;
 use App\Http\Controllers\Admin\CountryPaymentMethodController;
+use App\Http\Controllers\Admin\CountryVisibilityController;
 use App\Http\Controllers\Admin\CurrencyController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\InquiryController;
@@ -24,6 +25,7 @@ use App\Http\Controllers\Admin\TwoFactorController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\CitySearchController;
 use App\Http\Controllers\Client\TenancyController as ClientTenancyController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\FavoriteController;
@@ -63,6 +65,7 @@ Route::post('/email/verification-notification', [AuthController::class, 'resendV
 
 Route::get('/properties', [ListingController::class, 'index'])->name('properties');
 Route::get('/properties/{listing}', [ListingController::class, 'show'])->name('properties.show');
+Route::get('/countries/{country}/cities', CitySearchController::class)->name('countries.cities');
 
 Route::view('/hospitality', 'divisions.show', [
     'title' => 'Maskanoor Hotels',
@@ -288,7 +291,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'active', 'panel', '
         Route::get('kyc/{kyc}/download', [App\Http\Controllers\Admin\KycDocumentController::class, 'download'])->name('kyc.download');
     });
 
-    Route::middleware('permission:countries.view|countries.create|countries.update|countries.delete')->group(function () {
+    Route::middleware('permission:countries.view|countries.create|countries.update|countries.delete|countries.manage_visibility')->group(function () {
+        Route::get('countries/visibility', [CountryVisibilityController::class, 'edit'])->name('countries.visibility');
+        Route::put('countries/visibility', [CountryVisibilityController::class, 'update'])->name('countries.visibility.update');
         Route::get('countries/{country}/settings', [CountryController::class, 'settings'])->name('countries.settings');
         Route::put('countries/{country}/settings', [CountryController::class, 'updateSettings'])->name('countries.settings.update');
         Route::resource('countries', CountryController::class)->except(['show', 'destroy']);

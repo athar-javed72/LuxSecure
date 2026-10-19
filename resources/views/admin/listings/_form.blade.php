@@ -62,12 +62,14 @@
         :selected="old('status', $listing?->status ?? 'published')"
         required
     />
-    <x-select
-        label="City"
-        name="city_id"
-        :options="$cities->mapWithKeys(fn ($c) => [$c->id => $c->name])->all()"
-        :selected="old('city_id', $listing?->city_id)"
-        placeholder="Select city"
+    <x-location-picker
+        class="sm:col-span-2"
+        :countries="\App\Support\CountryCatalog::forUser(auth()->user())"
+        country-name="country_id"
+        city-name="city_id"
+        :country-id="old('country_id', $listing?->country_id ?? optional(\App\Support\CountryContext::current())->id)"
+        :city-id="old('city_id', $listing?->city_id)"
+        :cities-url-template="url('/countries/__COUNTRY__/cities')"
     />
     <x-input label="Area size" name="area_size" type="number" :value="old('area_size', $listing?->area_size)" />
     <x-select

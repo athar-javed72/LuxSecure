@@ -1,0 +1,8 @@
+[
+  {"id": 10001, "name": "Lahore", "state_id": 3177, "country_id": 167, "latitude": "31.5204", "longitude": "74.3587"},
+  {"id": 10002, "name": "Islamabad", "state_id": 3176, "country_id": 167, "latitude": "33.6844", "longitude": "73.0479"},
+  {"id": 10003, "name": "Karachi", "state_id": 3171, "country_id": 167, "latitude": "24.8607", "longitude": "67.0011"},
+  {"id": 10004, "name": "Dubai", "state_id": 4001, "country_id": 231, "latitude": "25.2048", "longitude": "55.2708"},
+  {"id": 10005, "name": "Springfield", "state_id": 5001, "country_id": 999, "latitude": "1", "longitude": "1"},
+  {"id": 10006, "name": "Springfield", "state_id": 5002, "country_id": 999, "latitude": "2", "longitude": "2"}
+]

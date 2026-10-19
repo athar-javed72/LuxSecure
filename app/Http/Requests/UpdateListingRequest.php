@@ -4,6 +4,8 @@ namespace App\Http\Requests;
 
 use App\Models\Listing;
 use App\Models\ListingType;
+use App\Rules\ActiveCountry;
+use App\Rules\CityBelongsToCountry;
 use App\Support\CountryContext;
 use App\Support\ListingAttributeRules;
 use Illuminate\Foundation\Http\FormRequest;
@@ -33,7 +35,12 @@ class UpdateListingRequest extends FormRequest
             'price_unit' => ['required', Rule::in(Listing::PRICE_UNITS)],
             'currency' => ['nullable', 'string', 'max:10'],
             'status' => ['required', Rule::in(Listing::STATUSES)],
-            'city_id' => ['nullable', 'exists:cities,id'],
+            'country_id' => ['nullable', 'integer', new ActiveCountry(
+                $listing instanceof Listing ? (int) $listing->country_id : null
+            )],
+            'city_id' => ['nullable', 'integer', new CityBelongsToCountry(
+                $this->input('country_id') ?: ($listing instanceof Listing ? $listing->country_id : CountryContext::current()?->id)
+            )],
             'area_id' => ['nullable', 'exists:areas,id'],
             'area_size' => ['nullable', 'numeric', 'min:0'],
             'area_unit' => ['nullable', Rule::in(Listing::AREA_UNITS)],

@@ -2,12 +2,17 @@
 
 namespace App\Http\Requests;
 
+use App\Models\City;
+use App\Models\Country;
 use App\Models\Listing;
 use App\Models\ListingType;
+use App\Rules\ActiveCountry;
+use App\Rules\CityBelongsToCountry;
 use App\Support\CountryContext;
 use App\Support\ListingAttributeRules;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Validator;
 
 class StoreListingRequest extends FormRequest
 {
@@ -30,7 +35,8 @@ class StoreListingRequest extends FormRequest
             'price_unit' => ['required', Rule::in(Listing::PRICE_UNITS)],
             'currency' => ['nullable', 'string', 'max:10'],
             'status' => ['required', Rule::in(Listing::STATUSES)],
-            'city_id' => ['nullable', 'exists:cities,id'],
+            'country_id' => ['nullable', 'integer', new ActiveCountry],
+            'city_id' => ['nullable', 'integer', new CityBelongsToCountry($this->input('country_id') ?: CountryContext::current()?->id)],
             'area_id' => ['nullable', 'exists:areas,id'],
             'area_size' => ['nullable', 'numeric', 'min:0'],
             'area_unit' => ['nullable', Rule::in(Listing::AREA_UNITS)],
@@ -76,10 +82,30 @@ class StoreListingRequest extends FormRequest
                 'currency' => CountryContext::current()?->currency_code ?: 'PKR',
             ]);
         }
+        if (! $this->filled('country_id') && $this->filled('city_id')) {
+            $cityCountryId = City::query()->whereKey((int) $this->input('city_id'))->value('country_id');
+            if ($cityCountryId) {
+                $this->merge(['country_id' => $cityCountryId]);
+            }
+        }
         if (! $this->filled('country_id')) {
             $this->merge([
                 'country_id' => CountryContext::current()?->id,
             ]);
         }
+    }
+
+    public function withValidator(Validator $validator): void
+    {
+        $validator->after(function (Validator $validator) {
+            $countryId = $this->input('country_id') ?: CountryContext::current()?->id;
+            if (! $countryId) {
+                return;
+            }
+            $country = Country::query()->find((int) $countryId);
+            if ($country && ! $country->acceptsNewListings()) {
+                $validator->errors()->add('country_id', 'This country is not accepting new listings.');
+            }
+        });
     }
 }

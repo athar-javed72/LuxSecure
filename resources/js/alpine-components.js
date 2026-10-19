@@ -599,6 +599,139 @@ export function registerAlpineComponents(Alpine) {
         },
     }));
 
+    Alpine.data('locationPicker', () => ({
+        countryName: 'country_id',
+        cityName: 'city_id',
+        countryId: null,
+        cityId: null,
+        cityLabel: '',
+        cityQuery: '',
+        citiesUrlTemplate: '',
+        debounceMs: 300,
+        minChars: 2,
+        open: false,
+        loading: false,
+        error: '',
+        results: [],
+        _timer: null,
+        init() {
+            const cfg = parseAlpineConfig(this.$el);
+            this.countryName = cfg.countryName || 'country_id';
+            this.cityName = cfg.cityName || 'city_id';
+            this.countryId = cfg.countryId != null ? String(cfg.countryId) : '';
+            this.cityId = cfg.cityId != null ? String(cfg.cityId) : '';
+            this.cityLabel = cfg.cityLabel || '';
+            this.cityQuery = this.cityLabel || '';
+            this.citiesUrlTemplate = cfg.citiesUrlTemplate || '';
+            this.debounceMs = cfg.debounceMs || 300;
+            this.minChars = cfg.minChars || 2;
+            if (this.countryId && this.cityId) {
+                this.loadCities(true);
+            }
+        },
+        get cityDisabled() {
+            return !this.countryId;
+        },
+        get showDropdown() {
+            return this.open && !!this.countryId;
+        },
+        get showError() {
+            return !this.loading && !!this.error;
+        },
+        get showEmpty() {
+            return !this.loading && !this.error && this.results.length === 0;
+        },
+        get hasSelection() {
+            return !!this.cityId && !!this.cityLabel;
+        },
+        get selectedHint() {
+            return this.cityLabel ? 'Selected: ' + this.cityLabel : '';
+        },
+        citiesUrl() {
+            if (!this.countryId || !this.citiesUrlTemplate) {
+                return '';
+            }
+            return this.citiesUrlTemplate.replace('__COUNTRY__', String(this.countryId));
+        },
+        onCountryChange() {
+            this.cityId = '';
+            this.cityLabel = '';
+            this.cityQuery = '';
+            this.results = [];
+            this.error = '';
+            this.open = false;
+            if (this.countryId) {
+                this.loadCities();
+            }
+        },
+        onCityFocus() {
+            this.open = true;
+            if (!this.results.length) {
+                this.loadCities();
+            }
+        },
+        closeDropdown() {
+            this.open = false;
+        },
+        onCityQuery() {
+            if (this._timer) {
+                clearTimeout(this._timer);
+            }
+            this._timer = setTimeout(() => this.loadCities(), this.debounceMs);
+        },
+        async loadCities(preserveSelection) {
+            const urlBase = this.citiesUrl();
+            if (!urlBase) {
+                return;
+            }
+            this.loading = true;
+            this.error = '';
+            this.open = true;
+            try {
+                const params = new URLSearchParams();
+                const q = (this.cityQuery || '').trim();
+                if (q.length >= this.minChars) {
+                    params.set('search', q);
+                }
+                if (this.cityId) {
+                    params.set('selected_id', this.cityId);
+                }
+                const url = urlBase + (params.toString() ? '?' + params.toString() : '');
+                const res = await fetch(url, {
+                    headers: { Accept: 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+                });
+                if (!res.ok) {
+                    throw new Error('Could not load cities');
+                }
+                const json = await res.json();
+                const rows = Array.isArray(json.data) ? json.data : [];
+                this.results = rows.map((row) => ({
+                    id: row.id,
+                    name: row.name,
+                    label: row.label || row.name,
+                }));
+                if (preserveSelection && this.cityId) {
+                    const match = this.results.find((r) => String(r.id) === String(this.cityId));
+                    if (match) {
+                        this.cityLabel = match.label;
+                        this.cityQuery = match.label;
+                    }
+                }
+            } catch (e) {
+                this.error = e && e.message ? e.message : 'Could not load cities';
+                this.results = [];
+            } finally {
+                this.loading = false;
+            }
+        },
+        selectCity(city) {
+            this.cityId = String(city.id);
+            this.cityLabel = city.label || city.name;
+            this.cityQuery = this.cityLabel;
+            this.open = false;
+        },
+    }));
+
     Alpine.data('bookingQuote', () => ({
         quoteUrl: '',
         roomTypeId: null,

@@ -44,10 +44,26 @@ trait CreatesListings
 
     protected function makeCity(string $name = 'Lahore'): City
     {
-        return City::firstOrCreate(
+        $countryId = Country::query()->firstOrCreate(
+            ['iso2' => 'PK'],
+            [
+                'name' => 'Pakistan',
+                'currency_code' => 'PKR',
+                'default_locale' => 'en',
+                'timezone' => 'Asia/Karachi',
+                'is_active' => true,
+            ]
+        )->id;
+
+        $city = City::firstOrCreate(
             ['slug' => Str::slug($name)],
-            ['name' => $name, 'is_active' => true]
+            ['name' => $name, 'is_active' => true, 'country_id' => $countryId]
         );
+        if (blank($city->country_id)) {
+            $city->forceFill(['country_id' => $countryId])->save();
+        }
+
+        return $city->fresh();
     }
 
     protected function makeListing(array $overrides = []): Listing

@@ -7,6 +7,7 @@ use App\Http\Resources\ListingResource;
 use App\Models\Listing;
 use App\Services\ListingCacheService;
 use App\Support\ApiResponse;
+use App\Support\CountryCatalog;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -25,7 +26,10 @@ class ListingController extends Controller
     public function index(Request $request): JsonResponse
     {
         $paginator = $this->cache->rememberIndex($request, function () use ($request) {
-            $query = Listing::query()->published()->with(['images', 'listingType', 'country', 'organization']);
+            $query = Listing::query()
+                ->published()
+                ->whereHas('country', fn ($c) => $c->where('is_active', true)->where('wind_down', false))
+                ->with(['images', 'listingType', 'country', 'organization']);
 
             if ($request->filled('search')) {
                 $q = $request->string('search')->toString();
@@ -49,10 +53,15 @@ class ListingController extends Controller
                 $query->where('city_id', $request->integer('city_id'));
             }
             if ($request->filled('country_id')) {
-                $query->where('country_id', $request->integer('country_id'));
+                $countryId = $request->integer('country_id');
+                if (! CountryCatalog::selectable()->contains(fn ($c) => (int) $c->id === $countryId)) {
+                    $query->whereRaw('1 = 0');
+                } else {
+                    $query->where('country_id', $countryId);
+                }
             } elseif ($request->filled('country')) {
                 $iso = strtoupper($request->string('country')->toString());
-                $query->whereHas('country', fn ($c) => $c->where('iso2', $iso));
+                $query->whereHas('country', fn ($c) => $c->where('iso2', $iso)->where('is_active', true)->where('wind_down', false));
             }
             if ($request->filled('price_min')) {
                 $query->where('price', '>=', (float) $request->price_min);

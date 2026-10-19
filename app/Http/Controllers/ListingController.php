@@ -8,6 +8,7 @@ use App\Models\Currency;
 use App\Models\Listing;
 use App\Models\ListingType;
 use App\Models\TypeAttribute;
+use App\Support\CountryCatalog;
 use App\Support\CountryContext;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -18,6 +19,7 @@ class ListingController extends Controller
     {
         $query = Listing::query()
             ->published()
+            ->whereHas('country', fn ($c) => $c->where('is_active', true)->where('wind_down', false))
             ->with(['images', 'listingType', 'city']);
 
         if ($request->filled('search')) {
@@ -124,7 +126,8 @@ class ListingController extends Controller
             default => $query->latest()->paginate(12)->withQueryString(),
         };
 
-        $citiesQuery = City::query()->where('is_active', true)->orderBy('name');
+        // City list for filters is capped; full search uses /countries/{id}/cities.
+        $citiesQuery = City::query()->where('is_active', true)->orderBy('name')->limit(50);
         if ($request->filled('country_id')) {
             $citiesQuery->where('country_id', $request->integer('country_id'));
         }
@@ -134,7 +137,7 @@ class ListingController extends Controller
             'listings' => $listings,
             'listingTypes' => ListingType::query()->where('is_active', true)->orderBy('name')->get(),
             'cities' => $citiesQuery->get(),
-            'filterCountries' => Country::query()->where('is_active', true)->orderBy('sort_order')->orderBy('name')->get(),
+            'filterCountries' => CountryCatalog::selectable(),
             'filterableAttributes' => $filterableAttrs,
         ]);
     }

@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\ListingApiController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\BookingController;
+use App\Http\Controllers\Api\V1\CountryController;
 use App\Http\Controllers\Api\V1\FavoriteController;
 use App\Http\Controllers\Api\V1\ListingController;
 use App\Http\Controllers\Api\V1\ProfileController;
@@ -27,6 +28,8 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
 
     Route::get('listings', [ListingController::class, 'index'])->name('listings.index');
     Route::get('listings/{listing}', [ListingController::class, 'show'])->name('listings.show');
+    Route::get('countries', [CountryController::class, 'index'])->name('countries.index');
+    Route::get('countries/{country}/cities', [CountryController::class, 'cities'])->name('countries.cities');
 
     Route::middleware(['auth:sanctum', 'active', 'panel.2fa', 'throttle:api'])->group(function () {
         Route::post('auth/logout', [AuthController::class, 'logout'])->name('auth.logout');

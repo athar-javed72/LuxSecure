@@ -38,8 +38,9 @@ Brand SVG kit + Critical multi-country remediations — **COMPLETE locally**
 
 | Area | Status |
 |------|--------|
-| PHPUnit | **140 passed** |
+| PHPUnit | **150 passed** |
 | `npm run build` | Passing |
+| Country/City geo (import, visibility, location-picker) | Done |
 | Country scoping remediation | Done |
 | Brand SVG kit (`public/brand/` = byte-copy of `brand-source/`) | Done |
 | Logo regenerator removed | Done |
@@ -53,11 +54,14 @@ Brand SVG kit + Critical multi-country remediations — **COMPLETE locally**
 2. Repo remote / folder still named LuxSecure; artisan prefix still `luxsecure:*`; demo login `admin@luxsecure.com`.
 3. Regenerate Scribe HTML if `/docs` should show Maskanoor title from live config.
 4. CMS legal drafts still `[PLACEHOLDER:*]` until legal review; ar/ms lang files are machine drafts (`needs_native_review`).
-5. After deploy: re-seed RBAC (`RolesAndPermissionsSeeder`) so `organization_admin` gains `rooms.*.own`.
+5. After deploy: re-seed RBAC (`RolesAndPermissionsSeeder`) for `countries.manage_visibility` + prior room grants.
+6. Download dr5hn geo JSON into `storage/app/geo/` (not in git) before `php artisan maskanoor:geo:import`.
+7. Publish privacy/terms CMS pages (or global fallbacks) before enabling additional countries via Admin → Countries → Visibility.
 
 ---
 
 ## 4. Next (optional)
 
 - `git commit` / `git push` when ready
+- Run geo import for PK/AE (or full set) after placing dataset files
 - Native review of ar/ms translations; clear Pakistan `tax_needs_review` in Admin after confirmation

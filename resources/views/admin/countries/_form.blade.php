@@ -1,10 +1,11 @@
 <div class="space-y-4">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <x-input label="ISO2 *" name="iso2" :value="old('iso2', $country?->iso2)" maxlength="2" required />
+        <x-input label="ISO3" name="iso3" :value="old('iso3', $country?->iso3)" maxlength="3" />
         <x-input label="Name *" name="name" :value="old('name', $country?->name)" required />
-        <x-select label="Currency *" name="currency_code" :options="$currencies->all()" :selected="old('currency_code', $country?->currency_code)" required />
-        <x-select label="Default locale *" name="default_locale" :options="$languages->all()" :selected="old('default_locale', $country?->default_locale)" required />
-        <x-input label="Timezone *" name="timezone" :value="old('timezone', $country?->timezone ?? 'UTC')" required />
+        <x-select label="Currency" name="currency_code" :options="$currencies->all()" :selected="old('currency_code', $country?->currency_code)" placeholder="Required to activate" />
+        <x-select label="Default locale" name="default_locale" :options="$languages->all()" :selected="old('default_locale', $country?->default_locale)" placeholder="Required to activate" />
+        <x-input label="Timezone" name="timezone" :value="old('timezone', $country?->timezone)" placeholder="e.g. Asia/Karachi" />
         <x-input label="Phone code" name="phone_code" :value="old('phone_code', $country?->phone_code)" />
         <x-input label="Phone regex" name="phone_regex" :value="old('phone_regex', $country?->phone_regex)" />
         <x-input label="Tax name" name="tax_name" :value="old('tax_name', $country?->tax_name)" />

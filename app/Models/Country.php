@@ -2,13 +2,21 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\LogsAdminActivity;
+use App\Support\CountryCatalog;
+use App\Support\CountryReadiness;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Country extends Model
 {
+    use LogsAdminActivity;
+
     protected $fillable = [
         'iso2',
+        'iso3',
+        'source_id',
         'name',
         'currency_code',
         'default_locale',
@@ -23,6 +31,7 @@ class Country extends Model
         'invoice_prefix',
         'invoice_sequence',
         'is_active',
+        'wind_down',
         'sort_order',
     ];
 
@@ -32,9 +41,22 @@ class Country extends Model
         'tax_percent' => 'decimal:4',
         'tax_needs_review' => 'boolean',
         'is_active' => 'boolean',
+        'wind_down' => 'boolean',
         'invoice_sequence' => 'integer',
         'sort_order' => 'integer',
+        'source_id' => 'integer',
     ];
+
+    protected static function booted(): void
+    {
+        static::saved(fn () => CountryCatalog::flush());
+        static::deleted(fn () => CountryCatalog::flush());
+    }
+
+    public function scopeActive(Builder $query): Builder
+    {
+        return $query->where('is_active', true);
+    }
 
     public function settings(): HasMany
     {
@@ -54,6 +76,21 @@ class Country extends Model
     public function kycDocumentTypes(): HasMany
     {
         return $this->hasMany(KycDocumentType::class);
+    }
+
+    public function readiness(): array
+    {
+        return CountryReadiness::check($this);
+    }
+
+    public function isReady(): bool
+    {
+        return $this->readiness()['ready'];
+    }
+
+    public function acceptsNewListings(): bool
+    {
+        return $this->is_active && ! $this->wind_down;
     }
 
     public function enabledGateways(): array

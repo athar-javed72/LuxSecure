@@ -120,7 +120,7 @@ return [
             'label' => 'Countries',
             'route' => 'admin.countries.index',
             'active' => ['admin.countries.*', 'admin.kyc-document-types.*', 'admin.country-payment-methods.*'],
-            'permission' => ['countries.view', 'countries.update'],
+            'permission' => ['countries.view', 'countries.update', 'countries.manage_visibility'],
         ],
         [
             'label' => 'Organizations',

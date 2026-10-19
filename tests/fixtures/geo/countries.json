@@ -1,0 +1,29 @@
+[
+  {
+    "id": 167,
+    "name": "Pakistan",
+    "iso2": "PK",
+    "iso3": "PAK",
+    "phonecode": "92",
+    "currency": "PKR",
+    "timezones": [{"zoneName": "Asia/Karachi"}]
+  },
+  {
+    "id": 231,
+    "name": "United Arab Emirates",
+    "iso2": "AE",
+    "iso3": "ARE",
+    "phonecode": "971",
+    "currency": "AED",
+    "timezones": [{"zoneName": "Asia/Dubai"}]
+  },
+  {
+    "id": 999,
+    "name": "Testland",
+    "iso2": "TL",
+    "iso3": "TST",
+    "phonecode": "999",
+    "currency": "USD",
+    "timezones": [{"zoneName": "UTC"}]
+  }
+]

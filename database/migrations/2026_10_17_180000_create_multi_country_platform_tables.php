@@ -40,9 +40,9 @@ return new class extends Migration
                 $table->id();
                 $table->char('iso2', 2)->unique();
                 $table->string('name');
-                $table->string('currency_code', 3);
-                $table->string('default_locale', 12)->default('en');
-                $table->string('timezone', 64)->default('UTC');
+                $table->string('currency_code', 3)->nullable();
+                $table->string('default_locale', 12)->nullable();
+                $table->string('timezone', 64)->nullable();
                 $table->string('phone_code', 8)->nullable();
                 $table->string('phone_regex')->nullable();
                 $table->json('area_units')->nullable();

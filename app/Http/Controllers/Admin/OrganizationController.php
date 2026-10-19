@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Country;
 use App\Models\Organization;
 use App\Models\User;
+use App\Rules\ActiveCountry;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -117,7 +118,9 @@ class OrganizationController extends Controller
             'slug' => ['nullable', 'string', 'max:160', 'unique:organizations,slug,'.($organization?->id ?? 'NULL')],
             'description' => ['nullable', 'string', 'max:5000'],
             'owner_id' => ['nullable', 'exists:users,id'],
-            'country_id' => ['nullable', 'exists:countries,id'],
+            'country_id' => ['nullable', 'integer', new ActiveCountry(
+                $organization?->country_id ? (int) $organization->country_id : null
+            )],
             'is_active' => ['sometimes', 'boolean'],
         ]);
 

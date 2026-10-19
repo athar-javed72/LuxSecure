@@ -467,41 +467,32 @@ unset($__defined_vars, $__key, $__value); ?>
                 </details>
 
                 <details class="group border-b border-[var(--color-border)] pb-4" open>
-                    <summary class="flex items-center justify-between min-h-11 cursor-pointer text-sm font-semibold text-[var(--color-ink)]">Country</summary>
-                    <label class="mt-2 block">
-                        <span class="sr-only">Country</span>
-                        <select
-                            name="country_id"
-                            class="w-full h-11 px-3 rounded-[var(--radius-input)] border border-[var(--color-border)] text-sm bg-white"
-                            data-country-currency
-                        >
-                            <option value="">All countries</option>
-                            <?php $__currentLoopData = $countries; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $country): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                <option
-                                    value="<?php echo e($country->id); ?>"
-                                    data-iso2="<?php echo e($country->iso2); ?>"
-                                    data-currency="<?php echo e(strtoupper((string) $country->iso2) === 'PK' ? 'PKR' : 'USD'); ?>"
-                                    <?php if((string) $currentCountry === (string) $country->id): echo 'selected'; endif; ?>
-                                ><?php echo e($country->name); ?></option>
-                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                        </select>
+                    <summary class="flex items-center justify-between min-h-11 cursor-pointer text-sm font-semibold text-[var(--color-ink)]">Location</summary>
+                    <div class="mt-2">
+                        <?php if (isset($component)) { $__componentOriginal85a49ba5b5469157f45f95cc92fe58f0 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal85a49ba5b5469157f45f95cc92fe58f0 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.location-picker','data' => ['countries' => $countries,'countryName' => 'country_id','cityName' => 'city_id','countryId' => $currentCountry ?: null,'cityId' => $currentCity ?: null,'required' => false,'citiesUrlTemplate' => url('/countries/__COUNTRY__/cities')]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('location-picker'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['countries' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($countries),'country-name' => 'country_id','city-name' => 'city_id','country-id' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($currentCountry ?: null),'city-id' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($currentCity ?: null),'required' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute(false),'cities-url-template' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute(url('/countries/__COUNTRY__/cities'))]); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal85a49ba5b5469157f45f95cc92fe58f0)): ?>
+<?php $attributes = $__attributesOriginal85a49ba5b5469157f45f95cc92fe58f0; ?>
+<?php unset($__attributesOriginal85a49ba5b5469157f45f95cc92fe58f0); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal85a49ba5b5469157f45f95cc92fe58f0)): ?>
+<?php $component = $__componentOriginal85a49ba5b5469157f45f95cc92fe58f0; ?>
+<?php unset($__componentOriginal85a49ba5b5469157f45f95cc92fe58f0); ?>
+<?php endif; ?>
                         <span class="mt-2 block text-[12px] text-[var(--color-muted)]">
                             Pakistan uses PKR; other countries show prices in USD.
                         </span>
-                    </label>
-                </details>
-
-                <details class="group border-b border-[var(--color-border)] pb-4" open>
-                    <summary class="flex items-center justify-between min-h-11 cursor-pointer text-sm font-semibold text-[var(--color-ink)]">City</summary>
-                    <label class="mt-2 block">
-                        <span class="sr-only">City</span>
-                        <select name="city_id" class="w-full h-11 px-3 rounded-[var(--radius-input)] border border-[var(--color-border)] text-sm bg-white">
-                            <option value="">All cities</option>
-                            <?php $__currentLoopData = $cities; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $city): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                <option value="<?php echo e($city->id); ?>" <?php if((string) $currentCity === (string) $city->id): echo 'selected'; endif; ?>><?php echo e($city->name); ?></option>
-                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                        </select>
-                    </label>
+                    </div>
                 </details>
 
                 <details class="group border-b border-[var(--color-border)] pb-4" open>

@@ -391,41 +391,21 @@
                 </details>
 
                 <details class="group border-b border-[var(--color-border)] pb-4" open>
-                    <summary class="flex items-center justify-between min-h-11 cursor-pointer text-sm font-semibold text-[var(--color-ink)]">Country</summary>
-                    <label class="mt-2 block">
-                        <span class="sr-only">Country</span>
-                        <select
-                            name="country_id"
-                            class="w-full h-11 px-3 rounded-[var(--radius-input)] border border-[var(--color-border)] text-sm bg-white"
-                            data-country-currency
-                        >
-                            <option value="">All countries</option>
-                            @foreach($countries as $country)
-                                <option
-                                    value="{{ $country->id }}"
-                                    data-iso2="{{ $country->iso2 }}"
-                                    data-currency="{{ strtoupper((string) $country->iso2) === 'PK' ? 'PKR' : 'USD' }}"
-                                    @selected((string) $currentCountry === (string) $country->id)
-                                >{{ $country->name }}</option>
-                            @endforeach
-                        </select>
+                    <summary class="flex items-center justify-between min-h-11 cursor-pointer text-sm font-semibold text-[var(--color-ink)]">Location</summary>
+                    <div class="mt-2">
+                        <x-location-picker
+                            :countries="$countries"
+                            country-name="country_id"
+                            city-name="city_id"
+                            :country-id="$currentCountry ?: null"
+                            :city-id="$currentCity ?: null"
+                            :required="false"
+                            :cities-url-template="url('/countries/__COUNTRY__/cities')"
+                        />
                         <span class="mt-2 block text-[12px] text-[var(--color-muted)]">
                             Pakistan uses PKR; other countries show prices in USD.
                         </span>
-                    </label>
-                </details>
-
-                <details class="group border-b border-[var(--color-border)] pb-4" open>
-                    <summary class="flex items-center justify-between min-h-11 cursor-pointer text-sm font-semibold text-[var(--color-ink)]">City</summary>
-                    <label class="mt-2 block">
-                        <span class="sr-only">City</span>
-                        <select name="city_id" class="w-full h-11 px-3 rounded-[var(--radius-input)] border border-[var(--color-border)] text-sm bg-white">
-                            <option value="">All cities</option>
-                            @foreach($cities as $city)
-                                <option value="{{ $city->id }}" @selected((string) $currentCity === (string) $city->id)>{{ $city->name }}</option>
-                            @endforeach
-                        </select>
-                    </label>
+                    </div>
                 </details>
 
                 <details class="group border-b border-[var(--color-border)] pb-4" open>

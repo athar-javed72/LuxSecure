@@ -69,10 +69,9 @@ class AssetAndCspTest extends TestCase
         $response = $this->get(route('properties'));
 
         $response->assertOk();
-        $response->assertSee('All types', false);
-        $response->assertSee('selected', false);
-        // Empty value option for All types is selected when no type query is present.
-        $response->assertSee('value="" selected', false);
+        // Toolbar / filters (Estate Noir properties UI) — not the legacy "All types" select.
+        $response->assertSee('Type', false);
+        $response->assertSee('More filters', false);
         $response->assertSee('Gulberg Apartment for Sale');
         $this->assertGreaterThan(0, Listing::published()->count());
     }
