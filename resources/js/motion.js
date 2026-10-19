@@ -24,28 +24,78 @@ function initReveal() {
     const nodes = qsa('[data-reveal]');
     if (!nodes.length) return;
 
+    const show = (el) => {
+        if (!el || el.classList.contains('is-visible')) return;
+        el.classList.add('is-visible');
+    };
+
     if (REDUCE() || !('IntersectionObserver' in window)) {
-        nodes.forEach((el) => el.classList.add('is-visible'));
+        nodes.forEach(show);
         return;
     }
 
+    // Cap concurrent animations (~6) without dropping elements that already intersect
+    // (hash jumps / scroll-mt used to leave sections blank until a manual scroll).
     let active = 0;
+    const queue = [];
+    const flush = () => {
+        while (active < 6 && queue.length) {
+            const el = queue.shift();
+            if (!el || el.classList.contains('is-visible')) continue;
+            active += 1;
+            show(el);
+            setTimeout(() => {
+                active = Math.max(0, active - 1);
+                flush();
+            }, 120);
+        }
+    };
+    const enqueue = (el) => {
+        if (!el || el.classList.contains('is-visible')) return;
+        if (!queue.includes(el)) queue.push(el);
+        flush();
+    };
+
     const io = new IntersectionObserver(
         (entries) => {
             entries.forEach((entry) => {
-                if (!entry.isIntersecting || active >= 6) return;
-                active += 1;
-                entry.target.classList.add('is-visible');
+                if (!entry.isIntersecting) return;
                 io.unobserve(entry.target);
-                setTimeout(() => {
-                    active = Math.max(0, active - 1);
-                }, 700);
+                enqueue(entry.target);
             });
         },
-        { threshold: 0.15 }
+        { threshold: 0.12, rootMargin: '0px 0px -8% 0px' }
     );
 
+    const revealInViewport = () => {
+        const vh = window.innerHeight || document.documentElement.clientHeight;
+        nodes.forEach((el) => {
+            if (el.classList.contains('is-visible')) return;
+            const r = el.getBoundingClientRect();
+            if (r.bottom > 0 && r.top < vh) enqueue(el);
+        });
+    };
+
+    const revealHashTarget = () => {
+        const id = (location.hash || '').replace(/^#/, '');
+        if (!id) return;
+        const target = document.getElementById(id);
+        if (!target) return;
+        if (target.hasAttribute('data-reveal')) enqueue(target);
+        qsa('[data-reveal]', target).forEach(enqueue);
+    };
+
     nodes.forEach((el) => io.observe(el));
+
+    const sync = () => {
+        revealHashTarget();
+        revealInViewport();
+    };
+
+    // After layout / native hash scroll (incl. scroll-margin-top).
+    requestAnimationFrame(() => requestAnimationFrame(sync));
+    window.addEventListener('hashchange', () => requestAnimationFrame(sync));
+    window.addEventListener('load', sync, { once: true });
 }
 
 function initBreak() {
@@ -338,13 +388,45 @@ function setupSearchRoot(root) {
     setupBudgetPopover(root);
     setupMobileSheet(root);
 
-    // Outside click / Esc
-    document.addEventListener('click', (e) => {
-        if (!root.contains(e.target)) closeAllPopovers(root);
+    // Outside click / Esc — closes type/budget popovers and location list
+    document.addEventListener('pointerdown', (e) => {
+        if (!root.contains(e.target)) {
+            closeAllPopovers(root);
+            return;
+        }
+        // Click inside search but outside the open location combobox → close list
+        const locInput = qs('[data-location-input]', root);
+        const locList = qs('[data-location-list]', root);
+        if (locList && !locList.hidden) {
+            const inLoc = locInput?.contains(e.target) || locList.contains(e.target);
+            if (!inLoc) closeLocationList(root);
+        }
+        // Click outside an open type/budget popover (but still in search) → close it
+        qsa('[data-popover].is-open, [data-popover]:not([hidden])', root).forEach((p) => {
+            if (p.hidden) return;
+            const trigger = p.id === 'type-popover'
+                ? qs('[data-type-trigger]', root)
+                : qs('[data-budget-trigger]', root);
+            if (!p.contains(e.target) && !trigger?.contains(e.target)) {
+                p.classList.remove('is-open');
+                p.hidden = true;
+                trigger?.setAttribute('aria-expanded', 'false');
+            }
+        });
     });
     root.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') closeAllPopovers(root);
     });
+}
+
+function closeLocationList(root) {
+    const list = qs('[data-location-list]', root);
+    const input = qs('[data-location-input]', root);
+    if (list) {
+        list.hidden = true;
+        list.classList.remove('is-open');
+    }
+    if (input) input.setAttribute('aria-expanded', 'false');
 }
 
 function closeAllPopovers(root) {
@@ -352,6 +434,7 @@ function closeAllPopovers(root) {
         p.classList.remove('is-open');
         p.hidden = true;
     });
+    closeLocationList(root);
     qsa('[aria-expanded="true"]', root).forEach((b) => b.setAttribute('aria-expanded', 'false'));
 }
 
@@ -411,10 +494,8 @@ function setupCombobox(root) {
     });
 
     function closeList() {
-        list.hidden = true;
-        list.classList.remove('is-open');
-        input.setAttribute('aria-expanded', 'false');
         active = -1;
+        closeLocationList(root);
     }
 }
 
