@@ -16,6 +16,10 @@ class EnsureTwoFactorForPanel
             return $next($request);
         }
 
+        if (! config('maskanoor.two_factor_required', true)) {
+            return $next($request);
+        }
+
         if ($user->hasTwoFactorEnabled()) {
             return $next($request);
         }

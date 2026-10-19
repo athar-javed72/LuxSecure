@@ -33,6 +33,13 @@ return [
 
     'sanctum_2fa_setup_minutes' => (int) env('SANCTUM_2FA_SETUP_MINUTES', 15),
 
+    /*
+    | When false, panel users are not forced to enroll 2FA and login skips
+    | the challenge even if a secret was previously confirmed. Re-enable for
+    | production staff accounts when ready.
+    */
+    'two_factor_required' => (bool) env('TWO_FACTOR_REQUIRED', true),
+
     'messaging' => [
         'default' => env('MESSAGING_DRIVER', 'log'),
         'allow_log_in_production' => (bool) env('MESSAGING_ALLOW_LOG_IN_PRODUCTION', false),

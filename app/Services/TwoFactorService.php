@@ -14,11 +14,19 @@ class TwoFactorService
 
     public function requiresTwoFactor(User $user): bool
     {
+        if (! config('maskanoor.two_factor_required', true)) {
+            return false;
+        }
+
         return $user->can('panel.access') && filled($user->two_factor_confirmed_at);
     }
 
     public function requiresSetup(User $user): bool
     {
+        if (! config('maskanoor.two_factor_required', true)) {
+            return false;
+        }
+
         return $user->can('panel.access') && blank($user->two_factor_confirmed_at);
     }
 
