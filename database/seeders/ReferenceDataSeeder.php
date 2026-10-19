@@ -91,6 +91,7 @@ class ReferenceDataSeeder extends Seeder
     {
         foreach ([
             ['code' => 'PKR', 'symbol' => 'Rs', 'decimals' => 0, 'rate_to_base' => 1],
+            ['code' => 'USD', 'symbol' => '$', 'decimals' => 2, 'rate_to_base' => null],
             ['code' => 'SAR', 'symbol' => '﷼', 'decimals' => 2, 'rate_to_base' => null],
             ['code' => 'AED', 'symbol' => 'د.إ', 'decimals' => 2, 'rate_to_base' => null],
             ['code' => 'QAR', 'symbol' => '﷼', 'decimals' => 2, 'rate_to_base' => null],

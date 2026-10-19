@@ -4,6 +4,7 @@ $__newAttributes = [];
 $__propNames = \Illuminate\View\ComponentAttributeBag::extractPropNames(([
     'listingTypes' => collect(),
     'cities' => collect(),
+    'countries' => collect(),
     'total' => 0,
 ]));
 
@@ -23,6 +24,7 @@ unset($__newAttributes);
 foreach (array_filter(([
     'listingTypes' => collect(),
     'cities' => collect(),
+    'countries' => collect(),
     'total' => 0,
 ]), 'is_string', ARRAY_FILTER_USE_KEY) as $__key => $__value) {
     $$__key = $$__key ?? $__value;
@@ -52,6 +54,7 @@ unset($__defined_vars, $__key, $__value); ?>
     $currentPriceMin = request('price_min', '');
     $currentPriceMax = request('price_max', '');
     $currentCity = request('city_id', '');
+    $currentCountry = request('country_id', '');
     $currentBeds = request('attr_bedrooms', '');
     $currentBaths = request('attr_bathrooms', '');
     $currentFurnished = request('attr_furnished', '');
@@ -60,6 +63,7 @@ unset($__defined_vars, $__key, $__value); ?>
     $currentBreakfast = request('attr_breakfast_included', '');
     $currentSort = request('sort', '');
     $currency = session('currency', optional($activeCountry ?? null)->currency_code ?? 'PKR');
+
 
     $typeLabel = 'Type';
     if ($currentType) {
@@ -97,6 +101,7 @@ unset($__defined_vars, $__key, $__value); ?>
     }
 
     $moreCount = collect([
+        $currentCountry,
         $currentCity,
         $currentBaths,
         $currentFurnished,
@@ -115,6 +120,10 @@ unset($__defined_vars, $__key, $__value); ?>
     if ($currentType !== '') {
         $tName = optional($listingTypes->firstWhere('slug', $currentType))->name ?? $currentType;
         $chips[] = ['key' => 'type', 'label' => $tName, 'remove' => ['type']];
+    }
+    if ($currentCountry !== '') {
+        $coName = optional($countries->firstWhere('id', (int) $currentCountry))->name ?? 'Country';
+        $chips[] = ['key' => 'country_id', 'label' => $coName, 'remove' => ['country_id']];
     }
     if ($currentCity !== '') {
         $cName = optional($cities->firstWhere('id', (int) $currentCity))->name ?? 'City';
@@ -203,6 +212,12 @@ unset($__defined_vars, $__key, $__value); ?>
                 
                 <?php if($currentPurpose !== ''): ?>
                     <input type="hidden" name="purpose" value="<?php echo e($currentPurpose); ?>">
+                <?php endif; ?>
+                <?php if($currentCountry !== ''): ?>
+                    <input type="hidden" name="country_id" value="<?php echo e($currentCountry); ?>">
+                <?php endif; ?>
+                <?php if($currentCity !== ''): ?>
+                    <input type="hidden" name="city_id" value="<?php echo e($currentCity); ?>">
                 <?php endif; ?>
 
                 <label class="relative flex-1 min-w-[160px] lg:min-w-[200px] lg:max-w-xs">
@@ -449,6 +464,31 @@ unset($__defined_vars, $__key, $__value); ?>
                             </select>
                         </label>
                     </div>
+                </details>
+
+                <details class="group border-b border-[var(--color-border)] pb-4" open>
+                    <summary class="flex items-center justify-between min-h-11 cursor-pointer text-sm font-semibold text-[var(--color-ink)]">Country</summary>
+                    <label class="mt-2 block">
+                        <span class="sr-only">Country</span>
+                        <select
+                            name="country_id"
+                            class="w-full h-11 px-3 rounded-[var(--radius-input)] border border-[var(--color-border)] text-sm bg-white"
+                            data-country-currency
+                        >
+                            <option value="">All countries</option>
+                            <?php $__currentLoopData = $countries; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $country): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <option
+                                    value="<?php echo e($country->id); ?>"
+                                    data-iso2="<?php echo e($country->iso2); ?>"
+                                    data-currency="<?php echo e(strtoupper((string) $country->iso2) === 'PK' ? 'PKR' : 'USD'); ?>"
+                                    <?php if((string) $currentCountry === (string) $country->id): echo 'selected'; endif; ?>
+                                ><?php echo e($country->name); ?></option>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                        </select>
+                        <span class="mt-2 block text-[12px] text-[var(--color-muted)]">
+                            Pakistan uses PKR; other countries show prices in USD.
+                        </span>
+                    </label>
                 </details>
 
                 <details class="group border-b border-[var(--color-border)] pb-4" open>

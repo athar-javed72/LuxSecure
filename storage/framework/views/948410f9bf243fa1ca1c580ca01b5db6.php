@@ -38,14 +38,14 @@
 
 <?php if (isset($component)) { $__componentOriginale7499b9c21946d607fb6b6fe77adcd57 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginale7499b9c21946d607fb6b6fe77adcd57 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.properties-filters','data' => ['listingTypes' => $listingTypes,'cities' => $cities,'total' => $total]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.properties-filters','data' => ['listingTypes' => $listingTypes,'cities' => $cities,'countries' => $filterCountries ?? collect(),'total' => $total]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('properties-filters'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['listing-types' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($listingTypes),'cities' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($cities),'total' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($total)]); ?>
+<?php $component->withAttributes(['listing-types' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($listingTypes),'cities' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($cities),'countries' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($filterCountries ?? collect()),'total' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($total)]); ?>
 <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginale7499b9c21946d607fb6b6fe77adcd57)): ?>

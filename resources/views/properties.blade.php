@@ -24,6 +24,7 @@
 <x-properties-filters
     :listing-types="$listingTypes"
     :cities="$cities"
+    :countries="$filterCountries ?? collect()"
     :total="$total"
 />
 

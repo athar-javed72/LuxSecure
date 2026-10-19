@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\City;
+use App\Models\Country;
+use App\Models\Currency;
 use App\Models\Listing;
 use App\Models\ListingType;
 use App\Models\TypeAttribute;
@@ -43,6 +45,25 @@ class ListingController extends Controller
 
         if ($request->filled('city_id')) {
             $query->where('city_id', $request->integer('city_id'));
+        }
+
+        // More-filters Country: Pakistan → PKR, any other country → USD (display currency).
+        if ($request->filled('country_id')) {
+            $selectedCountry = Country::query()
+                ->where('is_active', true)
+                ->find($request->integer('country_id'));
+            if ($selectedCountry) {
+                $displayCurrency = strtoupper((string) $selectedCountry->iso2) === 'PK' ? 'PKR' : 'USD';
+                Currency::query()->firstOrCreate(
+                    ['code' => $displayCurrency],
+                    [
+                        'symbol' => $displayCurrency === 'PKR' ? 'Rs' : '$',
+                        'decimals' => $displayCurrency === 'PKR' ? 0 : 2,
+                        'is_active' => true,
+                    ]
+                );
+                CountryContext::set($selectedCountry->id, $displayCurrency);
+            }
         }
 
         $countryId = $request->integer('country_id') ?: CountryContext::current()?->id;
@@ -103,11 +124,17 @@ class ListingController extends Controller
             default => $query->latest()->paginate(12)->withQueryString(),
         };
 
+        $citiesQuery = City::query()->where('is_active', true)->orderBy('name');
+        if ($request->filled('country_id')) {
+            $citiesQuery->where('country_id', $request->integer('country_id'));
+        }
+
         return view('properties', [
             'properties' => $listings,
             'listings' => $listings,
             'listingTypes' => ListingType::query()->where('is_active', true)->orderBy('name')->get(),
-            'cities' => City::query()->where('is_active', true)->orderBy('name')->get(),
+            'cities' => $citiesQuery->get(),
+            'filterCountries' => Country::query()->where('is_active', true)->orderBy('sort_order')->orderBy('name')->get(),
             'filterableAttributes' => $filterableAttrs,
         ]);
     }
