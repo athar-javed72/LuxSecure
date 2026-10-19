@@ -17,16 +17,21 @@ storage/app/geo/states.json
 storage/app/geo/cities.json
 ```
 
-Download (example):
+Download (example — Windows PowerShell / curl.exe):
 
 ```bash
-# From the upstream repo release / json folder
-curl -L -o storage/app/geo/countries.json https://raw.githubusercontent.com/dr5hn/countries-states-cities-database/master/json/countries.json
-curl -L -o storage/app/geo/states.json https://raw.githubusercontent.com/dr5hn/countries-states-cities-database/master/json/states.json
-curl -L -o storage/app/geo/cities.json https://raw.githubusercontent.com/dr5hn/countries-states-cities-database/master/json/cities.json
+# countries + states still live under master/json/
+curl.exe -L -o storage/app/geo/countries.json https://raw.githubusercontent.com/dr5hn/countries-states-cities-database/master/json/countries.json
+curl.exe -L -o storage/app/geo/states.json https://raw.githubusercontent.com/dr5hn/countries-states-cities-database/master/json/states.json
+
+# cities.json was removed from master/json — use the release gzip export, then decompress
+curl.exe -L -o storage/app/geo/json-cities.json.gz https://github.com/dr5hn/countries-states-cities-database/releases/download/v5.0.0-export.1/json-cities.json.gz
+# decompress to storage/app/geo/cities.json (gzip -d / 7zip / PHP), then delete the .gz
 ```
 
-Verify sizes are non-trivial (cities.json is typically >50 MB). Record a SHA-256 checksum for your pinned revision in ops notes.
+Verify sizes are non-trivial (`cities.json` is typically ~150–200 MB uncompressed). Record a SHA-256 checksum for your pinned revision in ops notes.
+
+Pinned release used by ops: **v5.0.0-export.1** (`json-cities.json.gz`).
 
 `storage/app/geo/` is gitignored for the large city dump — keep only docs here in the repo.
 
@@ -37,6 +42,7 @@ php artisan maskanoor:geo:import --dry-run
 php artisan maskanoor:geo:import
 php artisan maskanoor:geo:import --country=PK,AE
 php artisan maskanoor:geo:import --chunk=1000
+# Full-world cities.json needs ~1GB PHP memory (command raises the limit automatically)
 ```
 
 Behaviour:

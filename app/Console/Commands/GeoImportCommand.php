@@ -21,6 +21,11 @@ class GeoImportCommand extends Command
 
     public function handle(): int
     {
+        // Full cities.json is ~190 MB; decoding needs headroom beyond PHP's default 128M.
+        if ((int) ini_get('memory_limit') > 0 && $this->memoryLimitBytes() < 1024 * 1024 * 1024) {
+            ini_set('memory_limit', '1024M');
+        }
+
         $source = $this->option('source') ?: storage_path('app/geo');
         $dry = (bool) $this->option('dry-run');
         $chunk = max(100, (int) $this->option('chunk'));
@@ -199,5 +204,23 @@ class GeoImportCommand extends Command
         }
 
         return self::SUCCESS;
+    }
+
+    private function memoryLimitBytes(): int
+    {
+        $raw = (string) ini_get('memory_limit');
+        if ($raw === '-1') {
+            return PHP_INT_MAX;
+        }
+
+        $unit = strtolower(substr($raw, -1));
+        $value = (int) $raw;
+
+        return match ($unit) {
+            'g' => $value * 1024 * 1024 * 1024,
+            'm' => $value * 1024 * 1024,
+            'k' => $value * 1024,
+            default => (int) $raw,
+        };
     }
 }
