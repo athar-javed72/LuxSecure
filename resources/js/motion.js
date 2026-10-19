@@ -185,12 +185,12 @@ function initHeroSlideshow() {
     const restartTimer = () => {
         clear();
         if (paused || !visible || !onScreen || REDUCE() || slides.length < 2) return;
-        timer = setInterval(() => go(index + 1), 7000);
+        timer = setInterval(() => go(index + 1), 4000);
         if (progress) {
             progress.style.transition = 'none';
             progress.style.width = '0%';
             requestAnimationFrame(() => {
-                progress.style.transition = REDUCE() ? 'none' : 'width 7s linear';
+                progress.style.transition = REDUCE() ? 'none' : 'width 3s linear';
                 progress.style.width = '100%';
             });
         }
