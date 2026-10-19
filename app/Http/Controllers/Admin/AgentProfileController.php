@@ -42,7 +42,13 @@ class AgentProfileController extends Controller
             $data['photo_path'] = $request->file('photo')->store('agents', StorageDisk::uploads());
         }
 
-        AgentProfile::create($data);
+        $profile = AgentProfile::create($data);
+
+        if ($request->filled('country_id')) {
+            User::query()->whereKey($profile->user_id)->update([
+                'country_id' => $request->integer('country_id'),
+            ]);
+        }
 
         return redirect()->route('admin.agents.index')->with('success', 'Agent profile created.');
     }
@@ -69,6 +75,12 @@ class AgentProfileController extends Controller
 
         unset($data['user_id']);
         $agent_profile->update($data);
+
+        if ($request->filled('country_id') || $request->exists('country_id')) {
+            $agent_profile->user?->update([
+                'country_id' => $request->input('country_id') ?: null,
+            ]);
+        }
 
         return back()->with('success', 'Agent profile updated.');
     }

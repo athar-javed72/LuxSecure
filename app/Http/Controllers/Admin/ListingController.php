@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreListingRequest;
 use App\Http\Requests\UpdateListingRequest;
 use App\Models\City;
+use App\Models\Country;
 use App\Models\Listing;
 use App\Models\ListingImage;
 use App\Models\ListingType;
@@ -63,11 +64,20 @@ class ListingController extends Controller
             $query->where('status', $request->status);
         }
 
+        if ($request->filled('country_id')) {
+            $query->where('country_id', $request->integer('country_id'));
+        }
+
+        if ($request->filled('city_id')) {
+            $query->where('city_id', $request->integer('city_id'));
+        }
+
         $listings = $query->paginate(15)->withQueryString();
 
         return view('admin.listings.index', [
             'listings' => $listings,
             'listingTypes' => ListingType::query()->where('is_active', true)->orderBy('name')->get(),
+            'filterCountries' => Country::query()->where('is_active', true)->orderBy('name')->get(['id', 'name']),
         ]);
     }
 

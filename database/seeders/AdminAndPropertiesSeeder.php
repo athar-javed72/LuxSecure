@@ -29,7 +29,7 @@ class AdminAndPropertiesSeeder extends Seeder
         $this->call(RolesAndPermissionsSeeder::class);
 
         $admin = User::firstOrCreate(
-            ['email' => 'admin@luxsecure.com'],
+            ['email' => 'admin@maskanoor.test'],
             [
                 'name' => 'Admin',
                 'password' => 'password', // hashed via User cast

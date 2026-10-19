@@ -3,9 +3,10 @@
 namespace App\Support;
 
 /**
- * Paths to approved Maskanoor SVG brand assets in public/brand/.
- * Files are copied byte-for-byte from brand-source/maskanoor-brand/.
+ * Paths to approved SVG brand assets in public/brand/.
+ * Files are copied byte-for-byte from brand-source/.
  * Do not recolor, regenerate, or transform these files in markup.
+ * Display names and taglines come from Settings — not from this helper.
  */
 final class BrandAssets
 {

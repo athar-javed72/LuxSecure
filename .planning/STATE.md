@@ -13,7 +13,7 @@ Brand SVG kit + Critical multi-country remediations — **COMPLETE locally**
 - Reference data (all envs): PK/SA/AE/QA/MY/GB, currencies, languages, cities/areas, KYC types, payment methods, cancellation policies, commission defaults.
 - Demo (local/testing only): admin user, listings, CMS drafts, **Maskanoor Stays** org + 3 `[DEMO]` branches.
 - Payments: polymorphic ledger + RefundCalculator (purpose-aware, currency decimals).
-- API: Sanctum + Scribe + legal acceptance middleware; ops: `luxsecure:*` artisan commands.
+- API: Sanctum + Scribe + legal acceptance middleware; ops: `maskanoor:*` artisan commands (`luxsecure:*` deprecated aliases).
 
 ### Security / RBAC (audit Critical)
 - `CountryAccess` + `CountryScoped` + policy `ChecksCountryScope` (deny-by-default for country-scoped roles).
@@ -51,8 +51,8 @@ Brand SVG kit + Critical multi-country remediations — **COMPLETE locally**
 ## 3. Known gaps
 
 1. Commit / push when user requests.
-2. Repo remote / folder still named LuxSecure; artisan prefix still `luxsecure:*`; demo login `admin@luxsecure.com`.
-3. Regenerate Scribe HTML if `/docs` should show Maskanoor title from live config.
+2. Repo remote may still point at historical LuxSecure.git; demo login is `admin@maskanoor.test`.
+3. Regenerate Scribe HTML (`php artisan scribe:generate`) if `/docs` should refresh title from live config.
 4. CMS legal drafts still `[PLACEHOLDER:*]` until legal review; ar/ms lang files are machine drafts (`needs_native_review`).
 5. After deploy: re-seed RBAC (`RolesAndPermissionsSeeder`) for `countries.manage_visibility` + prior room grants.
 6. Download dr5hn geo JSON into `storage/app/geo/` (not in git) before `php artisan maskanoor:geo:import`.

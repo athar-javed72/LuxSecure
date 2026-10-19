@@ -12,7 +12,7 @@ return [
     'title' => config('app.name').' API Documentation',
 
     // A short description of your API. Will be included in the docs webpage, Postman collection and OpenAPI spec.
-    'description' => 'Maskanoor Group API v1 — Sanctum token auth, listings, bookings, favorites, and profile.',
+    'description' => config('app.name').' API v1 — Sanctum token auth, listings, bookings, favorites, and profile.',
 
     // The base URL displayed in the docs.
     // If you're using `laravel` type, you can set this to a dynamic string, like '{{ config("app.tenant_url") }}' to get a dynamic base URL.

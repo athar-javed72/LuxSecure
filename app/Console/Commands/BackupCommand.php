@@ -8,7 +8,10 @@ use ZipArchive;
 
 class BackupCommand extends Command
 {
-    protected $signature = 'luxsecure:backup {--db : Dump the database} {--storage : Archive public storage}';
+    protected $signature = 'maskanoor:backup {--db : Dump the database} {--storage : Archive public storage}';
+
+    /** @var list<string> */
+    protected $aliases = ['luxsecure:backup'];
 
     protected $description = 'Create a backup archive (database dump and/or storage).';
 
@@ -18,7 +21,7 @@ class BackupCommand extends Command
         $doStorage = $this->option('storage') || (! $this->option('db') && ! $this->option('storage'));
 
         $stamp = now()->format('Ymd_His');
-        $relativeDir = trim(config('luxsecure.backup.path', 'backups'), '/').'/'.$stamp;
+        $relativeDir = trim(config('maskanoor.backup.path', 'backups'), '/').'/'.$stamp;
         $absoluteDir = storage_path('app/'.$relativeDir);
         File::ensureDirectoryExists($absoluteDir);
 
@@ -123,8 +126,8 @@ class BackupCommand extends Command
 
     private function pruneOldBackups(): void
     {
-        $keep = (int) config('luxsecure.backup.keep', 7);
-        $root = storage_path('app/'.trim(config('luxsecure.backup.path', 'backups'), '/'));
+        $keep = (int) config('maskanoor.backup.keep', 7);
+        $root = storage_path('app/'.trim(config('maskanoor.backup.path', 'backups'), '/'));
         if (! File::isDirectory($root)) {
             return;
         }

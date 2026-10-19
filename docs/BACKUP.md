@@ -1,4 +1,4 @@
-# LuxSecure backup plan
+# Backup plan
 
 ## What to back up
 
@@ -9,10 +9,11 @@
 ## Automated command
 
 ```bash
-php artisan luxsecure:backup
+php artisan maskanoor:backup
 # or selectively:
-php artisan luxsecure:backup --db
-php artisan luxsecure:backup --storage
+php artisan maskanoor:backup --db
+php artisan maskanoor:backup --storage
+# Deprecated alias: luxsecure:backup
 ```
 
 Artifacts land in `storage/app/backups/{timestamp}/`. Old runs are pruned per `BACKUP_KEEP` (default 7).
@@ -20,13 +21,13 @@ Artifacts land in `storage/app/backups/{timestamp}/`. Old runs are pruned per `B
 Schedule nightly (server cron):
 
 ```cron
-0 2 * * * cd /path/to/LuxSecure && php artisan luxsecure:backup >> storage/logs/backup.log 2>&1
+0 2 * * * cd /path/to/app && php artisan maskanoor:backup >> storage/logs/backup.log 2>&1
 ```
 
-Or in `app/Console/Kernel.php`:
+Or via Laravel scheduler (`bootstrap/app.php`):
 
 ```php
-$schedule->command('luxsecure:backup')->dailyAt('02:00');
+$schedule->command('maskanoor:backup')->dailyAt('02:00');
 ```
 
 ## Production checklist

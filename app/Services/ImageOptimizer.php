@@ -14,8 +14,8 @@ class ImageOptimizer
      */
     public function store(UploadedFile $file, string $directory = 'listings', ?int $maxWidth = null, ?int $quality = null): string
     {
-        $maxWidth ??= (int) config('luxsecure.image.max_width', 1920);
-        $quality ??= (int) config('luxsecure.image.quality', 82);
+        $maxWidth ??= (int) config('maskanoor.image.max_width', 1920);
+        $quality ??= (int) config('maskanoor.image.quality', 82);
         $filename = Str::uuid()->toString().'.jpg';
         $path = trim($directory, '/').'/'.$filename;
         $disk = StorageDisk::uploads();

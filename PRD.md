@@ -1,10 +1,10 @@
-# Project Requirements Document (PRD): LuxSecure UI Redesign & Design System
+# Project Requirements Document (PRD): Maskanoor Group UI Redesign & Design System
 
 ## Overview
 
-LuxSecure is a Nexora Labs in-house Laravel property listing platform (auth, favorites, contact inquiries, admin CRUD, Sanctum API). GitHub baseline: [athar-javed72/LuxSecure](https://github.com/athar-javed72/LuxSecure) (`origin/main` @ `143159f`, Feb 2026).
+Maskanoor Group is a Nexora Labs in-house Laravel property listing platform (auth, favorites, contact inquiries, admin CRUD, Sanctum API). Historical GitHub baseline: [athar-javed72/LuxSecure](https://github.com/athar-javed72/LuxSecure) (`origin/main` @ `143159f`, Feb 2026).
 
-This PRD covers the **UI redesign phase** already largely executed in the local workspace: replace CDN/Bootstrap-era UI with a Tailwind 4 + Alpine design system, restore LuxSecure branding, improve auth UX, and harden layout consistency — **without** rewriting core business logic or routes.
+This PRD covers the **UI redesign phase** already largely executed in the local workspace: replace CDN/Bootstrap-era UI with a Tailwind 4 + Alpine design system, Settings-driven branding, improve auth UX, and harden layout consistency — **without** rewriting core business logic or routes.
 
 ## Stack and environment (fixed)
 

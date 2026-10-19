@@ -22,7 +22,7 @@ class ProfileController extends Controller
 
     public function update(UpdateProfileRequest $request): RedirectResponse
     {
-        $request->user()->update($request->validated());
+        $request->user()->update($request->safe()->only(['name', 'email', 'phone', 'country_id']));
 
         return back()->with('success', 'Profile updated.');
     }

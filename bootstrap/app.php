@@ -37,7 +37,6 @@ return Application::configure(basePath: dirname(__DIR__))
         web: __DIR__.'/../routes/web.php',
         api: __DIR__.'/../routes/api.php',
         commands: __DIR__.'/../routes/console.php',
-        health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->use([
@@ -127,7 +126,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withSchedule(function (Schedule $schedule) {
         $tz = config('app.timezone', 'Asia/Karachi');
 
-        $schedule->command('luxsecure:backup')->dailyAt('02:00')->timezone($tz);
-        $schedule->command('luxsecure:notify-rent-due')->dailyAt('08:00')->timezone($tz);
-        $schedule->command('luxsecure:expire-booking-holds')->everyFiveMinutes()->timezone($tz);
+        $schedule->command('maskanoor:backup')->dailyAt('02:00')->timezone($tz);
+        $schedule->command('maskanoor:notify-rent-due')->dailyAt('08:00')->timezone($tz);
+        $schedule->command('maskanoor:expire-booking-holds')->everyFiveMinutes()->timezone($tz);
     })->create();

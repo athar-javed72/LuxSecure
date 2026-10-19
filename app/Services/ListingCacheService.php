@@ -19,7 +19,7 @@ class ListingCacheService
     public function rememberIndex(Request $request, callable $builder): LengthAwarePaginator
     {
         $key = $this->key('index', $request->query());
-        $ttl = (int) config('luxsecure.listing_cache_ttl', 60);
+        $ttl = (int) config('maskanoor.listing_cache_ttl', 60);
 
         $payload = Cache::store($this->store())->remember($key, $ttl, function () use ($builder) {
             /** @var LengthAwarePaginator $paginator */
@@ -57,7 +57,7 @@ class ListingCacheService
     public function rememberShow(int|string $idOrSlug, callable $builder): Listing
     {
         $key = $this->key('show', ['id' => (string) $idOrSlug]);
-        $ttl = (int) config('luxsecure.listing_cache_ttl', 60);
+        $ttl = (int) config('maskanoor.listing_cache_ttl', 60);
 
         $id = Cache::store($this->store())->remember($key, $ttl, function () use ($builder) {
             return $builder()->id;
@@ -80,7 +80,7 @@ class ListingCacheService
 
     private function store(): string
     {
-        $preferred = config('luxsecure.listing_cache_store');
+        $preferred = config('maskanoor.listing_cache_store');
 
         if ($preferred && config("cache.stores.{$preferred}")) {
             return $preferred;

@@ -15,8 +15,8 @@ class LogMessageChannel implements MessageChannel
     {
         if (app()->environment('production')
             && $this->channel === 'sms'
-            && (string) config('luxsecure.messaging.default', 'log') === 'log'
-            && ! config('luxsecure.messaging.allow_log_in_production')) {
+            && (string) config('maskanoor.messaging.default', 'log') === 'log'
+            && ! config('maskanoor.messaging.allow_log_in_production')) {
             throw new RuntimeException(
                 'MESSAGING_DRIVER=log is not allowed for OTP/SMS in production. Set MESSAGING_DRIVER=http or MESSAGING_ALLOW_LOG_IN_PRODUCTION=true.'
             );

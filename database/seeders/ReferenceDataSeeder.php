@@ -50,9 +50,12 @@ class ReferenceDataSeeder extends Seeder
             ['group' => 'site', 'key' => 'site.legal_name', 'value' => 'Maskanoor Group', 'type' => 'string', 'label' => 'Legal name'],
             ['group' => 'site', 'key' => 'site.tagline', 'value' => 'Elevating Spaces. Enriching Stays.', 'type' => 'string', 'label' => 'Tagline (fallback)'],
             ['group' => 'site', 'key' => 'site.tagline.en', 'value' => 'Elevating Spaces. Enriching Stays.', 'type' => 'string', 'label' => 'Tagline (en)'],
-            ['group' => 'site', 'key' => 'site.tagline.ur', 'value' => 'اپنا ٹھکانہ، بھروسے کے ساتھ', 'type' => 'string', 'label' => 'Tagline (ur)'],
-            ['group' => 'site', 'key' => 'site.tagline.ar', 'value' => 'مسكنك، بثقة', 'type' => 'string', 'label' => 'Tagline (ar)'],
-            ['group' => 'site', 'key' => 'site.tagline.ms', 'value' => 'Cari tempat anda, dengan kepercayaan.', 'type' => 'string', 'label' => 'Tagline (ms)'],
+            ['group' => 'site', 'key' => 'site.tagline.ur', 'value' => 'جگہوں کو بلندی دینا۔ قیام کو مالا مال بنانا۔', 'type' => 'string', 'label' => 'Tagline (ur)'],
+            ['group' => 'site', 'key' => 'site.tagline.ar', 'value' => 'الارتقاء بالمساحات. إثراء الإقامات.', 'type' => 'string', 'label' => 'Tagline (ar)'],
+            ['group' => 'site', 'key' => 'site.tagline.ms', 'value' => 'Meninggikan Ruang. Memperkaya Penginapan.', 'type' => 'string', 'label' => 'Tagline (ms)'],
+            ['group' => 'site', 'key' => 'site.division.hotels', 'value' => 'Maskanoor Hotels', 'type' => 'string', 'label' => 'Division: Hotels'],
+            ['group' => 'site', 'key' => 'site.division.properties', 'value' => 'Maskanoor Properties', 'type' => 'string', 'label' => 'Division: Properties'],
+            ['group' => 'site', 'key' => 'site.division.living', 'value' => 'Maskanoor Living', 'type' => 'string', 'label' => 'Division: Living'],
             ['group' => 'site', 'key' => 'site.logo', 'value' => '/brand/logos/maskanoor-group-horizontal-for-light-bg.svg', 'type' => 'string', 'label' => 'Logo path (prefer BrandAssets / x-brand-logo variants)'],
             ['group' => 'site', 'key' => 'site.favicon', 'value' => '/brand/favicon/favicon.svg', 'type' => 'string', 'label' => 'Favicon path'],
             ['group' => 'site', 'key' => 'site.email', 'value' => 'pmobie264@gmail.com', 'type' => 'string', 'label' => 'Contact email'],
@@ -109,7 +112,7 @@ class ReferenceDataSeeder extends Seeder
     {
         foreach ([
             ['code' => 'en', 'name' => 'English', 'native_name' => 'English', 'is_rtl' => false, 'needs_native_review' => false, 'sort_order' => 1],
-            ['code' => 'ur', 'name' => 'Urdu', 'native_name' => 'اردو', 'is_rtl' => true, 'needs_native_review' => false, 'sort_order' => 2],
+            ['code' => 'ur', 'name' => 'Urdu', 'native_name' => 'اردو', 'is_rtl' => true, 'needs_native_review' => true, 'sort_order' => 2],
             ['code' => 'ar', 'name' => 'Arabic', 'native_name' => 'العربية', 'is_rtl' => true, 'needs_native_review' => true, 'sort_order' => 3],
             ['code' => 'ms', 'name' => 'Malay', 'native_name' => 'Bahasa Melayu', 'is_rtl' => false, 'needs_native_review' => true, 'sort_order' => 4],
         ] as $row) {

@@ -22,7 +22,7 @@ class DemoOrganizationSeeder extends Seeder
             return;
         }
 
-        $owner = User::query()->where('email', 'admin@luxsecure.com')->first()
+        $owner = User::query()->where('email', 'admin@maskanoor.test')->first()
             ?? User::query()->role('super_admin')->first();
 
         $org = Organization::query()->firstOrCreate(

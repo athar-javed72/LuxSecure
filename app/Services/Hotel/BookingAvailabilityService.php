@@ -93,7 +93,7 @@ class BookingAvailabilityService
             }
 
             $quote = $this->pricing->calculate($roomType, $checkInDate, $checkOutDate);
-            $minutes = (int) config('luxsecure.booking_hold_minutes', env('BOOKING_HOLD_MINUTES', 30));
+            $minutes = (int) config('maskanoor.booking_hold_minutes', env('BOOKING_HOLD_MINUTES', 30));
 
             $listing = $roomType->listing;
             $policy = CancellationPolicy::resolveForListing($listing);

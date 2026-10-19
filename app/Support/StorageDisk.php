@@ -9,12 +9,12 @@ class StorageDisk
 {
     public static function uploads(): string
     {
-        return config('luxsecure.uploads_disk', env('UPLOADS_DISK', 'public'));
+        return config('maskanoor.uploads_disk', env('UPLOADS_DISK', 'public'));
     }
 
     public static function private(): string
     {
-        return config('luxsecure.private_disk', env('PRIVATE_DISK', 'local'));
+        return config('maskanoor.private_disk', env('PRIVATE_DISK', 'local'));
     }
 
     public static function uploadsDisk(): Filesystem

@@ -58,7 +58,7 @@ class SanctumAbilityResolver
             return $user->createToken(
                 $name,
                 [self::ABILITY_2FA_SETUP],
-                now()->addMinutes((int) config('luxsecure.sanctum_2fa_setup_minutes', 15))
+                now()->addMinutes((int) config('maskanoor.sanctum_2fa_setup_minutes', 15))
             );
         }
 

@@ -1,4 +1,4 @@
-# LuxSecure — Agent Operating Manual
+# Maskanoor Group — Agent Operating Manual
 
 Spec-driven workflow for this repo (ported from the Nexora Lab GSD / Ralph-loop setup).
 

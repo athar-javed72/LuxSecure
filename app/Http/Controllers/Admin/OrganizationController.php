@@ -103,7 +103,7 @@ class OrganizationController extends Controller
         }
 
         return [
-            'countries' => $countries->pluck('name', 'id'),
+            'countries' => $countries->get(['id', 'name']),
             'owners' => User::query()->forUserCountry($user)->orderBy('name')->limit(200)->pluck('name', 'id'),
         ];
     }

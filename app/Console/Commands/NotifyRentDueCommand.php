@@ -8,7 +8,10 @@ use Illuminate\Console\Command;
 
 class NotifyRentDueCommand extends Command
 {
-    protected $signature = 'luxsecure:notify-rent-due';
+    protected $signature = 'maskanoor:notify-rent-due';
+
+    /** @var list<string> */
+    protected $aliases = ['luxsecure:notify-rent-due'];
 
     protected $description = 'Notify tenants of rent payments due today or overdue';
 

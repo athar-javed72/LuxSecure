@@ -2,7 +2,7 @@
 
 return [
     'bank_transfer' => [
-        'instructions' => env('BANK_TRANSFER_INSTRUCTIONS', 'Transfer to Maskanoor PKR account and upload proof.'),
+        'instructions' => env('BANK_TRANSFER_INSTRUCTIONS', 'Transfer to the platform PKR account and upload proof.'),
     ],
 
     'jazzcash' => [

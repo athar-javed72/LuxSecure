@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\UpdateBookingStatusRequest;
 use App\Mail\BookingConfirmationMail;
 use App\Models\Booking;
+use App\Models\Country;
 use App\Notifications\BookingStatusNotification;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -40,9 +41,20 @@ class BookingController extends Controller
             $query->where('status', $request->status);
         }
 
+        if ($request->filled('country_id')) {
+            $query->whereHas('listing', fn ($q) => $q->where('country_id', $request->integer('country_id')));
+        }
+
+        if ($request->filled('city_id')) {
+            $query->whereHas('listing', fn ($q) => $q->where('city_id', $request->integer('city_id')));
+        }
+
         $bookings = $query->latest()->paginate(15)->withQueryString();
 
-        return view('admin.bookings.index', compact('bookings'));
+        return view('admin.bookings.index', [
+            'bookings' => $bookings,
+            'filterCountries' => Country::query()->where('is_active', true)->orderBy('name')->get(['id', 'name']),
+        ]);
     }
 
     public function show(Booking $booking): View

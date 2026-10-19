@@ -106,7 +106,7 @@ class UserController extends Controller
             return back()->with('error', 'Cannot deactivate the last remaining super admin.');
         }
 
-        $data = $request->safe()->only('name', 'email', 'phone');
+        $data = $request->safe()->only('name', 'email', 'phone', 'country_id');
 
         if ($request->filled('password')) {
             $data['password'] = Hash::make($request->password);

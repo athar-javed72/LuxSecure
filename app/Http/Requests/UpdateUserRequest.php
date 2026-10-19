@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\ActiveCountry;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -26,6 +27,8 @@ class UpdateUserRequest extends FormRequest
             'phone' => ['nullable', 'string', 'max:20', 'regex:/^[0-9+\-\s()]+$/'],
             'password' => ['nullable', 'min:8', 'confirmed'],
             'is_active' => ['nullable', 'boolean'],
+            'country_id' => ['nullable', 'integer', new ActiveCountry],
+            'city_id' => ['nullable', 'integer', 'exists:cities,id'],
             'roles' => ['nullable', 'array'],
             'roles.*' => ['string', Rule::exists('roles', 'name')],
             'permissions' => ['nullable', 'array'],

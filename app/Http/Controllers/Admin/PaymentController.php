@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Country;
 use App\Models\Payment;
 use App\Services\Payments\Drivers\BankTransferGateway;
 use App\Services\Payments\PaymentRefundService;
@@ -57,10 +58,28 @@ class PaymentController extends Controller
             });
         }
 
+        if ($request->filled('country_id')) {
+            $countryId = $request->integer('country_id');
+            $query->where(function ($q) use ($countryId) {
+                $q->where('country_id', $countryId)
+                    ->orWhereHasMorph('payable', ['App\\Models\\Booking'], function ($b) use ($countryId) {
+                        $b->whereHas('listing', fn ($l) => $l->where('country_id', $countryId));
+                    });
+            });
+        }
+
+        if ($request->filled('city_id')) {
+            $cityId = $request->integer('city_id');
+            $query->whereHasMorph('payable', ['App\\Models\\Booking'], function ($b) use ($cityId) {
+                $b->whereHas('listing', fn ($l) => $l->where('city_id', $cityId));
+            });
+        }
+
         return view('admin.payments.index', [
             'payments' => $query->paginate(20)->withQueryString(),
             'statuses' => Payment::STATUSES,
             'gateways' => Payment::GATEWAYS,
+            'filterCountries' => Country::query()->where('is_active', true)->orderBy('name')->get(['id', 'name']),
         ]);
     }
 

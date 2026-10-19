@@ -8,7 +8,10 @@ use Illuminate\Console\Command;
 
 class ExpireBookingHoldsCommand extends Command
 {
-    protected $signature = 'luxsecure:expire-booking-holds';
+    protected $signature = 'maskanoor:expire-booking-holds';
+
+    /** @var list<string> */
+    protected $aliases = ['luxsecure:expire-booking-holds'];
 
     protected $description = 'Cancel stale pending booking holds and void their pending payments';
 

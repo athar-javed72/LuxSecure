@@ -51,7 +51,7 @@ Permission catalog lives in `config/rbac.php` and is seeded by `RolesAndPermissi
 | Settings | Brand, contact, commerce commission/tax (global + per country) |
 | Multi-country | PK, SA, AE, QA, MY, GB reference data; currencies, locales, cities, KYC, payments |
 | API v1 | Sanctum token auth, listings/favorites, Scribe OpenAPI |
-| Ops | Listing cache, `luxsecure:backup`, optional Sentry |
+| Ops | Listing cache, `maskanoor:backup`, optional Sentry |
 
 ## Design system — Estate Noir
 
@@ -100,10 +100,10 @@ php artisan serve
 **Seeding safety:** `migrate:fresh --seed` always installs roles/permissions and `ReferenceDataSeeder` (countries, languages, currencies, KYC types, payment methods, cancellation policies, brand settings). Demo accounts, demo listings, hotel inventory, CMS drafts, and the **Maskanoor Stays** demo organization seed **only when `APP_ENV` is `local` or `testing`**. In production, create the first super admin with:
 
 ```bash
-php artisan luxsecure:create-super-admin
+php artisan maskanoor:create-super-admin
 ```
 
-Local demo admin after seed: `admin@luxsecure.com` / `password` (change immediately).
+Local demo admin after seed: `admin@maskanoor.test` / `password` (change immediately).
 
 ### Important env keys
 
@@ -122,10 +122,11 @@ Local demo admin after seed: `admin@luxsecure.com` / `password` (change immediat
 
 ```bash
 php artisan schedule:work
-# luxsecure:backup @ 02:00
-# luxsecure:notify-rent-due @ 08:00
-# luxsecure:expire-booking-holds every 5 minutes
-# luxsecure:create-super-admin — first production super_admin (interactive)
+# maskanoor:backup @ 02:00
+# maskanoor:notify-rent-due @ 08:00
+# maskanoor:expire-booking-holds every 5 minutes
+# maskanoor:create-super-admin — first production super_admin (interactive)
+# Deprecated aliases: luxsecure:* still resolve
 ```
 
 ## Usage

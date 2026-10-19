@@ -28,13 +28,13 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(MessageChannel::class, function () {
-            $driver = (string) config('luxsecure.messaging.default', 'log');
+            $driver = (string) config('maskanoor.messaging.default', 'log');
 
             if ($driver === 'http') {
                 return new HttpMessageChannel(
-                    (string) config('luxsecure.messaging.http.url', ''),
-                    config('luxsecure.messaging.http.key'),
-                    config('luxsecure.messaging.http.sender'),
+                    (string) config('maskanoor.messaging.http.url', ''),
+                    config('maskanoor.messaging.http.key'),
+                    config('maskanoor.messaging.http.sender'),
                 );
             }
 
@@ -59,21 +59,25 @@ class AppServiceProvider extends ServiceProvider
             return '<?php echo \'nonce="\'.e(\\Illuminate\\Support\\Facades\\Vite::cspNonce()).\'"\'; ?>';
         });
 
-        View::composer(['include.footer', 'include.navbar', 'include.master', 'admin.layout', 'components.auth-card'], function ($view) {
+        View::composer('*', function ($view) {
             try {
                 $ctx = CountryContext::class;
                 $locale = app()->getLocale();
                 $tagline = $ctx::setting('site.tagline.'.$locale)
                     ?: $ctx::setting('site.tagline', '');
-                $view->with('siteName', $ctx::setting('site.name', config('app.name', 'Maskanoor Group')));
+                $siteName = $ctx::setting('site.name', config('app.name'));
+                $view->with('siteName', $siteName);
                 $view->with('siteTagline', $tagline);
                 $view->with('siteLogo', $ctx::setting('site.logo', BrandAssets::logo('horizontal', 'light')));
                 $view->with('siteFavicon', $ctx::setting('site.favicon', BrandAssets::favicon()));
-                $view->with('siteLegalName', $ctx::setting('site.legal_name', $ctx::setting('site.name', config('app.name', 'Maskanoor Group'))));
+                $view->with('siteLegalName', $ctx::setting('site.legal_name', $siteName));
                 $view->with('siteEmail', $ctx::contact('site.email') ?? $ctx::contact('site.support_email'));
                 $view->with('sitePhone', $ctx::contact('site.phone'));
                 $view->with('siteHours', $ctx::contact('site.hours'));
                 $view->with('siteAddress', $ctx::contact('site.address'));
+                $view->with('divisionHotels', $ctx::setting('site.division.hotels', 'Hotels'));
+                $view->with('divisionProperties', $ctx::setting('site.division.properties', 'Properties'));
+                $view->with('divisionLiving', $ctx::setting('site.division.living', 'Living'));
                 $view->with('countries', Country::query()->where('is_active', true)->orderBy('sort_order')->get());
                 $view->with('currencies', Currency::query()->where('is_active', true)->orderBy('code')->get());
                 $view->with('languages', Language::query()->where('is_active', true)->orderBy('sort_order')->get());
@@ -81,15 +85,18 @@ class AppServiceProvider extends ServiceProvider
                 $view->with('legalTerms', Page::resolveLegal('terms'));
                 $view->with('legalRefund', Page::resolveLegal('refund'));
             } catch (\Throwable) {
-                $view->with('siteName', config('app.name', 'Maskanoor Group'));
+                $view->with('siteName', config('app.name'));
                 $view->with('siteTagline', '');
                 $view->with('siteLogo', BrandAssets::logo('horizontal', 'light'));
                 $view->with('siteFavicon', BrandAssets::favicon());
-                $view->with('siteLegalName', config('app.name', 'Maskanoor Group'));
+                $view->with('siteLegalName', config('app.name'));
                 $view->with('siteEmail', null);
                 $view->with('sitePhone', null);
                 $view->with('siteHours', null);
                 $view->with('siteAddress', null);
+                $view->with('divisionHotels', 'Hotels');
+                $view->with('divisionProperties', 'Properties');
+                $view->with('divisionLiving', 'Living');
                 $view->with('countries', collect());
                 $view->with('currencies', collect());
                 $view->with('languages', collect());

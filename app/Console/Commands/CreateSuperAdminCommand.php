@@ -9,10 +9,13 @@ use Illuminate\Validation\Rules\Password;
 
 class CreateSuperAdminCommand extends Command
 {
-    protected $signature = 'luxsecure:create-super-admin
+    protected $signature = 'maskanoor:create-super-admin
                             {--email= : Super admin email}
                             {--name= : Display name}
                             {--password= : Password (prefer interactive secret prompt)}';
+
+    /** @var list<string> */
+    protected $aliases = ['luxsecure:create-super-admin'];
 
     protected $description = 'Create the first super_admin account (prompted; strong password required).';
 

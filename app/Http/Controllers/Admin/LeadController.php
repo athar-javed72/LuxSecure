@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\ContactInquiry;
+use App\Models\Country;
 use App\Models\Lead;
 use App\Models\User;
 use App\Notifications\LeadAssignedNotification;
@@ -37,9 +38,23 @@ class LeadController extends Controller
             $query->where('status', $request->status);
         }
 
+        if ($request->filled('country_id')) {
+            $countryId = $request->integer('country_id');
+            $query->where(function ($q) use ($countryId) {
+                $q->whereHas('listing', fn ($l) => $l->where('country_id', $countryId))
+                    ->orWhereHas('assignedAgent', fn ($a) => $a->where('country_id', $countryId));
+            });
+        }
+
+        if ($request->filled('city_id')) {
+            $cityId = $request->integer('city_id');
+            $query->whereHas('listing', fn ($l) => $l->where('city_id', $cityId));
+        }
+
         return view('admin.leads.index', [
             'leads' => $query->paginate(20)->withQueryString(),
             'agents' => User::role('agent')->forUserCountry($user)->orderBy('name')->get(['id', 'name']),
+            'filterCountries' => Country::query()->where('is_active', true)->orderBy('name')->get(['id', 'name']),
         ]);
     }
 

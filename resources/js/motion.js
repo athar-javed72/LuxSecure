@@ -5,6 +5,9 @@
 
 const REDUCE = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+/** Hero slideshow interval and progress-bar duration share this single constant (ms). */
+const HERO_SLIDE_MS = 4000;
+
 function qs(sel, root = document) {
     return root.querySelector(sel);
 }
@@ -185,12 +188,12 @@ function initHeroSlideshow() {
     const restartTimer = () => {
         clear();
         if (paused || !visible || !onScreen || REDUCE() || slides.length < 2) return;
-        timer = setInterval(() => go(index + 1), 4000);
+        timer = setInterval(() => go(index + 1), HERO_SLIDE_MS);
         if (progress) {
             progress.style.transition = 'none';
             progress.style.width = '0%';
             requestAnimationFrame(() => {
-                progress.style.transition = REDUCE() ? 'none' : 'width 3s linear';
+                progress.style.transition = REDUCE() ? 'none' : `width ${HERO_SLIDE_MS}ms linear`;
                 progress.style.width = '100%';
             });
         }

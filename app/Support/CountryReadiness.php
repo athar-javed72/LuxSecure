@@ -11,7 +11,11 @@ use App\Models\Page;
 class CountryReadiness
 {
     /**
-     * @return array{ready: bool, missing: list<string>}
+     * @return array{
+     *     ready: bool,
+     *     missing: list<string>,
+     *     legal: array<string, array{ok: bool, source: string|null, title: string|null, slug: string|null, id: int|null}>
+     * }
      */
     public static function check(Country $country): array
     {
@@ -62,15 +66,39 @@ class CountryReadiness
             $missing[] = 'Default cancellation policy';
         }
 
+        $legal = [];
         foreach (['privacy', 'terms'] as $type) {
-            if (! Page::resolveLegal($type, $country->id)) {
+            $page = Page::resolveLegal($type, $country->id);
+            if (! $page) {
                 $missing[] = 'Published '.$type.' page (country or global fallback)';
+                $legal[$type] = [
+                    'ok' => false,
+                    'source' => null,
+                    'title' => null,
+                    'slug' => null,
+                    'id' => null,
+                ];
+
+                continue;
             }
+
+            $source = $page->country_id === null
+                ? 'global'
+                : ((int) $page->country_id === (int) $country->id ? 'country' : 'other');
+
+            $legal[$type] = [
+                'ok' => true,
+                'source' => $source,
+                'title' => $page->title,
+                'slug' => $page->slug,
+                'id' => $page->id,
+            ];
         }
 
         return [
             'ready' => $missing === [],
             'missing' => $missing,
+            'legal' => $legal,
         ];
     }
 }

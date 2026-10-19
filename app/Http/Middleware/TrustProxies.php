@@ -28,7 +28,7 @@ class TrustProxies extends Middleware
 
     public function __construct()
     {
-        $raw = trim((string) config('luxsecure.trusted_proxies', ''));
+        $raw = trim((string) config('maskanoor.trusted_proxies', ''));
 
         if ($raw === '' || strcasecmp($raw, 'none') === 0) {
             $this->proxies = [];
