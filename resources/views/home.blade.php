@@ -24,9 +24,9 @@
 
 @section('home_content')
 
-{{-- Hero — overflow visible; media clipped separately (A1) --}}
+{{-- Hero — media clips; search lives as next sibling so ivory cannot paint over it (A1) --}}
 <section
-    class="relative isolation-isolate overflow-visible w-full min-h-[600px] h-[min(92svh,820px)] flex flex-col justify-end -mt-[var(--header-h)] pt-[var(--header-h)] z-0"
+    class="relative overflow-visible w-full min-h-[600px] h-[min(92svh,820px)] flex flex-col justify-end -mt-[var(--header-h)] pt-[var(--header-h)] z-0"
     data-hero-slideshow
     aria-roledescription="carousel"
     aria-label="Featured spaces"
@@ -67,7 +67,7 @@
         <div class="absolute inset-0 fs-hero-overlay z-[2]"></div>
     </div>
 
-    <div class="fs-hero-load relative z-10 w-full flex-1 flex flex-col justify-center pb-28 md:pb-32">
+    <div class="fs-hero-load relative z-10 w-full flex-1 flex flex-col justify-center pb-28 md:pb-36">
         <x-container class="w-full pt-8">
             <div class="max-w-[640px]">
                 <div data-hero-step="1">
@@ -87,7 +87,7 @@
         </x-container>
     </div>
 
-    <div class="absolute bottom-28 right-[var(--gutter)] z-20 flex items-center gap-2" data-hero-controls>
+    <div class="absolute bottom-8 right-[var(--gutter)] z-20 flex items-center gap-2" data-hero-controls>
         <button type="button" data-hero-prev class="fs-carousel__btn !bg-[rgba(13,29,25,.45)] !text-[var(--color-ivory)] !border-white/20" aria-label="Previous slide">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 19l-7-7 7-7"/></svg>
         </button>
@@ -106,11 +106,14 @@
         </div>
         <span class="sr-only" data-hero-live aria-live="polite"></span>
     </div>
+</section>
 
-    <x-container class="relative z-30 w-full -mt-[72px]" data-hero-step="5">
+{{-- Search straddles hero → intro; must be a sibling above z-0 sections so bottom radius/shadow stay visible --}}
+<div class="relative z-30 w-full -mt-[72px]" data-hero-search>
+    <x-container class="w-full" data-hero-step="5">
         <x-property-search :suggestions="$locationSuggestions ?? []" :types="$searchTypes" :currency="$currency" />
     </x-container>
-</section>
+</div>
 
 {{-- Brand intro --}}
 <section class="relative z-0 fs-section-ivory pt-[calc(var(--section-y)+72px)] pb-[var(--section-y)]" aria-labelledby="intro-heading">

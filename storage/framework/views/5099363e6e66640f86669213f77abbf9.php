@@ -25,7 +25,7 @@
 
 
 <section
-    class="relative isolation-isolate overflow-visible w-full min-h-[600px] h-[min(92svh,820px)] flex flex-col justify-end -mt-[var(--header-h)] pt-[var(--header-h)] z-0"
+    class="relative overflow-visible w-full min-h-[600px] h-[min(92svh,820px)] flex flex-col justify-end -mt-[var(--header-h)] pt-[var(--header-h)] z-0"
     data-hero-slideshow
     aria-roledescription="carousel"
     aria-label="Featured spaces"
@@ -66,7 +66,7 @@
         <div class="absolute inset-0 fs-hero-overlay z-[2]"></div>
     </div>
 
-    <div class="fs-hero-load relative z-10 w-full flex-1 flex flex-col justify-center pb-28 md:pb-32">
+    <div class="fs-hero-load relative z-10 w-full flex-1 flex flex-col justify-center pb-28 md:pb-36">
         <?php if (isset($component)) { $__componentOriginala766c2d312d6f7864fe218e2500d2bba = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginala766c2d312d6f7864fe218e2500d2bba = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.container','data' => ['class' => 'w-full pt-8']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
@@ -158,7 +158,7 @@
 <?php endif; ?>
     </div>
 
-    <div class="absolute bottom-28 right-[var(--gutter)] z-20 flex items-center gap-2" data-hero-controls>
+    <div class="absolute bottom-8 right-[var(--gutter)] z-20 flex items-center gap-2" data-hero-controls>
         <button type="button" data-hero-prev class="fs-carousel__btn !bg-[rgba(13,29,25,.45)] !text-[var(--color-ivory)] !border-white/20" aria-label="Previous slide">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 19l-7-7 7-7"/></svg>
         </button>
@@ -177,17 +177,20 @@
         </div>
         <span class="sr-only" data-hero-live aria-live="polite"></span>
     </div>
+</section>
 
+
+<div class="relative z-30 w-full -mt-[72px]" data-hero-search>
     <?php if (isset($component)) { $__componentOriginala766c2d312d6f7864fe218e2500d2bba = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginala766c2d312d6f7864fe218e2500d2bba = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.container','data' => ['class' => 'relative z-30 w-full -mt-[72px]','dataHeroStep' => '5']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.container','data' => ['class' => 'w-full','dataHeroStep' => '5']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('container'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['class' => 'relative z-30 w-full -mt-[72px]','data-hero-step' => '5']); ?>
+<?php $component->withAttributes(['class' => 'w-full','data-hero-step' => '5']); ?>
         <?php if (isset($component)) { $__componentOriginald436d6b4a4b98f16bbd570f0eb00aa3c = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginald436d6b4a4b98f16bbd570f0eb00aa3c = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.property-search','data' => ['suggestions' => $locationSuggestions ?? [],'types' => $searchTypes,'currency' => $currency]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
@@ -218,7 +221,7 @@
 <?php $component = $__componentOriginala766c2d312d6f7864fe218e2500d2bba; ?>
 <?php unset($__componentOriginala766c2d312d6f7864fe218e2500d2bba); ?>
 <?php endif; ?>
-</section>
+</div>
 
 
 <section class="relative z-0 fs-section-ivory pt-[calc(var(--section-y)+72px)] pb-[var(--section-y)]" aria-labelledby="intro-heading">
