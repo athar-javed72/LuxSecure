@@ -48,13 +48,13 @@ class ReferenceDataSeeder extends Seeder
         $defaults = [
             ['group' => 'site', 'key' => 'site.name', 'value' => 'Maskanoor', 'type' => 'string', 'label' => 'Site name'],
             ['group' => 'site', 'key' => 'site.legal_name', 'value' => 'Maskanoor', 'type' => 'string', 'label' => 'Legal name'],
-            ['group' => 'site', 'key' => 'site.tagline', 'value' => 'Find your place. Stay with trust.', 'type' => 'string', 'label' => 'Tagline (fallback)'],
-            ['group' => 'site', 'key' => 'site.tagline.en', 'value' => 'Find your place. Stay with trust.', 'type' => 'string', 'label' => 'Tagline (en)'],
+            ['group' => 'site', 'key' => 'site.tagline', 'value' => 'Elevating Spaces. Enriching Stays.', 'type' => 'string', 'label' => 'Tagline (fallback)'],
+            ['group' => 'site', 'key' => 'site.tagline.en', 'value' => 'Elevating Spaces. Enriching Stays.', 'type' => 'string', 'label' => 'Tagline (en)'],
             ['group' => 'site', 'key' => 'site.tagline.ur', 'value' => 'اپنا ٹھکانہ، بھروسے کے ساتھ', 'type' => 'string', 'label' => 'Tagline (ur)'],
             ['group' => 'site', 'key' => 'site.tagline.ar', 'value' => 'مسكنك، بثقة', 'type' => 'string', 'label' => 'Tagline (ar)'],
             ['group' => 'site', 'key' => 'site.tagline.ms', 'value' => 'Cari tempat anda, dengan kepercayaan.', 'type' => 'string', 'label' => 'Tagline (ms)'],
-            ['group' => 'site', 'key' => 'site.logo', 'value' => '/brand/maskanoor-logo.svg', 'type' => 'string', 'label' => 'Logo path'],
-            ['group' => 'site', 'key' => 'site.favicon', 'value' => '/favicon.svg', 'type' => 'string', 'label' => 'Favicon path'],
+            ['group' => 'site', 'key' => 'site.logo', 'value' => '/brand/logos/maskanoor-group-horizontal-for-light-bg.svg', 'type' => 'string', 'label' => 'Logo path'],
+            ['group' => 'site', 'key' => 'site.favicon', 'value' => '/brand/favicon/favicon.svg', 'type' => 'string', 'label' => 'Favicon path'],
             ['group' => 'site', 'key' => 'site.email', 'value' => 'pmobie264@gmail.com', 'type' => 'string', 'label' => 'Contact email'],
             ['group' => 'site', 'key' => 'site.phone', 'value' => '+923228439536', 'type' => 'string', 'label' => 'Contact phone'],
             ['group' => 'site', 'key' => 'site.hours', 'value' => '24 hours', 'type' => 'string', 'label' => 'Business hours label'],
@@ -70,7 +70,17 @@ class ReferenceDataSeeder extends Seeder
         ];
 
         foreach ($defaults as $row) {
-            Setting::query()->firstOrCreate(['key' => $row['key']], $row);
+            // Brand asset paths / tagline should refresh when the logo kit changes.
+            if (in_array($row['key'], [
+                'site.logo',
+                'site.favicon',
+                'site.tagline',
+                'site.tagline.en',
+            ], true)) {
+                Setting::query()->updateOrCreate(['key' => $row['key']], $row);
+            } else {
+                Setting::query()->firstOrCreate(['key' => $row['key']], $row);
+            }
         }
     }
 

@@ -44,9 +44,11 @@ class MaskanoorReferenceDataTest extends TestCase
         $this->seed(ReferenceDataSeeder::class);
 
         $this->assertSame('Maskanoor', Setting::getValue('site.name'));
-        $this->assertSame('Find your place. Stay with trust.', Setting::getValue('site.tagline.en'));
-        $this->assertSame('/brand/maskanoor-logo.svg', Setting::getValue('site.logo'));
-        $this->assertFileExists(public_path('brand/maskanoor-logo.svg'));
+        $this->assertSame('Elevating Spaces. Enriching Stays.', Setting::getValue('site.tagline.en'));
+        $this->assertSame('/brand/logos/maskanoor-group-horizontal-for-light-bg.svg', Setting::getValue('site.logo'));
+        $this->assertFileExists(public_path('brand/logos/maskanoor-group-horizontal-for-dark-bg.svg'));
+        $this->assertFileExists(public_path('brand/monogram/maskanoor-monogram-nostar-for-dark-bg.svg'));
+        $this->assertFileExists(public_path('brand/favicon/favicon.svg'));
         $this->assertFileExists(public_path('favicon.svg'));
 
         foreach (['PK', 'SA', 'AE', 'QA', 'MY', 'GB'] as $iso) {

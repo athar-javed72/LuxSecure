@@ -39,22 +39,21 @@
 @endphp
 
 <header
-    class="fixed top-0 left-0 w-full z-50 h-[72px] border-b border-white/10 shadow-lg backdrop-blur-xl bg-fs-primary/97"
+    class="fixed top-0 left-0 w-full z-50 h-[72px] border-b backdrop-blur-xl transition-colors duration-200"
+    :class="scrolled
+        ? 'border-black/10 bg-[#F5F0E6]/95 shadow-sm'
+        : 'border-white/10 bg-[#142A25]/97 shadow-lg'"
     x-data="navBar"
     @keydown.escape.window="closeOverlays()"
 >
     <x-container class="h-full flex items-center justify-between gap-4">
         <a href="{{ $variant === 'admin' ? route('admin.dashboard') : route('home') }}"
-           class="flex items-center gap-3 shrink-0 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
-            @if(!empty($siteLogo))
-                <img src="{{ $siteLogo }}" alt="{{ $siteName ?? config('app.name') }}" class="h-10 w-auto max-w-[160px] object-contain brightness-0 invert">
-            @else
-                <span class="fs-display text-xl font-semibold tracking-wide text-white">{{ $siteName ?? config('app.name') }}</span>
-            @endif
+           class="flex items-center gap-3 shrink-0 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2"
+           :class="scrolled ? 'focus-visible:outline-[#142A25]' : 'focus-visible:outline-white'">
+            <x-brand-logo layout="horizontal" surface="dual" class="shrink-0" />
             @if($variant === 'admin')
-                <span class="hidden sm:inline text-[10px] tracking-[0.18em] uppercase text-slate-300/80">Admin Control</span>
-            @elseif(!empty($siteTagline))
-                <span class="hidden xl:inline text-[10px] tracking-[0.12em] uppercase text-slate-300/80 max-w-[14rem] truncate">{{ $siteTagline }}</span>
+                <span class="hidden sm:inline text-[10px] tracking-[0.18em] uppercase transition-colors duration-200"
+                      :class="scrolled ? 'text-[#142A25]/70' : 'text-slate-300/80'">Admin Control</span>
             @endif
         </a>
 
@@ -62,7 +61,10 @@
             @foreach($menuConfig as $item)
                 @php $active = $isActive($item['active'] ?? []); @endphp
                 <a href="{{ $resolveHref($item) }}"
-                   class="inline-flex items-center h-11 px-4 rounded-full text-sm font-medium transition-colors duration-150 {{ $active ? 'bg-white/15 text-white' : 'text-slate-200/90 hover:text-white hover:bg-white/10' }}">
+                   class="inline-flex items-center h-11 px-4 rounded-full text-sm font-medium transition-colors duration-150"
+                   :class="scrolled
+                       ? ({{ $active ? 'true' : 'false' }} ? 'bg-[#142A25]/10 text-[#142A25]' : 'text-[#142A25]/80 hover:text-[#142A25] hover:bg-[#142A25]/8')
+                       : ({{ $active ? 'true' : 'false' }} ? 'bg-white/15 text-white' : 'text-slate-200/90 hover:text-white hover:bg-white/10')">
                     {{ $item['label'] }}
                 </a>
             @endforeach
@@ -71,7 +73,11 @@
         <div class="hidden lg:flex items-center gap-2">
             @if(($countries ?? collect())->isNotEmpty() && $variant !== 'admin')
                 <div class="relative" @click.outside="closeLocale()">
-                    <button type="button" class="inline-flex items-center h-11 px-3 rounded-full bg-white/10 text-white text-xs font-medium hover:bg-white/15" @click="toggleLocale()" :aria-expanded="localeExpanded()">
+                    <button type="button"
+                            class="inline-flex items-center h-11 px-3 rounded-full text-xs font-medium transition-colors duration-150"
+                            :class="scrolled ? 'bg-[#142A25]/10 text-[#142A25] hover:bg-[#142A25]/15' : 'bg-white/10 text-white hover:bg-white/15'"
+                            @click="toggleLocale()"
+                            :aria-expanded="localeExpanded()">
                         {{ optional($activeCountry)->iso2 ?? 'PK' }} · {{ session('currency', optional($activeCountry)->currency_code ?? 'PKR') }}
                     </button>
                     <div x-cloak x-show="localeOpen" class="absolute right-0 top-full mt-2 w-64 rounded-md bg-white shadow-lg border border-slate-100 p-3 z-50 text-fs-primary">
@@ -157,11 +163,14 @@
 
         <div class="flex items-center gap-2 lg:hidden">
             @guest
-                <a href="{{ route('login.form') }}" class="inline-flex items-center h-11 px-3 rounded-full text-xs font-semibold text-white border border-white/20">Login</a>
+                <a href="{{ route('login.form') }}"
+                   class="inline-flex items-center h-11 px-3 rounded-full text-xs font-semibold border transition-colors duration-150"
+                   :class="scrolled ? 'text-[#142A25] border-[#142A25]/25' : 'text-white border-white/20'">Login</a>
             @endguest
             <button
                 type="button"
-                class="inline-flex items-center justify-center w-11 h-11 rounded-full border border-white/20 text-white hover:bg-white/10 transition-colors duration-150"
+                class="inline-flex items-center justify-center w-11 h-11 rounded-full border transition-colors duration-150"
+                :class="scrolled ? 'border-[#142A25]/25 text-[#142A25] hover:bg-[#142A25]/8' : 'border-white/20 text-white hover:bg-white/10'"
                 @click="openNav()"
                 aria-label="Open menu"
             >
@@ -183,7 +192,7 @@
             x-transition:leave-end="translate-x-full"
         >
             <div class="h-[72px] px-4 flex items-center justify-between border-b border-white/10">
-                <span class="text-base font-bold">{{ $siteName ?? config('app.name') }}</span>
+                <x-brand-logo layout="monogram-nostar" surface="dark" />
                 <button type="button" class="inline-flex items-center justify-center w-11 h-11 rounded-sm border border-white/20" @click="closeNav()" aria-label="Close menu">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>

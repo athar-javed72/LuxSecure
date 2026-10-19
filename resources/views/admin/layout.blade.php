@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Admin') | {{ $siteName ?? config('app.name') }}</title>
-    <link rel="icon" href="{{ $siteFavicon ?? '/favicon.svg' }}" type="image/svg+xml">
+    <link rel="icon" href="{{ $siteFavicon ?? \App\Support\BrandAssets::favicon() }}" type="image/svg+xml">
+    <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('styles')
 </head>
@@ -13,7 +15,7 @@
     x-data="adminShell"
 >
     <aside
-        class="fixed inset-y-0 left-0 z-40 w-64 bg-fs-primary text-white transform transition-transform duration-200 lg:translate-x-0"
+        class="fixed inset-y-0 left-0 z-40 w-64 bg-[#142A25] text-white transform transition-transform duration-200 lg:translate-x-0"
         :class="sidebarClass()"
         :inert="sidebarHidden"
         :aria-hidden="ariaHidden()"
@@ -21,10 +23,8 @@
     >
         <div class="h-[72px] px-4 flex items-center justify-between gap-2 border-b border-white/10">
             <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2 min-w-0 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
-                @if(!empty($siteLogo))
-                    <img src="{{ $siteLogo }}" alt="{{ $siteName ?? config('app.name') }}" class="h-9 w-auto max-w-[140px] object-contain brightness-0 invert">
-                @endif
-                <span class="font-bold truncate">{{ $siteName ?? config('app.name') }} Admin</span>
+                <x-brand-logo layout="monogram-nostar" surface="dark" />
+                <span class="font-bold truncate text-sm">Admin</span>
             </a>
             <button
                 type="button"

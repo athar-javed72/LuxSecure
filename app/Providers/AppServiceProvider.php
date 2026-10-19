@@ -9,6 +9,7 @@ use App\Models\Language;
 use App\Models\Page;
 use App\Services\Messaging\HttpMessageChannel;
 use App\Services\Messaging\LogMessageChannel;
+use App\Support\BrandAssets;
 use App\Support\CountryContext;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
@@ -66,8 +67,8 @@ class AppServiceProvider extends ServiceProvider
                     ?: $ctx::setting('site.tagline', '');
                 $view->with('siteName', $ctx::setting('site.name', config('app.name', 'Maskanoor')));
                 $view->with('siteTagline', $tagline);
-                $view->with('siteLogo', $ctx::setting('site.logo', '/brand/maskanoor-logo.svg'));
-                $view->with('siteFavicon', $ctx::setting('site.favicon', '/favicon.svg'));
+                $view->with('siteLogo', $ctx::setting('site.logo', BrandAssets::logo('horizontal', 'light')));
+                $view->with('siteFavicon', $ctx::setting('site.favicon', BrandAssets::favicon()));
                 $view->with('siteLegalName', $ctx::setting('site.legal_name', $ctx::setting('site.name', config('app.name', 'Maskanoor'))));
                 $view->with('siteEmail', $ctx::contact('site.email') ?? $ctx::contact('site.support_email'));
                 $view->with('sitePhone', $ctx::contact('site.phone'));
@@ -82,8 +83,8 @@ class AppServiceProvider extends ServiceProvider
             } catch (\Throwable) {
                 $view->with('siteName', config('app.name', 'Maskanoor'));
                 $view->with('siteTagline', '');
-                $view->with('siteLogo', '/brand/maskanoor-logo.svg');
-                $view->with('siteFavicon', '/favicon.svg');
+                $view->with('siteLogo', BrandAssets::logo('horizontal', 'light'));
+                $view->with('siteFavicon', BrandAssets::favicon());
                 $view->with('siteLegalName', config('app.name', 'Maskanoor'));
                 $view->with('siteEmail', null);
                 $view->with('sitePhone', null);

@@ -13,10 +13,14 @@ return [
             'active' => ['properties', 'properties.*'],
         ],
         [
-            'label' => 'Why us',
-            'route' => 'home',
-            'anchor' => '#about',
-            'active' => [],
+            'label' => 'Hotels',
+            'route' => 'divisions.hospitality',
+            'active' => ['divisions.hospitality'],
+        ],
+        [
+            'label' => 'Living',
+            'route' => 'divisions.living',
+            'active' => ['divisions.living'],
         ],
         [
             'label' => 'Contact',
@@ -35,6 +39,16 @@ return [
             'label' => 'Properties',
             'route' => 'properties',
             'active' => ['properties', 'properties.*'],
+        ],
+        [
+            'label' => 'Hotels',
+            'route' => 'divisions.hospitality',
+            'active' => ['divisions.hospitality'],
+        ],
+        [
+            'label' => 'Living',
+            'route' => 'divisions.living',
+            'active' => ['divisions.living'],
         ],
         [
             'label' => 'Favorites',

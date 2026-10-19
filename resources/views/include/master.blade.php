@@ -3,9 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="@yield('meta_description', ($siteName ?? config('app.name')).' — '.($siteTagline ?? 'Find your place. Stay with trust.'))">
+    <meta name="description" content="@yield('meta_description', ($siteName ?? config('app.name')).' — '.\App\Support\BrandAssets::TAGLINE)">
     <title>@yield('title', 'Home') | {{ $siteName ?? config('app.name') }}</title>
-    <link rel="icon" href="{{ $siteFavicon ?? '/favicon.svg' }}" type="image/svg+xml">
+    <link rel="icon" href="{{ $siteFavicon ?? \App\Support\BrandAssets::favicon() }}" type="image/svg+xml">
+    <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180">
+    <link rel="icon" href="/android-chrome-192x192.png" type="image/png" sizes="192x192">
+    <link rel="icon" href="/android-chrome-512x512.png" type="image/png" sizes="512x512">
+    <meta property="og:title" content="@yield('title', 'Home') | {{ $siteName ?? config('app.name') }}">
+    <meta property="og:description" content="@yield('meta_description', \App\Support\BrandAssets::TAGLINE)">
+    <meta property="og:image" content="{{ url(\App\Support\BrandAssets::ogImage()) }}">
+    <meta name="twitter:card" content="summary_large_image">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('styles')
 </head>

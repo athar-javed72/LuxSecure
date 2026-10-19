@@ -1,6 +1,6 @@
 # STATE — Maskanoor
 
-Critical multi-country / RBAC audit remediations — **COMPLETE locally**
+Brand SVG kit + Critical multi-country remediations — **COMPLETE locally**
 
 ---
 
@@ -38,9 +38,10 @@ Critical multi-country / RBAC audit remediations — **COMPLETE locally**
 
 | Area | Status |
 |------|--------|
-| PHPUnit | **137 passed** |
-| `npm run build` | N/A this turn (no asset changes) |
+| PHPUnit | **140 passed** |
+| `npm run build` | Passing |
 | Country scoping remediation | Done |
+| Brand SVG kit (`public/brand/`) | Done |
 | Pushed to GitHub | No (awaiting user) |
 
 ---

@@ -79,6 +79,14 @@ export function registerAlpineComponents(Alpine) {
         navOpen: false,
         profileOpen: false,
         localeOpen: false,
+        scrolled: false,
+        init() {
+            const onScroll = () => {
+                this.scrolled = window.scrollY > 24;
+            };
+            onScroll();
+            window.addEventListener('scroll', onScroll, { passive: true });
+        },
         openNav() {
             this.navOpen = true;
         },

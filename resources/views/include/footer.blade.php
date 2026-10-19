@@ -1,17 +1,16 @@
-<footer class="mt-0 border-t border-white/10 bg-fs-primary text-white">
+<footer class="mt-0 border-t border-white/10 bg-[#142A25] text-white">
     <x-container class="py-12 md:py-14">
         <div class="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-x-10 lg:gap-y-0">
             <div>
-                <a href="{{ route('home') }}" class="inline-flex items-center gap-3 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
-                    @if(!empty($siteLogo))
-                        <img src="{{ $siteLogo }}" alt="{{ $siteName ?? config('app.name') }}" class="h-10 w-auto max-w-[180px] object-contain">
-                    @else
-                        <span class="fs-display text-xl font-semibold tracking-wide">{{ $siteName ?? config('app.name') }}</span>
-                    @endif
+                <a href="{{ route('home') }}" class="inline-flex flex-col items-start gap-2 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
+                    <x-brand-logo layout="stacked" surface="dark" class="[&_img]:h-16 [&_img]:min-w-[140px]" />
                 </a>
-                <p class="mt-4 max-w-xs text-sm leading-relaxed text-slate-300">
-                    {{ $siteTagline ?: 'Find your place. Stay with trust.' }}
+                <p class="mt-4 max-w-xs fs-display text-base italic leading-relaxed text-[#D6B779]">
+                    {{ \App\Support\BrandAssets::TAGLINE }}
                 </p>
+                @if(!empty($siteTagline) && $siteTagline !== \App\Support\BrandAssets::TAGLINE)
+                    <p class="mt-2 max-w-xs text-sm leading-relaxed text-slate-300">{{ $siteTagline }}</p>
+                @endif
             </div>
 
             <div>

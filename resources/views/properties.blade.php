@@ -7,7 +7,9 @@
 <x-container class="py-8" x-data="filtersPanel">
     <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6">
         <div>
-            <h1 class="text-xl md:text-2xl font-bold text-fs-primary">Properties</h1>
+            <x-brand-logo layout="stacked" surface="light" division="properties" class="mb-3 [&_img]:h-16 [&_img]:min-w-[140px]" />
+            <h1 class="sr-only">Properties</h1>
+            <p class="mt-1 fs-display text-base italic text-[#876A2F]">{{ \App\Support\BrandAssets::TAGLINE }}</p>
             <p class="mt-2 text-sm text-fs-secondary">{{ $properties->total() }} listings found</p>
         </div>
         <div class="flex flex-wrap items-center gap-2">

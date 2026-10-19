@@ -61,7 +61,7 @@ Permission catalog lives in `config/rbac.php` and is seeded by `RolesAndPermissi
 | `fs-brand` | Brass accents (`#9a7b4f`) |
 | `fs-surface` | Stone background |
 
-Fonts: Cormorant Garamond (display) + DM Sans (UI). Shared `x-*` Blade components. Default logo: `/brand/maskanoor-logo.svg`.
+Fonts: Cormorant Garamond (display) + DM Sans (UI). Shared `x-*` Blade components. Brand SVGs live under `public/brand/` (`logos/`, `monogram/`, `divisions/`, `favicon/`).
 
 ## Requirements
 
