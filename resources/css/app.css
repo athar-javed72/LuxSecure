@@ -407,6 +407,32 @@
         display: block;
     }
 
+    .fs-auth-panel__veil {
+        background:
+            linear-gradient(160deg, rgba(13, 29, 25, 0.88) 0%, rgba(13, 29, 25, 0.55) 45%, rgba(13, 29, 25, 0.78) 100%),
+            linear-gradient(to top, rgba(13, 29, 25, 0.72), transparent 55%);
+    }
+
+    .fs-auth-panel__media {
+        transform: scale(1.04);
+        transform-origin: 65% 40%;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .fs-auth-panel__media {
+            animation: fs-auth-ken 22s ease-in-out infinite alternate;
+        }
+    }
+
+    @keyframes fs-auth-ken {
+        from {
+            transform: scale(1.04) translate3d(0, 0, 0);
+        }
+        to {
+            transform: scale(1.1) translate3d(-1.5%, -1%, 0);
+        }
+    }
+
     .fs-reveal {
         opacity: 0;
         transform: translateY(12px);
