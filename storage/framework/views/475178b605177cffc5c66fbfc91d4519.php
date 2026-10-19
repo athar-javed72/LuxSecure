@@ -20,14 +20,14 @@
                 <a href="<?php echo e(route('home')); ?>" class="inline-flex flex-col items-start rounded-[var(--radius-button)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-gold)]">
                     <?php if (isset($component)) { $__componentOriginal8741a05e11b0c77d19ec61b6b35b26b3 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal8741a05e11b0c77d19ec61b6b35b26b3 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.brand-logo','data' => ['layout' => 'stacked','surface' => 'dark','width' => 190,'class' => '[&_img]:!h-[72px] [&_img]:!min-w-[180px] [&_img]:!max-w-[200px]']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.brand-logo','data' => ['layout' => 'stacked','surface' => 'dark','width' => 180,'class' => '[&_img]:!h-[68px] [&_img]:!min-w-[170px] [&_img]:!max-w-[190px]']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('brand-logo'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['layout' => 'stacked','surface' => 'dark','width' => 190,'class' => '[&_img]:!h-[72px] [&_img]:!min-w-[180px] [&_img]:!max-w-[200px]']); ?>
+<?php $component->withAttributes(['layout' => 'stacked','surface' => 'dark','width' => 180,'class' => '[&_img]:!h-[68px] [&_img]:!min-w-[170px] [&_img]:!max-w-[190px]']); ?>
 <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginal8741a05e11b0c77d19ec61b6b35b26b3)): ?>
@@ -46,30 +46,34 @@
             </div>
 
             <div>
-                <h2 class="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--color-sage)]">Explore</h2>
-                <ul class="mt-4 space-y-1 text-[15px]">
-                    <li><a href="<?php echo e(route('properties')); ?>" class="inline-flex min-h-11 items-center text-[var(--color-ivory)] hover:underline">Properties</a></li>
-                    <li><a href="<?php echo e(route('divisions.hospitality')); ?>" class="inline-flex min-h-11 items-center text-[var(--color-ivory)] hover:underline">Hotels</a></li>
-                    <li><a href="<?php echo e(route('divisions.living')); ?>" class="inline-flex min-h-11 items-center text-[var(--color-ivory)] hover:underline">Living</a></li>
-                    <li><a href="<?php echo e(route('home')); ?>#about" class="inline-flex min-h-11 items-center text-[var(--color-ivory)] hover:underline">About</a></li>
-                    <li><a href="<?php echo e(route('contact')); ?>" class="inline-flex min-h-11 items-center text-[var(--color-ivory)] hover:underline">Contact</a></li>
-                    <li><a href="<?php echo e(route('home')); ?>#faq" class="inline-flex min-h-11 items-center text-[var(--color-ivory)] hover:underline">FAQ</a></li>
+                <h2 class="font-[family-name:var(--font-body)] text-xs font-semibold uppercase tracking-[0.16em] text-[var(--color-sage)]">Explore</h2>
+                <ul class="mt-4 space-y-0 text-[15px]">
+                    <?php $__currentLoopData = [
+                        ['Properties', route('properties')],
+                        ['Hotels', route('divisions.hospitality')],
+                        ['Living', route('divisions.living')],
+                        ['About', route('home').'#about'],
+                        ['Contact', route('contact')],
+                        ['FAQ', route('home').'#faq'],
+                    ]; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as [$label, $href]): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <li><a href="<?php echo e($href); ?>" class="inline-flex min-h-9 items-center text-[var(--color-ivory)] hover:underline"><?php echo e($label); ?></a></li>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </ul>
             </div>
 
             <div>
-                <h2 class="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--color-sage)]">Account</h2>
-                <ul class="mt-4 space-y-1 text-[15px]">
+                <h2 class="font-[family-name:var(--font-body)] text-xs font-semibold uppercase tracking-[0.16em] text-[var(--color-sage)]">Account</h2>
+                <ul class="mt-4 space-y-0 text-[15px]">
                     <?php if(auth()->guard()->guest()): ?>
-                        <li><a href="<?php echo e(route('login.form')); ?>" class="inline-flex min-h-11 items-center text-[var(--color-ivory)] hover:underline">Login</a></li>
-                        <li><a href="<?php echo e(route('register.form')); ?>" class="inline-flex min-h-11 items-center text-[var(--color-ivory)] hover:underline">Register</a></li>
+                        <li><a href="<?php echo e(route('login.form')); ?>" class="inline-flex min-h-9 items-center text-[var(--color-ivory)] hover:underline">Login</a></li>
+                        <li><a href="<?php echo e(route('register.form')); ?>" class="inline-flex min-h-9 items-center text-[var(--color-ivory)] hover:underline">Register</a></li>
                     <?php else: ?>
-                        <li><a href="<?php echo e(route('profile')); ?>" class="inline-flex min-h-11 items-center text-[var(--color-ivory)] hover:underline">My Profile</a></li>
-                        <li><a href="<?php echo e(route('profile')); ?>#favorites" class="inline-flex min-h-11 items-center text-[var(--color-ivory)] hover:underline">Saved Properties</a></li>
+                        <li><a href="<?php echo e(route('profile')); ?>" class="inline-flex min-h-9 items-center text-[var(--color-ivory)] hover:underline">My Profile</a></li>
+                        <li><a href="<?php echo e(route('profile')); ?>#favorites" class="inline-flex min-h-9 items-center text-[var(--color-ivory)] hover:underline">Saved Properties</a></li>
                         <li>
                             <form method="POST" action="<?php echo e(route('logout')); ?>">
                                 <?php echo csrf_field(); ?>
-                                <button type="submit" class="inline-flex min-h-11 items-center text-[var(--color-ivory)] hover:underline">Logout</button>
+                                <button type="submit" class="inline-flex min-h-9 items-center text-[var(--color-ivory)] hover:underline">Logout</button>
                             </form>
                         </li>
                     <?php endif; ?>
@@ -77,11 +81,11 @@
             </div>
 
             <div>
-                <h2 class="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--color-sage)]">Contact</h2>
+                <h2 class="font-[family-name:var(--font-body)] text-xs font-semibold uppercase tracking-[0.16em] text-[var(--color-sage)]">Contact</h2>
                 <ul class="mt-4 space-y-3 text-[15px] text-[var(--color-sage)]">
                     <?php if(!empty($contactEmail)): ?>
                         <li>
-                            <span class="block text-xs uppercase tracking-[0.14em] text-[var(--color-sage)] mb-1">Email</span>
+                            <span class="block font-[family-name:var(--font-body)] text-xs uppercase tracking-[0.14em] text-[var(--color-sage)] mb-1">Email</span>
                             <a href="mailto:<?php echo e($contactEmail); ?>" class="text-[var(--color-ivory)] hover:underline"><?php echo e($contactEmail); ?></a>
                             <?php if($isPersonalEmail): ?>
                                 
@@ -90,37 +94,31 @@
                     <?php endif; ?>
                     <?php if(!empty($sitePhone)): ?>
                         <li>
-                            <span class="block text-xs uppercase tracking-[0.14em] text-[var(--color-sage)] mb-1">Phone</span>
+                            <span class="block font-[family-name:var(--font-body)] text-xs uppercase tracking-[0.14em] text-[var(--color-sage)] mb-1">Phone</span>
                             <a href="tel:<?php echo e(preg_replace('/\s+/', '', $sitePhone)); ?>" class="text-[var(--color-ivory)] hover:underline"><?php echo e($sitePhone); ?></a>
                         </li>
                     <?php endif; ?>
                     <?php if(!empty($siteHours)): ?>
                         <li>
-                            <span class="block text-xs uppercase tracking-[0.14em] text-[var(--color-sage)] mb-1">Hours</span>
+                            <span class="block font-[family-name:var(--font-body)] text-xs uppercase tracking-[0.14em] text-[var(--color-sage)] mb-1">Hours</span>
                             <span class="text-[var(--color-ivory)]"><?php echo e($siteHours); ?></span>
                         </li>
                     <?php endif; ?>
-                    <?php if(!empty($siteAddress)): ?>
-                        <li>
-                            <span class="block text-xs uppercase tracking-[0.14em] text-[var(--color-sage)] mb-1">Address</span>
-                            <span class="text-[var(--color-ivory)]"><?php echo e($siteAddress); ?></span>
-                        </li>
-                    <?php endif; ?>
-                    <?php if(empty($contactEmail) && empty($sitePhone) && empty($siteHours) && empty($siteAddress)): ?>
+                    <?php if(empty($contactEmail) && empty($sitePhone) && empty($siteHours)): ?>
                         <li class="text-[var(--color-sage)]"><?php echo e(__('Use the contact form to reach us.')); ?></li>
                     <?php endif; ?>
                 </ul>
                 <div class="mt-5">
                     <?php if (isset($component)) { $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.button','data' => ['variant' => 'primary','href' => ''.e(route('contact')).'','surface' => 'dark']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.button','data' => ['variant' => 'primary','href' => ''.e(route('contact')).'','surface' => 'dark','class' => 'fs-btn-motion']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('button'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['variant' => 'primary','href' => ''.e(route('contact')).'','surface' => 'dark']); ?>Send a message <?php echo $__env->renderComponent(); ?>
+<?php $component->withAttributes(['variant' => 'primary','href' => ''.e(route('contact')).'','surface' => 'dark','class' => 'fs-btn-motion']); ?>Send a message <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561)): ?>
 <?php $attributes = $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561; ?>

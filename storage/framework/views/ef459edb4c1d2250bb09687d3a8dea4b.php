@@ -2,7 +2,7 @@
 
 $__newAttributes = [];
 $__propNames = \Illuminate\View\ComponentAttributeBag::extractPropNames(([
-    'as' => 'div',
+    'reverse' => false,
 ]));
 
 foreach ($attributes->all() as $__key => $__value) {
@@ -19,7 +19,7 @@ unset($__propNames);
 unset($__newAttributes);
 
 foreach (array_filter(([
-    'as' => 'div',
+    'reverse' => false,
 ]), 'is_string', ARRAY_FILTER_USE_KEY) as $__key => $__value) {
     $$__key = $$__key ?? $__value;
 }
@@ -32,8 +32,16 @@ foreach ($attributes->all() as $__key => $__value) {
 
 unset($__defined_vars, $__key, $__value); ?>
 
-<<?php echo e($as); ?> <?php echo e($attributes->merge(['class' => 'w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12'])); ?>>
-    <?php echo e($slot); ?>
+<div <?php echo e($attributes->class([
+    'grid lg:grid-cols-2 gap-10 lg:gap-16 items-start',
+])); ?>>
+    <div class="<?php echo e($reverse ? 'order-2 lg:order-2' : 'order-2 lg:order-1'); ?>">
+        <?php echo e($media ?? ''); ?>
 
-</<?php echo e($as); ?>>
-<?php /**PATH D:\Projects\Laravel Projects\LuxSecure-main\resources\views/components/container.blade.php ENDPATH**/ ?>
+    </div>
+    <div class="<?php echo e($reverse ? 'order-1 lg:order-1' : 'order-1 lg:order-2'); ?>">
+        <?php echo e($slot); ?>
+
+    </div>
+</div>
+<?php /**PATH D:\Nexora Lab\MaskanoorGroup\resources\views/components/split-section.blade.php ENDPATH**/ ?>

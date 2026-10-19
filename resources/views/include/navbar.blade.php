@@ -39,17 +39,25 @@
 @endphp
 
 <header
-    class="fixed top-0 left-0 w-full z-50 h-[var(--header-h)] md:h-[72px] transition-[background-color,border-color,box-shadow] duration-200"
+    class="fixed top-0 left-0 w-full z-50 h-[var(--header-h)] md:h-[72px] transition-[background-color,border-color] duration-300"
     style="--header-fg: var(--color-ivory); --header-bg: transparent;"
     :style="scrolled
-        ? '--header-fg: var(--color-forest); --header-bg: color-mix(in srgb, var(--color-ivory-50) 94%, transparent);'
-        : '--header-fg: var(--color-ivory); --header-bg: transparent;'"
+        ? '--header-fg: var(--color-forest); --header-bg: color-mix(in srgb, var(--color-ivory-50) 98%, transparent);'
+        : '--header-fg: var(--color-ivory); --header-bg: rgba(13,29,25,.25);'"
     :class="scrolled
-        ? 'border-b border-[var(--color-border)] bg-[color-mix(in_srgb,var(--color-ivory-50)_94%,transparent)] backdrop-blur-[10px]'
-        : 'border-b border-transparent bg-gradient-to-b from-[rgba(13,29,25,.65)] to-transparent'"
+        ? 'border-b border-[var(--color-border)] bg-[color-mix(in_srgb,var(--color-ivory-50)_98%,transparent)] shadow-none'
+        : 'border-b border-transparent backdrop-blur-[6px]'"
     x-data="navBar"
     @keydown.escape.window="closeOverlays()"
 >
+    {{-- Over-hero readability veil (A4); removed when scrolled --}}
+    <div
+        class="pointer-events-none absolute inset-x-0 top-0 h-[160px] -z-10"
+        x-show="!scrolled"
+        x-cloak
+        style="background: linear-gradient(to bottom, rgba(13,29,25,.85) 0%, rgba(13,29,25,.55) 60%, transparent 100%);"
+        aria-hidden="true"
+    ></div>
     <x-container class="h-full flex items-center justify-between gap-4">
         <a href="{{ $variant === 'admin' ? route('admin.dashboard') : route('home') }}"
            class="flex items-center gap-3 shrink-0 rounded-[var(--radius-button)] focus-visible:outline-2 focus-visible:outline-offset-2"

@@ -32,6 +32,25 @@ class HomeController extends Controller
         $posts = BlogPost::published()->latest('published_at')->take(3)->get();
         $faqs = Faq::published()->take(8)->get();
 
-        return view('home', compact('houses', 'agents', 'testimonials', 'posts', 'faqs'));
+        $locationSuggestions = Listing::query()
+            ->published()
+            ->whereNotNull('location')
+            ->where('location', '!=', '')
+            ->distinct()
+            ->orderBy('location')
+            ->limit(40)
+            ->pluck('location')
+            ->filter()
+            ->values()
+            ->all();
+
+        return view('home', compact(
+            'houses',
+            'agents',
+            'testimonials',
+            'posts',
+            'faqs',
+            'locationSuggestions'
+        ));
     }
 }

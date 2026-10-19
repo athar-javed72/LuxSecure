@@ -14,14 +14,14 @@
 ])
 
 @php
+    $priceFrom = false;
+    $priceAmount = null;
+    $priceSuffix = null;
+    $gallery = [];
+
     if ($property) {
         $title = $property->title;
         $location = $property->location;
-        $price = $property->formatted_price;
-        if ($property->purpose === 'short_stay' && $property->price_unit === 'per_night') {
-            $price = 'from '.$property->formatted_price;
-        }
-        $image = $property->primary_image_url;
         $url = route('properties.show', $property);
         $type = $property->type_name;
         $bedrooms = $property->bedrooms;
@@ -33,13 +33,37 @@
         $isFav = auth()->check() && auth()->user()->relationLoaded('favorites')
             ? auth()->user()->favorites->contains($property)
             : (auth()->check() ? auth()->user()->favorites()->where('listing_id', $property->id)->exists() : false);
-        $isSample = $isSample || (app()->environment(['local', 'testing']) && str_contains((string) $property->description, 'sample listing'));
+
+        $isSample = $isSample
+            || app()->environment(['local', 'testing'])
+            || str_contains((string) $property->description, 'sample listing')
+            || str_contains((string) $property->description, 'Seeded');
+
+        $priceAmount = \App\Support\Money::formatCompact($property->price, $property->currency);
+        if ($property->purpose === 'short_stay' || $property->price_unit === 'per_night') {
+            $priceFrom = true;
+            $priceSuffix = '/night';
+        } elseif ($property->price_unit === 'per_month') {
+            $priceSuffix = '/mo';
+        } elseif (($property->purpose === 'sale' || $property->price_unit === 'total') && (float) $property->price >= 10_000_000) {
+            $priceAmount = \App\Support\Money::code($property->currency).' '.number_format((float) $property->price / 10_000_000, 1).' Cr';
+            $priceAmount = preg_replace('/\.0 Cr$/', ' Cr', $priceAmount);
+        }
+
+        if ($property->relationLoaded('images') && $property->images->isNotEmpty()) {
+            $gallery = $property->images->take(5)->map(fn ($img) => \App\Support\StorageDisk::url($img->path))->filter()->values()->all();
+        }
+        if (empty($gallery) && filled($property->primary_image_url)) {
+            $gallery = [$property->primary_image_url];
+        }
+        $image = $gallery[0] ?? null;
     } else {
         $listing = $listing ?? 'sale';
         $isFav = false;
+        $priceAmount = $price;
     }
 
-    $hasRealImage = filled($image);
+    $hasRealImage = filled($image) || count($gallery) > 0;
     $badgeTone = match ($listing) {
         'rent' => 'rent',
         'short_stay' => 'stay',
@@ -63,6 +87,7 @@
     }
 
     $monogram = \App\Support\BrandAssets::logo('monogram-nostar', 'light');
+    $multi = count($gallery) > 1;
 @endphp
 
 <article {{ $attributes->merge(['class' => 'group relative fs-card overflow-hidden h-full flex flex-col']) }}>
@@ -70,22 +95,39 @@
         <span class="sr-only">{{ $title }}</span>
     </a>
 
-    <div class="relative aspect-[4/3] overflow-hidden rounded-t-[var(--radius-card)] fs-photo-placeholder">
+    <div class="relative aspect-[4/3] overflow-hidden rounded-t-[var(--radius-card)] fs-photo-placeholder fs-card-media">
         @if($hasRealImage)
-            <img
-                src="{{ $image }}"
-                alt="{{ $title }}"
-                loading="lazy"
-                decoding="async"
-                width="640"
-                height="480"
-                data-img-fallback
-                class="w-full h-full object-cover"
-            >
-            <div data-img-placeholder class="hidden absolute inset-0 flex flex-col items-center justify-center gap-2 fs-photo-placeholder px-4 text-center">
-                <img src="{{ $monogram }}" alt="" aria-hidden="true" class="h-12 w-12 opacity-[0.14]" width="48" height="48">
-                <span class="text-sm text-[var(--color-muted)]">Photo coming soon</span>
-            </div>
+            @if($multi)
+                <div class="absolute inset-0 flex overflow-x-auto snap-x snap-mandatory z-[1]" data-card-gallery>
+                    @foreach($gallery as $i => $src)
+                        <img
+                            src="{{ $i === 0 ? $src : '' }}"
+                            @if($i > 0) data-src="{{ $src }}" @endif
+                            alt=""
+                            loading="{{ $i === 0 ? 'lazy' : 'lazy' }}"
+                            decoding="async"
+                            width="640"
+                            height="480"
+                            class="w-full h-full object-cover shrink-0 snap-center basis-full"
+                        >
+                    @endforeach
+                </div>
+            @else
+                <img
+                    src="{{ $image }}"
+                    alt="{{ $title }}"
+                    loading="lazy"
+                    decoding="async"
+                    width="640"
+                    height="480"
+                    data-img-fallback
+                    class="w-full h-full object-cover"
+                >
+                <div data-img-placeholder class="hidden absolute inset-0 flex flex-col items-center justify-center gap-2 fs-photo-placeholder px-4 text-center">
+                    <img src="{{ $monogram }}" alt="" aria-hidden="true" class="h-12 w-12 opacity-[0.14]" width="48" height="48">
+                    <span class="text-sm text-[var(--color-muted)]">Photo coming soon</span>
+                </div>
+            @endif
         @else
             <div class="absolute inset-0 flex flex-col items-center justify-center gap-2 px-4 text-center" aria-hidden="true">
                 <img src="{{ $monogram }}" alt="" class="h-12 w-12 opacity-[0.14]" width="48" height="48">
@@ -121,7 +163,24 @@
     </div>
 
     <div class="p-5 flex flex-col flex-1">
-        <p class="font-[family-name:var(--font-display)] text-[26px] font-semibold leading-tight text-[var(--color-ink)]">{{ $price }}</p>
+        <div class="fs-price">
+            @if($priceFrom)
+                <p class="text-[11px] font-semibold uppercase tracking-wide text-[var(--color-muted)] font-[family-name:var(--font-body)]">From</p>
+                <p class="font-[family-name:var(--font-display)] text-[24px] font-semibold leading-tight text-[var(--color-ink)] whitespace-nowrap">
+                    <span>{{ $priceAmount }}</span>
+                    @if($priceSuffix)
+                        <span class="text-[13px] font-medium text-[var(--color-muted)] font-[family-name:var(--font-body)]">{{ $priceSuffix }}</span>
+                    @endif
+                </p>
+            @else
+                <p class="font-[family-name:var(--font-display)] text-[26px] font-semibold leading-tight text-[var(--color-ink)] whitespace-nowrap">
+                    {{ $priceAmount }}
+                    @if($priceSuffix)
+                        <span class="text-[13px] font-medium text-[var(--color-muted)] font-[family-name:var(--font-body)]">{{ $priceSuffix }}</span>
+                    @endif
+                </p>
+            @endif
+        </div>
         <h3 class="mt-1 text-base font-semibold text-[var(--color-ink)] fs-line-clamp-1">{{ $title }}</h3>
         @if($location)
             <p class="mt-2 text-sm text-[var(--color-muted)] flex items-start gap-1.5">
@@ -134,7 +193,7 @@
         @endif
 
         @if(count($meta) > 0)
-            <div class="mt-4 pt-4 border-t border-[var(--color-border)] flex flex-wrap gap-x-4 gap-y-2 text-sm text-[var(--color-muted)]">
+            <div class="mt-4 pt-4 border-t border-[var(--color-border)] flex flex-wrap gap-x-4 gap-y-2 text-sm text-[var(--color-muted)] fs-numeral">
                 @foreach($meta as $item)
                     <div class="flex items-center gap-1.5 min-h-6">
                         @if($item['icon'] === 'beds')

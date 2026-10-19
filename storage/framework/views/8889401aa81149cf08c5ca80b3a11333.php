@@ -14,7 +14,7 @@
     <meta property="og:description" content="<?php echo $__env->yieldContent('meta_description', \App\Support\BrandAssets::TAGLINE); ?>">
     <meta property="og:image" content="<?php echo e(url(\App\Support\BrandAssets::ogImage())); ?>">
     <meta name="twitter:card" content="summary_large_image">
-    <?php echo app('Illuminate\Foundation\Vite')(['resources/css/app.css', 'resources/js/app.js']); ?>
+    <?php echo app('Illuminate\Foundation\Vite')(['resources/css/app.css', 'resources/css/motion.css', 'resources/js/app.js']); ?>
     <?php echo $__env->yieldPushContent('styles'); ?>
 </head>
 <?php $isHome = request()->routeIs('home'); ?>

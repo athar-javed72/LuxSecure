@@ -37,4 +37,17 @@ class Money
     {
         return strtoupper($currencyCode ?: (string) session('currency', 'PKR'));
     }
+
+    /**
+     * Compact listing amount: "PKR 15,000" (no trailing .00), currency code first.
+     */
+    public static function formatCompact(float|string $amount, ?string $currencyCode = null): string
+    {
+        $code = static::code($currencyCode);
+        $amount = (float) $amount;
+        $formatted = number_format($amount, 2, '.', ',');
+        $formatted = rtrim(rtrim($formatted, '0'), '.');
+
+        return $code.' '.$formatted;
+    }
 }

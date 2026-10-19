@@ -14,7 +14,7 @@
     <meta property="og:description" content="@yield('meta_description', \App\Support\BrandAssets::TAGLINE)">
     <meta property="og:image" content="{{ url(\App\Support\BrandAssets::ogImage()) }}">
     <meta name="twitter:card" content="summary_large_image">
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite(['resources/css/app.css', 'resources/css/motion.css', 'resources/js/app.js'])
     @stack('styles')
 </head>
 @php $isHome = request()->routeIs('home'); @endphp

@@ -2,10 +2,7 @@
 
 $__newAttributes = [];
 $__propNames = \Illuminate\View\ComponentAttributeBag::extractPropNames(([
-    'title',
-    'subtitle' => null,
-    'align' => 'left',
-    'headingId' => null,
+    'onDark' => false,
 ]));
 
 foreach ($attributes->all() as $__key => $__value) {
@@ -22,10 +19,7 @@ unset($__propNames);
 unset($__newAttributes);
 
 foreach (array_filter(([
-    'title',
-    'subtitle' => null,
-    'align' => 'left',
-    'headingId' => null,
+    'onDark' => false,
 ]), 'is_string', ARRAY_FILTER_USE_KEY) as $__key => $__value) {
     $$__key = $$__key ?? $__value;
 }
@@ -38,17 +32,8 @@ foreach ($attributes->all() as $__key => $__value) {
 
 unset($__defined_vars, $__key, $__value); ?>
 
-<?php
-    $alignClass = $align === 'center' ? 'text-center mx-auto' : 'text-left';
-?>
+<p <?php echo e($attributes->class([$onDark ? 'fs-eyebrow-on-dark' : 'fs-eyebrow'])); ?>>
+    <?php echo e($slot); ?>
 
-<div <?php echo e($attributes->merge(['class' => 'max-w-prose ' . $alignClass])); ?>>
-    <h2 <?php if($headingId): ?> id="<?php echo e($headingId); ?>" <?php endif; ?> class="fs-display text-xl md:text-2xl text-fs-primary">
-        <?php echo e($title); ?>
-
-    </h2>
-    <?php if($subtitle): ?>
-        <p class="mt-2 text-sm text-fs-secondary max-w-prose"><?php echo e($subtitle); ?></p>
-    <?php endif; ?>
-</div>
-<?php /**PATH D:\Projects\Laravel Projects\LuxSecure-main\resources\views/components/section-heading.blade.php ENDPATH**/ ?>
+</p>
+<?php /**PATH D:\Nexora Lab\MaskanoorGroup\resources\views/components/eyebrow.blade.php ENDPATH**/ ?>

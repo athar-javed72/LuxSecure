@@ -1,38 +1,62 @@
 <?php
 
 /**
- * Central image paths for marketing surfaces (home, divisions, mood shots).
- * Owner can swap files under public/images/ without editing Blade templates.
- * Listing card photos come from each listing record — never reuse mood shots as listing photos.
+ * Central image paths for marketing surfaces.
+ * Listing card photos come from each listing — never reuse mood shots as listing photos.
+ * No image path may repeat across hero / divisions / about / break slots.
  */
 return [
+    'hero_slides' => [
+        [
+            'desktop' => '/images/home/hero-1.jpg',
+            'mobile' => '/images/home/hero-1-mobile.jpg',
+            'alt' => 'Warm hotel suite with linen bedding and soft evening light',
+            'object_position' => '68% center',
+            'origin' => '70% 40%',
+        ],
+        [
+            'desktop' => '/images/home/hero-2.jpg',
+            'mobile' => '/images/home/hero-2-mobile.jpg',
+            'alt' => 'Contemporary residence exterior at dusk with calm reflecting water',
+            'object_position' => '70% center',
+            'origin' => '65% 50%',
+        ],
+        [
+            'desktop' => '/images/home/hero-3.jpg',
+            'mobile' => '/images/home/hero-3-mobile.jpg',
+            'alt' => 'Refined living room with window light and quiet furnishings',
+            'object_position' => '72% center',
+            'origin' => '75% 45%',
+        ],
+    ],
+    // Legacy single-hero keys (first slide) for preload / OG fallbacks
     'hero' => [
-        'desktop' => '/images/home/hero.jpg',
-        'mobile' => '/images/home/hero-mobile.jpg',
+        'desktop' => '/images/home/hero-1.jpg',
+        'mobile' => '/images/home/hero-1-mobile.jpg',
         'alt' => 'Warm hotel suite with linen bedding and soft evening light',
-        'object_position' => 'center',
+        'object_position' => '68% center',
     ],
     'about' => [
         'src' => '/images/home/about.jpg',
-        'alt' => 'Soft daylight across timber and plaster interior architecture',
+        'alt' => 'Stone archway with soft raking light and quiet shadow',
     ],
     'break' => [
         'desktop' => '/images/home/break.jpg',
         'mobile' => '/images/home/break-mobile.jpg',
-        'alt' => 'Stone colonnade with raking light and quiet shadows',
+        'alt' => 'Warm stone colonnade with raking light',
     ],
     'divisions' => [
         'hotels' => [
             'src' => '/images/divisions/hotels.jpg',
-            'alt' => 'Boutique hotel suite with warm linen and stone textures',
+            'alt' => 'Boutique hotel lobby detail with warm timber and soft light',
         ],
         'properties' => [
             'src' => '/images/divisions/properties.jpg',
-            'alt' => 'Contemporary residential facade in soft daylight',
+            'alt' => 'Residential courtyard facade in soft daylight',
         ],
         'living' => [
             'src' => '/images/divisions/living.jpg',
-            'alt' => 'Calm living area with window light and tidy furnishings',
+            'alt' => 'Serviced apartment living area with window light',
         ],
     ],
     'listing_placeholders' => [
