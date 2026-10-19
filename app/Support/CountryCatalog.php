@@ -9,22 +9,48 @@ use Illuminate\Support\Facades\Cache;
 
 class CountryCatalog
 {
-    public const CACHE_KEY = 'countries.active.v1';
+    public const CACHE_KEY = 'countries.active.v2';
 
     public static function active(): Collection
     {
-        return Cache::remember(self::CACHE_KEY, now()->addHour(), function () {
+        $cached = Cache::get(self::CACHE_KEY);
+
+        if (self::isValidCountryCollection($cached)) {
+            return $cached;
+        }
+
+        if ($cached !== null) {
+            Cache::forget(self::CACHE_KEY);
+        }
+
+        // Cache ids only — Eloquent Collection unserialize can yield __PHP_Incomplete_Class.
+        $ids = Cache::remember(self::CACHE_KEY, now()->addHour(), function () {
             return Country::query()
                 ->where('is_active', true)
                 ->orderBy('sort_order')
                 ->orderBy('name')
-                ->get();
+                ->pluck('id')
+                ->all();
         });
+
+        if (! is_array($ids) || $ids === []) {
+            Cache::forget(self::CACHE_KEY);
+
+            return collect();
+        }
+
+        $byId = Country::query()->whereIn('id', $ids)->get()->keyBy('id');
+
+        return collect($ids)
+            ->map(fn ($id) => $byId->get($id))
+            ->filter()
+            ->values();
     }
 
     public static function flush(): void
     {
         Cache::forget(self::CACHE_KEY);
+        Cache::forget('countries.active.v1');
     }
 
     public static function isActive(int $countryId): bool
@@ -46,5 +72,20 @@ class CountryCatalog
         }
 
         return $list;
+    }
+
+    private static function isValidCountryCollection(mixed $value): bool
+    {
+        if (! $value instanceof Collection) {
+            return false;
+        }
+
+        foreach ($value as $item) {
+            if (! $item instanceof Country) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

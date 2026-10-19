@@ -59,6 +59,8 @@ class AppServiceProvider extends ServiceProvider
             return '<?php echo \'nonce="\'.e(\\Illuminate\\Support\\Facades\\Vite::cspNonce()).\'"\'; ?>';
         });
 
+        // Brand/settings for public + shared shells. Do NOT share `countries` here —
+        // admin index pages pass a paginator named $countries and a global overwrite blanked those screens.
         View::composer('*', function ($view) {
             try {
                 $ctx = CountryContext::class;
@@ -78,9 +80,6 @@ class AppServiceProvider extends ServiceProvider
                 $view->with('divisionHotels', $ctx::setting('site.division.hotels', 'Hotels'));
                 $view->with('divisionProperties', $ctx::setting('site.division.properties', 'Properties'));
                 $view->with('divisionLiving', $ctx::setting('site.division.living', 'Living'));
-                $view->with('countries', Country::query()->where('is_active', true)->orderBy('sort_order')->get());
-                $view->with('currencies', Currency::query()->where('is_active', true)->orderBy('code')->get());
-                $view->with('languages', Language::query()->where('is_active', true)->orderBy('sort_order')->get());
                 $view->with('legalPrivacy', Page::resolveLegal('privacy'));
                 $view->with('legalTerms', Page::resolveLegal('terms'));
                 $view->with('legalRefund', Page::resolveLegal('refund'));
@@ -97,12 +96,21 @@ class AppServiceProvider extends ServiceProvider
                 $view->with('divisionHotels', 'Hotels');
                 $view->with('divisionProperties', 'Properties');
                 $view->with('divisionLiving', 'Living');
-                $view->with('countries', collect());
-                $view->with('currencies', collect());
-                $view->with('languages', collect());
                 $view->with('legalPrivacy', null);
                 $view->with('legalTerms', null);
                 $view->with('legalRefund', null);
+            }
+        });
+
+        View::composer(['include.navbar', 'include.footer', 'include.master', 'components.auth-card'], function ($view) {
+            try {
+                $view->with('countries', Country::query()->where('is_active', true)->orderBy('sort_order')->get());
+                $view->with('currencies', Currency::query()->where('is_active', true)->orderBy('code')->get());
+                $view->with('languages', Language::query()->where('is_active', true)->orderBy('sort_order')->get());
+            } catch (\Throwable) {
+                $view->with('countries', collect());
+                $view->with('currencies', collect());
+                $view->with('languages', collect());
             }
         });
     }
