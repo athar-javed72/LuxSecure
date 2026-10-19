@@ -53,7 +53,7 @@ class ReferenceDataSeeder extends Seeder
             ['group' => 'site', 'key' => 'site.tagline.ur', 'value' => 'اپنا ٹھکانہ، بھروسے کے ساتھ', 'type' => 'string', 'label' => 'Tagline (ur)'],
             ['group' => 'site', 'key' => 'site.tagline.ar', 'value' => 'مسكنك، بثقة', 'type' => 'string', 'label' => 'Tagline (ar)'],
             ['group' => 'site', 'key' => 'site.tagline.ms', 'value' => 'Cari tempat anda, dengan kepercayaan.', 'type' => 'string', 'label' => 'Tagline (ms)'],
-            ['group' => 'site', 'key' => 'site.logo', 'value' => '/brand/logos/maskanoor-group-horizontal-for-light-bg.svg', 'type' => 'string', 'label' => 'Logo path'],
+            ['group' => 'site', 'key' => 'site.logo', 'value' => '/brand/logos/maskanoor-group-horizontal-for-light-bg.svg', 'type' => 'string', 'label' => 'Logo path (prefer BrandAssets / x-brand-logo variants)'],
             ['group' => 'site', 'key' => 'site.favicon', 'value' => '/brand/favicon/favicon.svg', 'type' => 'string', 'label' => 'Favicon path'],
             ['group' => 'site', 'key' => 'site.email', 'value' => 'pmobie264@gmail.com', 'type' => 'string', 'label' => 'Contact email'],
             ['group' => 'site', 'key' => 'site.phone', 'value' => '+923228439536', 'type' => 'string', 'label' => 'Contact phone'],

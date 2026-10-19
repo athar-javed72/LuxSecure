@@ -3,8 +3,9 @@
 namespace App\Support;
 
 /**
- * Paths to final Maskanoor SVG brand assets in public/brand/.
- * Do not recolor or transform these files in markup — pick the correct variant instead.
+ * Paths to approved Maskanoor SVG brand assets in public/brand/.
+ * Files are copied byte-for-byte from brand-source/maskanoor-brand/.
+ * Do not recolor, regenerate, or transform these files in markup.
  */
 final class BrandAssets
 {
@@ -23,14 +24,14 @@ final class BrandAssets
                 default => null,
             };
             if ($slug) {
-                return "/brand/divisions/maskanoor-{$slug}-stacked-{$suffix}.svg";
+                return "/brand/divisions/maskanoor-{$slug}-{$suffix}.svg";
             }
         }
 
         return match ($layout) {
-            'stacked' => "/brand/logos/maskanoor-group-stacked-{$suffix}.svg",
-            'monogram' => "/brand/monogram/maskanoor-monogram-{$suffix}.svg",
-            'monogram-nostar' => "/brand/monogram/maskanoor-monogram-nostar-{$suffix}.svg",
+            'stacked', 'primary' => "/brand/logos/maskanoor-group-primary-{$suffix}.svg",
+            'monogram' => "/brand/monogram/maskanoor-monogram-two-tone-{$suffix}.svg",
+            'monogram-nostar' => "/brand/monogram/maskanoor-monogram-nostar-two-tone-{$suffix}.svg",
             default => "/brand/logos/maskanoor-group-horizontal-{$suffix}.svg",
         };
     }
@@ -44,6 +45,6 @@ final class BrandAssets
     {
         return file_exists(public_path('brand/og-image.png'))
             ? '/brand/og-image.png'
-            : '/brand/og-image.svg';
+            : '/brand/logos/maskanoor-group-primary-for-dark-bg.svg';
     }
 }

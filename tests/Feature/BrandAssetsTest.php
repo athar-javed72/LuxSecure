@@ -38,12 +38,12 @@ class BrandAssetsTest extends TestCase
         $this->get(route('divisions.hospitality'))
             ->assertOk()
             ->assertSee('Maskanoor Group', false)
-            ->assertSee('/brand/divisions/maskanoor-hotels-stacked-for-dark-bg.svg', false)
+            ->assertSee('/brand/divisions/maskanoor-hotels-for-dark-bg.svg', false)
             ->assertDontSee('concept logo', false);
 
         $this->get(route('divisions.living'))
             ->assertOk()
-            ->assertSee('/brand/divisions/maskanoor-living-stacked-for-dark-bg.svg', false);
+            ->assertSee('/brand/divisions/maskanoor-living-for-dark-bg.svg', false);
     }
 
     public function test_home_uses_brand_favicon_and_horizontal_lockup(): void

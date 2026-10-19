@@ -47,7 +47,8 @@ class MaskanoorReferenceDataTest extends TestCase
         $this->assertSame('Elevating Spaces. Enriching Stays.', Setting::getValue('site.tagline.en'));
         $this->assertSame('/brand/logos/maskanoor-group-horizontal-for-light-bg.svg', Setting::getValue('site.logo'));
         $this->assertFileExists(public_path('brand/logos/maskanoor-group-horizontal-for-dark-bg.svg'));
-        $this->assertFileExists(public_path('brand/monogram/maskanoor-monogram-nostar-for-dark-bg.svg'));
+        $this->assertFileExists(public_path('brand/logos/maskanoor-group-primary-for-dark-bg.svg'));
+        $this->assertFileExists(public_path('brand/monogram/maskanoor-monogram-nostar-two-tone-for-dark-bg.svg'));
         $this->assertFileExists(public_path('brand/favicon/favicon.svg'));
         $this->assertFileExists(public_path('favicon.svg'));
 

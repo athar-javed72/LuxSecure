@@ -41,7 +41,8 @@ Brand SVG kit + Critical multi-country remediations — **COMPLETE locally**
 | PHPUnit | **140 passed** |
 | `npm run build` | Passing |
 | Country scoping remediation | Done |
-| Brand SVG kit (`public/brand/`) | Done |
+| Brand SVG kit (`public/brand/` = byte-copy of `brand-source/`) | Done |
+| Logo regenerator removed | Done |
 | Pushed to GitHub | No (awaiting user) |
 
 ---
