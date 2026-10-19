@@ -1,3 +1,4 @@
+<?php $__env->startSection('header_mode', 'overlay'); ?>
 <?php $__env->startSection('title', 'Elevating Spaces. Enriching Stays.'); ?>
 <?php $__env->startSection('meta_description'); ?>
 <?php echo e(($siteName ?? config('app.name')).' — Hotels, residences and thoughtfully selected properties, presented with care.'); ?>
@@ -1047,114 +1048,34 @@
 <?php endif; ?>
 </section>
 
-
-<section class="relative z-0 fs-section-ivory pb-24 pt-8">
-    <?php if (isset($component)) { $__componentOriginala766c2d312d6f7864fe218e2500d2bba = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginala766c2d312d6f7864fe218e2500d2bba = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.container','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('container'); ?>
+<?php if (isset($component)) { $__componentOriginalb9eda212fea7921b4a03feb1b01f47d7 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginalb9eda212fea7921b4a03feb1b01f47d7 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.cta-band','data' => ['class' => 'pb-24 pt-8','rows' => [
+        ['title' => 'Stay', 'copy' => 'Enquire about a short stay or hospitality partnership.', 'href' => route('contact', ['type' => 'living'])],
+        ['title' => 'Property', 'copy' => 'Buying, renting, or listing a considered home.', 'href' => route('contact', ['type' => 'property'])],
+        ['title' => 'Partnership', 'copy' => 'Explore working together across hospitality and property.', 'href' => route('contact', ['type' => 'partnership'])],
+    ],'secondaryLabel' => 'Browse properties','secondaryHref' => route('properties')]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('cta-band'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes([]); ?>
-        <div class="relative overflow-hidden rounded-[var(--radius-card)] bg-[var(--color-forest-shadow)] px-6 py-12 md:px-12 md:py-14 border-t border-[color-mix(in_srgb,var(--color-gold)_40%,transparent)]" data-reveal>
-            <img src="<?php echo e(\App\Support\BrandAssets::logo('monogram-nostar', 'dark')); ?>" alt="" aria-hidden="true" class="pointer-events-none absolute -bottom-8 -right-6 w-56 md:w-72 opacity-[0.07] select-none">
-            <div class="relative grid lg:grid-cols-2 gap-10 lg:gap-16 items-start">
-                <div>
-                    <?php if (isset($component)) { $__componentOriginal2fd4850bfa2168af367e79900fb8c8ff = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal2fd4850bfa2168af367e79900fb8c8ff = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.eyebrow','data' => ['onDark' => true]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('eyebrow'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php $component->withAttributes(['class' => 'pb-24 pt-8','rows' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute([
+        ['title' => 'Stay', 'copy' => 'Enquire about a short stay or hospitality partnership.', 'href' => route('contact', ['type' => 'living'])],
+        ['title' => 'Property', 'copy' => 'Buying, renting, or listing a considered home.', 'href' => route('contact', ['type' => 'property'])],
+        ['title' => 'Partnership', 'copy' => 'Explore working together across hospitality and property.', 'href' => route('contact', ['type' => 'partnership'])],
+    ]),'secondary-label' => 'Browse properties','secondary-href' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute(route('properties'))]); ?>
+<?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['on-dark' => true]); ?>Maskanoor Group <?php echo $__env->renderComponent(); ?>
+<?php if (isset($__attributesOriginalb9eda212fea7921b4a03feb1b01f47d7)): ?>
+<?php $attributes = $__attributesOriginalb9eda212fea7921b4a03feb1b01f47d7; ?>
+<?php unset($__attributesOriginalb9eda212fea7921b4a03feb1b01f47d7); ?>
 <?php endif; ?>
-<?php if (isset($__attributesOriginal2fd4850bfa2168af367e79900fb8c8ff)): ?>
-<?php $attributes = $__attributesOriginal2fd4850bfa2168af367e79900fb8c8ff; ?>
-<?php unset($__attributesOriginal2fd4850bfa2168af367e79900fb8c8ff); ?>
+<?php if (isset($__componentOriginalb9eda212fea7921b4a03feb1b01f47d7)): ?>
+<?php $component = $__componentOriginalb9eda212fea7921b4a03feb1b01f47d7; ?>
+<?php unset($__componentOriginalb9eda212fea7921b4a03feb1b01f47d7); ?>
 <?php endif; ?>
-<?php if (isset($__componentOriginal2fd4850bfa2168af367e79900fb8c8ff)): ?>
-<?php $component = $__componentOriginal2fd4850bfa2168af367e79900fb8c8ff; ?>
-<?php unset($__componentOriginal2fd4850bfa2168af367e79900fb8c8ff); ?>
-<?php endif; ?>
-                    <h2 class="mt-4 text-[var(--color-ivory)]">Let's shape what comes next.</h2>
-                    <p class="mt-3 text-[var(--color-sage)] max-w-[52ch]" style="text-wrap: pretty;">
-                        Tell us whether you are exploring a stay, a property, or a potential partnership.
-                    </p>
-                    <div class="mt-8 flex flex-col sm:flex-row gap-3">
-                        <?php if (isset($component)) { $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.button','data' => ['variant' => 'primary','href' => ''.e(route('contact')).'','surface' => 'dark','class' => 'fs-btn-motion']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('button'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['variant' => 'primary','href' => ''.e(route('contact')).'','surface' => 'dark','class' => 'fs-btn-motion']); ?>Start a Conversation <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561)): ?>
-<?php $attributes = $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561; ?>
-<?php unset($__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginald0f1fd2689e4bb7060122a5b91fe8561)): ?>
-<?php $component = $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561; ?>
-<?php unset($__componentOriginald0f1fd2689e4bb7060122a5b91fe8561); ?>
-<?php endif; ?>
-                        <?php if (isset($component)) { $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.button','data' => ['variant' => 'secondary','href' => ''.e(route('properties')).'','surface' => 'dark','class' => 'fs-btn-motion']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('button'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['variant' => 'secondary','href' => ''.e(route('properties')).'','surface' => 'dark','class' => 'fs-btn-motion']); ?>Browse properties <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561)): ?>
-<?php $attributes = $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561; ?>
-<?php unset($__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginald0f1fd2689e4bb7060122a5b91fe8561)): ?>
-<?php $component = $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561; ?>
-<?php unset($__componentOriginald0f1fd2689e4bb7060122a5b91fe8561); ?>
-<?php endif; ?>
-                    </div>
-                </div>
-                <div class="space-y-0">
-                    <?php $__currentLoopData = [
-                        ['title' => 'Stay', 'copy' => 'Enquire about a short stay or hospitality partnership.', 'href' => route('contact', ['type' => 'living'])],
-                        ['title' => 'Property', 'copy' => 'Buying, renting, or listing a considered home.', 'href' => route('contact', ['type' => 'property'])],
-                        ['title' => 'Partnership', 'copy' => 'Explore working together across hospitality and property.', 'href' => route('contact', ['type' => 'partnership'])],
-                    ]; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                        <a href="<?php echo e($row['href']); ?>" class="flex items-center justify-between gap-4 py-4 border-b border-[color-mix(in_srgb,var(--color-ivory)_12%,transparent)] last:border-b-0 group focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-gold)]">
-                            <span>
-                                <span class="block text-[var(--color-ivory)] font-semibold"><?php echo e($row['title']); ?></span>
-                                <span class="block mt-1 text-sm text-[var(--color-sage)]"><?php echo e($row['copy']); ?></span>
-                            </span>
-                            <span class="text-[var(--color-gold)] transition-transform duration-200 group-hover:translate-x-1" aria-hidden="true">→</span>
-                        </a>
-                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                </div>
-            </div>
-        </div>
-     <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginala766c2d312d6f7864fe218e2500d2bba)): ?>
-<?php $attributes = $__attributesOriginala766c2d312d6f7864fe218e2500d2bba; ?>
-<?php unset($__attributesOriginala766c2d312d6f7864fe218e2500d2bba); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginala766c2d312d6f7864fe218e2500d2bba)): ?>
-<?php $component = $__componentOriginala766c2d312d6f7864fe218e2500d2bba; ?>
-<?php unset($__componentOriginala766c2d312d6f7864fe218e2500d2bba); ?>
-<?php endif; ?>
-</section>
 <?php $__env->stopSection(); ?>
 
 <?php echo $__env->make('include.master', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\Nexora Lab\MaskanoorGroup\resources\views/home.blade.php ENDPATH**/ ?>

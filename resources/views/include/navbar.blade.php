@@ -4,6 +4,7 @@
     $variant = $variant ?? (request()->routeIs('admin.*') && Auth::check() && method_exists(Auth::user(), 'isAdmin') && Auth::user()->isAdmin() ? 'admin' : 'public');
     $isAuthenticated = Auth::check();
     $isAdmin = $isAuthenticated && method_exists(Auth::user(), 'isAdmin') && Auth::user()->isAdmin();
+    $headerMode = $headerMode ?? 'light'; // overlay | forest | light
 
     if ($variant === 'admin') {
         $menuConfig = config('navigation.admin', []);
@@ -36,35 +37,42 @@
         }
         return false;
     };
+
+    $enquireHref = route('contact', ['type' => 'general']);
+    $navConfig = json_encode(['headerMode' => $headerMode], JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT);
 @endphp
 
 <header
-    class="fixed top-0 left-0 w-full z-50 h-[var(--header-h)] md:h-[72px] transition-[background-color,border-color] duration-300"
-    style="--header-fg: var(--color-ivory); --header-bg: transparent;"
-    :style="scrolled
-        ? '--header-fg: var(--color-forest); --header-bg: color-mix(in srgb, var(--color-ivory-50) 98%, transparent);'
-        : '--header-fg: var(--color-ivory); --header-bg: rgba(13,29,25,.25);'"
-    :class="scrolled
-        ? 'border-b border-[var(--color-border)] bg-[color-mix(in_srgb,var(--color-ivory-50)_98%,transparent)] shadow-none'
-        : 'border-b border-transparent backdrop-blur-[6px]'"
+    class="fs-header fs-header--{{ $headerMode }} fixed top-0 left-0 w-full z-50 h-[var(--header-h)] md:h-[72px] transition-[background-color,border-color,box-shadow] duration-300"
+    data-header-mode="{{ $headerMode }}"
     x-data="navBar"
+    data-alpine-config="{{ $navConfig }}"
     @keydown.escape.window="closeOverlays()"
+    :class="headerClass()"
 >
-    {{-- Over-hero readability veil (A4); removed when scrolled --}}
-    <div
-        class="pointer-events-none absolute inset-x-0 top-0 h-[160px] -z-10"
-        x-show="!scrolled"
-        x-cloak
-        style="background: linear-gradient(to bottom, rgba(13,29,25,.85) 0%, rgba(13,29,25,.55) 60%, transparent 100%);"
-        aria-hidden="true"
-    ></div>
+    {{-- Overlay veil only in overlay mode when not scrolled --}}
+    @if($headerMode === 'overlay')
+        <div
+            class="pointer-events-none absolute inset-x-0 top-0 h-[160px] -z-10"
+            x-show="!scrolled"
+            x-cloak
+            style="background: linear-gradient(to bottom, rgba(13,29,25,.85) 0%, rgba(13,29,25,.55) 60%, transparent 100%);"
+            aria-hidden="true"
+        ></div>
+    @endif
+
     <x-container class="h-full flex items-center justify-between gap-4">
         <a href="{{ $variant === 'admin' ? route('admin.dashboard') : route('home') }}"
-           class="flex items-center gap-3 shrink-0 rounded-[var(--radius-button)] focus-visible:outline-2 focus-visible:outline-offset-2"
-           :class="scrolled ? 'focus-visible:outline-[var(--color-forest)]' : 'focus-visible:outline-[var(--color-ivory)]'">
-            <x-brand-logo layout="compact" surface="dual" class="shrink-0" />
+           class="flex items-center gap-3 shrink-0 rounded-[var(--radius-button)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--header-fg)]">
+            @if($headerMode === 'overlay')
+                <x-brand-logo layout="compact" surface="dual" class="shrink-0" />
+            @elseif($headerMode === 'forest')
+                <x-brand-logo layout="compact" surface="dark" class="shrink-0" />
+            @else
+                <x-brand-logo layout="compact" surface="light" class="shrink-0" />
+            @endif
             @if($variant === 'admin')
-                <span class="hidden sm:inline text-[10px] tracking-[0.18em] uppercase" style="color: color-mix(in srgb, var(--header-fg) 70%, transparent)">Admin</span>
+                <span class="hidden sm:inline text-[10px] tracking-[0.18em] uppercase opacity-70" style="color: var(--header-fg)">Admin</span>
             @endif
         </a>
 
@@ -72,13 +80,10 @@
             @foreach($menuConfig as $item)
                 @php $active = $isActive($item['active'] ?? []); @endphp
                 <a href="{{ $resolveHref($item) }}"
-                   class="relative inline-flex items-center h-11 px-3 text-sm font-medium transition-colors duration-150"
+                   class="fs-header-nav-link relative inline-flex items-center h-11 px-3 text-sm font-medium transition-colors duration-150"
                    style="color: var(--header-fg)"
                    @if($active) aria-current="page" @endif>
-                    <span class="relative after:absolute after:left-0 after:right-0 after:-bottom-0.5 after:h-px after:bg-[var(--color-gold)] after:transition-opacity after:duration-150
-                        {{ $active ? 'after:opacity-100' : 'after:opacity-0 hover:after:opacity-60' }}">
-                        {{ $item['label'] }}
-                    </span>
+                    <span class="relative {{ $active ? 'is-active' : '' }}">{{ $item['label'] }}</span>
                 </a>
             @endforeach
         </nav>
@@ -131,25 +136,36 @@
                 </form>
             @elseif(!$isAuthenticated)
                 <a href="{{ route('login.form') }}"
-                   class="inline-flex items-center h-11 px-3 text-sm font-semibold underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2"
-                   style="color: var(--header-fg)"
-                   :class="scrolled ? 'focus-visible:outline-[var(--color-forest)]' : 'focus-visible:outline-[var(--color-ivory)]'">
+                   class="inline-flex items-center h-11 px-3 text-sm font-semibold underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--header-fg)]"
+                   style="color: var(--header-fg)">
                     Login
                 </a>
-                <span x-show="!scrolled" x-cloak>
-                    <x-button variant="primary" href="{{ route('contact') }}" surface="dark">Enquire</x-button>
-                </span>
-                <span x-show="scrolled" x-cloak>
-                    <x-button variant="primary" href="{{ route('contact') }}" surface="light">Enquire</x-button>
-                </span>
-            @else
-                @if($isAdmin)
+                @if($headerMode === 'overlay')
                     <span x-show="!scrolled" x-cloak>
-                        <x-button variant="secondary" href="{{ route('admin.dashboard') }}" surface="dark">Admin</x-button>
+                        <x-button variant="primary" :href="$enquireHref" surface="dark">Enquire</x-button>
                     </span>
                     <span x-show="scrolled" x-cloak>
-                        <x-button variant="secondary" href="{{ route('admin.dashboard') }}" surface="light">Admin</x-button>
+                        <x-button variant="primary" :href="$enquireHref" surface="light">Enquire</x-button>
                     </span>
+                @elseif($headerMode === 'forest')
+                    <x-button variant="primary" :href="$enquireHref" surface="dark">Enquire</x-button>
+                @else
+                    <x-button variant="primary" :href="$enquireHref" surface="light">Enquire</x-button>
+                @endif
+            @else
+                @if($isAdmin)
+                    @if($headerMode === 'overlay')
+                        <span x-show="!scrolled" x-cloak>
+                            <x-button variant="secondary" href="{{ route('admin.dashboard') }}" surface="dark">Admin</x-button>
+                        </span>
+                        <span x-show="scrolled" x-cloak>
+                            <x-button variant="secondary" href="{{ route('admin.dashboard') }}" surface="light">Admin</x-button>
+                        </span>
+                    @elseif($headerMode === 'forest')
+                        <x-button variant="secondary" href="{{ route('admin.dashboard') }}" surface="dark">Admin</x-button>
+                    @else
+                        <x-button variant="secondary" href="{{ route('admin.dashboard') }}" surface="light">Admin</x-button>
+                    @endif
                 @endif
                 @php
                     $notifConfig = [
@@ -220,10 +236,10 @@
             id="mobile-nav-panel"
             class="absolute inset-y-0 right-0 w-full max-w-sm bg-[var(--color-forest)] text-[var(--color-ivory)] shadow-lg flex flex-col"
             x-show="navOpen"
-            x-transition:enter="transition transform duration-200"
+            x-transition:enter="transition transform duration-300"
             x-transition:enter-start="translate-x-full"
             x-transition:enter-end="translate-x-0"
-            x-transition:leave="transition transform duration-150"
+            x-transition:leave="transition transform duration-200"
             x-transition:leave-start="translate-x-0"
             x-transition:leave-end="translate-x-full"
             @keydown.tab="trapFocus($event)"
@@ -242,7 +258,7 @@
             <div class="p-4 border-t border-white/10 space-y-2">
                 @guest
                     <x-button variant="secondary" href="{{ route('login.form') }}" surface="dark" class="w-full">Login</x-button>
-                    <x-button variant="primary" href="{{ route('contact') }}" surface="dark" class="w-full">Enquire</x-button>
+                    <x-button variant="primary" :href="$enquireHref" surface="dark" class="w-full">Enquire</x-button>
                 @else
                     <x-button variant="secondary" href="{{ route('profile') }}" surface="dark" class="w-full">Account</x-button>
                     <form method="POST" action="{{ route('logout') }}">

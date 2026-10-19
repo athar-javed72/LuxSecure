@@ -1,90 +1,91 @@
 @extends('include.master')
 
+@section('header_mode', 'light')
 @section('title', 'Properties')
 @section('meta_description', 'Browse and filter '.($siteName ?? config('app.name')).' property listings by location, type, and budget.')
 
 @section('content')
-<x-container class="py-8" x-data="filtersPanel">
-    <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6">
-        <div>
-            <x-brand-logo layout="stacked" surface="light" division="properties" class="mb-3 [&_img]:h-16 [&_img]:min-w-[140px]" />
-            <h1 class="sr-only">Properties</h1>
-            <p class="mt-1 fs-display text-base italic text-[#876A2F]">{{ \App\Support\BrandAssets::TAGLINE }}</p>
-            <p class="mt-2 text-sm text-fs-secondary">{{ $properties->total() }} listings found</p>
-        </div>
-        <div class="flex flex-wrap items-center gap-2">
-            <button
-                type="button"
-                class="lg:hidden inline-flex items-center justify-center h-11 px-5 rounded-sm border border-slate-200 text-sm font-semibold text-fs-primary"
-                @click="openFilters()"
-            >
-                Filters
-            </button>
-            <form method="GET" class="flex items-center gap-2">
-                @foreach(request()->except('sort', 'page') as $key => $value)
-                    <input type="hidden" name="{{ $key }}" value="{{ $value }}">
-                @endforeach
-                <label for="sort" class="sr-only">Sort</label>
-                <select id="sort" name="sort" @change="submitSort($el)" class="h-11 px-4 rounded-sm border border-slate-200 text-sm text-fs-primary bg-white">
-                    <option value="">Newest</option>
-                    <option value="price_asc" @selected(request('sort') === 'price_asc')>Price: Low to High</option>
-                    <option value="price_desc" @selected(request('sort') === 'price_desc')>Price: High to Low</option>
-                </select>
-            </form>
-        </div>
-    </div>
+@php
+    $total = $properties->total();
+    $from = $properties->firstItem() ?? 0;
+    $to = $properties->lastItem() ?? 0;
+@endphp
 
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        {{-- Desktop sidebar filters --}}
-        <aside class="hidden lg:block lg:col-span-3">
-            <div class="rounded-md bg-white shadow-sm border border-slate-100 p-5 sticky top-24">
-                <h2 class="text-base font-semibold text-fs-primary mb-4">Filters</h2>
-                @include('include.property-filters', ['idPrefix' => 'desktop'])
+<x-page-header
+    eyebrow="Maskanoor Properties"
+    title="Properties"
+    lead="Homes, apartments, plots and stays, curated with care."
+    :breadcrumbs="[
+        ['label' => 'Home', 'href' => route('home')],
+        ['label' => 'Properties'],
+    ]"
+/>
+
+<x-properties-filters
+    :listing-types="$listingTypes"
+    :cities="$cities"
+    :total="$total"
+/>
+
+<section class="pb-[var(--section-y)]" aria-labelledby="results-heading">
+    <x-container class="pt-6">
+        <div class="flex flex-wrap items-end justify-between gap-3 mb-6">
+            <div>
+                <h2 id="results-heading" class="sr-only">Search results</h2>
+                <p class="text-[14px] sm:text-[15px] text-[var(--color-muted)] fs-numeral" aria-live="polite">
+                    @if($total === 0)
+                        0 listings
+                    @else
+                        {{ number_format($total) }} {{ \Illuminate\Support\Str::plural('listing', $total) }}
+                        @if($properties->hasPages())
+                            <span class="text-[var(--color-muted)]"> · Showing {{ $from }}–{{ $to }} of {{ number_format($total) }}</span>
+                        @endif
+                    @endif
+                </p>
             </div>
-        </aside>
+        </div>
 
-        <div class="lg:col-span-9">
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
-                @forelse($properties as $property)
+        @if($properties->count() > 0)
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" data-reveal data-reveal-stagger>
+                @foreach($properties as $property)
                     <x-property-card :property="$property" />
-                @empty
-                    <div class="col-span-full rounded-md border border-slate-200 bg-slate-50 p-8 text-center">
-                        <h2 class="text-base font-semibold text-fs-primary">No properties found</h2>
-                        <p class="mt-2 text-sm text-fs-secondary">Try adjusting your filters.</p>
-                        <div class="mt-6">
-                            <x-button variant="primary" href="{{ route('properties') }}">Clear filters</x-button>
-                        </div>
-                    </div>
-                @endforelse
+                @endforeach
             </div>
 
             @if($properties->hasPages())
-                <div class="mt-8">
-                    {{ $properties->links() }}
+                <div class="mt-10 fs-pagination flex flex-col items-center gap-3">
+                    <p class="text-sm text-[var(--color-muted)] fs-numeral">Showing {{ $from }}–{{ $to }} of {{ number_format($total) }}</p>
+                    {{ $properties->onEachSide(1)->links() }}
                 </div>
             @endif
-        </div>
-    </div>
-
-    {{-- Mobile filter drawer --}}
-    <div x-cloak x-show="filtersOpen" class="lg:hidden fixed inset-0 z-[70]" role="dialog" aria-modal="true" aria-label="Filters">
-        <div class="absolute inset-0 bg-fs-primary/40" @click="closeFilters()"></div>
-        <div
-            class="absolute inset-x-0 bottom-0 max-h-[85vh] overflow-y-auto rounded-t-md bg-white shadow-lg p-5"
-            x-show="filtersOpen"
-            x-transition:enter="transition transform duration-200"
-            x-transition:enter-start="translate-y-full"
-            x-transition:enter-end="translate-y-0"
-            x-transition:leave="transition transform duration-150"
-            x-transition:leave-start="translate-y-0"
-            x-transition:leave-end="translate-y-full"
-        >
-            <div class="flex items-center justify-between mb-4">
-                <h2 class="text-base font-semibold text-fs-primary">Filters</h2>
-                <button type="button" class="w-11 h-11 rounded-sm border border-slate-200" @click="closeFilters()" aria-label="Close filters">✕</button>
+        @else
+            <div class="relative rounded-[var(--radius-card)] border border-[var(--color-border)] bg-white px-6 py-16 text-center" data-reveal>
+                <img
+                    src="{{ \App\Support\BrandAssets::logo('monogram-nostar', 'light') }}"
+                    alt=""
+                    aria-hidden="true"
+                    class="mx-auto w-24 h-24 object-contain opacity-10 mb-6"
+                >
+                <h2 class="text-[clamp(24px,3vw,32px)] font-[family-name:var(--font-display)] font-semibold text-[var(--color-ink)]">No listings match these filters</h2>
+                <p class="mt-3 text-[15px] text-[var(--color-muted)] max-w-[42ch] mx-auto" style="text-wrap: pretty;">
+                    Try widening your budget or removing a filter.
+                </p>
+                <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+                    <x-button variant="primary" href="{{ route('properties') }}" surface="light">Clear all filters</x-button>
+                    <x-button variant="secondary" href="{{ route('contact', ['type' => 'property']) }}" surface="light">Tell us what you are looking for</x-button>
+                </div>
             </div>
-            @include('include.property-filters', ['idPrefix' => 'mobile'])
-        </div>
-    </div>
-</x-container>
+        @endif
+    </x-container>
+</section>
+
+<x-cta-band
+    title="Can't find the right fit?"
+    lead="Tell us what you are looking for and our team will help."
+    primary-label="Start a Conversation"
+    :primary-href="route('contact', ['type' => 'property'])"
+    secondary-label="Browse hotels"
+    :secondary-href="route('divisions.hospitality')"
+    class="pb-24"
+/>
 @endsection

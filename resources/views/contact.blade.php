@@ -1,5 +1,6 @@
 @extends('include.master')
 
+@section('header_mode', 'light')
 @section('title', 'Contact')
 @section('meta_description', 'Contact '.($siteName ?? config('app.name')).' for property inquiries, listing help, or support.')
 

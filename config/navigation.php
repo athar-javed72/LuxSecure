@@ -23,11 +23,7 @@ return [
             'anchor' => '#about',
             'active' => [],
         ],
-        [
-            'label' => 'Contact',
-            'route' => 'contact',
-            'active' => ['contact'],
-        ],
+        // Contact removed from header nav — Enquire is the single path to /contact (footer keeps Contact).
     ],
 
     'user' => [
@@ -68,11 +64,7 @@ return [
             'route' => 'tenancies.mine',
             'active' => ['tenancies.*'],
         ],
-        [
-            'label' => 'Contact',
-            'route' => 'contact',
-            'active' => ['contact'],
-        ],
+        // Contact removed from header nav — use Enquire.
     ],
 
     'admin' => [

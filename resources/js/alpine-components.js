@@ -80,15 +80,31 @@ export function registerAlpineComponents(Alpine) {
         profileOpen: false,
         localeOpen: false,
         scrolled: false,
+        headerMode: 'light',
         init() {
-            const onScroll = () => {
-                this.scrolled = window.scrollY > 24;
-            };
-            onScroll();
-            window.addEventListener('scroll', onScroll, { passive: true });
+            const cfg = parseAlpineConfig(this.$el);
+            this.headerMode = cfg.headerMode || this.$el?.dataset?.headerMode || 'light';
+
+            if (this.headerMode === 'overlay') {
+                const onScroll = () => {
+                    this.scrolled = window.scrollY > 24;
+                };
+                onScroll();
+                window.addEventListener('scroll', onScroll, { passive: true });
+            } else {
+                // light/forest are solid — never use overlay scroll swap
+                this.scrolled = this.headerMode === 'light';
+            }
+
             this.$watch('navOpen', (open) => {
                 document.body.style.overflow = open ? 'hidden' : '';
             });
+        },
+        headerClass() {
+            if (this.headerMode === 'overlay') {
+                return this.scrolled ? 'is-scrolled' : 'is-over-hero';
+            }
+            return '';
         },
         openNav() {
             this.navOpen = true;
@@ -277,6 +293,83 @@ export function registerAlpineComponents(Alpine) {
         submitSort(el) {
             if (el && el.form) {
                 el.form.submit();
+            }
+        },
+    }));
+
+    Alpine.data('propertiesFilters', () => ({
+        openPopover: null,
+        drawerOpen: false,
+        stuck: false,
+        moreCount: 0,
+        init() {
+            const cfg = parseAlpineConfig(this.$el);
+            this.moreCount = Number(cfg.moreCount) || 0;
+            const bar = this.$el.querySelector('[data-props-toolbar]');
+            if (bar && 'IntersectionObserver' in window) {
+                const sentinel = document.createElement('div');
+                sentinel.setAttribute('aria-hidden', 'true');
+                sentinel.style.cssText = 'height:1px;width:100%;pointer-events:none;margin:0;padding:0;';
+                bar.parentNode?.insertBefore(sentinel, bar);
+                const io = new IntersectionObserver(
+                    ([e]) => {
+                        this.stuck = !e.isIntersecting;
+                    },
+                    { threshold: 1, rootMargin: '-72px 0px 0px 0px' }
+                );
+                io.observe(sentinel);
+            }
+            this.$watch('drawerOpen', (open) => {
+                document.body.style.overflow = open ? 'hidden' : '';
+            });
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    this.openPopover = null;
+                    if (this.drawerOpen) {
+                        this.closeDrawer();
+                    }
+                }
+            });
+        },
+        togglePopover(name) {
+            this.openPopover = this.openPopover === name ? null : name;
+        },
+        closePopover(name) {
+            if (this.openPopover === name) {
+                this.openPopover = null;
+            }
+        },
+        openDrawer() {
+            this.openPopover = null;
+            this.drawerOpen = true;
+            this.$nextTick(() => {
+                document
+                    .querySelector('#properties-more-filters button, #properties-more-filters [href]')
+                    ?.focus?.();
+            });
+        },
+        closeDrawer() {
+            this.drawerOpen = false;
+        },
+        trapDrawerFocus(event) {
+            const panel = this.$el.querySelector('.fs-props-drawer__panel');
+            if (!panel || !this.drawerOpen) {
+                return;
+            }
+            const focusable = panel.querySelectorAll(
+                'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
+            );
+            if (!focusable.length) {
+                return;
+            }
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+            if (event.shiftKey && document.activeElement === first) {
+                event.preventDefault();
+                last.focus();
+            } else if (!event.shiftKey && document.activeElement === last) {
+                event.preventDefault();
+                first.focus();
             }
         },
     }));

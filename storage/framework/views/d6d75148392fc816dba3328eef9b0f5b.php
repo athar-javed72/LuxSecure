@@ -1,8 +1,10 @@
+<?php $__env->startSection('header_mode', 'forest'); ?>
 <?php $__env->startSection('title', $title); ?>
 <?php $__env->startSection('meta_description', $title.' — '.\App\Support\BrandAssets::TAGLINE); ?>
 
 <?php $__env->startSection('content'); ?>
-<section class="relative overflow-hidden bg-[#142A25] text-white">
+
+<section class="relative overflow-hidden bg-[var(--color-forest)] text-[var(--color-ivory)] -mt-[var(--header-h)] pt-[var(--header-h)]">
     <?php if (isset($component)) { $__componentOriginala766c2d312d6f7864fe218e2500d2bba = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginala766c2d312d6f7864fe218e2500d2bba = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.container','data' => ['class' => 'py-16 md:py-24']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
@@ -34,25 +36,25 @@
 <?php $component = $__componentOriginal8741a05e11b0c77d19ec61b6b35b26b3; ?>
 <?php unset($__componentOriginal8741a05e11b0c77d19ec61b6b35b26b3); ?>
 <?php endif; ?>
-            <p class="fs-display text-xl md:text-2xl italic text-[#D6B779]">
+            <p class="fs-display text-xl md:text-2xl italic font-normal text-[var(--color-gold)]">
                 <?php echo e(\App\Support\BrandAssets::TAGLINE); ?>
 
             </p>
-            <p class="text-sm md:text-base text-slate-300 leading-relaxed">
+            <p class="text-sm md:text-base text-[var(--color-sage)] leading-relaxed">
                 <?php echo e($intro); ?>
 
             </p>
             <?php if(!empty($ctaHref)): ?>
                 <?php if (isset($component)) { $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.button','data' => ['variant' => 'secondary','href' => $ctaHref]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.button','data' => ['variant' => 'secondary','href' => $ctaHref,'surface' => 'dark']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('button'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['variant' => 'secondary','href' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($ctaHref)]); ?><?php echo e($ctaLabel); ?> <?php echo $__env->renderComponent(); ?>
+<?php $component->withAttributes(['variant' => 'secondary','href' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($ctaHref),'surface' => 'dark']); ?><?php echo e($ctaLabel); ?> <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561)): ?>
 <?php $attributes = $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561; ?>
@@ -76,7 +78,7 @@
 <?php endif; ?>
 </section>
 
-<section class="bg-[#F5F0E6]">
+<section class="bg-[var(--color-ivory)]">
     <?php if (isset($component)) { $__componentOriginala766c2d312d6f7864fe218e2500d2bba = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginala766c2d312d6f7864fe218e2500d2bba = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.container','data' => ['class' => 'py-12 md:py-16']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
@@ -108,7 +110,7 @@
 <?php unset($__componentOriginal755230460fd16c04121658d92fbf99f7); ?>
 <?php endif; ?>
         <div class="mt-8 prose prose-neutral max-w-prose">
-            <p class="text-fs-secondary text-sm leading-relaxed"><?php echo e($body); ?></p>
+            <p class="text-[var(--color-muted)] text-sm leading-relaxed"><?php echo e($body); ?></p>
         </div>
      <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>

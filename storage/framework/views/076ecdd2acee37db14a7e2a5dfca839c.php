@@ -1,3 +1,4 @@
+<?php $__env->startSection('header_mode', 'light'); ?>
 <?php $__env->startSection('title', 'Contact'); ?>
 <?php $__env->startSection('meta_description', 'Contact '.($siteName ?? config('app.name')).' for property inquiries, listing help, or support.'); ?>
 

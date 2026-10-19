@@ -17,26 +17,34 @@
     <?php echo app('Illuminate\Foundation\Vite')(['resources/css/app.css', 'resources/css/motion.css', 'resources/js/app.js']); ?>
     <?php echo $__env->yieldPushContent('styles'); ?>
 </head>
-<?php $isHome = request()->routeIs('home'); ?>
+<?php
+    $isHome = request()->routeIs('home');
+    $headerMode = 'light';
+    if ($__env->hasSection('header_mode')) {
+        $headerMode = trim($__env->yieldContent('header_mode')) ?: 'light';
+    } elseif ($isHome) {
+        $headerMode = 'overlay';
+    }
+?>
 <body class="min-h-screen flex flex-col bg-[var(--color-ivory)] text-[var(--color-ink)] <?php echo e(!empty($isRtl) ? 'rtl' : ''); ?>">
     <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-3 focus:bg-[var(--color-forest)] focus:text-[var(--color-ivory)] focus:rounded-[var(--radius-button)]">
         Skip to main content
     </a>
 
-    <?php echo $__env->make('include.navbar', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+    <?php echo $__env->make('include.navbar', ['headerMode' => $headerMode], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
-    <main id="main-content" class="flex-1 <?php echo e($isHome ? 'pt-0' : 'pt-[var(--header-h)]'); ?>">
+    <main id="main-content" class="flex-1 <?php echo e($headerMode === 'overlay' ? 'pt-0' : 'pt-[var(--header-h)]'); ?>">
         <?php if(session('success') || session('error') || session('status')): ?>
             <?php if (isset($component)) { $__componentOriginala766c2d312d6f7864fe218e2500d2bba = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginala766c2d312d6f7864fe218e2500d2bba = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.container','data' => ['class' => 'pt-4 '.e($isHome ? 'pt-[calc(var(--header-h)+1rem)]' : '').'']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.container','data' => ['class' => 'pt-4 '.e($headerMode === 'overlay' ? 'pt-[calc(var(--header-h)+1rem)]' : '').'']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('container'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['class' => 'pt-4 '.e($isHome ? 'pt-[calc(var(--header-h)+1rem)]' : '').'']); ?>
+<?php $component->withAttributes(['class' => 'pt-4 '.e($headerMode === 'overlay' ? 'pt-[calc(var(--header-h)+1rem)]' : '').'']); ?>
                 <?php if(session('success')): ?>
                     <?php if (isset($component)) { $__componentOriginal5194778a3a7b899dcee5619d0610f5cf = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal5194778a3a7b899dcee5619d0610f5cf = $attributes; } ?>

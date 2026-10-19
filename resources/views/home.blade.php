@@ -1,5 +1,6 @@
 @extends('include.master')
 
+@section('header_mode', 'overlay')
 @section('title', 'Elevating Spaces. Enriching Stays.')
 @section('meta_description')
 {{ ($siteName ?? config('app.name')).' — Hotels, residences and thoughtfully selected properties, presented with care.' }}
@@ -445,40 +446,14 @@
     </x-container>
 </section>
 
-{{-- CTA band (A13) --}}
-<section class="relative z-0 fs-section-ivory pb-24 pt-8">
-    <x-container>
-        <div class="relative overflow-hidden rounded-[var(--radius-card)] bg-[var(--color-forest-shadow)] px-6 py-12 md:px-12 md:py-14 border-t border-[color-mix(in_srgb,var(--color-gold)_40%,transparent)]" data-reveal>
-            <img src="{{ \App\Support\BrandAssets::logo('monogram-nostar', 'dark') }}" alt="" aria-hidden="true" class="pointer-events-none absolute -bottom-8 -right-6 w-56 md:w-72 opacity-[0.07] select-none">
-            <div class="relative grid lg:grid-cols-2 gap-10 lg:gap-16 items-start">
-                <div>
-                    <x-eyebrow on-dark>Maskanoor Group</x-eyebrow>
-                    <h2 class="mt-4 text-[var(--color-ivory)]">Let's shape what comes next.</h2>
-                    <p class="mt-3 text-[var(--color-sage)] max-w-[52ch]" style="text-wrap: pretty;">
-                        Tell us whether you are exploring a stay, a property, or a potential partnership.
-                    </p>
-                    <div class="mt-8 flex flex-col sm:flex-row gap-3">
-                        <x-button variant="primary" href="{{ route('contact') }}" surface="dark" class="fs-btn-motion">Start a Conversation</x-button>
-                        <x-button variant="secondary" href="{{ route('properties') }}" surface="dark" class="fs-btn-motion">Browse properties</x-button>
-                    </div>
-                </div>
-                <div class="space-y-0">
-                    @foreach([
-                        ['title' => 'Stay', 'copy' => 'Enquire about a short stay or hospitality partnership.', 'href' => route('contact', ['type' => 'living'])],
-                        ['title' => 'Property', 'copy' => 'Buying, renting, or listing a considered home.', 'href' => route('contact', ['type' => 'property'])],
-                        ['title' => 'Partnership', 'copy' => 'Explore working together across hospitality and property.', 'href' => route('contact', ['type' => 'partnership'])],
-                    ] as $row)
-                        <a href="{{ $row['href'] }}" class="flex items-center justify-between gap-4 py-4 border-b border-[color-mix(in_srgb,var(--color-ivory)_12%,transparent)] last:border-b-0 group focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-gold)]">
-                            <span>
-                                <span class="block text-[var(--color-ivory)] font-semibold">{{ $row['title'] }}</span>
-                                <span class="block mt-1 text-sm text-[var(--color-sage)]">{{ $row['copy'] }}</span>
-                            </span>
-                            <span class="text-[var(--color-gold)] transition-transform duration-200 group-hover:translate-x-1" aria-hidden="true">→</span>
-                        </a>
-                    @endforeach
-                </div>
-            </div>
-        </div>
-    </x-container>
-</section>
+<x-cta-band
+    class="pb-24 pt-8"
+    :rows="[
+        ['title' => 'Stay', 'copy' => 'Enquire about a short stay or hospitality partnership.', 'href' => route('contact', ['type' => 'living'])],
+        ['title' => 'Property', 'copy' => 'Buying, renting, or listing a considered home.', 'href' => route('contact', ['type' => 'property'])],
+        ['title' => 'Partnership', 'copy' => 'Explore working together across hospitality and property.', 'href' => route('contact', ['type' => 'partnership'])],
+    ]"
+    secondary-label="Browse properties"
+    :secondary-href="route('properties')"
+/>
 @endsection
