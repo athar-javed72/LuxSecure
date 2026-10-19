@@ -65,11 +65,11 @@ class AppServiceProvider extends ServiceProvider
                 $locale = app()->getLocale();
                 $tagline = $ctx::setting('site.tagline.'.$locale)
                     ?: $ctx::setting('site.tagline', '');
-                $view->with('siteName', $ctx::setting('site.name', config('app.name', 'Maskanoor')));
+                $view->with('siteName', $ctx::setting('site.name', config('app.name', 'Maskanoor Group')));
                 $view->with('siteTagline', $tagline);
                 $view->with('siteLogo', $ctx::setting('site.logo', BrandAssets::logo('horizontal', 'light')));
                 $view->with('siteFavicon', $ctx::setting('site.favicon', BrandAssets::favicon()));
-                $view->with('siteLegalName', $ctx::setting('site.legal_name', $ctx::setting('site.name', config('app.name', 'Maskanoor'))));
+                $view->with('siteLegalName', $ctx::setting('site.legal_name', $ctx::setting('site.name', config('app.name', 'Maskanoor Group'))));
                 $view->with('siteEmail', $ctx::contact('site.email') ?? $ctx::contact('site.support_email'));
                 $view->with('sitePhone', $ctx::contact('site.phone'));
                 $view->with('siteHours', $ctx::contact('site.hours'));
@@ -81,11 +81,11 @@ class AppServiceProvider extends ServiceProvider
                 $view->with('legalTerms', Page::resolveLegal('terms'));
                 $view->with('legalRefund', Page::resolveLegal('refund'));
             } catch (\Throwable) {
-                $view->with('siteName', config('app.name', 'Maskanoor'));
+                $view->with('siteName', config('app.name', 'Maskanoor Group'));
                 $view->with('siteTagline', '');
                 $view->with('siteLogo', BrandAssets::logo('horizontal', 'light'));
                 $view->with('siteFavicon', BrandAssets::favicon());
-                $view->with('siteLegalName', config('app.name', 'Maskanoor'));
+                $view->with('siteLegalName', config('app.name', 'Maskanoor Group'));
                 $view->with('siteEmail', null);
                 $view->with('sitePhone', null);
                 $view->with('siteHours', null);

@@ -1,4 +1,4 @@
-# LuxSecure API v1
+# Maskanoor Group API v1
 
 Base URL: `/api/v1`  
 Auth: Sanctum bearer tokens (`Authorization: Bearer {token}`)  

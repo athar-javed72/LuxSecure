@@ -43,7 +43,8 @@ class MaskanoorReferenceDataTest extends TestCase
     {
         $this->seed(ReferenceDataSeeder::class);
 
-        $this->assertSame('Maskanoor', Setting::getValue('site.name'));
+        $this->assertSame('Maskanoor Group', Setting::getValue('site.name'));
+        $this->assertSame('Maskanoor Group', Setting::getValue('site.legal_name'));
         $this->assertSame('Elevating Spaces. Enriching Stays.', Setting::getValue('site.tagline.en'));
         $this->assertSame('/brand/logos/maskanoor-group-horizontal-for-light-bg.svg', Setting::getValue('site.logo'));
         $this->assertFileExists(public_path('brand/logos/maskanoor-group-horizontal-for-dark-bg.svg'));
@@ -174,7 +175,8 @@ class MaskanoorReferenceDataTest extends TestCase
         ])->assertSuccessful();
 
         $this->assertDatabaseHas('countries', ['iso2' => 'PK']);
-        $this->assertSame('Maskanoor', Setting::getValue('site.name'));
+        $this->assertSame('Maskanoor Group', Setting::getValue('site.name'));
+        $this->assertSame('Maskanoor Group', Setting::getValue('site.legal_name'));
         $this->assertFalse(Organization::query()->where('slug', 'maskanoor-stays')->exists());
         $this->assertSame(0, Listing::query()->where('address', 'like', '%[DEMO]%')->count());
     }

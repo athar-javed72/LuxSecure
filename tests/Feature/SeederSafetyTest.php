@@ -35,7 +35,7 @@ class SeederSafetyTest extends TestCase
         $this->assertSame(0, Listing::query()->count());
         $this->assertSame(0, RoomType::query()->count());
         $this->assertSame(0, Page::query()->count());
-        $this->assertSame('Maskanoor', Setting::getValue('site.name'));
+        $this->assertSame('Maskanoor Group', Setting::getValue('site.name'));
         $this->assertDatabaseHas('countries', ['iso2' => 'PK']);
     }
 
@@ -72,7 +72,7 @@ class SeederSafetyTest extends TestCase
         $this->assertSame('pmobie264@gmail.com', Setting::getValue('site.email'));
         $this->assertSame('+923228439536', Setting::getValue('site.phone'));
         $this->assertSame('24 hours', Setting::getValue('site.hours'));
-        $this->assertSame('Maskanoor', Setting::getValue('site.name'));
+        $this->assertSame('Maskanoor Group', Setting::getValue('site.name'));
     }
 
     public function test_create_super_admin_command_enforces_strong_password_and_creates_first_admin(): void

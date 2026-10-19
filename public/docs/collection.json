@@ -9,9 +9,9 @@
         }
     ],
     "info": {
-        "name": "LuxSecure API Documentation",
+        "name": "Maskanoor Group API Documentation",
         "_postman_id": "6ddf6697-c024-4d13-8be5-3d45b7fc7a3f",
-        "description": "LuxSecure API v1 \u2014 Sanctum token auth, listings, bookings, favorites, and profile.",
+        "description": "Maskanoor Group API v1 \u2014 Sanctum token auth, listings, bookings, favorites, and profile.",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
     "item": [

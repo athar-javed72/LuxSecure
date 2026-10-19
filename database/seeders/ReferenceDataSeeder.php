@@ -46,8 +46,8 @@ class ReferenceDataSeeder extends Seeder
         ], JSON_UNESCAPED_UNICODE);
 
         $defaults = [
-            ['group' => 'site', 'key' => 'site.name', 'value' => 'Maskanoor', 'type' => 'string', 'label' => 'Site name'],
-            ['group' => 'site', 'key' => 'site.legal_name', 'value' => 'Maskanoor', 'type' => 'string', 'label' => 'Legal name'],
+            ['group' => 'site', 'key' => 'site.name', 'value' => 'Maskanoor Group', 'type' => 'string', 'label' => 'Site name'],
+            ['group' => 'site', 'key' => 'site.legal_name', 'value' => 'Maskanoor Group', 'type' => 'string', 'label' => 'Legal name'],
             ['group' => 'site', 'key' => 'site.tagline', 'value' => 'Elevating Spaces. Enriching Stays.', 'type' => 'string', 'label' => 'Tagline (fallback)'],
             ['group' => 'site', 'key' => 'site.tagline.en', 'value' => 'Elevating Spaces. Enriching Stays.', 'type' => 'string', 'label' => 'Tagline (en)'],
             ['group' => 'site', 'key' => 'site.tagline.ur', 'value' => 'اپنا ٹھکانہ، بھروسے کے ساتھ', 'type' => 'string', 'label' => 'Tagline (ur)'],
@@ -70,8 +70,10 @@ class ReferenceDataSeeder extends Seeder
         ];
 
         foreach ($defaults as $row) {
-            // Brand asset paths / tagline should refresh when the logo kit changes.
+            // Brand identity keys must stay in sync with the Maskanoor Group rebrand.
             if (in_array($row['key'], [
+                'site.name',
+                'site.legal_name',
                 'site.logo',
                 'site.favicon',
                 'site.tagline',
