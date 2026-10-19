@@ -49,10 +49,10 @@ class LedgerHardeningTest extends TestCase
         config([
             'payments.jazzcash.enabled' => false,
             'payments.easypaisa.enabled' => false,
-            'luxsecure.booking_hold_minutes' => 30,
-            'luxsecure.trusted_proxies' => '',
-            'luxsecure.messaging.default' => 'log',
-            'luxsecure.messaging.allow_log_in_production' => false,
+            'maskanoor.booking_hold_minutes' => 30,
+            'maskanoor.trusted_proxies' => '',
+            'maskanoor.messaging.default' => 'log',
+            'maskanoor.messaging.allow_log_in_production' => false,
         ]);
     }
 
@@ -171,7 +171,7 @@ class LedgerHardeningTest extends TestCase
             'status' => 'pending',
         ]);
 
-        Artisan::call('luxsecure:expire-booking-holds');
+        Artisan::call('maskanoor:expire-booking-holds');
 
         $this->assertSame('cancelled', $booking->fresh()->status);
         $this->assertSame('failed', $payment->fresh()->status);
@@ -205,7 +205,7 @@ class LedgerHardeningTest extends TestCase
 
     public function test_trust_proxies_defaults_to_none(): void
     {
-        config(['luxsecure.trusted_proxies' => '']);
+        config(['maskanoor.trusted_proxies' => '']);
         $middleware = new TrustProxies;
         $ref = new \ReflectionClass($middleware);
         $prop = $ref->getProperty('proxies');
@@ -377,8 +377,8 @@ class LedgerHardeningTest extends TestCase
     {
         $this->app['env'] = 'production';
         config([
-            'luxsecure.messaging.default' => 'log',
-            'luxsecure.messaging.allow_log_in_production' => false,
+            'maskanoor.messaging.default' => 'log',
+            'maskanoor.messaging.allow_log_in_production' => false,
         ]);
 
         $this->expectException(RuntimeException::class);
@@ -426,9 +426,9 @@ class LedgerHardeningTest extends TestCase
     public function test_listing_cache_version_is_unique_across_flushes(): void
     {
         $cache = app(ListingCacheService::class);
-        $store = Cache::store(config('luxsecure.listing_cache_store', 'array') === 'array'
+        $store = Cache::store(config('maskanoor.listing_cache_store', 'array') === 'array'
             ? config('cache.default')
-            : config('luxsecure.listing_cache_store', config('cache.default')));
+            : config('maskanoor.listing_cache_store', config('cache.default')));
 
         $cache->flush();
         $v1 = $store->get('listings.cache.version');

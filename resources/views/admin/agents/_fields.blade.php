@@ -1,8 +1,20 @@
-@php $profile = $profile ?? null; @endphp
+@php
+    $profile = $profile ?? null;
+    $agentCountries = $countries ?? \App\Models\Country::query()->where('is_active', true)->orderBy('name')->get(['id', 'name']);
+@endphp
 <x-input label="Phone" name="phone" :value="old('phone', $profile->phone ?? '')" />
 <x-input label="WhatsApp" name="whatsapp" :value="old('whatsapp', $profile->whatsapp ?? '')" />
 <x-input label="License number" name="license_number" :value="old('license_number', $profile->license_number ?? '')" />
 <x-input label="Agency" name="agency" :value="old('agency', $profile->agency ?? '')" />
+<x-location-picker
+    :countries="$agentCountries"
+    country-name="country_id"
+    city-name="city_id"
+    :country-id="old('country_id', $profile?->user?->country_id)"
+    :required="false"
+    :allow-empty-country="true"
+    city-label-text="City (optional)"
+/>
 <div>
     <label for="bio" class="block text-xs font-semibold text-fs-primary mb-1">Bio</label>
     <textarea id="bio" name="bio" rows="4" class="w-full px-4 py-3 rounded-sm border border-black/10 bg-white text-sm text-fs-primary focus:border-fs-brand focus:ring-2 focus:ring-fs-brand/20">{{ old('bio', $profile->bio ?? '') }}</textarea>

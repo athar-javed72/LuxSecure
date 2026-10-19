@@ -20,7 +20,7 @@
                     </x-alert>
                 @endif
 
-                <form method="POST" action="{{ route('contact.store') }}" class="space-y-4">
+                <form id="inquiry-form" method="POST" action="{{ route('contact.store') }}" class="space-y-4 scroll-mt-[calc(var(--header-h)+16px)]">
                     @csrf
                     <x-input label="Name" name="name" :value="old('name')" placeholder="Your name" required />
                     <x-input label="Email" name="email" type="email" :value="old('email')" placeholder="you@example.com" required />
@@ -29,6 +29,7 @@
                         <textarea
                             id="message"
                             name="message"
+                            @if(request('type') === 'inquiry') autofocus @endif
                             rows="5"
                             required
                             placeholder="How can we help?"

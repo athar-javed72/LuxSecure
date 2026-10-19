@@ -28,7 +28,9 @@ use App\Http\Controllers\BookingController;
 use App\Http\Controllers\CitySearchController;
 use App\Http\Controllers\Client\TenancyController as ClientTenancyController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\DivisionController;
 use App\Http\Controllers\FavoriteController;
+use App\Http\Controllers\HealthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\KycDocumentController;
 use App\Http\Controllers\LegalAcceptanceController;
@@ -67,27 +69,9 @@ Route::get('/properties', [ListingController::class, 'index'])->name('properties
 Route::get('/properties/{listing}', [ListingController::class, 'show'])->name('properties.show');
 Route::get('/countries/{country}/cities', CitySearchController::class)->name('countries.cities');
 
-Route::view('/hospitality', 'divisions.show', [
-    'title' => 'Maskanoor Hotels',
-    'division' => 'hotels',
-    'intro' => 'Hospitality designed for considered stays — boutique hotels and short-stay residences under the Maskanoor Hotels division.',
-    'sectionTitle' => 'Hotels',
-    'sectionSubtitle' => 'Short stays with the same care as a private residence.',
-    'body' => 'Explore curated hotel and short-stay listings. Bookings, room types, and cancellation policies follow country-aware commerce settings.',
-    'ctaHref' => '/properties?purpose=short_stay',
-    'ctaLabel' => 'Browse stays',
-])->name('divisions.hospitality');
-
-Route::view('/living', 'divisions.show', [
-    'title' => 'Maskanoor Living',
-    'division' => 'living',
-    'intro' => 'Longer-term homes and rental living managed with clarity — tenancies, schedules, and trusted local support.',
-    'sectionTitle' => 'Living',
-    'sectionSubtitle' => 'Rentals and residences for everyday life.',
-    'body' => 'Discover rent listings and tenancy-ready homes. Maskanoor Living focuses on transparent pricing and dependable landlord–tenant workflows.',
-    'ctaHref' => '/properties?purpose=rent',
-    'ctaLabel' => 'Browse rentals',
-])->name('divisions.living');
+Route::get('/hospitality', [DivisionController::class, 'hospitality'])->name('divisions.hospitality');
+Route::get('/living', [DivisionController::class, 'living'])->name('divisions.living');
+Route::get('/up', HealthController::class)->name('health');
 
 Route::get('/contact', [ContactController::class, 'show'])->name('contact');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store')->middleware('throttle:contact');

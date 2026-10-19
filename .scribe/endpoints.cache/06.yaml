@@ -4,18 +4,20 @@ name: 'Two-factor authentication'
 description: ''
 endpoints:
   -
+    custom: []
     httpMethods:
       - POST
     uri: api/v1/two-factor/setup
     metadata:
+      custom: []
       groupName: 'Two-factor authentication'
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Begin 2FA setup (admin roles only).'
+      title: 'Begin 2FA setup (panel roles).'
       description: ''
       authenticated: true
-      custom: []
+      deprecated: false
     headers:
       Authorization: 'Bearer {YOUR_AUTH_TOKEN}'
       Content-Type: application/json
@@ -32,16 +34,17 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3V5EgbkvZcDPa166h8fd4ae'
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
     controller: null
     method: null
     route: null
-    custom: []
   -
+    custom: []
     httpMethods:
       - POST
     uri: api/v1/two-factor/confirm
     metadata:
+      custom: []
       groupName: 'Two-factor authentication'
       groupDescription: ''
       subgroup: ''
@@ -49,7 +52,7 @@ endpoints:
       title: 'Confirm 2FA with a code from the authenticator.'
       description: ''
       authenticated: true
-      custom: []
+      deprecated: false
     headers:
       Authorization: 'Bearer {YOUR_AUTH_TOKEN}'
       Content-Type: application/json
@@ -60,33 +63,35 @@ endpoints:
     cleanQueryParameters: []
     bodyParameters:
       code:
+        custom: []
         name: code
         description: ''
         required: true
-        example: consequatur
+        example: architecto
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
-        custom: []
+        deprecated: false
     cleanBodyParameters:
-      code: consequatur
+      code: architecto
     fileParameters: []
     responses: []
     responseFields: []
     auth:
       - headers
       - Authorization
-      - 'Bearer 3V5EgbkvZcDPa166h8fd4ae'
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
     controller: null
     method: null
     route: null
-    custom: []
   -
+    custom: []
     httpMethods:
       - POST
     uri: api/v1/two-factor/disable
     metadata:
+      custom: []
       groupName: 'Two-factor authentication'
       groupDescription: ''
       subgroup: ''
@@ -94,7 +99,7 @@ endpoints:
       title: 'Disable 2FA.'
       description: ''
       authenticated: true
-      custom: []
+      deprecated: false
     headers:
       Authorization: 'Bearer {YOUR_AUTH_TOKEN}'
       Content-Type: application/json
@@ -105,25 +110,25 @@ endpoints:
     cleanQueryParameters: []
     bodyParameters:
       code:
+        custom: []
         name: code
         description: ''
         required: true
-        example: consequatur
+        example: architecto
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
-        custom: []
+        deprecated: false
     cleanBodyParameters:
-      code: consequatur
+      code: architecto
     fileParameters: []
     responses: []
     responseFields: []
     auth:
       - headers
       - Authorization
-      - 'Bearer 3V5EgbkvZcDPa166h8fd4ae'
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
     controller: null
     method: null
     route: null
-    custom: []

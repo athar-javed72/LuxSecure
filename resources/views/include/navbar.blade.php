@@ -38,7 +38,8 @@
         return false;
     };
 
-    $enquireHref = route('contact', ['type' => 'general']);
+    $contactHref = route('contact');
+    $enquireHref = route('contact', ['type' => 'inquiry']).'#inquiry-form';
     $navConfig = json_encode(['headerMode' => $headerMode], JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT);
 @endphp
 
@@ -139,6 +140,11 @@
                    class="inline-flex items-center h-11 px-3 text-sm font-semibold underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--header-fg)]"
                    style="color: var(--header-fg)">
                     Login
+                </a>
+                <a href="{{ $contactHref }}"
+                   class="inline-flex items-center h-11 px-3 text-sm font-semibold underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--header-fg)]"
+                   style="color: var(--header-fg)">
+                    Contact
                 </a>
                 @if($headerMode === 'overlay')
                     <span x-show="!scrolled" x-cloak>
@@ -258,6 +264,7 @@
             <div class="p-4 border-t border-white/10 space-y-2">
                 @guest
                     <x-button variant="secondary" href="{{ route('login.form') }}" surface="dark" class="w-full">Login</x-button>
+                    <x-button variant="secondary" :href="$contactHref" surface="dark" class="w-full">Contact</x-button>
                     <x-button variant="primary" :href="$enquireHref" surface="dark" class="w-full">Enquire</x-button>
                 @else
                     <x-button variant="secondary" href="{{ route('profile') }}" surface="dark" class="w-full">Account</x-button>

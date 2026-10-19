@@ -4,10 +4,12 @@ name: Favorites
 description: ''
 endpoints:
   -
+    custom: []
     httpMethods:
       - GET
     uri: api/v1/favorites
     metadata:
+      custom: []
       groupName: Favorites
       groupDescription: ''
       subgroup: ''
@@ -15,7 +17,7 @@ endpoints:
       title: 'List favorited listings.'
       description: ''
       authenticated: true
-      custom: []
+      deprecated: false
     headers:
       Authorization: 'Bearer {YOUR_AUTH_TOKEN}'
       Content-Type: application/json
@@ -29,28 +31,34 @@ endpoints:
     fileParameters: []
     responses:
       -
+        custom: []
         status: 401
         content: '{"success":false,"message":"Unauthenticated.","code":"unauthenticated"}'
         headers:
           cache-control: 'no-cache, private'
           content-type: application/json
-          access-control-allow-origin: 'http://localhost'
+          x-frame-options: SAMEORIGIN
+          x-content-type-options: nosniff
+          referrer-policy: strict-origin-when-cross-origin
+          permissions-policy: 'camera=(), microphone=(), geolocation=()'
+          content-security-policy: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' 'nonce-xbZREjz8YwxGlGMuPdtTqw==' https://unpkg.com http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; font-src 'self' https://fonts.gstatic.com data: http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; img-src 'self' data: blob: https:; connect-src 'self' https://assets2.lottiefiles.com https://unpkg.com http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; media-src 'self' https://assets2.lottiefiles.com; worker-src 'self' blob: http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; frame-ancestors 'self'; base-uri 'self'; form-action 'self'"
+          access-control-allow-origin: 'http://127.0.0.1:8000'
         description: null
-        custom: []
     responseFields: []
     auth:
       - headers
       - Authorization
-      - 'Bearer 3V5EgbkvZcDPa166h8fd4ae'
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
     controller: null
     method: null
     route: null
-    custom: []
   -
+    custom: []
     httpMethods:
       - POST
-    uri: 'api/v1/favorites/{listing_id}'
+    uri: 'api/v1/favorites/{listing_slug}'
     metadata:
+      custom: []
       groupName: Favorites
       groupDescription: ''
       subgroup: ''
@@ -58,24 +66,25 @@ endpoints:
       title: 'Toggle favorite for a listing.'
       description: ''
       authenticated: true
-      custom: []
+      deprecated: false
     headers:
       Authorization: 'Bearer {YOUR_AUTH_TOKEN}'
       Content-Type: application/json
       Accept: application/json
     urlParameters:
-      listing_id:
-        name: listing_id
-        description: 'The ID of the listing.'
+      listing_slug:
+        custom: []
+        name: listing_slug
+        description: 'The slug of the listing.'
         required: true
-        example: 17
-        type: integer
+        example: gulberg-apartment-for-sale
+        type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
-        custom: []
+        deprecated: false
     cleanUrlParameters:
-      listing_id: 17
+      listing_slug: gulberg-apartment-for-sale
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -86,8 +95,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3V5EgbkvZcDPa166h8fd4ae'
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
     controller: null
     method: null
     route: null
-    custom: []

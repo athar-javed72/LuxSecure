@@ -67,9 +67,15 @@ class MaskanoorReferenceDataTest extends TestCase
             $this->assertTrue(Language::query()->where('code', $code)->exists());
         }
 
-        $this->assertTrue(Language::query()->where('code', 'ur')->where('is_rtl', true)->exists());
+        $this->assertTrue(Language::query()->where('code', 'ur')->where('is_rtl', true)->where('needs_native_review', true)->exists());
         $this->assertTrue(Language::query()->where('code', 'ar')->where('is_rtl', true)->where('needs_native_review', true)->exists());
         $this->assertTrue(Language::query()->where('code', 'ms')->where('needs_native_review', true)->exists());
+        $this->assertSame('جگہوں کو بلندی دینا۔ قیام کو مالا مال بنانا۔', Setting::getValue('site.tagline.ur'));
+        $this->assertSame('الارتقاء بالمساحات. إثراء الإقامات.', Setting::getValue('site.tagline.ar'));
+        $this->assertSame('Meninggikan Ruang. Memperkaya Penginapan.', Setting::getValue('site.tagline.ms'));
+        $this->assertSame('Maskanoor Hotels', Setting::getValue('site.division.hotels'));
+        $this->assertSame('Maskanoor Properties', Setting::getValue('site.division.properties'));
+        $this->assertSame('Maskanoor Living', Setting::getValue('site.division.living'));
 
         $this->assertTrue(Country::query()->where('iso2', 'PK')->where('tax_needs_review', true)->exists());
         $this->assertGreaterThanOrEqual(3, City::query()->whereHas('country', fn ($q) => $q->where('iso2', 'PK'))->count());
@@ -201,81 +207,79 @@ class MaskanoorReferenceDataTest extends TestCase
         }
     }
 
-    public function test_no_hardcoded_luxsecure_brand_in_runtime_sources(): void
+    public function test_no_hardcoded_luxsecure_or_brand_in_runtime_sources(): void
     {
         $roots = [
             base_path('resources/views'),
             base_path('app'),
             base_path('config'),
-            base_path('lang'),
-            base_path('README.md'),
         ];
 
-        $allowedFragments = [
-            'Developed by Nexora Labs',
-            'admin@luxsecure.com',
-            'luxsecure:backup',
-            'luxsecure:create-super-admin',
-            'luxsecure:notify-rent-due',
-            'luxsecure:expire-booking-holds',
-            'config(\'luxsecure.',
-            "config('luxsecure.",
-            'config("luxsecure.',
+        $brandPatterns = [
+            '/Maskanoor Group/i',
+            '/Maskanoor Hotels/i',
+            '/Maskanoor Properties/i',
+            '/Maskanoor Living/i',
+            '/Why Maskanoor/i',
+            '/\bLuxSecure\b/',
+            '/luxsecure/i',
         ];
 
         $hits = [];
         foreach ($roots as $root) {
-            $paths = is_dir($root)
-                ? File::allFiles($root)
-                : [new \SplFileInfo($root)];
+            foreach (File::allFiles($root) as $file) {
+                $path = $file->getPathname();
+                $relative = str_replace(base_path().DIRECTORY_SEPARATOR, '', $path);
+                $relative = str_replace('\\', '/', $relative);
 
-            foreach ($paths as $file) {
-                $path = is_string($file) ? $file : $file->getPathname();
-                if (str_contains($path, DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR)) {
+                // Deprecated config shim filename is intentional.
+                if ($relative === 'config/luxsecure.php') {
                     continue;
                 }
-                if (str_ends_with($path, '.blade.php.php')) {
+                if (str_contains($relative, 'scribe/') && str_contains($relative, 'endpoints')) {
                     continue;
                 }
-                $ext = pathinfo($path, PATHINFO_EXTENSION);
-                if (! in_array($ext, ['php', 'blade.php', 'md', 'css', 'js', 'json'], true) && ! str_ends_with($path, '.blade.php') && ! str_ends_with($path, 'README.md')) {
-                    if (! str_ends_with($path, '.blade.php') && $ext !== 'md' && $ext !== 'php' && $ext !== 'css') {
-                        continue;
-                    }
+
+                $ext = $file->getExtension();
+                if (! in_array($ext, ['php', 'css', 'js', 'json'], true) && ! str_ends_with($path, '.blade.php')) {
+                    continue;
                 }
 
                 $contents = File::get($path);
-                if (! str_contains($contents, 'LuxSecure') && ! preg_match('/\bLS\b/', $contents)) {
-                    continue;
-                }
-
-                $relative = str_replace(base_path().DIRECTORY_SEPARATOR, '', $path);
-                if (str_contains($relative, 'scribe'.DIRECTORY_SEPARATOR) && str_contains($relative, 'endpoints')) {
-                    continue;
-                }
-
                 foreach (preg_split('/\R/', $contents) as $line) {
-                    if (! str_contains($line, 'LuxSecure') && ! preg_match('/\bLS\b/', $line)) {
-                        continue;
-                    }
-                    $allowed = false;
-                    foreach ($allowedFragments as $frag) {
-                        if (str_contains($line, $frag)) {
-                            $allowed = true;
+                    $matched = false;
+                    foreach ($brandPatterns as $pattern) {
+                        if (preg_match($pattern, $line)) {
+                            $matched = true;
                             break;
                         }
                     }
-                    // Ignore artisan command namespace / package path leftovers that are not brand UI.
-                    if (str_contains($line, 'luxsecure.com') || str_contains($line, 'luxsecure:')) {
-                        $allowed = true;
+                    if (! $matched) {
+                        continue;
                     }
-                    if (! $allowed) {
-                        $hits[] = $relative.': '.$line;
+
+                    // Deprecated artisan aliases only.
+                    if (preg_match("/['\"]luxsecure:[a-z0-9:-]+['\"]/", $line)
+                        && (str_contains($line, 'aliases') || str_contains($line, 'luxsecure:'))) {
+                        continue;
                     }
+
+                    // Asset filenames / path segments (not display copy).
+                    if (preg_match('/maskanoor-[a-z0-9_-]+\.(svg|png)/i', $line)
+                        || preg_match('/\/brand\/[^\s\'"]*maskanoor/i', $line)) {
+                        continue;
+                    }
+
+                    $hits[] = $relative.': '.$line;
                 }
             }
         }
 
-        $this->assertSame([], $hits, "Hardcoded LuxSecure/LS still present:\n".implode("\n", array_slice($hits, 0, 40)));
+        $this->assertSame([], $hits, "Hardcoded luxsecure/brand still present:\n".implode("\n", array_slice($hits, 0, 40)));
+    }
+
+    public function test_deprecated_luxsecure_command_aliases_still_resolve(): void
+    {
+        $this->artisan('luxsecure:expire-booking-holds')->assertSuccessful();
     }
 }

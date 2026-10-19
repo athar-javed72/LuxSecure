@@ -3,7 +3,7 @@
     'surface' => 'dark', // dark | light | dual (header scroll swap)
     'division' => null,
     'showTagline' => false,
-    'alt' => 'Maskanoor Group',
+    'alt' => null,
     'width' => null,
 ])
 
@@ -31,6 +31,7 @@
     $lightSrc = BrandAssets::logo($resolvedLayout, 'light', $division);
     $mobileDark = BrandAssets::logo('monogram-nostar', 'dark');
     $mobileLight = BrandAssets::logo('monogram-nostar', 'light');
+    $alt = $alt ?? ($siteName ?? config('app.name'));
 @endphp
 
 <span {{ $attributes->class(['inline-flex flex-col items-start gap-1']) }}>

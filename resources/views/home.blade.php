@@ -120,7 +120,7 @@
 <section class="relative z-0 fs-section-ivory pt-[calc(var(--section-y)+72px)] pb-[var(--section-y)]" aria-labelledby="intro-heading">
     <x-container class="grid lg:grid-cols-2 gap-8 lg:gap-16 items-start" data-reveal>
         <div>
-            <x-eyebrow>Maskanoor Group</x-eyebrow>
+            <x-eyebrow>{{ $siteName ?? config('app.name') }}</x-eyebrow>
             <h2 id="intro-heading" class="mt-4">Spaces shape how we live, travel, and connect.</h2>
         </div>
         <div>
@@ -139,7 +139,7 @@
     <x-container>
         <x-section-heading
             eyebrow="Our divisions"
-            title="Three ways to experience Maskanoor"
+            title="Three ways to experience {{ $siteName ?? config('app.name') }}"
             lead="Hospitality, property and living — each with its own character."
             heading-id="divisions-heading"
         />
@@ -285,7 +285,7 @@
             </x-slot:media>
             <div data-reveal>
                 <x-section-heading
-                    eyebrow="Why Maskanoor"
+                    eyebrow="Why {{ $siteName ?? config('app.name') }}"
                     title="A quieter, more considered way to find a place."
                     lead="Principles that guide how we present spaces and welcome guests."
                     heading-id="about-heading"

@@ -1,11 +1,11 @@
 openapi: 3.0.3
 info:
-  title: 'LuxSecure API Documentation'
-  description: 'LuxSecure API v1 — Sanctum token auth, listings, bookings, favorites, and profile.'
+  title: 'Maskanoor Group API Documentation'
+  description: 'Maskanoor Group API v1 — Sanctum token auth, listings, bookings, favorites, and profile.'
   version: 1.0.0
 servers:
   -
-    url: 'http://localhost'
+    url: 'http://127.0.0.1:8000'
 tags:
   -
     name: Auth
@@ -44,7 +44,7 @@ paths:
       operationId: registerAClientAccount
       description: ''
       parameters: []
-      responses: {  }
+      responses: {}
       tags:
         - Auth
       requestBody:
@@ -57,23 +57,20 @@ paths:
                 name:
                   type: string
                   description: 'Must not be greater than 120 characters.'
-                  example: vmqeopfuudtdsufvyvddq
-                  nullable: false
+                  example: b
                 email:
                   type: string
                   description: 'Must be a valid email address. Must not be greater than 255 characters.'
-                  example: kunde.eloisa@example.com
-                  nullable: false
+                  example: zbailey@example.net
                 phone:
                   type: string
                   description: 'Must not be greater than 40 characters.'
-                  example: hfqcoynlazghdtqtqxbaj
+                  example: i
                   nullable: true
                 password:
                   type: string
                   description: ''
-                  example: consequatur
-                  nullable: false
+                  example: architecto
               required:
                 - name
                 - email
@@ -85,7 +82,7 @@ paths:
       operationId: loginAndReceiveASanctumToken
       description: ''
       parameters: []
-      responses: {  }
+      responses: {}
       tags:
         - Auth
       requestBody:
@@ -98,22 +95,20 @@ paths:
                 email:
                   type: string
                   description: 'Must be a valid email address.'
-                  example: qkunze@example.com
-                  nullable: false
+                  example: gbailey@example.net
                 password:
                   type: string
                   description: ''
-                  example: 'O[2UZ5ij-e/dl4m{o,'
-                  nullable: false
+                  example: '|]|{+-'
                 device_name:
                   type: string
                   description: 'Must not be greater than 80 characters.'
-                  example: dqamniihfqcoynlazghdt
+                  example: v
                   nullable: true
                 two_factor_code:
                   type: string
                   description: ''
-                  example: consequatur
+                  example: architecto
                   nullable: true
               required:
                 - email
@@ -125,7 +120,7 @@ paths:
       operationId: completeATwoFactorChallengeFromLogin
       description: ''
       parameters: []
-      responses: {  }
+      responses: {}
       tags:
         - Auth
       requestBody:
@@ -138,17 +133,15 @@ paths:
                 two_factor_token:
                   type: string
                   description: ''
-                  example: consequatur
-                  nullable: false
+                  example: architecto
                 code:
                   type: string
                   description: ''
-                  example: consequatur
-                  nullable: false
+                  example: architecto
                 device_name:
                   type: string
                   description: 'Must not be greater than 80 characters.'
-                  example: mqeopfuudtdsufvyvddqa
+                  example: 'n'
                   nullable: true
               required:
                 - two_factor_token
@@ -160,13 +153,13 @@ paths:
       operationId: logoutCurrentToken
       description: ''
       parameters: []
-      responses: {  }
+      responses: {}
       tags:
         - Auth
   /api/v1/bookings:
     get:
-      summary: "List the authenticated user's bookings."
-      operationId: listTheAuthenticatedUsersBookings
+      summary: ''
+      operationId: getApiV1Bookings
       description: ''
       parameters: []
       responses:
@@ -193,11 +186,11 @@ paths:
       tags:
         - Bookings
     post:
-      summary: 'Create a booking (availability checked in a transaction).'
-      operationId: createABookingavailabilityCheckedInATransaction
+      summary: ''
+      operationId: postApiV1Bookings
       description: ''
       parameters: []
-      responses: {  }
+      responses: {}
       tags:
         - Bookings
       requestBody:
@@ -209,24 +202,20 @@ paths:
               properties:
                 room_type_id:
                   type: string
-                  description: 'The <code>id</code> of an existing record in the room_types table.'
-                  example: consequatur
-                  nullable: false
+                  description: 'Must match an existing stored value.'
+                  example: architecto
                 check_in:
                   type: string
                   description: 'Must be a valid date. Must be a date after or equal to <code>today</code>.'
-                  example: '2107-11-15'
-                  nullable: false
+                  example: '2052-11-12'
                 check_out:
                   type: string
                   description: 'Must be a valid date. Must be a date after <code>check_in</code>.'
-                  example: '2097-02-15'
-                  nullable: false
+                  example: '2052-11-12'
                 guests:
                   type: integer
                   description: 'Must be at least 1. Must not be greater than 50.'
-                  example: 13
-                  nullable: false
+                  example: 22
                 cancellation_policy:
                   type: string
                   description: ''
@@ -235,7 +224,7 @@ paths:
                 notes:
                   type: string
                   description: 'Must not be greater than 1000 characters.'
-                  example: qeopfuudtdsufvyvddqam
+                  example: g
                   nullable: true
               required:
                 - room_type_id
@@ -244,8 +233,8 @@ paths:
                 - guests
   '/api/v1/bookings/{id}':
     get:
-      summary: "Show one of the user's bookings."
-      operationId: showOneOfTheUsersBookings
+      summary: ''
+      operationId: getApiV1BookingsId
       description: ''
       parameters: []
       responses:
@@ -276,17 +265,17 @@ paths:
         in: path
         name: id
         description: 'The ID of the booking.'
-        example: 17
+        example: 16
         required: true
         schema:
           type: integer
   '/api/v1/bookings/{booking_id}/cancel':
     post:
-      summary: 'Cancel an own pending/confirmed booking.'
-      operationId: cancelAnOwnPendingconfirmedBooking
+      summary: ''
+      operationId: postApiV1BookingsBooking_idCancel
       description: ''
       parameters: []
-      responses: {  }
+      responses: {}
       tags:
         - Bookings
     parameters:
@@ -294,7 +283,7 @@ paths:
         in: path
         name: booking_id
         description: 'The ID of the booking.'
-        example: 17
+        example: 16
         required: true
         schema:
           type: integer
@@ -312,16 +301,461 @@ paths:
               schema:
                 type: object
                 example:
-                  data: []
+                  data:
+                    -
+                      id: 1
+                      title: 'Gulberg Apartment for Sale'
+                      slug: gulberg-apartment-for-sale
+                      location: 'Gulberg III, Lahore'
+                      type: Apartment
+                      listing_type_id: 2
+                      purpose: sale
+                      price: 21000000
+                      price_unit: total
+                      currency: PKR
+                      country_id: 1
+                      organization_id: null
+                      branch_name: null
+                      status: published
+                      primary_image_url: /images/listings/apartment-1.jpg
+                      bedrooms: 2
+                      bathrooms: 2
+                      attributes:
+                        bedrooms: 2
+                        bathrooms: 2
+                        floor: 5
+                        furnished: true
+                      images: []
+                      created_at: '2026-10-20T01:09:48+05:00'
+                    -
+                      id: 2
+                      title: 'DHA Apartment for Rent'
+                      slug: dha-apartment-for-rent
+                      location: 'DHA Phase 5, Karachi'
+                      type: Apartment
+                      listing_type_id: 2
+                      purpose: rent
+                      price: 180000
+                      price_unit: per_month
+                      currency: PKR
+                      country_id: 1
+                      organization_id: null
+                      branch_name: null
+                      status: published
+                      primary_image_url: /images/listings/apartment-2.jpg
+                      bedrooms: 3
+                      bathrooms: 2
+                      attributes:
+                        bedrooms: 3
+                        bathrooms: 2
+                        floor: 8
+                        furnished: false
+                      images: []
+                      created_at: '2026-10-20T01:09:48+05:00'
+                    -
+                      id: 3
+                      title: 'Model Town Family House'
+                      slug: model-town-family-house
+                      location: 'Model Town, Lahore'
+                      type: House
+                      listing_type_id: 1
+                      purpose: sale
+                      price: 45000000
+                      price_unit: total
+                      currency: PKR
+                      country_id: 1
+                      organization_id: null
+                      branch_name: null
+                      status: published
+                      primary_image_url: /images/listings/house-1.jpg
+                      bedrooms: 5
+                      bathrooms: 4
+                      attributes:
+                        bedrooms: 5
+                        bathrooms: 4
+                        garage: true
+                      images: []
+                      created_at: '2026-10-20T01:09:48+05:00'
+                    -
+                      id: 4
+                      title: 'Bahria Town Residential Plot'
+                      slug: bahria-town-residential-plot
+                      location: 'Bahria Town, Lahore'
+                      type: Plot
+                      listing_type_id: 3
+                      purpose: sale
+                      price: 35000000
+                      price_unit: total
+                      currency: PKR
+                      country_id: 1
+                      organization_id: null
+                      branch_name: null
+                      status: published
+                      primary_image_url: /images/listings/plot-1.jpg
+                      bedrooms: null
+                      bathrooms: null
+                      attributes:
+                        plot_number: B-214
+                        facing: North
+                      images: []
+                      created_at: '2026-10-20T01:09:48+05:00'
+                    -
+                      id: 5
+                      title: 'Blue Area Boutique Hotel'
+                      slug: blue-area-boutique-hotel
+                      location: 'Blue Area, Islamabad'
+                      type: Hotel
+                      listing_type_id: 4
+                      purpose: short_stay
+                      price: 25000
+                      price_unit: per_night
+                      currency: PKR
+                      country_id: 1
+                      organization_id: 1
+                      branch_name: 'Blue Area Flagship'
+                      status: published
+                      primary_image_url: /images/listings/hotel-1.jpg
+                      bedrooms: null
+                      bathrooms: null
+                      attributes:
+                        star_rating: '5'
+                        rooms: 42
+                        breakfast_included: true
+                      images: []
+                      created_at: '2026-10-20T01:09:48+05:00'
+                    -
+                      id: 6
+                      title: 'Maskanoor Stays Islamabad'
+                      slug: maskanoor-stays-islamabad
+                      location: Islamabad
+                      type: Hotel
+                      listing_type_id: 4
+                      purpose: short_stay
+                      price: 15000
+                      price_unit: per_night
+                      currency: PKR
+                      country_id: 1
+                      organization_id: 2
+                      branch_name: Islamabad
+                      status: published
+                      primary_image_url: ''
+                      bedrooms: null
+                      bathrooms: null
+                      attributes: []
+                      images: []
+                      created_at: '2026-10-20T01:09:48+05:00'
+                    -
+                      id: 7
+                      title: 'Maskanoor Stays Dubai'
+                      slug: maskanoor-stays-dubai
+                      location: Dubai
+                      type: Hotel
+                      listing_type_id: 4
+                      purpose: short_stay
+                      price: 15000
+                      price_unit: per_night
+                      currency: AED
+                      country_id: 3
+                      organization_id: 2
+                      branch_name: Dubai
+                      status: published
+                      primary_image_url: ''
+                      bedrooms: null
+                      bathrooms: null
+                      attributes: []
+                      images: []
+                      created_at: '2026-10-20T01:09:48+05:00'
+                    -
+                      id: 8
+                      title: 'Maskanoor Stays Kuala Lumpur'
+                      slug: maskanoor-stays-kuala-lumpur
+                      location: 'Kuala Lumpur'
+                      type: Hotel
+                      listing_type_id: 4
+                      purpose: short_stay
+                      price: 15000
+                      price_unit: per_night
+                      currency: MYR
+                      country_id: 5
+                      organization_id: 2
+                      branch_name: 'Kuala Lumpur'
+                      status: published
+                      primary_image_url: ''
+                      bedrooms: null
+                      bathrooms: null
+                      attributes: []
+                      images: []
+                      created_at: '2026-10-20T01:09:48+05:00'
                   meta:
                     current_page: 1
                     last_page: 1
                     per_page: 15
-                    total: 0
+                    total: 8
                 properties:
                   data:
                     type: array
-                    example: []
+                    example:
+                      -
+                        id: 1
+                        title: 'Gulberg Apartment for Sale'
+                        slug: gulberg-apartment-for-sale
+                        location: 'Gulberg III, Lahore'
+                        type: Apartment
+                        listing_type_id: 2
+                        purpose: sale
+                        price: 21000000
+                        price_unit: total
+                        currency: PKR
+                        country_id: 1
+                        organization_id: null
+                        branch_name: null
+                        status: published
+                        primary_image_url: /images/listings/apartment-1.jpg
+                        bedrooms: 2
+                        bathrooms: 2
+                        attributes:
+                          bedrooms: 2
+                          bathrooms: 2
+                          floor: 5
+                          furnished: true
+                        images: []
+                        created_at: '2026-10-20T01:09:48+05:00'
+                      -
+                        id: 2
+                        title: 'DHA Apartment for Rent'
+                        slug: dha-apartment-for-rent
+                        location: 'DHA Phase 5, Karachi'
+                        type: Apartment
+                        listing_type_id: 2
+                        purpose: rent
+                        price: 180000
+                        price_unit: per_month
+                        currency: PKR
+                        country_id: 1
+                        organization_id: null
+                        branch_name: null
+                        status: published
+                        primary_image_url: /images/listings/apartment-2.jpg
+                        bedrooms: 3
+                        bathrooms: 2
+                        attributes:
+                          bedrooms: 3
+                          bathrooms: 2
+                          floor: 8
+                          furnished: false
+                        images: []
+                        created_at: '2026-10-20T01:09:48+05:00'
+                      -
+                        id: 3
+                        title: 'Model Town Family House'
+                        slug: model-town-family-house
+                        location: 'Model Town, Lahore'
+                        type: House
+                        listing_type_id: 1
+                        purpose: sale
+                        price: 45000000
+                        price_unit: total
+                        currency: PKR
+                        country_id: 1
+                        organization_id: null
+                        branch_name: null
+                        status: published
+                        primary_image_url: /images/listings/house-1.jpg
+                        bedrooms: 5
+                        bathrooms: 4
+                        attributes:
+                          bedrooms: 5
+                          bathrooms: 4
+                          garage: true
+                        images: []
+                        created_at: '2026-10-20T01:09:48+05:00'
+                      -
+                        id: 4
+                        title: 'Bahria Town Residential Plot'
+                        slug: bahria-town-residential-plot
+                        location: 'Bahria Town, Lahore'
+                        type: Plot
+                        listing_type_id: 3
+                        purpose: sale
+                        price: 35000000
+                        price_unit: total
+                        currency: PKR
+                        country_id: 1
+                        organization_id: null
+                        branch_name: null
+                        status: published
+                        primary_image_url: /images/listings/plot-1.jpg
+                        bedrooms: null
+                        bathrooms: null
+                        attributes:
+                          plot_number: B-214
+                          facing: North
+                        images: []
+                        created_at: '2026-10-20T01:09:48+05:00'
+                      -
+                        id: 5
+                        title: 'Blue Area Boutique Hotel'
+                        slug: blue-area-boutique-hotel
+                        location: 'Blue Area, Islamabad'
+                        type: Hotel
+                        listing_type_id: 4
+                        purpose: short_stay
+                        price: 25000
+                        price_unit: per_night
+                        currency: PKR
+                        country_id: 1
+                        organization_id: 1
+                        branch_name: 'Blue Area Flagship'
+                        status: published
+                        primary_image_url: /images/listings/hotel-1.jpg
+                        bedrooms: null
+                        bathrooms: null
+                        attributes:
+                          star_rating: '5'
+                          rooms: 42
+                          breakfast_included: true
+                        images: []
+                        created_at: '2026-10-20T01:09:48+05:00'
+                      -
+                        id: 6
+                        title: 'Maskanoor Stays Islamabad'
+                        slug: maskanoor-stays-islamabad
+                        location: Islamabad
+                        type: Hotel
+                        listing_type_id: 4
+                        purpose: short_stay
+                        price: 15000
+                        price_unit: per_night
+                        currency: PKR
+                        country_id: 1
+                        organization_id: 2
+                        branch_name: Islamabad
+                        status: published
+                        primary_image_url: ''
+                        bedrooms: null
+                        bathrooms: null
+                        attributes: []
+                        images: []
+                        created_at: '2026-10-20T01:09:48+05:00'
+                      -
+                        id: 7
+                        title: 'Maskanoor Stays Dubai'
+                        slug: maskanoor-stays-dubai
+                        location: Dubai
+                        type: Hotel
+                        listing_type_id: 4
+                        purpose: short_stay
+                        price: 15000
+                        price_unit: per_night
+                        currency: AED
+                        country_id: 3
+                        organization_id: 2
+                        branch_name: Dubai
+                        status: published
+                        primary_image_url: ''
+                        bedrooms: null
+                        bathrooms: null
+                        attributes: []
+                        images: []
+                        created_at: '2026-10-20T01:09:48+05:00'
+                      -
+                        id: 8
+                        title: 'Maskanoor Stays Kuala Lumpur'
+                        slug: maskanoor-stays-kuala-lumpur
+                        location: 'Kuala Lumpur'
+                        type: Hotel
+                        listing_type_id: 4
+                        purpose: short_stay
+                        price: 15000
+                        price_unit: per_night
+                        currency: MYR
+                        country_id: 5
+                        organization_id: 2
+                        branch_name: 'Kuala Lumpur'
+                        status: published
+                        primary_image_url: ''
+                        bedrooms: null
+                        bathrooms: null
+                        attributes: []
+                        images: []
+                        created_at: '2026-10-20T01:09:48+05:00'
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        title:
+                          type: string
+                          example: 'Gulberg Apartment for Sale'
+                        slug:
+                          type: string
+                          example: gulberg-apartment-for-sale
+                        location:
+                          type: string
+                          example: 'Gulberg III, Lahore'
+                        type:
+                          type: string
+                          example: Apartment
+                        listing_type_id:
+                          type: integer
+                          example: 2
+                        purpose:
+                          type: string
+                          example: sale
+                        price:
+                          type: integer
+                          example: 21000000
+                        price_unit:
+                          type: string
+                          example: total
+                        currency:
+                          type: string
+                          example: PKR
+                        country_id:
+                          type: integer
+                          example: 1
+                        organization_id:
+                          type: string
+                          example: null
+                          nullable: true
+                        branch_name:
+                          type: string
+                          example: null
+                          nullable: true
+                        status:
+                          type: string
+                          example: published
+                        primary_image_url:
+                          type: string
+                          example: /images/listings/apartment-1.jpg
+                        bedrooms:
+                          type: integer
+                          example: 2
+                        bathrooms:
+                          type: integer
+                          example: 2
+                        attributes:
+                          type: object
+                          properties:
+                            bedrooms:
+                              type: integer
+                              example: 2
+                            bathrooms:
+                              type: integer
+                              example: 2
+                            floor:
+                              type: integer
+                              example: 5
+                            furnished:
+                              type: boolean
+                              example: true
+                        images:
+                          type: array
+                          example: []
+                        created_at:
+                          type: string
+                          example: '2026-10-20T01:09:48+05:00'
                   meta:
                     type: object
                     properties:
@@ -336,10 +770,181 @@ paths:
                         example: 15
                       total:
                         type: integer
-                        example: 0
+                        example: 8
       tags:
         - Endpoints
       security: []
+  /api/v1/countries:
+    get:
+      summary: ''
+      operationId: getApiV1Countries
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: true
+                  data:
+                    -
+                      id: 1
+                      iso2: PK
+                      iso3: null
+                      name: Pakistan
+                      currency_code: PKR
+                      default_locale: en
+                    -
+                      id: 2
+                      iso2: SA
+                      iso3: null
+                      name: 'Saudi Arabia'
+                      currency_code: SAR
+                      default_locale: ar
+                    -
+                      id: 3
+                      iso2: AE
+                      iso3: null
+                      name: 'United Arab Emirates'
+                      currency_code: AED
+                      default_locale: en
+                    -
+                      id: 4
+                      iso2: QA
+                      iso3: null
+                      name: Qatar
+                      currency_code: QAR
+                      default_locale: ar
+                    -
+                      id: 5
+                      iso2: MY
+                      iso3: null
+                      name: Malaysia
+                      currency_code: MYR
+                      default_locale: en
+                    -
+                      id: 6
+                      iso2: GB
+                      iso3: null
+                      name: 'United Kingdom'
+                      currency_code: GBP
+                      default_locale: en
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    example:
+                      -
+                        id: 1
+                        iso2: PK
+                        iso3: null
+                        name: Pakistan
+                        currency_code: PKR
+                        default_locale: en
+                      -
+                        id: 2
+                        iso2: SA
+                        iso3: null
+                        name: 'Saudi Arabia'
+                        currency_code: SAR
+                        default_locale: ar
+                      -
+                        id: 3
+                        iso2: AE
+                        iso3: null
+                        name: 'United Arab Emirates'
+                        currency_code: AED
+                        default_locale: en
+                      -
+                        id: 4
+                        iso2: QA
+                        iso3: null
+                        name: Qatar
+                        currency_code: QAR
+                        default_locale: ar
+                      -
+                        id: 5
+                        iso2: MY
+                        iso3: null
+                        name: Malaysia
+                        currency_code: MYR
+                        default_locale: en
+                      -
+                        id: 6
+                        iso2: GB
+                        iso3: null
+                        name: 'United Kingdom'
+                        currency_code: GBP
+                        default_locale: en
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        iso2:
+                          type: string
+                          example: PK
+                        iso3:
+                          type: string
+                          example: null
+                          nullable: true
+                        name:
+                          type: string
+                          example: Pakistan
+                        currency_code:
+                          type: string
+                          example: PKR
+                        default_locale:
+                          type: string
+                          example: en
+      tags:
+        - Endpoints
+      security: []
+  '/api/v1/countries/{country_id}/cities':
+    get:
+      summary: ''
+      operationId: getApiV1CountriesCountry_idCities
+      description: ''
+      parameters: []
+      responses:
+        500:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: false
+                  message: 'Server error.'
+                  code: http_error
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: 'Server error.'
+                  code:
+                    type: string
+                    example: http_error
+      tags:
+        - Endpoints
+      security: []
+    parameters:
+      -
+        in: path
+        name: country_id
+        description: 'The ID of the country.'
+        example: 1
+        required: true
+        schema:
+          type: integer
   /api/v1/favorites:
     get:
       summary: 'List favorited listings.'
@@ -369,24 +974,24 @@ paths:
                     example: unauthenticated
       tags:
         - Favorites
-  '/api/v1/favorites/{listing_id}':
+  '/api/v1/favorites/{listing_slug}':
     post:
       summary: 'Toggle favorite for a listing.'
       operationId: toggleFavoriteForAListing
       description: ''
       parameters: []
-      responses: {  }
+      responses: {}
       tags:
         - Favorites
     parameters:
       -
         in: path
-        name: listing_id
-        description: 'The ID of the listing.'
-        example: 17
+        name: listing_slug
+        description: 'The slug of the listing.'
+        example: gulberg-apartment-for-sale
         required: true
         schema:
-          type: integer
+          type: string
   /api/v1/listings:
     get:
       summary: 'Paginated published listings.'
@@ -402,19 +1007,464 @@ paths:
                 type: object
                 example:
                   success: true
-                  data: []
+                  data:
+                    -
+                      id: 1
+                      title: 'Gulberg Apartment for Sale'
+                      slug: gulberg-apartment-for-sale
+                      location: 'Gulberg III, Lahore'
+                      type: Apartment
+                      listing_type_id: 2
+                      purpose: sale
+                      price: 21000000
+                      price_unit: total
+                      currency: PKR
+                      country_id: 1
+                      organization_id: null
+                      branch_name: null
+                      status: published
+                      primary_image_url: /images/listings/apartment-1.jpg
+                      bedrooms: 2
+                      bathrooms: 2
+                      attributes:
+                        bedrooms: 2
+                        bathrooms: 2
+                        floor: 5
+                        furnished: true
+                      images: []
+                      created_at: '2026-10-20T01:09:48+05:00'
+                    -
+                      id: 2
+                      title: 'DHA Apartment for Rent'
+                      slug: dha-apartment-for-rent
+                      location: 'DHA Phase 5, Karachi'
+                      type: Apartment
+                      listing_type_id: 2
+                      purpose: rent
+                      price: 180000
+                      price_unit: per_month
+                      currency: PKR
+                      country_id: 1
+                      organization_id: null
+                      branch_name: null
+                      status: published
+                      primary_image_url: /images/listings/apartment-2.jpg
+                      bedrooms: 3
+                      bathrooms: 2
+                      attributes:
+                        bedrooms: 3
+                        bathrooms: 2
+                        floor: 8
+                        furnished: false
+                      images: []
+                      created_at: '2026-10-20T01:09:48+05:00'
+                    -
+                      id: 3
+                      title: 'Model Town Family House'
+                      slug: model-town-family-house
+                      location: 'Model Town, Lahore'
+                      type: House
+                      listing_type_id: 1
+                      purpose: sale
+                      price: 45000000
+                      price_unit: total
+                      currency: PKR
+                      country_id: 1
+                      organization_id: null
+                      branch_name: null
+                      status: published
+                      primary_image_url: /images/listings/house-1.jpg
+                      bedrooms: 5
+                      bathrooms: 4
+                      attributes:
+                        bedrooms: 5
+                        bathrooms: 4
+                        garage: true
+                      images: []
+                      created_at: '2026-10-20T01:09:48+05:00'
+                    -
+                      id: 4
+                      title: 'Bahria Town Residential Plot'
+                      slug: bahria-town-residential-plot
+                      location: 'Bahria Town, Lahore'
+                      type: Plot
+                      listing_type_id: 3
+                      purpose: sale
+                      price: 35000000
+                      price_unit: total
+                      currency: PKR
+                      country_id: 1
+                      organization_id: null
+                      branch_name: null
+                      status: published
+                      primary_image_url: /images/listings/plot-1.jpg
+                      bedrooms: null
+                      bathrooms: null
+                      attributes:
+                        plot_number: B-214
+                        facing: North
+                      images: []
+                      created_at: '2026-10-20T01:09:48+05:00'
+                    -
+                      id: 5
+                      title: 'Blue Area Boutique Hotel'
+                      slug: blue-area-boutique-hotel
+                      location: 'Blue Area, Islamabad'
+                      type: Hotel
+                      listing_type_id: 4
+                      purpose: short_stay
+                      price: 25000
+                      price_unit: per_night
+                      currency: PKR
+                      country_id: 1
+                      organization_id: 1
+                      branch_name: 'Blue Area Flagship'
+                      status: published
+                      primary_image_url: /images/listings/hotel-1.jpg
+                      bedrooms: null
+                      bathrooms: null
+                      attributes:
+                        star_rating: '5'
+                        rooms: 42
+                        breakfast_included: true
+                      images: []
+                      created_at: '2026-10-20T01:09:48+05:00'
+                    -
+                      id: 6
+                      title: 'Maskanoor Stays Islamabad'
+                      slug: maskanoor-stays-islamabad
+                      location: Islamabad
+                      type: Hotel
+                      listing_type_id: 4
+                      purpose: short_stay
+                      price: 15000
+                      price_unit: per_night
+                      currency: PKR
+                      country_id: 1
+                      organization_id: 2
+                      branch_name: Islamabad
+                      status: published
+                      primary_image_url: ''
+                      bedrooms: null
+                      bathrooms: null
+                      attributes: []
+                      images: []
+                      created_at: '2026-10-20T01:09:48+05:00'
+                    -
+                      id: 7
+                      title: 'Maskanoor Stays Dubai'
+                      slug: maskanoor-stays-dubai
+                      location: Dubai
+                      type: Hotel
+                      listing_type_id: 4
+                      purpose: short_stay
+                      price: 15000
+                      price_unit: per_night
+                      currency: AED
+                      country_id: 3
+                      organization_id: 2
+                      branch_name: Dubai
+                      status: published
+                      primary_image_url: ''
+                      bedrooms: null
+                      bathrooms: null
+                      attributes: []
+                      images: []
+                      created_at: '2026-10-20T01:09:48+05:00'
+                    -
+                      id: 8
+                      title: 'Maskanoor Stays Kuala Lumpur'
+                      slug: maskanoor-stays-kuala-lumpur
+                      location: 'Kuala Lumpur'
+                      type: Hotel
+                      listing_type_id: 4
+                      purpose: short_stay
+                      price: 15000
+                      price_unit: per_night
+                      currency: MYR
+                      country_id: 5
+                      organization_id: 2
+                      branch_name: 'Kuala Lumpur'
+                      status: published
+                      primary_image_url: ''
+                      bedrooms: null
+                      bathrooms: null
+                      attributes: []
+                      images: []
+                      created_at: '2026-10-20T01:09:48+05:00'
                   meta:
                     current_page: 1
                     last_page: 1
                     per_page: 15
-                    total: 0
+                    total: 8
                 properties:
                   success:
                     type: boolean
                     example: true
                   data:
                     type: array
-                    example: []
+                    example:
+                      -
+                        id: 1
+                        title: 'Gulberg Apartment for Sale'
+                        slug: gulberg-apartment-for-sale
+                        location: 'Gulberg III, Lahore'
+                        type: Apartment
+                        listing_type_id: 2
+                        purpose: sale
+                        price: 21000000
+                        price_unit: total
+                        currency: PKR
+                        country_id: 1
+                        organization_id: null
+                        branch_name: null
+                        status: published
+                        primary_image_url: /images/listings/apartment-1.jpg
+                        bedrooms: 2
+                        bathrooms: 2
+                        attributes:
+                          bedrooms: 2
+                          bathrooms: 2
+                          floor: 5
+                          furnished: true
+                        images: []
+                        created_at: '2026-10-20T01:09:48+05:00'
+                      -
+                        id: 2
+                        title: 'DHA Apartment for Rent'
+                        slug: dha-apartment-for-rent
+                        location: 'DHA Phase 5, Karachi'
+                        type: Apartment
+                        listing_type_id: 2
+                        purpose: rent
+                        price: 180000
+                        price_unit: per_month
+                        currency: PKR
+                        country_id: 1
+                        organization_id: null
+                        branch_name: null
+                        status: published
+                        primary_image_url: /images/listings/apartment-2.jpg
+                        bedrooms: 3
+                        bathrooms: 2
+                        attributes:
+                          bedrooms: 3
+                          bathrooms: 2
+                          floor: 8
+                          furnished: false
+                        images: []
+                        created_at: '2026-10-20T01:09:48+05:00'
+                      -
+                        id: 3
+                        title: 'Model Town Family House'
+                        slug: model-town-family-house
+                        location: 'Model Town, Lahore'
+                        type: House
+                        listing_type_id: 1
+                        purpose: sale
+                        price: 45000000
+                        price_unit: total
+                        currency: PKR
+                        country_id: 1
+                        organization_id: null
+                        branch_name: null
+                        status: published
+                        primary_image_url: /images/listings/house-1.jpg
+                        bedrooms: 5
+                        bathrooms: 4
+                        attributes:
+                          bedrooms: 5
+                          bathrooms: 4
+                          garage: true
+                        images: []
+                        created_at: '2026-10-20T01:09:48+05:00'
+                      -
+                        id: 4
+                        title: 'Bahria Town Residential Plot'
+                        slug: bahria-town-residential-plot
+                        location: 'Bahria Town, Lahore'
+                        type: Plot
+                        listing_type_id: 3
+                        purpose: sale
+                        price: 35000000
+                        price_unit: total
+                        currency: PKR
+                        country_id: 1
+                        organization_id: null
+                        branch_name: null
+                        status: published
+                        primary_image_url: /images/listings/plot-1.jpg
+                        bedrooms: null
+                        bathrooms: null
+                        attributes:
+                          plot_number: B-214
+                          facing: North
+                        images: []
+                        created_at: '2026-10-20T01:09:48+05:00'
+                      -
+                        id: 5
+                        title: 'Blue Area Boutique Hotel'
+                        slug: blue-area-boutique-hotel
+                        location: 'Blue Area, Islamabad'
+                        type: Hotel
+                        listing_type_id: 4
+                        purpose: short_stay
+                        price: 25000
+                        price_unit: per_night
+                        currency: PKR
+                        country_id: 1
+                        organization_id: 1
+                        branch_name: 'Blue Area Flagship'
+                        status: published
+                        primary_image_url: /images/listings/hotel-1.jpg
+                        bedrooms: null
+                        bathrooms: null
+                        attributes:
+                          star_rating: '5'
+                          rooms: 42
+                          breakfast_included: true
+                        images: []
+                        created_at: '2026-10-20T01:09:48+05:00'
+                      -
+                        id: 6
+                        title: 'Maskanoor Stays Islamabad'
+                        slug: maskanoor-stays-islamabad
+                        location: Islamabad
+                        type: Hotel
+                        listing_type_id: 4
+                        purpose: short_stay
+                        price: 15000
+                        price_unit: per_night
+                        currency: PKR
+                        country_id: 1
+                        organization_id: 2
+                        branch_name: Islamabad
+                        status: published
+                        primary_image_url: ''
+                        bedrooms: null
+                        bathrooms: null
+                        attributes: []
+                        images: []
+                        created_at: '2026-10-20T01:09:48+05:00'
+                      -
+                        id: 7
+                        title: 'Maskanoor Stays Dubai'
+                        slug: maskanoor-stays-dubai
+                        location: Dubai
+                        type: Hotel
+                        listing_type_id: 4
+                        purpose: short_stay
+                        price: 15000
+                        price_unit: per_night
+                        currency: AED
+                        country_id: 3
+                        organization_id: 2
+                        branch_name: Dubai
+                        status: published
+                        primary_image_url: ''
+                        bedrooms: null
+                        bathrooms: null
+                        attributes: []
+                        images: []
+                        created_at: '2026-10-20T01:09:48+05:00'
+                      -
+                        id: 8
+                        title: 'Maskanoor Stays Kuala Lumpur'
+                        slug: maskanoor-stays-kuala-lumpur
+                        location: 'Kuala Lumpur'
+                        type: Hotel
+                        listing_type_id: 4
+                        purpose: short_stay
+                        price: 15000
+                        price_unit: per_night
+                        currency: MYR
+                        country_id: 5
+                        organization_id: 2
+                        branch_name: 'Kuala Lumpur'
+                        status: published
+                        primary_image_url: ''
+                        bedrooms: null
+                        bathrooms: null
+                        attributes: []
+                        images: []
+                        created_at: '2026-10-20T01:09:48+05:00'
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        title:
+                          type: string
+                          example: 'Gulberg Apartment for Sale'
+                        slug:
+                          type: string
+                          example: gulberg-apartment-for-sale
+                        location:
+                          type: string
+                          example: 'Gulberg III, Lahore'
+                        type:
+                          type: string
+                          example: Apartment
+                        listing_type_id:
+                          type: integer
+                          example: 2
+                        purpose:
+                          type: string
+                          example: sale
+                        price:
+                          type: integer
+                          example: 21000000
+                        price_unit:
+                          type: string
+                          example: total
+                        currency:
+                          type: string
+                          example: PKR
+                        country_id:
+                          type: integer
+                          example: 1
+                        organization_id:
+                          type: string
+                          example: null
+                          nullable: true
+                        branch_name:
+                          type: string
+                          example: null
+                          nullable: true
+                        status:
+                          type: string
+                          example: published
+                        primary_image_url:
+                          type: string
+                          example: /images/listings/apartment-1.jpg
+                        bedrooms:
+                          type: integer
+                          example: 2
+                        bathrooms:
+                          type: integer
+                          example: 2
+                        attributes:
+                          type: object
+                          properties:
+                            bedrooms:
+                              type: integer
+                              example: 2
+                            bathrooms:
+                              type: integer
+                              example: 2
+                            floor:
+                              type: integer
+                              example: 5
+                            furnished:
+                              type: boolean
+                              example: true
+                        images:
+                          type: array
+                          example: []
+                        created_at:
+                          type: string
+                          example: '2026-10-20T01:09:48+05:00'
                   meta:
                     type: object
                     properties:
@@ -429,7 +1479,7 @@ paths:
                         example: 15
                       total:
                         type: integer
-                        example: 0
+                        example: 8
       tags:
         - Listings
       security: []
@@ -440,26 +1490,124 @@ paths:
       description: ''
       parameters: []
       responses:
-        404:
+        200:
           description: ''
           content:
             application/json:
               schema:
                 type: object
                 example:
-                  success: false
-                  message: 'No query results for model [App\Models\Listing].'
-                  code: not_found
+                  success: true
+                  data:
+                    id: 1
+                    title: 'Gulberg Apartment for Sale'
+                    slug: gulberg-apartment-for-sale
+                    location: 'Gulberg III, Lahore'
+                    type: Apartment
+                    listing_type_id: 2
+                    purpose: sale
+                    price: 21000000
+                    price_unit: total
+                    currency: PKR
+                    country_id: 1
+                    organization_id: null
+                    branch_name: null
+                    status: published
+                    primary_image_url: /images/listings/apartment-1.jpg
+                    bedrooms: 2
+                    bathrooms: 2
+                    attributes:
+                      bedrooms: 2
+                      bathrooms: 2
+                      floor: 5
+                      furnished: true
+                    description: 'A curated Maskanoor sample listing with modern finishes and a prime location.'
+                    images: []
+                    created_at: '2026-10-20T01:09:48+05:00'
                 properties:
                   success:
                     type: boolean
-                    example: false
-                  message:
-                    type: string
-                    example: 'No query results for model [App\Models\Listing].'
-                  code:
-                    type: string
-                    example: not_found
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      title:
+                        type: string
+                        example: 'Gulberg Apartment for Sale'
+                      slug:
+                        type: string
+                        example: gulberg-apartment-for-sale
+                      location:
+                        type: string
+                        example: 'Gulberg III, Lahore'
+                      type:
+                        type: string
+                        example: Apartment
+                      listing_type_id:
+                        type: integer
+                        example: 2
+                      purpose:
+                        type: string
+                        example: sale
+                      price:
+                        type: integer
+                        example: 21000000
+                      price_unit:
+                        type: string
+                        example: total
+                      currency:
+                        type: string
+                        example: PKR
+                      country_id:
+                        type: integer
+                        example: 1
+                      organization_id:
+                        type: string
+                        example: null
+                        nullable: true
+                      branch_name:
+                        type: string
+                        example: null
+                        nullable: true
+                      status:
+                        type: string
+                        example: published
+                      primary_image_url:
+                        type: string
+                        example: /images/listings/apartment-1.jpg
+                      bedrooms:
+                        type: integer
+                        example: 2
+                      bathrooms:
+                        type: integer
+                        example: 2
+                      attributes:
+                        type: object
+                        properties:
+                          bedrooms:
+                            type: integer
+                            example: 2
+                          bathrooms:
+                            type: integer
+                            example: 2
+                          floor:
+                            type: integer
+                            example: 5
+                          furnished:
+                            type: boolean
+                            example: true
+                      description:
+                        type: string
+                        example: 'A curated Maskanoor sample listing with modern finishes and a prime location.'
+                      images:
+                        type: array
+                        example: []
+                      created_at:
+                        type: string
+                        example: '2026-10-20T01:09:48+05:00'
       tags:
         - Listings
       security: []
@@ -468,10 +1616,10 @@ paths:
         in: path
         name: id
         description: 'The ID of the listing.'
-        example: 17
+        example: gulberg-apartment-for-sale
         required: true
         schema:
-          type: integer
+          type: string
   /api/v1/profile:
     get:
       summary: 'Get the authenticated profile.'
@@ -506,7 +1654,7 @@ paths:
       operationId: updateProfileFields
       description: ''
       parameters: []
-      responses: {  }
+      responses: {}
       tags:
         - Profile
       requestBody:
@@ -519,17 +1667,15 @@ paths:
                 name:
                   type: string
                   description: 'Must not be greater than 120 characters.'
-                  example: vmqeopfuudtdsufvyvddq
-                  nullable: false
+                  example: b
                 email:
                   type: string
                   description: 'Must be a valid email address. Must not be greater than 255 characters.'
-                  example: kunde.eloisa@example.com
-                  nullable: false
+                  example: zbailey@example.net
                 phone:
                   type: string
                   description: 'Must not be greater than 40 characters.'
-                  example: hfqcoynlazghdtqtqxbaj
+                  example: i
                   nullable: true
                 password:
                   type: string
@@ -538,11 +1684,11 @@ paths:
                   nullable: true
   /api/v1/two-factor/setup:
     post:
-      summary: 'Begin 2FA setup (admin roles only).'
-      operationId: begin2FASetupadminRolesOnly
+      summary: 'Begin 2FA setup (panel roles).'
+      operationId: begin2FASetuppanelRoles
       description: ''
       parameters: []
-      responses: {  }
+      responses: {}
       tags:
         - 'Two-factor authentication'
   /api/v1/two-factor/confirm:
@@ -551,7 +1697,7 @@ paths:
       operationId: confirm2FAWithACodeFromTheAuthenticator
       description: ''
       parameters: []
-      responses: {  }
+      responses: {}
       tags:
         - 'Two-factor authentication'
       requestBody:
@@ -564,8 +1710,7 @@ paths:
                 code:
                   type: string
                   description: ''
-                  example: consequatur
-                  nullable: false
+                  example: architecto
               required:
                 - code
   /api/v1/two-factor/disable:
@@ -574,7 +1719,7 @@ paths:
       operationId: disable2FA
       description: ''
       parameters: []
-      responses: {  }
+      responses: {}
       tags:
         - 'Two-factor authentication'
       requestBody:
@@ -587,7 +1732,6 @@ paths:
                 code:
                   type: string
                   description: ''
-                  example: consequatur
-                  nullable: false
+                  example: architecto
               required:
                 - code

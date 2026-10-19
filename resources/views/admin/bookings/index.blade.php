@@ -10,6 +10,26 @@
 
 <x-page-header title="Hotel bookings" subtitle="Manage stays for your hotels" />
 
+<x-panel class="mb-6">
+    <form method="GET" action="{{ route('admin.bookings.index') }}" class="space-y-3">
+        <x-location-picker
+            :countries="$filterCountries ?? collect()"
+            country-name="country_id"
+            city-name="city_id"
+            :country-id="request('country_id')"
+            :city-id="request('city_id')"
+            :required="false"
+            :allow-empty-country="true"
+        />
+        <div class="flex flex-wrap gap-2">
+            <x-button type="submit" variant="primary">Filter</x-button>
+            @if(request()->hasAny(['country_id', 'city_id', 'status']))
+                <x-button variant="ghost" href="{{ route('admin.bookings.index') }}">Clear</x-button>
+            @endif
+        </div>
+    </form>
+</x-panel>
+
 @if($bookings->isEmpty())
     <x-empty-state title="No bookings" description="Hotel reservations will appear here when guests book." />
 @else

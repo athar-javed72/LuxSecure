@@ -5,12 +5,12 @@
             "key": "baseUrl",
             "type": "string",
             "name": "string",
-            "value": "http:\/\/localhost"
+            "value": "http:\/\/127.0.0.1:8000"
         }
     ],
     "info": {
         "name": "Maskanoor Group API Documentation",
-        "_postman_id": "6ddf6697-c024-4d13-8be5-3d45b7fc7a3f",
+        "_postman_id": "6deca633-a963-4a71-86a0-1f657005d356",
         "description": "Maskanoor Group API v1 \u2014 Sanctum token auth, listings, bookings, favorites, and profile.",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -41,7 +41,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"vmqeopfuudtdsufvyvddq\",\"email\":\"kunde.eloisa@example.com\",\"phone\":\"hfqcoynlazghdtqtqxbaj\",\"password\":\"consequatur\"}"
+                            "raw": "{\"name\":\"b\",\"email\":\"zbailey@example.net\",\"phone\":\"i\",\"password\":\"architecto\"}"
                         },
                         "description": "",
                         "auth": {
@@ -72,7 +72,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"email\":\"qkunze@example.com\",\"password\":\"O[2UZ5ij-e\\\/dl4m{o,\",\"device_name\":\"dqamniihfqcoynlazghdt\",\"two_factor_code\":\"consequatur\"}"
+                            "raw": "{\"email\":\"gbailey@example.net\",\"password\":\"|]|{+-\",\"device_name\":\"v\",\"two_factor_code\":\"architecto\"}"
                         },
                         "description": "",
                         "auth": {
@@ -103,7 +103,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"two_factor_token\":\"consequatur\",\"code\":\"consequatur\",\"device_name\":\"mqeopfuudtdsufvyvddqa\"}"
+                            "raw": "{\"two_factor_token\":\"architecto\",\"code\":\"architecto\",\"device_name\":\"n\"}"
                         },
                         "description": "",
                         "auth": {
@@ -144,7 +144,7 @@
             "description": "",
             "item": [
                 {
-                    "name": "List the authenticated user's bookings.",
+                    "name": "GET api\/v1\/bookings",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -178,8 +178,28 @@
                                     "value": "application\/json"
                                 },
                                 {
+                                    "key": "x-frame-options",
+                                    "value": "SAMEORIGIN"
+                                },
+                                {
+                                    "key": "x-content-type-options",
+                                    "value": "nosniff"
+                                },
+                                {
+                                    "key": "referrer-policy",
+                                    "value": "strict-origin-when-cross-origin"
+                                },
+                                {
+                                    "key": "permissions-policy",
+                                    "value": "camera=(), microphone=(), geolocation=()"
+                                },
+                                {
+                                    "key": "content-security-policy",
+                                    "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' 'nonce-LNTsvXOT0bWL7W7saWavkQ==' https:\/\/unpkg.com http:\/\/localhost:5173 http:\/\/127.0.0.1:5173 http:\/\/[::1]:5173 ws:\/\/localhost:5173 ws:\/\/127.0.0.1:5173 ws:\/\/[::1]:5173; style-src 'self' 'unsafe-inline' https:\/\/fonts.googleapis.com http:\/\/localhost:5173 http:\/\/127.0.0.1:5173 http:\/\/[::1]:5173 ws:\/\/localhost:5173 ws:\/\/127.0.0.1:5173 ws:\/\/[::1]:5173; font-src 'self' https:\/\/fonts.gstatic.com data: http:\/\/localhost:5173 http:\/\/127.0.0.1:5173 http:\/\/[::1]:5173 ws:\/\/localhost:5173 ws:\/\/127.0.0.1:5173 ws:\/\/[::1]:5173; img-src 'self' data: blob: https:; connect-src 'self' https:\/\/assets2.lottiefiles.com https:\/\/unpkg.com http:\/\/localhost:5173 http:\/\/127.0.0.1:5173 http:\/\/[::1]:5173 ws:\/\/localhost:5173 ws:\/\/127.0.0.1:5173 ws:\/\/[::1]:5173; media-src 'self' https:\/\/assets2.lottiefiles.com; worker-src 'self' blob: http:\/\/localhost:5173 http:\/\/127.0.0.1:5173 http:\/\/[::1]:5173 ws:\/\/localhost:5173 ws:\/\/127.0.0.1:5173 ws:\/\/[::1]:5173; frame-ancestors 'self'; base-uri 'self'; form-action 'self'"
+                                },
+                                {
                                     "key": "access-control-allow-origin",
-                                    "value": "http:\/\/localhost"
+                                    "value": "http:\/\/127.0.0.1:8000"
                                 }
                             ],
                             "code": 401,
@@ -189,35 +209,7 @@
                     ]
                 },
                 {
-                    "name": "Create a booking (availability checked in a transaction).",
-                    "request": {
-                        "url": {
-                            "host": "{{baseUrl}}",
-                            "path": "api\/v1\/bookings",
-                            "query": [],
-                            "raw": "{{baseUrl}}\/api\/v1\/bookings"
-                        },
-                        "method": "POST",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/json"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\"room_type_id\":\"consequatur\",\"check_in\":\"2107-11-15\",\"check_out\":\"2097-02-15\",\"guests\":13,\"notes\":\"qeopfuudtdsufvyvddqam\"}"
-                        },
-                        "description": ""
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Show one of the user's bookings.",
+                    "name": "GET api\/v1\/bookings\/{id}",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -228,7 +220,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "17",
+                                    "value": 16,
                                     "description": "The ID of the booking."
                                 }
                             ]
@@ -259,8 +251,28 @@
                                     "value": "application\/json"
                                 },
                                 {
+                                    "key": "x-frame-options",
+                                    "value": "SAMEORIGIN"
+                                },
+                                {
+                                    "key": "x-content-type-options",
+                                    "value": "nosniff"
+                                },
+                                {
+                                    "key": "referrer-policy",
+                                    "value": "strict-origin-when-cross-origin"
+                                },
+                                {
+                                    "key": "permissions-policy",
+                                    "value": "camera=(), microphone=(), geolocation=()"
+                                },
+                                {
+                                    "key": "content-security-policy",
+                                    "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' 'nonce-rZAlRjQucA4UJ\/Kv\/SiVrw==' https:\/\/unpkg.com http:\/\/localhost:5173 http:\/\/127.0.0.1:5173 http:\/\/[::1]:5173 ws:\/\/localhost:5173 ws:\/\/127.0.0.1:5173 ws:\/\/[::1]:5173; style-src 'self' 'unsafe-inline' https:\/\/fonts.googleapis.com http:\/\/localhost:5173 http:\/\/127.0.0.1:5173 http:\/\/[::1]:5173 ws:\/\/localhost:5173 ws:\/\/127.0.0.1:5173 ws:\/\/[::1]:5173; font-src 'self' https:\/\/fonts.gstatic.com data: http:\/\/localhost:5173 http:\/\/127.0.0.1:5173 http:\/\/[::1]:5173 ws:\/\/localhost:5173 ws:\/\/127.0.0.1:5173 ws:\/\/[::1]:5173; img-src 'self' data: blob: https:; connect-src 'self' https:\/\/assets2.lottiefiles.com https:\/\/unpkg.com http:\/\/localhost:5173 http:\/\/127.0.0.1:5173 http:\/\/[::1]:5173 ws:\/\/localhost:5173 ws:\/\/127.0.0.1:5173 ws:\/\/[::1]:5173; media-src 'self' https:\/\/assets2.lottiefiles.com; worker-src 'self' blob: http:\/\/localhost:5173 http:\/\/127.0.0.1:5173 http:\/\/[::1]:5173 ws:\/\/localhost:5173 ws:\/\/127.0.0.1:5173 ws:\/\/[::1]:5173; frame-ancestors 'self'; base-uri 'self'; form-action 'self'"
+                                },
+                                {
                                     "key": "access-control-allow-origin",
-                                    "value": "http:\/\/localhost"
+                                    "value": "http:\/\/127.0.0.1:8000"
                                 }
                             ],
                             "code": 401,
@@ -270,7 +282,35 @@
                     ]
                 },
                 {
-                    "name": "Cancel an own pending\/confirmed booking.",
+                    "name": "POST api\/v1\/bookings",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/bookings",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/bookings"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"room_type_id\":\"architecto\",\"check_in\":\"2052-11-12\",\"check_out\":\"2052-11-12\",\"guests\":22,\"notes\":\"g\"}"
+                        },
+                        "description": ""
+                    },
+                    "response": []
+                },
+                {
+                    "name": "POST api\/v1\/bookings\/{booking_id}\/cancel",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -281,7 +321,7 @@
                                 {
                                     "id": "booking_id",
                                     "key": "booking_id",
-                                    "value": "17",
+                                    "value": 16,
                                     "description": "The ID of the booking."
                                 }
                             ]
@@ -354,12 +394,192 @@
                                     "value": "59"
                                 },
                                 {
+                                    "key": "x-frame-options",
+                                    "value": "SAMEORIGIN"
+                                },
+                                {
+                                    "key": "x-content-type-options",
+                                    "value": "nosniff"
+                                },
+                                {
+                                    "key": "referrer-policy",
+                                    "value": "strict-origin-when-cross-origin"
+                                },
+                                {
+                                    "key": "permissions-policy",
+                                    "value": "camera=(), microphone=(), geolocation=()"
+                                },
+                                {
+                                    "key": "content-security-policy",
+                                    "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' 'nonce-CaRrKTATuavQvGvJKtv95w==' https:\/\/unpkg.com http:\/\/localhost:5173 http:\/\/127.0.0.1:5173 http:\/\/[::1]:5173 ws:\/\/localhost:5173 ws:\/\/127.0.0.1:5173 ws:\/\/[::1]:5173; style-src 'self' 'unsafe-inline' https:\/\/fonts.googleapis.com http:\/\/localhost:5173 http:\/\/127.0.0.1:5173 http:\/\/[::1]:5173 ws:\/\/localhost:5173 ws:\/\/127.0.0.1:5173 ws:\/\/[::1]:5173; font-src 'self' https:\/\/fonts.gstatic.com data: http:\/\/localhost:5173 http:\/\/127.0.0.1:5173 http:\/\/[::1]:5173 ws:\/\/localhost:5173 ws:\/\/127.0.0.1:5173 ws:\/\/[::1]:5173; img-src 'self' data: blob: https:; connect-src 'self' https:\/\/assets2.lottiefiles.com https:\/\/unpkg.com http:\/\/localhost:5173 http:\/\/127.0.0.1:5173 http:\/\/[::1]:5173 ws:\/\/localhost:5173 ws:\/\/127.0.0.1:5173 ws:\/\/[::1]:5173; media-src 'self' https:\/\/assets2.lottiefiles.com; worker-src 'self' blob: http:\/\/localhost:5173 http:\/\/127.0.0.1:5173 http:\/\/[::1]:5173 ws:\/\/localhost:5173 ws:\/\/127.0.0.1:5173 ws:\/\/[::1]:5173; frame-ancestors 'self'; base-uri 'self'; form-action 'self'"
+                                },
+                                {
                                     "key": "access-control-allow-origin",
-                                    "value": "http:\/\/localhost"
+                                    "value": "http:\/\/127.0.0.1:8000"
                                 }
                             ],
                             "code": 200,
-                            "body": "{\"data\":[],\"meta\":{\"current_page\":1,\"last_page\":1,\"per_page\":15,\"total\":0}}",
+                            "body": "{\"data\":[{\"id\":1,\"title\":\"Gulberg Apartment for Sale\",\"slug\":\"gulberg-apartment-for-sale\",\"location\":\"Gulberg III, Lahore\",\"type\":\"Apartment\",\"listing_type_id\":2,\"purpose\":\"sale\",\"price\":21000000,\"price_unit\":\"total\",\"currency\":\"PKR\",\"country_id\":1,\"organization_id\":null,\"branch_name\":null,\"status\":\"published\",\"primary_image_url\":\"\\\/images\\\/listings\\\/apartment-1.jpg\",\"bedrooms\":2,\"bathrooms\":2,\"attributes\":{\"bedrooms\":2,\"bathrooms\":2,\"floor\":5,\"furnished\":true},\"images\":[],\"created_at\":\"2026-10-20T01:09:48+05:00\"},{\"id\":2,\"title\":\"DHA Apartment for Rent\",\"slug\":\"dha-apartment-for-rent\",\"location\":\"DHA Phase 5, Karachi\",\"type\":\"Apartment\",\"listing_type_id\":2,\"purpose\":\"rent\",\"price\":180000,\"price_unit\":\"per_month\",\"currency\":\"PKR\",\"country_id\":1,\"organization_id\":null,\"branch_name\":null,\"status\":\"published\",\"primary_image_url\":\"\\\/images\\\/listings\\\/apartment-2.jpg\",\"bedrooms\":3,\"bathrooms\":2,\"attributes\":{\"bedrooms\":3,\"bathrooms\":2,\"floor\":8,\"furnished\":false},\"images\":[],\"created_at\":\"2026-10-20T01:09:48+05:00\"},{\"id\":3,\"title\":\"Model Town Family House\",\"slug\":\"model-town-family-house\",\"location\":\"Model Town, Lahore\",\"type\":\"House\",\"listing_type_id\":1,\"purpose\":\"sale\",\"price\":45000000,\"price_unit\":\"total\",\"currency\":\"PKR\",\"country_id\":1,\"organization_id\":null,\"branch_name\":null,\"status\":\"published\",\"primary_image_url\":\"\\\/images\\\/listings\\\/house-1.jpg\",\"bedrooms\":5,\"bathrooms\":4,\"attributes\":{\"bedrooms\":5,\"bathrooms\":4,\"garage\":true},\"images\":[],\"created_at\":\"2026-10-20T01:09:48+05:00\"},{\"id\":4,\"title\":\"Bahria Town Residential Plot\",\"slug\":\"bahria-town-residential-plot\",\"location\":\"Bahria Town, Lahore\",\"type\":\"Plot\",\"listing_type_id\":3,\"purpose\":\"sale\",\"price\":35000000,\"price_unit\":\"total\",\"currency\":\"PKR\",\"country_id\":1,\"organization_id\":null,\"branch_name\":null,\"status\":\"published\",\"primary_image_url\":\"\\\/images\\\/listings\\\/plot-1.jpg\",\"bedrooms\":null,\"bathrooms\":null,\"attributes\":{\"plot_number\":\"B-214\",\"facing\":\"North\"},\"images\":[],\"created_at\":\"2026-10-20T01:09:48+05:00\"},{\"id\":5,\"title\":\"Blue Area Boutique Hotel\",\"slug\":\"blue-area-boutique-hotel\",\"location\":\"Blue Area, Islamabad\",\"type\":\"Hotel\",\"listing_type_id\":4,\"purpose\":\"short_stay\",\"price\":25000,\"price_unit\":\"per_night\",\"currency\":\"PKR\",\"country_id\":1,\"organization_id\":1,\"branch_name\":\"Blue Area Flagship\",\"status\":\"published\",\"primary_image_url\":\"\\\/images\\\/listings\\\/hotel-1.jpg\",\"bedrooms\":null,\"bathrooms\":null,\"attributes\":{\"star_rating\":\"5\",\"rooms\":42,\"breakfast_included\":true},\"images\":[],\"created_at\":\"2026-10-20T01:09:48+05:00\"},{\"id\":6,\"title\":\"Maskanoor Stays Islamabad\",\"slug\":\"maskanoor-stays-islamabad\",\"location\":\"Islamabad\",\"type\":\"Hotel\",\"listing_type_id\":4,\"purpose\":\"short_stay\",\"price\":15000,\"price_unit\":\"per_night\",\"currency\":\"PKR\",\"country_id\":1,\"organization_id\":2,\"branch_name\":\"Islamabad\",\"status\":\"published\",\"primary_image_url\":\"\",\"bedrooms\":null,\"bathrooms\":null,\"attributes\":[],\"images\":[],\"created_at\":\"2026-10-20T01:09:48+05:00\"},{\"id\":7,\"title\":\"Maskanoor Stays Dubai\",\"slug\":\"maskanoor-stays-dubai\",\"location\":\"Dubai\",\"type\":\"Hotel\",\"listing_type_id\":4,\"purpose\":\"short_stay\",\"price\":15000,\"price_unit\":\"per_night\",\"currency\":\"AED\",\"country_id\":3,\"organization_id\":2,\"branch_name\":\"Dubai\",\"status\":\"published\",\"primary_image_url\":\"\",\"bedrooms\":null,\"bathrooms\":null,\"attributes\":[],\"images\":[],\"created_at\":\"2026-10-20T01:09:48+05:00\"},{\"id\":8,\"title\":\"Maskanoor Stays Kuala Lumpur\",\"slug\":\"maskanoor-stays-kuala-lumpur\",\"location\":\"Kuala Lumpur\",\"type\":\"Hotel\",\"listing_type_id\":4,\"purpose\":\"short_stay\",\"price\":15000,\"price_unit\":\"per_night\",\"currency\":\"MYR\",\"country_id\":5,\"organization_id\":2,\"branch_name\":\"Kuala Lumpur\",\"status\":\"published\",\"primary_image_url\":\"\",\"bedrooms\":null,\"bathrooms\":null,\"attributes\":[],\"images\":[],\"created_at\":\"2026-10-20T01:09:48+05:00\"}],\"meta\":{\"current_page\":1,\"last_page\":1,\"per_page\":15,\"total\":8}}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "GET api\/v1\/countries",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/countries",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/countries"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "application\/json"
+                                },
+                                {
+                                    "key": "x-ratelimit-limit",
+                                    "value": "60"
+                                },
+                                {
+                                    "key": "x-ratelimit-remaining",
+                                    "value": "56"
+                                },
+                                {
+                                    "key": "x-frame-options",
+                                    "value": "SAMEORIGIN"
+                                },
+                                {
+                                    "key": "x-content-type-options",
+                                    "value": "nosniff"
+                                },
+                                {
+                                    "key": "referrer-policy",
+                                    "value": "strict-origin-when-cross-origin"
+                                },
+                                {
+                                    "key": "permissions-policy",
+                                    "value": "camera=(), microphone=(), geolocation=()"
+                                },
+                                {
+                                    "key": "content-security-policy",
+                                    "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' 'nonce-cop+m\/GZKZ\/ctcsP6sLwOQ==' https:\/\/unpkg.com http:\/\/localhost:5173 http:\/\/127.0.0.1:5173 http:\/\/[::1]:5173 ws:\/\/localhost:5173 ws:\/\/127.0.0.1:5173 ws:\/\/[::1]:5173; style-src 'self' 'unsafe-inline' https:\/\/fonts.googleapis.com http:\/\/localhost:5173 http:\/\/127.0.0.1:5173 http:\/\/[::1]:5173 ws:\/\/localhost:5173 ws:\/\/127.0.0.1:5173 ws:\/\/[::1]:5173; font-src 'self' https:\/\/fonts.gstatic.com data: http:\/\/localhost:5173 http:\/\/127.0.0.1:5173 http:\/\/[::1]:5173 ws:\/\/localhost:5173 ws:\/\/127.0.0.1:5173 ws:\/\/[::1]:5173; img-src 'self' data: blob: https:; connect-src 'self' https:\/\/assets2.lottiefiles.com https:\/\/unpkg.com http:\/\/localhost:5173 http:\/\/127.0.0.1:5173 http:\/\/[::1]:5173 ws:\/\/localhost:5173 ws:\/\/127.0.0.1:5173 ws:\/\/[::1]:5173; media-src 'self' https:\/\/assets2.lottiefiles.com; worker-src 'self' blob: http:\/\/localhost:5173 http:\/\/127.0.0.1:5173 http:\/\/[::1]:5173 ws:\/\/localhost:5173 ws:\/\/127.0.0.1:5173 ws:\/\/[::1]:5173; frame-ancestors 'self'; base-uri 'self'; form-action 'self'"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "http:\/\/127.0.0.1:8000"
+                                }
+                            ],
+                            "code": 200,
+                            "body": "{\"success\":true,\"data\":[{\"id\":1,\"iso2\":\"PK\",\"iso3\":null,\"name\":\"Pakistan\",\"currency_code\":\"PKR\",\"default_locale\":\"en\"},{\"id\":2,\"iso2\":\"SA\",\"iso3\":null,\"name\":\"Saudi Arabia\",\"currency_code\":\"SAR\",\"default_locale\":\"ar\"},{\"id\":3,\"iso2\":\"AE\",\"iso3\":null,\"name\":\"United Arab Emirates\",\"currency_code\":\"AED\",\"default_locale\":\"en\"},{\"id\":4,\"iso2\":\"QA\",\"iso3\":null,\"name\":\"Qatar\",\"currency_code\":\"QAR\",\"default_locale\":\"ar\"},{\"id\":5,\"iso2\":\"MY\",\"iso3\":null,\"name\":\"Malaysia\",\"currency_code\":\"MYR\",\"default_locale\":\"en\"},{\"id\":6,\"iso2\":\"GB\",\"iso3\":null,\"name\":\"United Kingdom\",\"currency_code\":\"GBP\",\"default_locale\":\"en\"}]}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "GET api\/v1\/countries\/{country_id}\/cities",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/v1\/countries\/:country_id\/cities",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/v1\/countries\/:country_id\/cities",
+                            "variable": [
+                                {
+                                    "id": "country_id",
+                                    "key": "country_id",
+                                    "value": 1,
+                                    "description": "The ID of the country."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "application\/json"
+                                },
+                                {
+                                    "key": "x-ratelimit-limit",
+                                    "value": "60"
+                                },
+                                {
+                                    "key": "x-ratelimit-remaining",
+                                    "value": "55"
+                                },
+                                {
+                                    "key": "x-frame-options",
+                                    "value": "SAMEORIGIN"
+                                },
+                                {
+                                    "key": "x-content-type-options",
+                                    "value": "nosniff"
+                                },
+                                {
+                                    "key": "referrer-policy",
+                                    "value": "strict-origin-when-cross-origin"
+                                },
+                                {
+                                    "key": "permissions-policy",
+                                    "value": "camera=(), microphone=(), geolocation=()"
+                                },
+                                {
+                                    "key": "content-security-policy",
+                                    "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' 'nonce-q8jf+pHit0V2nhplmc7W4g==' https:\/\/unpkg.com http:\/\/localhost:5173 http:\/\/127.0.0.1:5173 http:\/\/[::1]:5173 ws:\/\/localhost:5173 ws:\/\/127.0.0.1:5173 ws:\/\/[::1]:5173; style-src 'self' 'unsafe-inline' https:\/\/fonts.googleapis.com http:\/\/localhost:5173 http:\/\/127.0.0.1:5173 http:\/\/[::1]:5173 ws:\/\/localhost:5173 ws:\/\/127.0.0.1:5173 ws:\/\/[::1]:5173; font-src 'self' https:\/\/fonts.gstatic.com data: http:\/\/localhost:5173 http:\/\/127.0.0.1:5173 http:\/\/[::1]:5173 ws:\/\/localhost:5173 ws:\/\/127.0.0.1:5173 ws:\/\/[::1]:5173; img-src 'self' data: blob: https:; connect-src 'self' https:\/\/assets2.lottiefiles.com https:\/\/unpkg.com http:\/\/localhost:5173 http:\/\/127.0.0.1:5173 http:\/\/[::1]:5173 ws:\/\/localhost:5173 ws:\/\/127.0.0.1:5173 ws:\/\/[::1]:5173; media-src 'self' https:\/\/assets2.lottiefiles.com; worker-src 'self' blob: http:\/\/localhost:5173 http:\/\/127.0.0.1:5173 http:\/\/[::1]:5173 ws:\/\/localhost:5173 ws:\/\/127.0.0.1:5173 ws:\/\/[::1]:5173; frame-ancestors 'self'; base-uri 'self'; form-action 'self'"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "http:\/\/127.0.0.1:8000"
+                                }
+                            ],
+                            "code": 500,
+                            "body": "{\"success\":false,\"message\":\"Server error.\",\"code\":\"http_error\"}",
                             "name": ""
                         }
                     ]
@@ -405,8 +625,28 @@
                                     "value": "application\/json"
                                 },
                                 {
+                                    "key": "x-frame-options",
+                                    "value": "SAMEORIGIN"
+                                },
+                                {
+                                    "key": "x-content-type-options",
+                                    "value": "nosniff"
+                                },
+                                {
+                                    "key": "referrer-policy",
+                                    "value": "strict-origin-when-cross-origin"
+                                },
+                                {
+                                    "key": "permissions-policy",
+                                    "value": "camera=(), microphone=(), geolocation=()"
+                                },
+                                {
+                                    "key": "content-security-policy",
+                                    "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' 'nonce-xbZREjz8YwxGlGMuPdtTqw==' https:\/\/unpkg.com http:\/\/localhost:5173 http:\/\/127.0.0.1:5173 http:\/\/[::1]:5173 ws:\/\/localhost:5173 ws:\/\/127.0.0.1:5173 ws:\/\/[::1]:5173; style-src 'self' 'unsafe-inline' https:\/\/fonts.googleapis.com http:\/\/localhost:5173 http:\/\/127.0.0.1:5173 http:\/\/[::1]:5173 ws:\/\/localhost:5173 ws:\/\/127.0.0.1:5173 ws:\/\/[::1]:5173; font-src 'self' https:\/\/fonts.gstatic.com data: http:\/\/localhost:5173 http:\/\/127.0.0.1:5173 http:\/\/[::1]:5173 ws:\/\/localhost:5173 ws:\/\/127.0.0.1:5173 ws:\/\/[::1]:5173; img-src 'self' data: blob: https:; connect-src 'self' https:\/\/assets2.lottiefiles.com https:\/\/unpkg.com http:\/\/localhost:5173 http:\/\/127.0.0.1:5173 http:\/\/[::1]:5173 ws:\/\/localhost:5173 ws:\/\/127.0.0.1:5173 ws:\/\/[::1]:5173; media-src 'self' https:\/\/assets2.lottiefiles.com; worker-src 'self' blob: http:\/\/localhost:5173 http:\/\/127.0.0.1:5173 http:\/\/[::1]:5173 ws:\/\/localhost:5173 ws:\/\/127.0.0.1:5173 ws:\/\/[::1]:5173; frame-ancestors 'self'; base-uri 'self'; form-action 'self'"
+                                },
+                                {
                                     "key": "access-control-allow-origin",
-                                    "value": "http:\/\/localhost"
+                                    "value": "http:\/\/127.0.0.1:8000"
                                 }
                             ],
                             "code": 401,
@@ -420,15 +660,15 @@
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/v1\/favorites\/:listing_id",
+                            "path": "api\/v1\/favorites\/:listing_slug",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/v1\/favorites\/:listing_id",
+                            "raw": "{{baseUrl}}\/api\/v1\/favorites\/:listing_slug",
                             "variable": [
                                 {
-                                    "id": "listing_id",
-                                    "key": "listing_id",
-                                    "value": "17",
-                                    "description": "The ID of the listing."
+                                    "id": "listing_slug",
+                                    "key": "listing_slug",
+                                    "value": "gulberg-apartment-for-sale",
+                                    "description": "The slug of the listing."
                                 }
                             ]
                         },
@@ -500,12 +740,32 @@
                                     "value": "58"
                                 },
                                 {
+                                    "key": "x-frame-options",
+                                    "value": "SAMEORIGIN"
+                                },
+                                {
+                                    "key": "x-content-type-options",
+                                    "value": "nosniff"
+                                },
+                                {
+                                    "key": "referrer-policy",
+                                    "value": "strict-origin-when-cross-origin"
+                                },
+                                {
+                                    "key": "permissions-policy",
+                                    "value": "camera=(), microphone=(), geolocation=()"
+                                },
+                                {
+                                    "key": "content-security-policy",
+                                    "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' 'nonce-+g5HBQt7ty+aERp7qmMqlg==' https:\/\/unpkg.com http:\/\/localhost:5173 http:\/\/127.0.0.1:5173 http:\/\/[::1]:5173 ws:\/\/localhost:5173 ws:\/\/127.0.0.1:5173 ws:\/\/[::1]:5173; style-src 'self' 'unsafe-inline' https:\/\/fonts.googleapis.com http:\/\/localhost:5173 http:\/\/127.0.0.1:5173 http:\/\/[::1]:5173 ws:\/\/localhost:5173 ws:\/\/127.0.0.1:5173 ws:\/\/[::1]:5173; font-src 'self' https:\/\/fonts.gstatic.com data: http:\/\/localhost:5173 http:\/\/127.0.0.1:5173 http:\/\/[::1]:5173 ws:\/\/localhost:5173 ws:\/\/127.0.0.1:5173 ws:\/\/[::1]:5173; img-src 'self' data: blob: https:; connect-src 'self' https:\/\/assets2.lottiefiles.com https:\/\/unpkg.com http:\/\/localhost:5173 http:\/\/127.0.0.1:5173 http:\/\/[::1]:5173 ws:\/\/localhost:5173 ws:\/\/127.0.0.1:5173 ws:\/\/[::1]:5173; media-src 'self' https:\/\/assets2.lottiefiles.com; worker-src 'self' blob: http:\/\/localhost:5173 http:\/\/127.0.0.1:5173 http:\/\/[::1]:5173 ws:\/\/localhost:5173 ws:\/\/127.0.0.1:5173 ws:\/\/[::1]:5173; frame-ancestors 'self'; base-uri 'self'; form-action 'self'"
+                                },
+                                {
                                     "key": "access-control-allow-origin",
-                                    "value": "http:\/\/localhost"
+                                    "value": "http:\/\/127.0.0.1:8000"
                                 }
                             ],
                             "code": 200,
-                            "body": "{\"success\":true,\"data\":[],\"meta\":{\"current_page\":1,\"last_page\":1,\"per_page\":15,\"total\":0}}",
+                            "body": "{\"success\":true,\"data\":[{\"id\":1,\"title\":\"Gulberg Apartment for Sale\",\"slug\":\"gulberg-apartment-for-sale\",\"location\":\"Gulberg III, Lahore\",\"type\":\"Apartment\",\"listing_type_id\":2,\"purpose\":\"sale\",\"price\":21000000,\"price_unit\":\"total\",\"currency\":\"PKR\",\"country_id\":1,\"organization_id\":null,\"branch_name\":null,\"status\":\"published\",\"primary_image_url\":\"\\\/images\\\/listings\\\/apartment-1.jpg\",\"bedrooms\":2,\"bathrooms\":2,\"attributes\":{\"bedrooms\":2,\"bathrooms\":2,\"floor\":5,\"furnished\":true},\"images\":[],\"created_at\":\"2026-10-20T01:09:48+05:00\"},{\"id\":2,\"title\":\"DHA Apartment for Rent\",\"slug\":\"dha-apartment-for-rent\",\"location\":\"DHA Phase 5, Karachi\",\"type\":\"Apartment\",\"listing_type_id\":2,\"purpose\":\"rent\",\"price\":180000,\"price_unit\":\"per_month\",\"currency\":\"PKR\",\"country_id\":1,\"organization_id\":null,\"branch_name\":null,\"status\":\"published\",\"primary_image_url\":\"\\\/images\\\/listings\\\/apartment-2.jpg\",\"bedrooms\":3,\"bathrooms\":2,\"attributes\":{\"bedrooms\":3,\"bathrooms\":2,\"floor\":8,\"furnished\":false},\"images\":[],\"created_at\":\"2026-10-20T01:09:48+05:00\"},{\"id\":3,\"title\":\"Model Town Family House\",\"slug\":\"model-town-family-house\",\"location\":\"Model Town, Lahore\",\"type\":\"House\",\"listing_type_id\":1,\"purpose\":\"sale\",\"price\":45000000,\"price_unit\":\"total\",\"currency\":\"PKR\",\"country_id\":1,\"organization_id\":null,\"branch_name\":null,\"status\":\"published\",\"primary_image_url\":\"\\\/images\\\/listings\\\/house-1.jpg\",\"bedrooms\":5,\"bathrooms\":4,\"attributes\":{\"bedrooms\":5,\"bathrooms\":4,\"garage\":true},\"images\":[],\"created_at\":\"2026-10-20T01:09:48+05:00\"},{\"id\":4,\"title\":\"Bahria Town Residential Plot\",\"slug\":\"bahria-town-residential-plot\",\"location\":\"Bahria Town, Lahore\",\"type\":\"Plot\",\"listing_type_id\":3,\"purpose\":\"sale\",\"price\":35000000,\"price_unit\":\"total\",\"currency\":\"PKR\",\"country_id\":1,\"organization_id\":null,\"branch_name\":null,\"status\":\"published\",\"primary_image_url\":\"\\\/images\\\/listings\\\/plot-1.jpg\",\"bedrooms\":null,\"bathrooms\":null,\"attributes\":{\"plot_number\":\"B-214\",\"facing\":\"North\"},\"images\":[],\"created_at\":\"2026-10-20T01:09:48+05:00\"},{\"id\":5,\"title\":\"Blue Area Boutique Hotel\",\"slug\":\"blue-area-boutique-hotel\",\"location\":\"Blue Area, Islamabad\",\"type\":\"Hotel\",\"listing_type_id\":4,\"purpose\":\"short_stay\",\"price\":25000,\"price_unit\":\"per_night\",\"currency\":\"PKR\",\"country_id\":1,\"organization_id\":1,\"branch_name\":\"Blue Area Flagship\",\"status\":\"published\",\"primary_image_url\":\"\\\/images\\\/listings\\\/hotel-1.jpg\",\"bedrooms\":null,\"bathrooms\":null,\"attributes\":{\"star_rating\":\"5\",\"rooms\":42,\"breakfast_included\":true},\"images\":[],\"created_at\":\"2026-10-20T01:09:48+05:00\"},{\"id\":6,\"title\":\"Maskanoor Stays Islamabad\",\"slug\":\"maskanoor-stays-islamabad\",\"location\":\"Islamabad\",\"type\":\"Hotel\",\"listing_type_id\":4,\"purpose\":\"short_stay\",\"price\":15000,\"price_unit\":\"per_night\",\"currency\":\"PKR\",\"country_id\":1,\"organization_id\":2,\"branch_name\":\"Islamabad\",\"status\":\"published\",\"primary_image_url\":\"\",\"bedrooms\":null,\"bathrooms\":null,\"attributes\":[],\"images\":[],\"created_at\":\"2026-10-20T01:09:48+05:00\"},{\"id\":7,\"title\":\"Maskanoor Stays Dubai\",\"slug\":\"maskanoor-stays-dubai\",\"location\":\"Dubai\",\"type\":\"Hotel\",\"listing_type_id\":4,\"purpose\":\"short_stay\",\"price\":15000,\"price_unit\":\"per_night\",\"currency\":\"AED\",\"country_id\":3,\"organization_id\":2,\"branch_name\":\"Dubai\",\"status\":\"published\",\"primary_image_url\":\"\",\"bedrooms\":null,\"bathrooms\":null,\"attributes\":[],\"images\":[],\"created_at\":\"2026-10-20T01:09:48+05:00\"},{\"id\":8,\"title\":\"Maskanoor Stays Kuala Lumpur\",\"slug\":\"maskanoor-stays-kuala-lumpur\",\"location\":\"Kuala Lumpur\",\"type\":\"Hotel\",\"listing_type_id\":4,\"purpose\":\"short_stay\",\"price\":15000,\"price_unit\":\"per_night\",\"currency\":\"MYR\",\"country_id\":5,\"organization_id\":2,\"branch_name\":\"Kuala Lumpur\",\"status\":\"published\",\"primary_image_url\":\"\",\"bedrooms\":null,\"bathrooms\":null,\"attributes\":[],\"images\":[],\"created_at\":\"2026-10-20T01:09:48+05:00\"}],\"meta\":{\"current_page\":1,\"last_page\":1,\"per_page\":15,\"total\":8}}",
                             "name": ""
                         }
                     ]
@@ -522,7 +782,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "17",
+                                    "value": "gulberg-apartment-for-sale",
                                     "description": "The ID of the listing."
                                 }
                             ]
@@ -564,12 +824,32 @@
                                     "value": "57"
                                 },
                                 {
+                                    "key": "x-frame-options",
+                                    "value": "SAMEORIGIN"
+                                },
+                                {
+                                    "key": "x-content-type-options",
+                                    "value": "nosniff"
+                                },
+                                {
+                                    "key": "referrer-policy",
+                                    "value": "strict-origin-when-cross-origin"
+                                },
+                                {
+                                    "key": "permissions-policy",
+                                    "value": "camera=(), microphone=(), geolocation=()"
+                                },
+                                {
+                                    "key": "content-security-policy",
+                                    "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' 'nonce-id86kM5GcS\/579JZm+NvgA==' https:\/\/unpkg.com http:\/\/localhost:5173 http:\/\/127.0.0.1:5173 http:\/\/[::1]:5173 ws:\/\/localhost:5173 ws:\/\/127.0.0.1:5173 ws:\/\/[::1]:5173; style-src 'self' 'unsafe-inline' https:\/\/fonts.googleapis.com http:\/\/localhost:5173 http:\/\/127.0.0.1:5173 http:\/\/[::1]:5173 ws:\/\/localhost:5173 ws:\/\/127.0.0.1:5173 ws:\/\/[::1]:5173; font-src 'self' https:\/\/fonts.gstatic.com data: http:\/\/localhost:5173 http:\/\/127.0.0.1:5173 http:\/\/[::1]:5173 ws:\/\/localhost:5173 ws:\/\/127.0.0.1:5173 ws:\/\/[::1]:5173; img-src 'self' data: blob: https:; connect-src 'self' https:\/\/assets2.lottiefiles.com https:\/\/unpkg.com http:\/\/localhost:5173 http:\/\/127.0.0.1:5173 http:\/\/[::1]:5173 ws:\/\/localhost:5173 ws:\/\/127.0.0.1:5173 ws:\/\/[::1]:5173; media-src 'self' https:\/\/assets2.lottiefiles.com; worker-src 'self' blob: http:\/\/localhost:5173 http:\/\/127.0.0.1:5173 http:\/\/[::1]:5173 ws:\/\/localhost:5173 ws:\/\/127.0.0.1:5173 ws:\/\/[::1]:5173; frame-ancestors 'self'; base-uri 'self'; form-action 'self'"
+                                },
+                                {
                                     "key": "access-control-allow-origin",
-                                    "value": "http:\/\/localhost"
+                                    "value": "http:\/\/127.0.0.1:8000"
                                 }
                             ],
-                            "code": 404,
-                            "body": "{\"success\":false,\"message\":\"No query results for model [App\\\\Models\\\\Listing].\",\"code\":\"not_found\"}",
+                            "code": 200,
+                            "body": "{\"success\":true,\"data\":{\"id\":1,\"title\":\"Gulberg Apartment for Sale\",\"slug\":\"gulberg-apartment-for-sale\",\"location\":\"Gulberg III, Lahore\",\"type\":\"Apartment\",\"listing_type_id\":2,\"purpose\":\"sale\",\"price\":21000000,\"price_unit\":\"total\",\"currency\":\"PKR\",\"country_id\":1,\"organization_id\":null,\"branch_name\":null,\"status\":\"published\",\"primary_image_url\":\"\\\/images\\\/listings\\\/apartment-1.jpg\",\"bedrooms\":2,\"bathrooms\":2,\"attributes\":{\"bedrooms\":2,\"bathrooms\":2,\"floor\":5,\"furnished\":true},\"description\":\"A curated Maskanoor sample listing with modern finishes and a prime location.\",\"images\":[],\"created_at\":\"2026-10-20T01:09:48+05:00\"}}",
                             "name": ""
                         }
                     ]
@@ -615,8 +895,28 @@
                                     "value": "application\/json"
                                 },
                                 {
+                                    "key": "x-frame-options",
+                                    "value": "SAMEORIGIN"
+                                },
+                                {
+                                    "key": "x-content-type-options",
+                                    "value": "nosniff"
+                                },
+                                {
+                                    "key": "referrer-policy",
+                                    "value": "strict-origin-when-cross-origin"
+                                },
+                                {
+                                    "key": "permissions-policy",
+                                    "value": "camera=(), microphone=(), geolocation=()"
+                                },
+                                {
+                                    "key": "content-security-policy",
+                                    "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' 'nonce-il4ZMdawVTMdJtWJlYuUEA==' https:\/\/unpkg.com http:\/\/localhost:5173 http:\/\/127.0.0.1:5173 http:\/\/[::1]:5173 ws:\/\/localhost:5173 ws:\/\/127.0.0.1:5173 ws:\/\/[::1]:5173; style-src 'self' 'unsafe-inline' https:\/\/fonts.googleapis.com http:\/\/localhost:5173 http:\/\/127.0.0.1:5173 http:\/\/[::1]:5173 ws:\/\/localhost:5173 ws:\/\/127.0.0.1:5173 ws:\/\/[::1]:5173; font-src 'self' https:\/\/fonts.gstatic.com data: http:\/\/localhost:5173 http:\/\/127.0.0.1:5173 http:\/\/[::1]:5173 ws:\/\/localhost:5173 ws:\/\/127.0.0.1:5173 ws:\/\/[::1]:5173; img-src 'self' data: blob: https:; connect-src 'self' https:\/\/assets2.lottiefiles.com https:\/\/unpkg.com http:\/\/localhost:5173 http:\/\/127.0.0.1:5173 http:\/\/[::1]:5173 ws:\/\/localhost:5173 ws:\/\/127.0.0.1:5173 ws:\/\/[::1]:5173; media-src 'self' https:\/\/assets2.lottiefiles.com; worker-src 'self' blob: http:\/\/localhost:5173 http:\/\/127.0.0.1:5173 http:\/\/[::1]:5173 ws:\/\/localhost:5173 ws:\/\/127.0.0.1:5173 ws:\/\/[::1]:5173; frame-ancestors 'self'; base-uri 'self'; form-action 'self'"
+                                },
+                                {
                                     "key": "access-control-allow-origin",
-                                    "value": "http:\/\/localhost"
+                                    "value": "http:\/\/127.0.0.1:8000"
                                 }
                             ],
                             "code": 401,
@@ -647,7 +947,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"name\":\"vmqeopfuudtdsufvyvddq\",\"email\":\"kunde.eloisa@example.com\",\"phone\":\"hfqcoynlazghdtqtqxbaj\"}"
+                            "raw": "{\"name\":\"b\",\"email\":\"zbailey@example.net\",\"phone\":\"i\"}"
                         },
                         "description": ""
                     },
@@ -660,7 +960,7 @@
             "description": "",
             "item": [
                 {
-                    "name": "Begin 2FA setup (admin roles only).",
+                    "name": "Begin 2FA setup (panel roles).",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -706,7 +1006,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"code\":\"consequatur\"}"
+                            "raw": "{\"code\":\"architecto\"}"
                         },
                         "description": ""
                     },
@@ -734,7 +1034,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"code\":\"consequatur\"}"
+                            "raw": "{\"code\":\"architecto\"}"
                         },
                         "description": ""
                     },

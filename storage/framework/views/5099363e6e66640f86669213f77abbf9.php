@@ -246,7 +246,7 @@
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes([]); ?>Maskanoor Group <?php echo $__env->renderComponent(); ?>
+<?php $component->withAttributes([]); ?><?php echo e($siteName ?? config('app.name')); ?> <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginal2fd4850bfa2168af367e79900fb8c8ff)): ?>
 <?php $attributes = $__attributesOriginal2fd4850bfa2168af367e79900fb8c8ff; ?>
@@ -292,14 +292,14 @@
 <?php $component->withAttributes([]); ?>
         <?php if (isset($component)) { $__componentOriginal755230460fd16c04121658d92fbf99f7 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal755230460fd16c04121658d92fbf99f7 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.section-heading','data' => ['eyebrow' => 'Our divisions','title' => 'Three ways to experience Maskanoor','lead' => 'Hospitality, property and living — each with its own character.','headingId' => 'divisions-heading']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.section-heading','data' => ['eyebrow' => 'Our divisions','title' => 'Three ways to experience '.e($siteName ?? config('app.name')).'','lead' => 'Hospitality, property and living — each with its own character.','headingId' => 'divisions-heading']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('section-heading'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['eyebrow' => 'Our divisions','title' => 'Three ways to experience Maskanoor','lead' => 'Hospitality, property and living — each with its own character.','heading-id' => 'divisions-heading']); ?>
+<?php $component->withAttributes(['eyebrow' => 'Our divisions','title' => 'Three ways to experience '.e($siteName ?? config('app.name')).'','lead' => 'Hospitality, property and living — each with its own character.','heading-id' => 'divisions-heading']); ?>
 <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginal755230460fd16c04121658d92fbf99f7)): ?>
@@ -608,14 +608,14 @@
             <div data-reveal>
                 <?php if (isset($component)) { $__componentOriginal755230460fd16c04121658d92fbf99f7 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal755230460fd16c04121658d92fbf99f7 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.section-heading','data' => ['eyebrow' => 'Why Maskanoor','title' => 'A quieter, more considered way to find a place.','lead' => 'Principles that guide how we present spaces and welcome guests.','headingId' => 'about-heading']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.section-heading','data' => ['eyebrow' => 'Why '.e($siteName ?? config('app.name')).'','title' => 'A quieter, more considered way to find a place.','lead' => 'Principles that guide how we present spaces and welcome guests.','headingId' => 'about-heading']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('section-heading'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['eyebrow' => 'Why Maskanoor','title' => 'A quieter, more considered way to find a place.','lead' => 'Principles that guide how we present spaces and welcome guests.','heading-id' => 'about-heading']); ?>
+<?php $component->withAttributes(['eyebrow' => 'Why '.e($siteName ?? config('app.name')).'','title' => 'A quieter, more considered way to find a place.','lead' => 'Principles that guide how we present spaces and welcome guests.','heading-id' => 'about-heading']); ?>
 <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginal755230460fd16c04121658d92fbf99f7)): ?>

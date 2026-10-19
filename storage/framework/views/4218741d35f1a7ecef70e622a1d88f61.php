@@ -6,7 +6,7 @@ $__propNames = \Illuminate\View\ComponentAttributeBag::extractPropNames(([
     'surface' => 'dark', // dark | light | dual (header scroll swap)
     'division' => null,
     'showTagline' => false,
-    'alt' => 'Maskanoor Group',
+    'alt' => null,
     'width' => null,
 ]));
 
@@ -28,7 +28,7 @@ foreach (array_filter(([
     'surface' => 'dark', // dark | light | dual (header scroll swap)
     'division' => null,
     'showTagline' => false,
-    'alt' => 'Maskanoor Group',
+    'alt' => null,
     'width' => null,
 ]), 'is_string', ARRAY_FILTER_USE_KEY) as $__key => $__value) {
     $$__key = $$__key ?? $__value;
@@ -66,6 +66,7 @@ unset($__defined_vars, $__key, $__value); ?>
     $lightSrc = BrandAssets::logo($resolvedLayout, 'light', $division);
     $mobileDark = BrandAssets::logo('monogram-nostar', 'dark');
     $mobileLight = BrandAssets::logo('monogram-nostar', 'light');
+    $alt = $alt ?? ($siteName ?? config('app.name'));
 ?>
 
 <span <?php echo e($attributes->class(['inline-flex flex-col items-start gap-1'])); ?>>

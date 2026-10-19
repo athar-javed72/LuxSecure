@@ -9,7 +9,7 @@ use App\Services\TwoFactorService;
 use Illuminate\Contracts\Console\Kernel;
 use PragmaRX\Google2FA\Google2FA;
 
-$user = User::where('email', 'admin@luxsecure.com')->firstOrFail();
+$user = User::where('email', 'admin@maskanoor.test')->firstOrFail();
 $service = app(TwoFactorService::class);
 $google2fa = new Google2FA;
 $secret = $google2fa->generateSecretKey();

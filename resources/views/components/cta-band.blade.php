@@ -1,5 +1,5 @@
 @props([
-    'eyebrow' => 'Maskanoor Group',
+    'eyebrow' => null,
     'title' => "Let's shape what comes next.",
     'lead' => 'Tell us whether you are exploring a stay, a property, or a potential partnership.',
     'primaryLabel' => 'Start a Conversation',
@@ -11,6 +11,7 @@
 
 @php
     $primaryHref = $primaryHref ?? route('contact', ['type' => 'general']);
+    $eyebrow = $eyebrow ?? ($siteName ?? config('app.name'));
 @endphp
 
 <section {{ $attributes->class(['relative z-0 fs-section-ivory']) }}>

@@ -2,10 +2,12 @@ name: Profile
 description: ''
 endpoints:
   -
+    custom: []
     httpMethods:
       - GET
     uri: api/v1/profile
     metadata:
+      custom: []
       groupName: Profile
       groupDescription: ''
       subgroup: ''
@@ -13,7 +15,7 @@ endpoints:
       title: 'Get the authenticated profile.'
       description: ''
       authenticated: true
-      custom: []
+      deprecated: false
     headers:
       Authorization: 'Bearer {YOUR_AUTH_TOKEN}'
       Content-Type: application/json
@@ -27,28 +29,34 @@ endpoints:
     fileParameters: []
     responses:
       -
+        custom: []
         status: 401
         content: '{"success":false,"message":"Unauthenticated.","code":"unauthenticated"}'
         headers:
           cache-control: 'no-cache, private'
           content-type: application/json
-          access-control-allow-origin: 'http://localhost'
+          x-frame-options: SAMEORIGIN
+          x-content-type-options: nosniff
+          referrer-policy: strict-origin-when-cross-origin
+          permissions-policy: 'camera=(), microphone=(), geolocation=()'
+          content-security-policy: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' 'nonce-il4ZMdawVTMdJtWJlYuUEA==' https://unpkg.com http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; font-src 'self' https://fonts.gstatic.com data: http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; img-src 'self' data: blob: https:; connect-src 'self' https://assets2.lottiefiles.com https://unpkg.com http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; media-src 'self' https://assets2.lottiefiles.com; worker-src 'self' blob: http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; frame-ancestors 'self'; base-uri 'self'; form-action 'self'"
+          access-control-allow-origin: 'http://127.0.0.1:8000'
         description: null
-        custom: []
     responseFields: []
     auth:
       - headers
       - Authorization
-      - 'Bearer 3V5EgbkvZcDPa166h8fd4ae'
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
     controller: null
     method: null
     route: null
-    custom: []
   -
+    custom: []
     httpMethods:
       - PUT
     uri: api/v1/profile
     metadata:
+      custom: []
       groupName: Profile
       groupDescription: ''
       subgroup: ''
@@ -56,7 +64,7 @@ endpoints:
       title: 'Update profile fields.'
       description: ''
       authenticated: true
-      custom: []
+      deprecated: false
     headers:
       Authorization: 'Bearer {YOUR_AUTH_TOKEN}'
       Content-Type: application/json
@@ -67,36 +75,40 @@ endpoints:
     cleanQueryParameters: []
     bodyParameters:
       name:
+        custom: []
         name: name
         description: 'Must not be greater than 120 characters.'
         required: false
-        example: vmqeopfuudtdsufvyvddq
+        example: b
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
-        custom: []
+        deprecated: false
       email:
+        custom: []
         name: email
         description: 'Must be a valid email address. Must not be greater than 255 characters.'
         required: false
-        example: kunde.eloisa@example.com
+        example: zbailey@example.net
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
-        custom: []
+        deprecated: false
       phone:
+        custom: []
         name: phone
         description: 'Must not be greater than 40 characters.'
         required: false
-        example: hfqcoynlazghdtqtqxbaj
+        example: i
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: true
-        custom: []
+        deprecated: false
       password:
+        custom: []
         name: password
         description: ''
         required: false
@@ -105,19 +117,18 @@ endpoints:
         enumValues: []
         exampleWasSpecified: false
         nullable: true
-        custom: []
+        deprecated: false
     cleanBodyParameters:
-      name: vmqeopfuudtdsufvyvddq
-      email: kunde.eloisa@example.com
-      phone: hfqcoynlazghdtqtqxbaj
+      name: b
+      email: zbailey@example.net
+      phone: i
     fileParameters: []
     responses: []
     responseFields: []
     auth:
       - headers
       - Authorization
-      - 'Bearer 3V5EgbkvZcDPa166h8fd4ae'
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
     controller: null
     method: null
     route: null
-    custom: []

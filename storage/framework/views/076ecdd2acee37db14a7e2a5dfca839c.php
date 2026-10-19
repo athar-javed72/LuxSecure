@@ -70,7 +70,7 @@
 <?php endif; ?>
                 <?php endif; ?>
 
-                <form method="POST" action="<?php echo e(route('contact.store')); ?>" class="space-y-4">
+                <form id="inquiry-form" method="POST" action="<?php echo e(route('contact.store')); ?>" class="space-y-4 scroll-mt-[calc(var(--header-h)+16px)]">
                     <?php echo csrf_field(); ?>
                     <?php if (isset($component)) { $__componentOriginalc2fcfa88dc54fee60e0757a7e0572df1 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginalc2fcfa88dc54fee60e0757a7e0572df1 = $attributes; } ?>
@@ -117,6 +117,7 @@
                         <textarea
                             id="message"
                             name="message"
+                            <?php if(request('type') === 'inquiry'): ?> autofocus <?php endif; ?>
                             rows="5"
                             required
                             placeholder="How can we help?"

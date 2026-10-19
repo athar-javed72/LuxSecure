@@ -86,7 +86,7 @@
         </div>
 
         <div class="mt-10 flex flex-col gap-3 border-t border-white/10 pt-5 text-xs text-[var(--color-sage)] sm:flex-row sm:items-center sm:justify-between">
-            <p>© {{ date('Y') }} {{ $siteLegalName ?? $siteName ?? 'Maskanoor Group' }}. All rights reserved.</p>
+            <p>© {{ date('Y') }} {{ $siteLegalName ?? $siteName ?? config('app.name') }}. All rights reserved.</p>
             <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
                 @if($legalPrivacy ?? null)
                     <a href="{{ route('pages.show', $legalPrivacy->slug) }}" class="hover:text-[var(--color-ivory)] hover:underline">Privacy</a>

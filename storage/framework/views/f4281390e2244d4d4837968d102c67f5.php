@@ -236,6 +236,23 @@
                                     </ul>
                                 </details>
                             <?php endif; ?>
+                            <?php $legal = $row['readiness']['legal'] ?? []; ?>
+                            <?php if(!empty($legal)): ?>
+                                <ul class="mt-2 space-y-0.5 text-[11px] text-fs-muted">
+                                    <?php $__currentLoopData = ['privacy' => 'Privacy', 'terms' => 'Terms']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $type => $label): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <?php $entry = $legal[$type] ?? null; ?>
+                                        <?php if($entry && ($entry['ok'] ?? false)): ?>
+                                            <li>
+                                                <?php echo e($label); ?>:
+                                                <span class="text-fs-secondary"><?php echo e($entry['title'] ?? $entry['slug']); ?></span>
+                                                <span>(<?php echo e($entry['source'] === 'global' ? 'global fallback' : ($entry['source'] === 'country' ? 'country page' : $entry['source'])); ?>)</span>
+                                            </li>
+                                        <?php elseif($entry): ?>
+                                            <li class="text-fs-danger"><?php echo e($label); ?>: missing</li>
+                                        <?php endif; ?>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                </ul>
+                            <?php endif; ?>
                             <?php if($row['blockers']['blocked']): ?>
                                 <p class="mt-1 text-xs text-fs-muted">Disable blocked: <?php echo e(implode('; ', $row['blockers']['reasons'])); ?></p>
                             <?php endif; ?>

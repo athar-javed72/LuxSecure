@@ -11,7 +11,7 @@
 
 <?php if (isset($component)) { $__componentOriginalf8d4ea307ab1e58d4e472a43c8548d8e = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginalf8d4ea307ab1e58d4e472a43c8548d8e = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.page-header','data' => ['eyebrow' => 'Maskanoor Properties','title' => 'Properties','lead' => 'Homes, apartments, plots and stays, curated with care.','breadcrumbs' => [
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.page-header','data' => ['eyebrow' => ''.e($divisionProperties ?? 'Properties').'','title' => 'Properties','lead' => 'Homes, apartments, plots and stays, curated with care.','breadcrumbs' => [
         ['label' => 'Home', 'href' => route('home')],
         ['label' => 'Properties'],
     ]]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
@@ -21,7 +21,7 @@
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['eyebrow' => 'Maskanoor Properties','title' => 'Properties','lead' => 'Homes, apartments, plots and stays, curated with care.','breadcrumbs' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute([
+<?php $component->withAttributes(['eyebrow' => ''.e($divisionProperties ?? 'Properties').'','title' => 'Properties','lead' => 'Homes, apartments, plots and stays, curated with care.','breadcrumbs' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute([
         ['label' => 'Home', 'href' => route('home')],
         ['label' => 'Properties'],
     ])]); ?>

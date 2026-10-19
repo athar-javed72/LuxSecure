@@ -108,6 +108,26 @@
 <?php $component = $__componentOriginalc2fcfa88dc54fee60e0757a7e0572df1; ?>
 <?php unset($__componentOriginalc2fcfa88dc54fee60e0757a7e0572df1); ?>
 <?php endif; ?>
+                    <?php if (isset($component)) { $__componentOriginal85a49ba5b5469157f45f95cc92fe58f0 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal85a49ba5b5469157f45f95cc92fe58f0 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.location-picker','data' => ['countries' => \App\Models\Country::query()->where('is_active', true)->orderBy('name')->get(['id', 'name']),'countryName' => 'country_id','cityName' => 'city_id','countryId' => old('country_id', $user->country_id),'required' => false,'allowEmptyCountry' => true,'cityLabelText' => 'City (optional)']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('location-picker'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['countries' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute(\App\Models\Country::query()->where('is_active', true)->orderBy('name')->get(['id', 'name'])),'country-name' => 'country_id','city-name' => 'city_id','country-id' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute(old('country_id', $user->country_id)),'required' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute(false),'allow-empty-country' => true,'city-label-text' => 'City (optional)']); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal85a49ba5b5469157f45f95cc92fe58f0)): ?>
+<?php $attributes = $__attributesOriginal85a49ba5b5469157f45f95cc92fe58f0; ?>
+<?php unset($__attributesOriginal85a49ba5b5469157f45f95cc92fe58f0); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal85a49ba5b5469157f45f95cc92fe58f0)): ?>
+<?php $component = $__componentOriginal85a49ba5b5469157f45f95cc92fe58f0; ?>
+<?php unset($__componentOriginal85a49ba5b5469157f45f95cc92fe58f0); ?>
+<?php endif; ?>
                     <div class="flex flex-wrap gap-2">
                         <?php if (isset($component)) { $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561 = $attributes; } ?>

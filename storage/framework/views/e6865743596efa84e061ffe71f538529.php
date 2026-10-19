@@ -160,6 +160,28 @@
 <?php $component = $__componentOriginaled2cde6083938c436304f332ba96bb7c; ?>
 <?php unset($__componentOriginaled2cde6083938c436304f332ba96bb7c); ?>
 <?php endif; ?>
+        <div class="sm:col-span-2 lg:col-span-4">
+            <?php if (isset($component)) { $__componentOriginal85a49ba5b5469157f45f95cc92fe58f0 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal85a49ba5b5469157f45f95cc92fe58f0 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.location-picker','data' => ['countries' => $filterCountries ?? collect(),'countryName' => 'country_id','cityName' => 'city_id','countryId' => request('country_id'),'cityId' => request('city_id'),'required' => false,'allowEmptyCountry' => true]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('location-picker'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['countries' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($filterCountries ?? collect()),'country-name' => 'country_id','city-name' => 'city_id','country-id' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute(request('country_id')),'city-id' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute(request('city_id')),'required' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute(false),'allow-empty-country' => true]); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal85a49ba5b5469157f45f95cc92fe58f0)): ?>
+<?php $attributes = $__attributesOriginal85a49ba5b5469157f45f95cc92fe58f0; ?>
+<?php unset($__attributesOriginal85a49ba5b5469157f45f95cc92fe58f0); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal85a49ba5b5469157f45f95cc92fe58f0)): ?>
+<?php $component = $__componentOriginal85a49ba5b5469157f45f95cc92fe58f0; ?>
+<?php unset($__componentOriginal85a49ba5b5469157f45f95cc92fe58f0); ?>
+<?php endif; ?>
+        </div>
         <div class="flex flex-wrap gap-2">
             <?php if (isset($component)) { $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561 = $attributes; } ?>
@@ -180,7 +202,7 @@
 <?php $component = $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561; ?>
 <?php unset($__componentOriginald0f1fd2689e4bb7060122a5b91fe8561); ?>
 <?php endif; ?>
-            <?php if(request()->hasAny(['search', 'listing_type_id', 'status'])): ?>
+            <?php if(request()->hasAny(['search', 'listing_type_id', 'status', 'country_id', 'city_id'])): ?>
                 <?php if (isset($component)) { $__componentOriginald0f1fd2689e4bb7060122a5b91fe8561 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginald0f1fd2689e4bb7060122a5b91fe8561 = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.button','data' => ['variant' => 'ghost','href' => ''.e(route('admin.listings.index')).'']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>

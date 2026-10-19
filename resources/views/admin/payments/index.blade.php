@@ -19,6 +19,17 @@
         <x-input label="Search" name="search" :value="request('search')" placeholder="UUID, email…" />
         <x-select label="Status" name="status" :options="collect($statuses)->mapWithKeys(fn ($s) => [$s => ucfirst(str_replace('_', ' ', $s))])->all()" :selected="request('status')" placeholder="All" />
         <x-select label="Gateway" name="gateway" :options="collect($gateways)->mapWithKeys(fn ($g) => [$g => ucfirst(str_replace('_', ' ', $g))])->all()" :selected="request('gateway')" placeholder="All" />
+        <div class="sm:col-span-4">
+            <x-location-picker
+                :countries="$filterCountries ?? collect()"
+                country-name="country_id"
+                city-name="city_id"
+                :country-id="request('country_id')"
+                :city-id="request('city_id')"
+                :required="false"
+                :allow-empty-country="true"
+            />
+        </div>
         <div class="flex items-end"><x-button type="submit" variant="primary">Filter</x-button></div>
     </form>
 </x-panel>

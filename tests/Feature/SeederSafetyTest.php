@@ -31,7 +31,7 @@ class SeederSafetyTest extends TestCase
 
         $this->assertTrue(Role::query()->where('name', 'super_admin')->exists());
         $this->assertTrue(Role::query()->where('name', 'client')->exists());
-        $this->assertDatabaseMissing('users', ['email' => 'admin@luxsecure.com']);
+        $this->assertDatabaseMissing('users', ['email' => 'admin@maskanoor.test']);
         $this->assertSame(0, Listing::query()->count());
         $this->assertSame(0, RoomType::query()->count());
         $this->assertSame(0, Page::query()->count());
@@ -45,7 +45,7 @@ class SeederSafetyTest extends TestCase
 
         $this->seed(DatabaseSeeder::class);
 
-        $this->assertDatabaseHas('users', ['email' => 'admin@luxsecure.com']);
+        $this->assertDatabaseHas('users', ['email' => 'admin@maskanoor.test']);
 
         $hotel = Listing::query()->where('slug', 'blue-area-boutique-hotel')->first();
         $this->assertNotNull($hotel);
@@ -79,13 +79,13 @@ class SeederSafetyTest extends TestCase
     {
         $this->seedRbac();
 
-        $this->artisan('luxsecure:create-super-admin', [
+        $this->artisan('maskanoor:create-super-admin', [
             '--email' => 'weak@example.com',
             '--name' => 'Weak',
             '--password' => 'password',
         ])->assertFailed();
 
-        $this->artisan('luxsecure:create-super-admin', [
+        $this->artisan('maskanoor:create-super-admin', [
             '--email' => 'owner@example.com',
             '--name' => 'Owner',
             '--password' => 'Str0ng!Passw0rd',
@@ -97,7 +97,7 @@ class SeederSafetyTest extends TestCase
         $this->assertTrue($user->is_active);
         $this->assertNotNull($user->email_verified_at);
 
-        $this->artisan('luxsecure:create-super-admin', [
+        $this->artisan('maskanoor:create-super-admin', [
             '--email' => 'second@example.com',
             '--name' => 'Second',
             '--password' => 'Str0ng!Passw0rd',

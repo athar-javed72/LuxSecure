@@ -26,6 +26,17 @@
             <x-input label="Phone" name="phone" :value="old('phone', $user->phone)" placeholder="03xx-xxxxxxx" />
             <x-input label="New password" name="password" type="password" placeholder="Leave blank to keep current" />
             <x-input label="Confirm password" name="password_confirmation" type="password" />
+            <div class="md:col-span-2">
+                <x-location-picker
+                    :countries="\App\Models\Country::query()->where('is_active', true)->orderBy('name')->get(['id', 'name'])"
+                    country-name="country_id"
+                    city-name="city_id"
+                    :country-id="old('country_id', $user->country_id)"
+                    :required="false"
+                    :allow-empty-country="true"
+                    city-label-text="City (optional)"
+                />
+            </div>
             <label class="inline-flex items-center gap-2 min-h-11 md:col-span-2">
                 <input type="hidden" name="is_active" value="0">
                 <input type="checkbox" name="is_active" value="1" {{ old('is_active', $user->is_active) ? 'checked' : '' }} class="rounded-sm border-black/20 text-fs-brand focus:ring-fs-brand">

@@ -32,9 +32,20 @@
             :selected="request('status')"
             placeholder="All statuses"
         />
+        <div class="sm:col-span-2 lg:col-span-4">
+            <x-location-picker
+                :countries="$filterCountries ?? collect()"
+                country-name="country_id"
+                city-name="city_id"
+                :country-id="request('country_id')"
+                :city-id="request('city_id')"
+                :required="false"
+                :allow-empty-country="true"
+            />
+        </div>
         <div class="flex flex-wrap gap-2">
             <x-button type="submit" variant="primary">Filter</x-button>
-            @if(request()->hasAny(['search', 'listing_type_id', 'status']))
+            @if(request()->hasAny(['search', 'listing_type_id', 'status', 'country_id', 'city_id']))
                 <x-button variant="ghost" href="{{ route('admin.listings.index') }}">Clear</x-button>
             @endif
         </div>

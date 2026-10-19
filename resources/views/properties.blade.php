@@ -12,7 +12,7 @@
 @endphp
 
 <x-page-header
-    eyebrow="Maskanoor Properties"
+    eyebrow="{{ $divisionProperties ?? 'Properties' }}"
     title="Properties"
     lead="Homes, apartments, plots and stays, curated with care."
     :breadcrumbs="[

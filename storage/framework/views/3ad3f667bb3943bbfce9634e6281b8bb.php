@@ -2,7 +2,7 @@
 
 $__newAttributes = [];
 $__propNames = \Illuminate\View\ComponentAttributeBag::extractPropNames(([
-    'eyebrow' => 'Maskanoor Group',
+    'eyebrow' => null,
     'title' => "Let's shape what comes next.",
     'lead' => 'Tell us whether you are exploring a stay, a property, or a potential partnership.',
     'primaryLabel' => 'Start a Conversation',
@@ -26,7 +26,7 @@ unset($__propNames);
 unset($__newAttributes);
 
 foreach (array_filter(([
-    'eyebrow' => 'Maskanoor Group',
+    'eyebrow' => null,
     'title' => "Let's shape what comes next.",
     'lead' => 'Tell us whether you are exploring a stay, a property, or a potential partnership.',
     'primaryLabel' => 'Start a Conversation',
@@ -48,6 +48,7 @@ unset($__defined_vars, $__key, $__value); ?>
 
 <?php
     $primaryHref = $primaryHref ?? route('contact', ['type' => 'general']);
+    $eyebrow = $eyebrow ?? ($siteName ?? config('app.name'));
 ?>
 
 <section <?php echo e($attributes->class(['relative z-0 fs-section-ivory'])); ?>>

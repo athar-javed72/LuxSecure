@@ -98,6 +98,23 @@
                                     </ul>
                                 </details>
                             @endif
+                            @php $legal = $row['readiness']['legal'] ?? []; @endphp
+                            @if(!empty($legal))
+                                <ul class="mt-2 space-y-0.5 text-[11px] text-fs-muted">
+                                    @foreach(['privacy' => 'Privacy', 'terms' => 'Terms'] as $type => $label)
+                                        @php $entry = $legal[$type] ?? null; @endphp
+                                        @if($entry && ($entry['ok'] ?? false))
+                                            <li>
+                                                {{ $label }}:
+                                                <span class="text-fs-secondary">{{ $entry['title'] ?? $entry['slug'] }}</span>
+                                                <span>({{ $entry['source'] === 'global' ? 'global fallback' : ($entry['source'] === 'country' ? 'country page' : $entry['source']) }})</span>
+                                            </li>
+                                        @elseif($entry)
+                                            <li class="text-fs-danger">{{ $label }}: missing</li>
+                                        @endif
+                                    @endforeach
+                                </ul>
+                            @endif
                             @if($row['blockers']['blocked'])
                                 <p class="mt-1 text-xs text-fs-muted">Disable blocked: {{ implode('; ', $row['blockers']['reasons']) }}</p>
                             @endif

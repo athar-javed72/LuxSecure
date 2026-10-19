@@ -4,18 +4,20 @@ name: Bookings
 description: ''
 endpoints:
   -
+    custom: []
     httpMethods:
       - GET
     uri: api/v1/bookings
     metadata:
+      custom: []
       groupName: Bookings
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: "List the authenticated user's bookings."
+      title: ''
       description: ''
       authenticated: true
-      custom: []
+      deprecated: false
     headers:
       Authorization: 'Bearer {YOUR_AUTH_TOKEN}'
       Content-Type: application/json
@@ -29,36 +31,103 @@ endpoints:
     fileParameters: []
     responses:
       -
+        custom: []
         status: 401
         content: '{"success":false,"message":"Unauthenticated.","code":"unauthenticated"}'
         headers:
           cache-control: 'no-cache, private'
           content-type: application/json
-          access-control-allow-origin: 'http://localhost'
+          x-frame-options: SAMEORIGIN
+          x-content-type-options: nosniff
+          referrer-policy: strict-origin-when-cross-origin
+          permissions-policy: 'camera=(), microphone=(), geolocation=()'
+          content-security-policy: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' 'nonce-LNTsvXOT0bWL7W7saWavkQ==' https://unpkg.com http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; font-src 'self' https://fonts.gstatic.com data: http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; img-src 'self' data: blob: https:; connect-src 'self' https://assets2.lottiefiles.com https://unpkg.com http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; media-src 'self' https://assets2.lottiefiles.com; worker-src 'self' blob: http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; frame-ancestors 'self'; base-uri 'self'; form-action 'self'"
+          access-control-allow-origin: 'http://127.0.0.1:8000'
         description: null
-        custom: []
     responseFields: []
     auth:
       - headers
       - Authorization
-      - 'Bearer 3V5EgbkvZcDPa166h8fd4ae'
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
     controller: null
     method: null
     route: null
-    custom: []
   -
+    custom: []
     httpMethods:
-      - POST
-    uri: api/v1/bookings
+      - GET
+    uri: 'api/v1/bookings/{id}'
     metadata:
+      custom: []
       groupName: Bookings
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Create a booking (availability checked in a transaction).'
+      title: ''
       description: ''
       authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_TOKEN}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the booking.'
+        required: true
+        example: 16
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: 16
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 401
+        content: '{"success":false,"message":"Unauthenticated.","code":"unauthenticated"}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          x-frame-options: SAMEORIGIN
+          x-content-type-options: nosniff
+          referrer-policy: strict-origin-when-cross-origin
+          permissions-policy: 'camera=(), microphone=(), geolocation=()'
+          content-security-policy: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' 'nonce-rZAlRjQucA4UJ/Kv/SiVrw==' https://unpkg.com http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; font-src 'self' https://fonts.gstatic.com data: http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; img-src 'self' data: blob: https:; connect-src 'self' https://assets2.lottiefiles.com https://unpkg.com http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; media-src 'self' https://assets2.lottiefiles.com; worker-src 'self' blob: http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; frame-ancestors 'self'; base-uri 'self'; form-action 'self'"
+          access-control-allow-origin: 'http://127.0.0.1:8000'
+        description: null
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/v1/bookings
+    metadata:
       custom: []
+      groupName: Bookings
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: true
+      deprecated: false
     headers:
       Authorization: 'Bearer {YOUR_AUTH_TOKEN}'
       Content-Type: application/json
@@ -69,46 +138,51 @@ endpoints:
     cleanQueryParameters: []
     bodyParameters:
       room_type_id:
+        custom: []
         name: room_type_id
-        description: 'The <code>id</code> of an existing record in the room_types table.'
+        description: 'Must match an existing stored value.'
         required: true
-        example: consequatur
+        example: architecto
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
-        custom: []
+        deprecated: false
       check_in:
+        custom: []
         name: check_in
         description: 'Must be a valid date. Must be a date after or equal to <code>today</code>.'
         required: true
-        example: '2107-11-15'
+        example: '2052-11-12'
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
-        custom: []
+        deprecated: false
       check_out:
+        custom: []
         name: check_out
         description: 'Must be a valid date. Must be a date after <code>check_in</code>.'
         required: true
-        example: '2097-02-15'
+        example: '2052-11-12'
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
-        custom: []
+        deprecated: false
       guests:
+        custom: []
         name: guests
         description: 'Must be at least 1. Must not be greater than 50.'
         required: true
-        example: 13
+        example: 22
         type: integer
         enumValues: []
         exampleWasSpecified: false
         nullable: false
-        custom: []
+        deprecated: false
       cancellation_policy:
+        custom: []
         name: cancellation_policy
         description: ''
         required: false
@@ -117,118 +191,67 @@ endpoints:
         enumValues: []
         exampleWasSpecified: false
         nullable: true
-        custom: []
+        deprecated: false
       notes:
+        custom: []
         name: notes
         description: 'Must not be greater than 1000 characters.'
         required: false
-        example: qeopfuudtdsufvyvddqam
+        example: g
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: true
-        custom: []
+        deprecated: false
     cleanBodyParameters:
-      room_type_id: consequatur
-      check_in: '2107-11-15'
-      check_out: '2097-02-15'
-      guests: 13
-      notes: qeopfuudtdsufvyvddqam
+      room_type_id: architecto
+      check_in: '2052-11-12'
+      check_out: '2052-11-12'
+      guests: 22
+      notes: g
     fileParameters: []
     responses: []
     responseFields: []
     auth:
       - headers
       - Authorization
-      - 'Bearer 3V5EgbkvZcDPa166h8fd4ae'
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
     controller: null
     method: null
     route: null
-    custom: []
   -
-    httpMethods:
-      - GET
-    uri: 'api/v1/bookings/{id}'
-    metadata:
-      groupName: Bookings
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: "Show one of the user's bookings."
-      description: ''
-      authenticated: true
-      custom: []
-    headers:
-      Authorization: 'Bearer {YOUR_AUTH_TOKEN}'
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      id:
-        name: id
-        description: 'The ID of the booking.'
-        required: true
-        example: 17
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-    cleanUrlParameters:
-      id: 17
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 401
-        content: '{"success":false,"message":"Unauthenticated.","code":"unauthenticated"}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          access-control-allow-origin: 'http://localhost'
-        description: null
-        custom: []
-    responseFields: []
-    auth:
-      - headers
-      - Authorization
-      - 'Bearer 3V5EgbkvZcDPa166h8fd4ae'
-    controller: null
-    method: null
-    route: null
     custom: []
-  -
     httpMethods:
       - POST
     uri: 'api/v1/bookings/{booking_id}/cancel'
     metadata:
+      custom: []
       groupName: Bookings
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Cancel an own pending/confirmed booking.'
+      title: ''
       description: ''
       authenticated: true
-      custom: []
+      deprecated: false
     headers:
       Authorization: 'Bearer {YOUR_AUTH_TOKEN}'
       Content-Type: application/json
       Accept: application/json
     urlParameters:
       booking_id:
+        custom: []
         name: booking_id
         description: 'The ID of the booking.'
         required: true
-        example: 17
+        example: 16
         type: integer
         enumValues: []
         exampleWasSpecified: false
         nullable: false
-        custom: []
+        deprecated: false
     cleanUrlParameters:
-      booking_id: 17
+      booking_id: 16
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -239,8 +262,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3V5EgbkvZcDPa166h8fd4ae'
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
     controller: null
     method: null
     route: null
-    custom: []

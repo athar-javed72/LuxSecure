@@ -4,10 +4,12 @@ name: Auth
 description: ''
 endpoints:
   -
+    custom: []
     httpMethods:
       - POST
     uri: api/v1/auth/register
     metadata:
+      custom: []
       groupName: Auth
       groupDescription: ''
       subgroup: ''
@@ -15,7 +17,7 @@ endpoints:
       title: 'Register a client account.'
       description: ''
       authenticated: false
-      custom: []
+      deprecated: false
     headers:
       Content-Type: application/json
       Accept: application/json
@@ -25,50 +27,54 @@ endpoints:
     cleanQueryParameters: []
     bodyParameters:
       name:
+        custom: []
         name: name
         description: 'Must not be greater than 120 characters.'
         required: true
-        example: vmqeopfuudtdsufvyvddq
+        example: b
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
-        custom: []
+        deprecated: false
       email:
+        custom: []
         name: email
         description: 'Must be a valid email address. Must not be greater than 255 characters.'
         required: true
-        example: kunde.eloisa@example.com
+        example: zbailey@example.net
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
-        custom: []
+        deprecated: false
       phone:
+        custom: []
         name: phone
         description: 'Must not be greater than 40 characters.'
         required: false
-        example: hfqcoynlazghdtqtqxbaj
+        example: i
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: true
-        custom: []
+        deprecated: false
       password:
+        custom: []
         name: password
         description: ''
         required: true
-        example: consequatur
+        example: architecto
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
-        custom: []
+        deprecated: false
     cleanBodyParameters:
-      name: vmqeopfuudtdsufvyvddq
-      email: kunde.eloisa@example.com
-      phone: hfqcoynlazghdtqtqxbaj
-      password: consequatur
+      name: b
+      email: zbailey@example.net
+      phone: i
+      password: architecto
     fileParameters: []
     responses: []
     responseFields: []
@@ -76,12 +82,13 @@ endpoints:
     controller: null
     method: null
     route: null
-    custom: []
   -
+    custom: []
     httpMethods:
       - POST
     uri: api/v1/auth/login
     metadata:
+      custom: []
       groupName: Auth
       groupDescription: ''
       subgroup: ''
@@ -89,7 +96,7 @@ endpoints:
       title: 'Login and receive a Sanctum token.'
       description: ''
       authenticated: false
-      custom: []
+      deprecated: false
     headers:
       Content-Type: application/json
       Accept: application/json
@@ -99,50 +106,54 @@ endpoints:
     cleanQueryParameters: []
     bodyParameters:
       email:
+        custom: []
         name: email
         description: 'Must be a valid email address.'
         required: true
-        example: qkunze@example.com
+        example: gbailey@example.net
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
-        custom: []
+        deprecated: false
       password:
+        custom: []
         name: password
         description: ''
         required: true
-        example: 'O[2UZ5ij-e/dl4m{o,'
+        example: '|]|{+-'
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
-        custom: []
+        deprecated: false
       device_name:
+        custom: []
         name: device_name
         description: 'Must not be greater than 80 characters.'
         required: false
-        example: dqamniihfqcoynlazghdt
+        example: v
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: true
-        custom: []
+        deprecated: false
       two_factor_code:
+        custom: []
         name: two_factor_code
         description: ''
         required: false
-        example: consequatur
+        example: architecto
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: true
-        custom: []
+        deprecated: false
     cleanBodyParameters:
-      email: qkunze@example.com
-      password: 'O[2UZ5ij-e/dl4m{o,'
-      device_name: dqamniihfqcoynlazghdt
-      two_factor_code: consequatur
+      email: gbailey@example.net
+      password: '|]|{+-'
+      device_name: v
+      two_factor_code: architecto
     fileParameters: []
     responses: []
     responseFields: []
@@ -150,12 +161,13 @@ endpoints:
     controller: null
     method: null
     route: null
-    custom: []
   -
+    custom: []
     httpMethods:
       - POST
     uri: api/v1/auth/two-factor-challenge
     metadata:
+      custom: []
       groupName: Auth
       groupDescription: ''
       subgroup: ''
@@ -163,7 +175,7 @@ endpoints:
       title: 'Complete a two-factor challenge from login.'
       description: ''
       authenticated: false
-      custom: []
+      deprecated: false
     headers:
       Content-Type: application/json
       Accept: application/json
@@ -173,39 +185,42 @@ endpoints:
     cleanQueryParameters: []
     bodyParameters:
       two_factor_token:
+        custom: []
         name: two_factor_token
         description: ''
         required: true
-        example: consequatur
+        example: architecto
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
-        custom: []
+        deprecated: false
       code:
+        custom: []
         name: code
         description: ''
         required: true
-        example: consequatur
+        example: architecto
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
-        custom: []
+        deprecated: false
       device_name:
+        custom: []
         name: device_name
         description: 'Must not be greater than 80 characters.'
         required: false
-        example: mqeopfuudtdsufvyvddqa
+        example: 'n'
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: true
-        custom: []
+        deprecated: false
     cleanBodyParameters:
-      two_factor_token: consequatur
-      code: consequatur
-      device_name: mqeopfuudtdsufvyvddqa
+      two_factor_token: architecto
+      code: architecto
+      device_name: 'n'
     fileParameters: []
     responses: []
     responseFields: []
@@ -213,12 +228,13 @@ endpoints:
     controller: null
     method: null
     route: null
-    custom: []
   -
+    custom: []
     httpMethods:
       - POST
     uri: api/v1/auth/logout
     metadata:
+      custom: []
       groupName: Auth
       groupDescription: ''
       subgroup: ''
@@ -226,7 +242,7 @@ endpoints:
       title: 'Logout current token.'
       description: ''
       authenticated: true
-      custom: []
+      deprecated: false
     headers:
       Authorization: 'Bearer {YOUR_AUTH_TOKEN}'
       Content-Type: application/json
@@ -243,8 +259,7 @@ endpoints:
     auth:
       - headers
       - Authorization
-      - 'Bearer 3V5EgbkvZcDPa166h8fd4ae'
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
     controller: null
     method: null
     route: null
-    custom: []

@@ -4,15 +4,12 @@
     <meta charset="utf-8">
     <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>API Documentation</title>
+    <title>Maskanoor Group API Documentation</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="../docs/css/theme-default.style.css" media="screen">
     <link rel="stylesheet" href="../docs/css/theme-default.print.css" media="print">
-    <style>
-        body, .content, .tocify, h1, h2, h3, h4, h5, h6, p, code, pre {
-            font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
-        }
-    </style>
 
     <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.10/lodash.min.js"></script>
 
@@ -29,13 +26,13 @@
             </style>
 
     <script>
-        var tryItOutBaseUrl = "http://localhost";
+        var tryItOutBaseUrl = "http://127.0.0.1:8000";
         var useCsrf = Boolean();
         var csrfUrl = "/sanctum/csrf-cookie";
     </script>
-    <script src="../docs/js/tryitout-5.2.0.js"></script>
+    <script src="../docs/js/tryitout-5.11.0.js"></script>
 
-    <script src="../docs/js/theme-default-5.2.0.js"></script>
+    <script src="../docs/js/theme-default-5.11.0.js"></script>
 
 </head>
 
@@ -94,16 +91,16 @@
                 </li>
                                     <ul id="tocify-subheader-bookings" class="tocify-subheader">
                                                     <li class="tocify-item level-2" data-unique="bookings-GETapi-v1-bookings">
-                                <a href="#bookings-GETapi-v1-bookings">List the authenticated user's bookings.</a>
-                            </li>
-                                                                                <li class="tocify-item level-2" data-unique="bookings-POSTapi-v1-bookings">
-                                <a href="#bookings-POSTapi-v1-bookings">Create a booking (availability checked in a transaction).</a>
+                                <a href="#bookings-GETapi-v1-bookings">GET api/v1/bookings</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="bookings-GETapi-v1-bookings--id-">
-                                <a href="#bookings-GETapi-v1-bookings--id-">Show one of the user's bookings.</a>
+                                <a href="#bookings-GETapi-v1-bookings--id-">GET api/v1/bookings/{id}</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="bookings-POSTapi-v1-bookings">
+                                <a href="#bookings-POSTapi-v1-bookings">POST api/v1/bookings</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="bookings-POSTapi-v1-bookings--booking_id--cancel">
-                                <a href="#bookings-POSTapi-v1-bookings--booking_id--cancel">Cancel an own pending/confirmed booking.</a>
+                                <a href="#bookings-POSTapi-v1-bookings--booking_id--cancel">POST api/v1/bookings/{booking_id}/cancel</a>
                             </li>
                                                                         </ul>
                             </ul>
@@ -115,6 +112,12 @@
                                                     <li class="tocify-item level-2" data-unique="endpoints-GETapi-properties">
                                 <a href="#endpoints-GETapi-properties">GET api/properties</a>
                             </li>
+                                                                                <li class="tocify-item level-2" data-unique="endpoints-GETapi-v1-countries">
+                                <a href="#endpoints-GETapi-v1-countries">GET api/v1/countries</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="endpoints-GETapi-v1-countries--country_id--cities">
+                                <a href="#endpoints-GETapi-v1-countries--country_id--cities">GET api/v1/countries/{country_id}/cities</a>
+                            </li>
                                                                         </ul>
                             </ul>
                     <ul id="tocify-header-favorites" class="tocify-header">
@@ -125,8 +128,8 @@
                                                     <li class="tocify-item level-2" data-unique="favorites-GETapi-v1-favorites">
                                 <a href="#favorites-GETapi-v1-favorites">List favorited listings.</a>
                             </li>
-                                                                                <li class="tocify-item level-2" data-unique="favorites-POSTapi-v1-favorites--listing_id-">
-                                <a href="#favorites-POSTapi-v1-favorites--listing_id-">Toggle favorite for a listing.</a>
+                                                                                <li class="tocify-item level-2" data-unique="favorites-POSTapi-v1-favorites--listing_slug-">
+                                <a href="#favorites-POSTapi-v1-favorites--listing_slug-">Toggle favorite for a listing.</a>
                             </li>
                                                                         </ul>
                             </ul>
@@ -162,7 +165,7 @@
                 </li>
                                     <ul id="tocify-subheader-two-factor-authentication" class="tocify-subheader">
                                                     <li class="tocify-item level-2" data-unique="two-factor-authentication-POSTapi-v1-two-factor-setup">
-                                <a href="#two-factor-authentication-POSTapi-v1-two-factor-setup">Begin 2FA setup (admin roles only).</a>
+                                <a href="#two-factor-authentication-POSTapi-v1-two-factor-setup">Begin 2FA setup (panel roles).</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="two-factor-authentication-POSTapi-v1-two-factor-confirm">
                                 <a href="#two-factor-authentication-POSTapi-v1-two-factor-confirm">Confirm 2FA with a code from the authenticator.</a>
@@ -181,7 +184,7 @@
     </ul>
 
     <ul class="toc-footer" id="last-updated">
-        <li>Last updated: October 17, 2026</li>
+        <li>Last updated: October 20, 2026</li>
     </ul>
 </div>
 
@@ -189,7 +192,7 @@
     <div class="dark-box"></div>
     <div class="content">
         <h1 id="introduction">Introduction</h1>
-<p>LuxSecure API v1 — Sanctum token auth, listings, bookings, favorites, and profile.</p>
+<p>Maskanoor Group API v1 — Sanctum token auth, listings, bookings, favorites, and profile.</p>
 <aside>
     <strong>Base URL</strong>: <code>http://localhost</code>
 </aside>
@@ -220,21 +223,21 @@ You can switch the language used with the tabs at the top right (or from the nav
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/v1/auth/register" \
+    "http://127.0.0.1:8000/api/v1/auth/register" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"name\": \"vmqeopfuudtdsufvyvddq\",
-    \"email\": \"kunde.eloisa@example.com\",
-    \"phone\": \"hfqcoynlazghdtqtqxbaj\",
-    \"password\": \"consequatur\"
+    \"name\": \"b\",
+    \"email\": \"zbailey@example.net\",
+    \"phone\": \"i\",
+    \"password\": \"architecto\"
 }"
 </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/auth/register"
+    "http://127.0.0.1:8000/api/v1/auth/register"
 );
 
 const headers = {
@@ -243,10 +246,10 @@ const headers = {
 };
 
 let body = {
-    "name": "vmqeopfuudtdsufvyvddq",
-    "email": "kunde.eloisa@example.com",
-    "phone": "hfqcoynlazghdtqtqxbaj",
-    "password": "consequatur"
+    "name": "b",
+    "email": "zbailey@example.net",
+    "phone": "i",
+    "password": "architecto"
 };
 
 fetch(url, {
@@ -310,6 +313,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                 <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
 &nbsp;
  &nbsp;
+ &nbsp;
                 <input type="text" style="display: none"
                               name="Content-Type"                data-endpoint="POSTapi-v1-auth-register"
                value="application/json"
@@ -320,6 +324,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                                 <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
 &nbsp;
+ &nbsp;
  &nbsp;
                 <input type="text" style="display: none"
                               name="Accept"                data-endpoint="POSTapi-v1-auth-register"
@@ -333,45 +338,49 @@ You can check the Dev Tools console for debugging information.</code></pre>
             <b style="line-height: 2;"><code>name</code></b>&nbsp;&nbsp;
 <small>string</small>&nbsp;
  &nbsp;
+ &nbsp;
                 <input type="text" style="display: none"
                               name="name"                data-endpoint="POSTapi-v1-auth-register"
-               value="vmqeopfuudtdsufvyvddq"
+               value="b"
                data-component="body">
     <br>
-<p>Must not be greater than 120 characters. Example: <code>vmqeopfuudtdsufvyvddq</code></p>
+<p>Must not be greater than 120 characters. Example: <code>b</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>email</code></b>&nbsp;&nbsp;
 <small>string</small>&nbsp;
  &nbsp;
+ &nbsp;
                 <input type="text" style="display: none"
                               name="email"                data-endpoint="POSTapi-v1-auth-register"
-               value="kunde.eloisa@example.com"
+               value="zbailey@example.net"
                data-component="body">
     <br>
-<p>Must be a valid email address. Must not be greater than 255 characters. Example: <code>kunde.eloisa@example.com</code></p>
+<p>Must be a valid email address. Must not be greater than 255 characters. Example: <code>zbailey@example.net</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>phone</code></b>&nbsp;&nbsp;
 <small>string</small>&nbsp;
 <i>optional</i> &nbsp;
+ &nbsp;
                 <input type="text" style="display: none"
                               name="phone"                data-endpoint="POSTapi-v1-auth-register"
-               value="hfqcoynlazghdtqtqxbaj"
+               value="i"
                data-component="body">
     <br>
-<p>Must not be greater than 40 characters. Example: <code>hfqcoynlazghdtqtqxbaj</code></p>
+<p>Must not be greater than 40 characters. Example: <code>i</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>password</code></b>&nbsp;&nbsp;
 <small>string</small>&nbsp;
  &nbsp;
+ &nbsp;
                 <input type="text" style="display: none"
                               name="password"                data-endpoint="POSTapi-v1-auth-register"
-               value="consequatur"
+               value="architecto"
                data-component="body">
     <br>
-<p>Example: <code>consequatur</code></p>
+<p>Example: <code>architecto</code></p>
         </div>
         </form>
 
@@ -388,21 +397,21 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/v1/auth/login" \
+    "http://127.0.0.1:8000/api/v1/auth/login" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"email\": \"qkunze@example.com\",
-    \"password\": \"O[2UZ5ij-e\\/dl4m{o,\",
-    \"device_name\": \"dqamniihfqcoynlazghdt\",
-    \"two_factor_code\": \"consequatur\"
+    \"email\": \"gbailey@example.net\",
+    \"password\": \"|]|{+-\",
+    \"device_name\": \"v\",
+    \"two_factor_code\": \"architecto\"
 }"
 </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/auth/login"
+    "http://127.0.0.1:8000/api/v1/auth/login"
 );
 
 const headers = {
@@ -411,10 +420,10 @@ const headers = {
 };
 
 let body = {
-    "email": "qkunze@example.com",
-    "password": "O[2UZ5ij-e\/dl4m{o,",
-    "device_name": "dqamniihfqcoynlazghdt",
-    "two_factor_code": "consequatur"
+    "email": "gbailey@example.net",
+    "password": "|]|{+-",
+    "device_name": "v",
+    "two_factor_code": "architecto"
 };
 
 fetch(url, {
@@ -478,6 +487,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                 <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
 &nbsp;
  &nbsp;
+ &nbsp;
                 <input type="text" style="display: none"
                               name="Content-Type"                data-endpoint="POSTapi-v1-auth-login"
                value="application/json"
@@ -488,6 +498,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                                 <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
 &nbsp;
+ &nbsp;
  &nbsp;
                 <input type="text" style="display: none"
                               name="Accept"                data-endpoint="POSTapi-v1-auth-login"
@@ -501,45 +512,49 @@ You can check the Dev Tools console for debugging information.</code></pre>
             <b style="line-height: 2;"><code>email</code></b>&nbsp;&nbsp;
 <small>string</small>&nbsp;
  &nbsp;
+ &nbsp;
                 <input type="text" style="display: none"
                               name="email"                data-endpoint="POSTapi-v1-auth-login"
-               value="qkunze@example.com"
+               value="gbailey@example.net"
                data-component="body">
     <br>
-<p>Must be a valid email address. Example: <code>qkunze@example.com</code></p>
+<p>Must be a valid email address. Example: <code>gbailey@example.net</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>password</code></b>&nbsp;&nbsp;
 <small>string</small>&nbsp;
  &nbsp;
+ &nbsp;
                 <input type="text" style="display: none"
                               name="password"                data-endpoint="POSTapi-v1-auth-login"
-               value="O[2UZ5ij-e/dl4m{o,"
+               value="|]|{+-"
                data-component="body">
     <br>
-<p>Example: <code>O[2UZ5ij-e/dl4m{o,</code></p>
+<p>Example: <code>|]|{+-</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>device_name</code></b>&nbsp;&nbsp;
 <small>string</small>&nbsp;
 <i>optional</i> &nbsp;
+ &nbsp;
                 <input type="text" style="display: none"
                               name="device_name"                data-endpoint="POSTapi-v1-auth-login"
-               value="dqamniihfqcoynlazghdt"
+               value="v"
                data-component="body">
     <br>
-<p>Must not be greater than 80 characters. Example: <code>dqamniihfqcoynlazghdt</code></p>
+<p>Must not be greater than 80 characters. Example: <code>v</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>two_factor_code</code></b>&nbsp;&nbsp;
 <small>string</small>&nbsp;
 <i>optional</i> &nbsp;
+ &nbsp;
                 <input type="text" style="display: none"
                               name="two_factor_code"                data-endpoint="POSTapi-v1-auth-login"
-               value="consequatur"
+               value="architecto"
                data-component="body">
     <br>
-<p>Example: <code>consequatur</code></p>
+<p>Example: <code>architecto</code></p>
         </div>
         </form>
 
@@ -556,20 +571,20 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/v1/auth/two-factor-challenge" \
+    "http://127.0.0.1:8000/api/v1/auth/two-factor-challenge" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"two_factor_token\": \"consequatur\",
-    \"code\": \"consequatur\",
-    \"device_name\": \"mqeopfuudtdsufvyvddqa\"
+    \"two_factor_token\": \"architecto\",
+    \"code\": \"architecto\",
+    \"device_name\": \"n\"
 }"
 </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/auth/two-factor-challenge"
+    "http://127.0.0.1:8000/api/v1/auth/two-factor-challenge"
 );
 
 const headers = {
@@ -578,9 +593,9 @@ const headers = {
 };
 
 let body = {
-    "two_factor_token": "consequatur",
-    "code": "consequatur",
-    "device_name": "mqeopfuudtdsufvyvddqa"
+    "two_factor_token": "architecto",
+    "code": "architecto",
+    "device_name": "n"
 };
 
 fetch(url, {
@@ -644,6 +659,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                 <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
 &nbsp;
  &nbsp;
+ &nbsp;
                 <input type="text" style="display: none"
                               name="Content-Type"                data-endpoint="POSTapi-v1-auth-two-factor-challenge"
                value="application/json"
@@ -654,6 +670,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                                 <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
 &nbsp;
+ &nbsp;
  &nbsp;
                 <input type="text" style="display: none"
                               name="Accept"                data-endpoint="POSTapi-v1-auth-two-factor-challenge"
@@ -667,34 +684,37 @@ You can check the Dev Tools console for debugging information.</code></pre>
             <b style="line-height: 2;"><code>two_factor_token</code></b>&nbsp;&nbsp;
 <small>string</small>&nbsp;
  &nbsp;
+ &nbsp;
                 <input type="text" style="display: none"
                               name="two_factor_token"                data-endpoint="POSTapi-v1-auth-two-factor-challenge"
-               value="consequatur"
+               value="architecto"
                data-component="body">
     <br>
-<p>Example: <code>consequatur</code></p>
+<p>Example: <code>architecto</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>code</code></b>&nbsp;&nbsp;
 <small>string</small>&nbsp;
  &nbsp;
+ &nbsp;
                 <input type="text" style="display: none"
                               name="code"                data-endpoint="POSTapi-v1-auth-two-factor-challenge"
-               value="consequatur"
+               value="architecto"
                data-component="body">
     <br>
-<p>Example: <code>consequatur</code></p>
+<p>Example: <code>architecto</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>device_name</code></b>&nbsp;&nbsp;
 <small>string</small>&nbsp;
 <i>optional</i> &nbsp;
+ &nbsp;
                 <input type="text" style="display: none"
                               name="device_name"                data-endpoint="POSTapi-v1-auth-two-factor-challenge"
-               value="mqeopfuudtdsufvyvddqa"
+               value="n"
                data-component="body">
     <br>
-<p>Must not be greater than 80 characters. Example: <code>mqeopfuudtdsufvyvddqa</code></p>
+<p>Must not be greater than 80 characters. Example: <code>n</code></p>
         </div>
         </form>
 
@@ -712,7 +732,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/v1/auth/logout" \
+    "http://127.0.0.1:8000/api/v1/auth/logout" \
     --header "Authorization: Bearer {YOUR_AUTH_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -720,7 +740,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/auth/logout"
+    "http://127.0.0.1:8000/api/v1/auth/logout"
 );
 
 const headers = {
@@ -728,6 +748,7 @@ const headers = {
     "Content-Type": "application/json",
     "Accept": "application/json",
 };
+
 
 fetch(url, {
     method: "POST",
@@ -789,6 +810,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                 <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
 &nbsp;
  &nbsp;
+ &nbsp;
                 <input type="text" style="display: none"
                               name="Authorization" class="auth-value"               data-endpoint="POSTapi-v1-auth-logout"
                value="Bearer {YOUR_AUTH_TOKEN}"
@@ -800,6 +822,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                 <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
 &nbsp;
  &nbsp;
+ &nbsp;
                 <input type="text" style="display: none"
                               name="Content-Type"                data-endpoint="POSTapi-v1-auth-logout"
                value="application/json"
@@ -810,6 +833,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                                 <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
 &nbsp;
+ &nbsp;
  &nbsp;
                 <input type="text" style="display: none"
                               name="Accept"                data-endpoint="POSTapi-v1-auth-logout"
@@ -824,7 +848,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
     
 
-                                <h2 id="bookings-GETapi-v1-bookings">List the authenticated user&#039;s bookings.</h2>
+                                <h2 id="bookings-GETapi-v1-bookings">GET api/v1/bookings</h2>
 
 <p>
 <small class="badge badge-darkred">requires authentication</small>
@@ -838,7 +862,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/v1/bookings" \
+    --get "http://127.0.0.1:8000/api/v1/bookings" \
     --header "Authorization: Bearer {YOUR_AUTH_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -846,7 +870,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/bookings"
+    "http://127.0.0.1:8000/api/v1/bookings"
 );
 
 const headers = {
@@ -854,6 +878,7 @@ const headers = {
     "Content-Type": "application/json",
     "Accept": "application/json",
 };
+
 
 fetch(url, {
     method: "GET",
@@ -872,7 +897,12 @@ fetch(url, {
             </summary>
             <pre><code class="language-http">cache-control: no-cache, private
 content-type: application/json
-access-control-allow-origin: http://localhost
+x-frame-options: SAMEORIGIN
+x-content-type-options: nosniff
+referrer-policy: strict-origin-when-cross-origin
+permissions-policy: camera=(), microphone=(), geolocation=()
+content-security-policy: default-src &#039;self&#039;; script-src &#039;self&#039; &#039;unsafe-inline&#039; &#039;unsafe-eval&#039; &#039;nonce-LNTsvXOT0bWL7W7saWavkQ==&#039; https://unpkg.com http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; style-src &#039;self&#039; &#039;unsafe-inline&#039; https://fonts.googleapis.com http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; font-src &#039;self&#039; https://fonts.gstatic.com data: http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; img-src &#039;self&#039; data: blob: https:; connect-src &#039;self&#039; https://assets2.lottiefiles.com https://unpkg.com http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; media-src &#039;self&#039; https://assets2.lottiefiles.com; worker-src &#039;self&#039; blob: http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; frame-ancestors &#039;self&#039;; base-uri &#039;self&#039;; form-action &#039;self&#039;
+access-control-allow-origin: http://127.0.0.1:8000
  </code></pre></details>         <pre>
 
 <code class="language-json" style="max-height: 300px;">{
@@ -933,6 +963,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                 <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
 &nbsp;
  &nbsp;
+ &nbsp;
                 <input type="text" style="display: none"
                               name="Authorization" class="auth-value"               data-endpoint="GETapi-v1-bookings"
                value="Bearer {YOUR_AUTH_TOKEN}"
@@ -943,6 +974,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                                 <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
 &nbsp;
+ &nbsp;
  &nbsp;
                 <input type="text" style="display: none"
                               name="Content-Type"                data-endpoint="GETapi-v1-bookings"
@@ -955,6 +987,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                 <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
 &nbsp;
  &nbsp;
+ &nbsp;
                 <input type="text" style="display: none"
                               name="Accept"                data-endpoint="GETapi-v1-bookings"
                value="application/json"
@@ -964,7 +997,169 @@ You can check the Dev Tools console for debugging information.</code></pre>
             </div>
                         </form>
 
-                    <h2 id="bookings-POSTapi-v1-bookings">Create a booking (availability checked in a transaction).</h2>
+                    <h2 id="bookings-GETapi-v1-bookings--id-">GET api/v1/bookings/{id}</h2>
+
+<p>
+<small class="badge badge-darkred">requires authentication</small>
+</p>
+
+
+
+<span id="example-requests-GETapi-v1-bookings--id-">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "http://127.0.0.1:8000/api/v1/bookings/16" \
+    --header "Authorization: Bearer {YOUR_AUTH_TOKEN}" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://127.0.0.1:8000/api/v1/bookings/16"
+);
+
+const headers = {
+    "Authorization": "Bearer {YOUR_AUTH_TOKEN}",
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETapi-v1-bookings--id-">
+            <blockquote>
+            <p>Example response (401):</p>
+        </blockquote>
+                <details class="annotation">
+            <summary style="cursor: pointer;">
+                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
+            </summary>
+            <pre><code class="language-http">cache-control: no-cache, private
+content-type: application/json
+x-frame-options: SAMEORIGIN
+x-content-type-options: nosniff
+referrer-policy: strict-origin-when-cross-origin
+permissions-policy: camera=(), microphone=(), geolocation=()
+content-security-policy: default-src &#039;self&#039;; script-src &#039;self&#039; &#039;unsafe-inline&#039; &#039;unsafe-eval&#039; &#039;nonce-rZAlRjQucA4UJ/Kv/SiVrw==&#039; https://unpkg.com http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; style-src &#039;self&#039; &#039;unsafe-inline&#039; https://fonts.googleapis.com http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; font-src &#039;self&#039; https://fonts.gstatic.com data: http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; img-src &#039;self&#039; data: blob: https:; connect-src &#039;self&#039; https://assets2.lottiefiles.com https://unpkg.com http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; media-src &#039;self&#039; https://assets2.lottiefiles.com; worker-src &#039;self&#039; blob: http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; frame-ancestors &#039;self&#039;; base-uri &#039;self&#039;; form-action &#039;self&#039;
+access-control-allow-origin: http://127.0.0.1:8000
+ </code></pre></details>         <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;success&quot;: false,
+    &quot;message&quot;: &quot;Unauthenticated.&quot;,
+    &quot;code&quot;: &quot;unauthenticated&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-v1-bookings--id-" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-v1-bookings--id-"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-v1-bookings--id-"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETapi-v1-bookings--id-" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-v1-bookings--id-">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-GETapi-v1-bookings--id-" data-method="GET"
+      data-path="api/v1/bookings/{id}"
+      data-authed="1"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-v1-bookings--id-', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-v1-bookings--id-"
+                    onclick="tryItOut('GETapi-v1-bookings--id-');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-v1-bookings--id-"
+                    onclick="cancelTryOut('GETapi-v1-bookings--id-');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-v1-bookings--id-"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/v1/bookings/{id}</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Authorization" class="auth-value"               data-endpoint="GETapi-v1-bookings--id-"
+               value="Bearer {YOUR_AUTH_TOKEN}"
+               data-component="header">
+    <br>
+<p>Example: <code>Bearer {YOUR_AUTH_TOKEN}</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="GETapi-v1-bookings--id-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="GETapi-v1-bookings--id-"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="id"                data-endpoint="GETapi-v1-bookings--id-"
+               value="16"
+               data-component="url">
+    <br>
+<p>The ID of the booking. Example: <code>16</code></p>
+            </div>
+                    </form>
+
+                    <h2 id="bookings-POSTapi-v1-bookings">POST api/v1/bookings</h2>
 
 <p>
 <small class="badge badge-darkred">requires authentication</small>
@@ -978,23 +1173,23 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/v1/bookings" \
+    "http://127.0.0.1:8000/api/v1/bookings" \
     --header "Authorization: Bearer {YOUR_AUTH_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"room_type_id\": \"consequatur\",
-    \"check_in\": \"2107-11-15\",
-    \"check_out\": \"2097-02-15\",
-    \"guests\": 13,
-    \"notes\": \"qeopfuudtdsufvyvddqam\"
+    \"room_type_id\": \"architecto\",
+    \"check_in\": \"2052-11-12\",
+    \"check_out\": \"2052-11-12\",
+    \"guests\": 22,
+    \"notes\": \"g\"
 }"
 </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/bookings"
+    "http://127.0.0.1:8000/api/v1/bookings"
 );
 
 const headers = {
@@ -1004,11 +1199,11 @@ const headers = {
 };
 
 let body = {
-    "room_type_id": "consequatur",
-    "check_in": "2107-11-15",
-    "check_out": "2097-02-15",
-    "guests": 13,
-    "notes": "qeopfuudtdsufvyvddqam"
+    "room_type_id": "architecto",
+    "check_in": "2052-11-12",
+    "check_out": "2052-11-12",
+    "guests": 22,
+    "notes": "g"
 };
 
 fetch(url, {
@@ -1072,6 +1267,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                 <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
 &nbsp;
  &nbsp;
+ &nbsp;
                 <input type="text" style="display: none"
                               name="Authorization" class="auth-value"               data-endpoint="POSTapi-v1-bookings"
                value="Bearer {YOUR_AUTH_TOKEN}"
@@ -1083,6 +1279,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                 <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
 &nbsp;
  &nbsp;
+ &nbsp;
                 <input type="text" style="display: none"
                               name="Content-Type"                data-endpoint="POSTapi-v1-bookings"
                value="application/json"
@@ -1093,6 +1290,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                                 <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
 &nbsp;
+ &nbsp;
  &nbsp;
                 <input type="text" style="display: none"
                               name="Accept"                data-endpoint="POSTapi-v1-bookings"
@@ -1106,50 +1304,55 @@ You can check the Dev Tools console for debugging information.</code></pre>
             <b style="line-height: 2;"><code>room_type_id</code></b>&nbsp;&nbsp;
 <small>string</small>&nbsp;
  &nbsp;
+ &nbsp;
                 <input type="text" style="display: none"
                               name="room_type_id"                data-endpoint="POSTapi-v1-bookings"
-               value="consequatur"
+               value="architecto"
                data-component="body">
     <br>
-<p>The <code>id</code> of an existing record in the room_types table. Example: <code>consequatur</code></p>
+<p>Must match an existing stored value. Example: <code>architecto</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>check_in</code></b>&nbsp;&nbsp;
 <small>string</small>&nbsp;
  &nbsp;
+ &nbsp;
                 <input type="text" style="display: none"
                               name="check_in"                data-endpoint="POSTapi-v1-bookings"
-               value="2107-11-15"
+               value="2052-11-12"
                data-component="body">
     <br>
-<p>Must be a valid date. Must be a date after or equal to <code>today</code>. Example: <code>2107-11-15</code></p>
+<p>Must be a valid date. Must be a date after or equal to <code>today</code>. Example: <code>2052-11-12</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>check_out</code></b>&nbsp;&nbsp;
 <small>string</small>&nbsp;
  &nbsp;
+ &nbsp;
                 <input type="text" style="display: none"
                               name="check_out"                data-endpoint="POSTapi-v1-bookings"
-               value="2097-02-15"
+               value="2052-11-12"
                data-component="body">
     <br>
-<p>Must be a valid date. Must be a date after <code>check_in</code>. Example: <code>2097-02-15</code></p>
+<p>Must be a valid date. Must be a date after <code>check_in</code>. Example: <code>2052-11-12</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>guests</code></b>&nbsp;&nbsp;
 <small>integer</small>&nbsp;
  &nbsp;
+ &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="guests"                data-endpoint="POSTapi-v1-bookings"
-               value="13"
+               value="22"
                data-component="body">
     <br>
-<p>Must be at least 1. Must not be greater than 50. Example: <code>13</code></p>
+<p>Must be at least 1. Must not be greater than 50. Example: <code>22</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>cancellation_policy</code></b>&nbsp;&nbsp;
 <small>string</small>&nbsp;
 <i>optional</i> &nbsp;
+ &nbsp;
                 <input type="text" style="display: none"
                               name="cancellation_policy"                data-endpoint="POSTapi-v1-bookings"
                value=""
@@ -1161,168 +1364,17 @@ You can check the Dev Tools console for debugging information.</code></pre>
             <b style="line-height: 2;"><code>notes</code></b>&nbsp;&nbsp;
 <small>string</small>&nbsp;
 <i>optional</i> &nbsp;
+ &nbsp;
                 <input type="text" style="display: none"
                               name="notes"                data-endpoint="POSTapi-v1-bookings"
-               value="qeopfuudtdsufvyvddqam"
+               value="g"
                data-component="body">
     <br>
-<p>Must not be greater than 1000 characters. Example: <code>qeopfuudtdsufvyvddqam</code></p>
+<p>Must not be greater than 1000 characters. Example: <code>g</code></p>
         </div>
         </form>
 
-                    <h2 id="bookings-GETapi-v1-bookings--id-">Show one of the user&#039;s bookings.</h2>
-
-<p>
-<small class="badge badge-darkred">requires authentication</small>
-</p>
-
-
-
-<span id="example-requests-GETapi-v1-bookings--id-">
-<blockquote>Example request:</blockquote>
-
-
-<div class="bash-example">
-    <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/v1/bookings/17" \
-    --header "Authorization: Bearer {YOUR_AUTH_TOKEN}" \
-    --header "Content-Type: application/json" \
-    --header "Accept: application/json"</code></pre></div>
-
-
-<div class="javascript-example">
-    <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/bookings/17"
-);
-
-const headers = {
-    "Authorization": "Bearer {YOUR_AUTH_TOKEN}",
-    "Content-Type": "application/json",
-    "Accept": "application/json",
-};
-
-fetch(url, {
-    method: "GET",
-    headers,
-}).then(response =&gt; response.json());</code></pre></div>
-
-</span>
-
-<span id="example-responses-GETapi-v1-bookings--id-">
-            <blockquote>
-            <p>Example response (401):</p>
-        </blockquote>
-                <details class="annotation">
-            <summary style="cursor: pointer;">
-                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
-            </summary>
-            <pre><code class="language-http">cache-control: no-cache, private
-content-type: application/json
-access-control-allow-origin: http://localhost
- </code></pre></details>         <pre>
-
-<code class="language-json" style="max-height: 300px;">{
-    &quot;success&quot;: false,
-    &quot;message&quot;: &quot;Unauthenticated.&quot;,
-    &quot;code&quot;: &quot;unauthenticated&quot;
-}</code>
- </pre>
-    </span>
-<span id="execution-results-GETapi-v1-bookings--id-" hidden>
-    <blockquote>Received response<span
-                id="execution-response-status-GETapi-v1-bookings--id-"></span>:
-    </blockquote>
-    <pre class="json"><code id="execution-response-content-GETapi-v1-bookings--id-"
-      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
-</span>
-<span id="execution-error-GETapi-v1-bookings--id-" hidden>
-    <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-GETapi-v1-bookings--id-">
-
-Tip: Check that you&#039;re properly connected to the network.
-If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
-You can check the Dev Tools console for debugging information.</code></pre>
-</span>
-<form id="form-GETapi-v1-bookings--id-" data-method="GET"
-      data-path="api/v1/bookings/{id}"
-      data-authed="1"
-      data-hasfiles="0"
-      data-isarraybody="0"
-      autocomplete="off"
-      onsubmit="event.preventDefault(); executeTryOut('GETapi-v1-bookings--id-', this);">
-    <h3>
-        Request&nbsp;&nbsp;&nbsp;
-                    <button type="button"
-                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-tryout-GETapi-v1-bookings--id-"
-                    onclick="tryItOut('GETapi-v1-bookings--id-');">Try it out ⚡
-            </button>
-            <button type="button"
-                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-canceltryout-GETapi-v1-bookings--id-"
-                    onclick="cancelTryOut('GETapi-v1-bookings--id-');" hidden>Cancel 🛑
-            </button>&nbsp;&nbsp;
-            <button type="submit"
-                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-GETapi-v1-bookings--id-"
-                    data-initial-text="Send Request 💥"
-                    data-loading-text="⏱ Sending..."
-                    hidden>Send Request 💥
-            </button>
-            </h3>
-            <p>
-            <small class="badge badge-green">GET</small>
-            <b><code>api/v1/bookings/{id}</code></b>
-        </p>
-                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Authorization" class="auth-value"               data-endpoint="GETapi-v1-bookings--id-"
-               value="Bearer {YOUR_AUTH_TOKEN}"
-               data-component="header">
-    <br>
-<p>Example: <code>Bearer {YOUR_AUTH_TOKEN}</code></p>
-            </div>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Content-Type"                data-endpoint="GETapi-v1-bookings--id-"
-               value="application/json"
-               data-component="header">
-    <br>
-<p>Example: <code>application/json</code></p>
-            </div>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Accept"                data-endpoint="GETapi-v1-bookings--id-"
-               value="application/json"
-               data-component="header">
-    <br>
-<p>Example: <code>application/json</code></p>
-            </div>
-                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="id"                data-endpoint="GETapi-v1-bookings--id-"
-               value="17"
-               data-component="url">
-    <br>
-<p>The ID of the booking. Example: <code>17</code></p>
-            </div>
-                    </form>
-
-                    <h2 id="bookings-POSTapi-v1-bookings--booking_id--cancel">Cancel an own pending/confirmed booking.</h2>
+                    <h2 id="bookings-POSTapi-v1-bookings--booking_id--cancel">POST api/v1/bookings/{booking_id}/cancel</h2>
 
 <p>
 <small class="badge badge-darkred">requires authentication</small>
@@ -1336,7 +1388,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/v1/bookings/17/cancel" \
+    "http://127.0.0.1:8000/api/v1/bookings/16/cancel" \
     --header "Authorization: Bearer {YOUR_AUTH_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -1344,7 +1396,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/bookings/17/cancel"
+    "http://127.0.0.1:8000/api/v1/bookings/16/cancel"
 );
 
 const headers = {
@@ -1352,6 +1404,7 @@ const headers = {
     "Content-Type": "application/json",
     "Accept": "application/json",
 };
+
 
 fetch(url, {
     method: "POST",
@@ -1413,6 +1466,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                 <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
 &nbsp;
  &nbsp;
+ &nbsp;
                 <input type="text" style="display: none"
                               name="Authorization" class="auth-value"               data-endpoint="POSTapi-v1-bookings--booking_id--cancel"
                value="Bearer {YOUR_AUTH_TOKEN}"
@@ -1424,6 +1478,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                 <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
 &nbsp;
  &nbsp;
+ &nbsp;
                 <input type="text" style="display: none"
                               name="Content-Type"                data-endpoint="POSTapi-v1-bookings--booking_id--cancel"
                value="application/json"
@@ -1434,6 +1489,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                                 <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
 &nbsp;
+ &nbsp;
  &nbsp;
                 <input type="text" style="display: none"
                               name="Accept"                data-endpoint="POSTapi-v1-bookings--booking_id--cancel"
@@ -1447,12 +1503,13 @@ You can check the Dev Tools console for debugging information.</code></pre>
                 <b style="line-height: 2;"><code>booking_id</code></b>&nbsp;&nbsp;
 <small>integer</small>&nbsp;
  &nbsp;
+ &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="booking_id"                data-endpoint="POSTapi-v1-bookings--booking_id--cancel"
-               value="17"
+               value="16"
                data-component="url">
     <br>
-<p>The ID of the booking. Example: <code>17</code></p>
+<p>The ID of the booking. Example: <code>16</code></p>
             </div>
                     </form>
 
@@ -1473,20 +1530,21 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/properties" \
+    --get "http://127.0.0.1:8000/api/properties" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/properties"
+    "http://127.0.0.1:8000/api/properties"
 );
 
 const headers = {
     "Content-Type": "application/json",
     "Accept": "application/json",
 };
+
 
 fetch(url, {
     method: "GET",
@@ -1507,16 +1565,219 @@ fetch(url, {
 content-type: application/json
 x-ratelimit-limit: 60
 x-ratelimit-remaining: 59
-access-control-allow-origin: http://localhost
+x-frame-options: SAMEORIGIN
+x-content-type-options: nosniff
+referrer-policy: strict-origin-when-cross-origin
+permissions-policy: camera=(), microphone=(), geolocation=()
+content-security-policy: default-src &#039;self&#039;; script-src &#039;self&#039; &#039;unsafe-inline&#039; &#039;unsafe-eval&#039; &#039;nonce-CaRrKTATuavQvGvJKtv95w==&#039; https://unpkg.com http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; style-src &#039;self&#039; &#039;unsafe-inline&#039; https://fonts.googleapis.com http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; font-src &#039;self&#039; https://fonts.gstatic.com data: http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; img-src &#039;self&#039; data: blob: https:; connect-src &#039;self&#039; https://assets2.lottiefiles.com https://unpkg.com http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; media-src &#039;self&#039; https://assets2.lottiefiles.com; worker-src &#039;self&#039; blob: http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; frame-ancestors &#039;self&#039;; base-uri &#039;self&#039;; form-action &#039;self&#039;
+access-control-allow-origin: http://127.0.0.1:8000
  </code></pre></details>         <pre>
 
 <code class="language-json" style="max-height: 300px;">{
-    &quot;data&quot;: [],
+    &quot;data&quot;: [
+        {
+            &quot;id&quot;: 1,
+            &quot;title&quot;: &quot;Gulberg Apartment for Sale&quot;,
+            &quot;slug&quot;: &quot;gulberg-apartment-for-sale&quot;,
+            &quot;location&quot;: &quot;Gulberg III, Lahore&quot;,
+            &quot;type&quot;: &quot;Apartment&quot;,
+            &quot;listing_type_id&quot;: 2,
+            &quot;purpose&quot;: &quot;sale&quot;,
+            &quot;price&quot;: 21000000,
+            &quot;price_unit&quot;: &quot;total&quot;,
+            &quot;currency&quot;: &quot;PKR&quot;,
+            &quot;country_id&quot;: 1,
+            &quot;organization_id&quot;: null,
+            &quot;branch_name&quot;: null,
+            &quot;status&quot;: &quot;published&quot;,
+            &quot;primary_image_url&quot;: &quot;/images/listings/apartment-1.jpg&quot;,
+            &quot;bedrooms&quot;: 2,
+            &quot;bathrooms&quot;: 2,
+            &quot;attributes&quot;: {
+                &quot;bedrooms&quot;: 2,
+                &quot;bathrooms&quot;: 2,
+                &quot;floor&quot;: 5,
+                &quot;furnished&quot;: true
+            },
+            &quot;images&quot;: [],
+            &quot;created_at&quot;: &quot;2026-10-20T01:09:48+05:00&quot;
+        },
+        {
+            &quot;id&quot;: 2,
+            &quot;title&quot;: &quot;DHA Apartment for Rent&quot;,
+            &quot;slug&quot;: &quot;dha-apartment-for-rent&quot;,
+            &quot;location&quot;: &quot;DHA Phase 5, Karachi&quot;,
+            &quot;type&quot;: &quot;Apartment&quot;,
+            &quot;listing_type_id&quot;: 2,
+            &quot;purpose&quot;: &quot;rent&quot;,
+            &quot;price&quot;: 180000,
+            &quot;price_unit&quot;: &quot;per_month&quot;,
+            &quot;currency&quot;: &quot;PKR&quot;,
+            &quot;country_id&quot;: 1,
+            &quot;organization_id&quot;: null,
+            &quot;branch_name&quot;: null,
+            &quot;status&quot;: &quot;published&quot;,
+            &quot;primary_image_url&quot;: &quot;/images/listings/apartment-2.jpg&quot;,
+            &quot;bedrooms&quot;: 3,
+            &quot;bathrooms&quot;: 2,
+            &quot;attributes&quot;: {
+                &quot;bedrooms&quot;: 3,
+                &quot;bathrooms&quot;: 2,
+                &quot;floor&quot;: 8,
+                &quot;furnished&quot;: false
+            },
+            &quot;images&quot;: [],
+            &quot;created_at&quot;: &quot;2026-10-20T01:09:48+05:00&quot;
+        },
+        {
+            &quot;id&quot;: 3,
+            &quot;title&quot;: &quot;Model Town Family House&quot;,
+            &quot;slug&quot;: &quot;model-town-family-house&quot;,
+            &quot;location&quot;: &quot;Model Town, Lahore&quot;,
+            &quot;type&quot;: &quot;House&quot;,
+            &quot;listing_type_id&quot;: 1,
+            &quot;purpose&quot;: &quot;sale&quot;,
+            &quot;price&quot;: 45000000,
+            &quot;price_unit&quot;: &quot;total&quot;,
+            &quot;currency&quot;: &quot;PKR&quot;,
+            &quot;country_id&quot;: 1,
+            &quot;organization_id&quot;: null,
+            &quot;branch_name&quot;: null,
+            &quot;status&quot;: &quot;published&quot;,
+            &quot;primary_image_url&quot;: &quot;/images/listings/house-1.jpg&quot;,
+            &quot;bedrooms&quot;: 5,
+            &quot;bathrooms&quot;: 4,
+            &quot;attributes&quot;: {
+                &quot;bedrooms&quot;: 5,
+                &quot;bathrooms&quot;: 4,
+                &quot;garage&quot;: true
+            },
+            &quot;images&quot;: [],
+            &quot;created_at&quot;: &quot;2026-10-20T01:09:48+05:00&quot;
+        },
+        {
+            &quot;id&quot;: 4,
+            &quot;title&quot;: &quot;Bahria Town Residential Plot&quot;,
+            &quot;slug&quot;: &quot;bahria-town-residential-plot&quot;,
+            &quot;location&quot;: &quot;Bahria Town, Lahore&quot;,
+            &quot;type&quot;: &quot;Plot&quot;,
+            &quot;listing_type_id&quot;: 3,
+            &quot;purpose&quot;: &quot;sale&quot;,
+            &quot;price&quot;: 35000000,
+            &quot;price_unit&quot;: &quot;total&quot;,
+            &quot;currency&quot;: &quot;PKR&quot;,
+            &quot;country_id&quot;: 1,
+            &quot;organization_id&quot;: null,
+            &quot;branch_name&quot;: null,
+            &quot;status&quot;: &quot;published&quot;,
+            &quot;primary_image_url&quot;: &quot;/images/listings/plot-1.jpg&quot;,
+            &quot;bedrooms&quot;: null,
+            &quot;bathrooms&quot;: null,
+            &quot;attributes&quot;: {
+                &quot;plot_number&quot;: &quot;B-214&quot;,
+                &quot;facing&quot;: &quot;North&quot;
+            },
+            &quot;images&quot;: [],
+            &quot;created_at&quot;: &quot;2026-10-20T01:09:48+05:00&quot;
+        },
+        {
+            &quot;id&quot;: 5,
+            &quot;title&quot;: &quot;Blue Area Boutique Hotel&quot;,
+            &quot;slug&quot;: &quot;blue-area-boutique-hotel&quot;,
+            &quot;location&quot;: &quot;Blue Area, Islamabad&quot;,
+            &quot;type&quot;: &quot;Hotel&quot;,
+            &quot;listing_type_id&quot;: 4,
+            &quot;purpose&quot;: &quot;short_stay&quot;,
+            &quot;price&quot;: 25000,
+            &quot;price_unit&quot;: &quot;per_night&quot;,
+            &quot;currency&quot;: &quot;PKR&quot;,
+            &quot;country_id&quot;: 1,
+            &quot;organization_id&quot;: 1,
+            &quot;branch_name&quot;: &quot;Blue Area Flagship&quot;,
+            &quot;status&quot;: &quot;published&quot;,
+            &quot;primary_image_url&quot;: &quot;/images/listings/hotel-1.jpg&quot;,
+            &quot;bedrooms&quot;: null,
+            &quot;bathrooms&quot;: null,
+            &quot;attributes&quot;: {
+                &quot;star_rating&quot;: &quot;5&quot;,
+                &quot;rooms&quot;: 42,
+                &quot;breakfast_included&quot;: true
+            },
+            &quot;images&quot;: [],
+            &quot;created_at&quot;: &quot;2026-10-20T01:09:48+05:00&quot;
+        },
+        {
+            &quot;id&quot;: 6,
+            &quot;title&quot;: &quot;Maskanoor Stays Islamabad&quot;,
+            &quot;slug&quot;: &quot;maskanoor-stays-islamabad&quot;,
+            &quot;location&quot;: &quot;Islamabad&quot;,
+            &quot;type&quot;: &quot;Hotel&quot;,
+            &quot;listing_type_id&quot;: 4,
+            &quot;purpose&quot;: &quot;short_stay&quot;,
+            &quot;price&quot;: 15000,
+            &quot;price_unit&quot;: &quot;per_night&quot;,
+            &quot;currency&quot;: &quot;PKR&quot;,
+            &quot;country_id&quot;: 1,
+            &quot;organization_id&quot;: 2,
+            &quot;branch_name&quot;: &quot;Islamabad&quot;,
+            &quot;status&quot;: &quot;published&quot;,
+            &quot;primary_image_url&quot;: &quot;&quot;,
+            &quot;bedrooms&quot;: null,
+            &quot;bathrooms&quot;: null,
+            &quot;attributes&quot;: [],
+            &quot;images&quot;: [],
+            &quot;created_at&quot;: &quot;2026-10-20T01:09:48+05:00&quot;
+        },
+        {
+            &quot;id&quot;: 7,
+            &quot;title&quot;: &quot;Maskanoor Stays Dubai&quot;,
+            &quot;slug&quot;: &quot;maskanoor-stays-dubai&quot;,
+            &quot;location&quot;: &quot;Dubai&quot;,
+            &quot;type&quot;: &quot;Hotel&quot;,
+            &quot;listing_type_id&quot;: 4,
+            &quot;purpose&quot;: &quot;short_stay&quot;,
+            &quot;price&quot;: 15000,
+            &quot;price_unit&quot;: &quot;per_night&quot;,
+            &quot;currency&quot;: &quot;AED&quot;,
+            &quot;country_id&quot;: 3,
+            &quot;organization_id&quot;: 2,
+            &quot;branch_name&quot;: &quot;Dubai&quot;,
+            &quot;status&quot;: &quot;published&quot;,
+            &quot;primary_image_url&quot;: &quot;&quot;,
+            &quot;bedrooms&quot;: null,
+            &quot;bathrooms&quot;: null,
+            &quot;attributes&quot;: [],
+            &quot;images&quot;: [],
+            &quot;created_at&quot;: &quot;2026-10-20T01:09:48+05:00&quot;
+        },
+        {
+            &quot;id&quot;: 8,
+            &quot;title&quot;: &quot;Maskanoor Stays Kuala Lumpur&quot;,
+            &quot;slug&quot;: &quot;maskanoor-stays-kuala-lumpur&quot;,
+            &quot;location&quot;: &quot;Kuala Lumpur&quot;,
+            &quot;type&quot;: &quot;Hotel&quot;,
+            &quot;listing_type_id&quot;: 4,
+            &quot;purpose&quot;: &quot;short_stay&quot;,
+            &quot;price&quot;: 15000,
+            &quot;price_unit&quot;: &quot;per_night&quot;,
+            &quot;currency&quot;: &quot;MYR&quot;,
+            &quot;country_id&quot;: 5,
+            &quot;organization_id&quot;: 2,
+            &quot;branch_name&quot;: &quot;Kuala Lumpur&quot;,
+            &quot;status&quot;: &quot;published&quot;,
+            &quot;primary_image_url&quot;: &quot;&quot;,
+            &quot;bedrooms&quot;: null,
+            &quot;bathrooms&quot;: null,
+            &quot;attributes&quot;: [],
+            &quot;images&quot;: [],
+            &quot;created_at&quot;: &quot;2026-10-20T01:09:48+05:00&quot;
+        }
+    ],
     &quot;meta&quot;: {
         &quot;current_page&quot;: 1,
         &quot;last_page&quot;: 1,
         &quot;per_page&quot;: 15,
-        &quot;total&quot;: 0
+        &quot;total&quot;: 8
     }
 }</code>
  </pre>
@@ -1572,6 +1833,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                 <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
 &nbsp;
  &nbsp;
+ &nbsp;
                 <input type="text" style="display: none"
                               name="Content-Type"                data-endpoint="GETapi-properties"
                value="application/json"
@@ -1583,6 +1845,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                 <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
 &nbsp;
  &nbsp;
+ &nbsp;
                 <input type="text" style="display: none"
                               name="Accept"                data-endpoint="GETapi-properties"
                value="application/json"
@@ -1591,6 +1854,339 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <p>Example: <code>application/json</code></p>
             </div>
                         </form>
+
+                    <h2 id="endpoints-GETapi-v1-countries">GET api/v1/countries</h2>
+
+<p>
+</p>
+
+
+
+<span id="example-requests-GETapi-v1-countries">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "http://127.0.0.1:8000/api/v1/countries" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://127.0.0.1:8000/api/v1/countries"
+);
+
+const headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETapi-v1-countries">
+            <blockquote>
+            <p>Example response (200):</p>
+        </blockquote>
+                <details class="annotation">
+            <summary style="cursor: pointer;">
+                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
+            </summary>
+            <pre><code class="language-http">cache-control: no-cache, private
+content-type: application/json
+x-ratelimit-limit: 60
+x-ratelimit-remaining: 56
+x-frame-options: SAMEORIGIN
+x-content-type-options: nosniff
+referrer-policy: strict-origin-when-cross-origin
+permissions-policy: camera=(), microphone=(), geolocation=()
+content-security-policy: default-src &#039;self&#039;; script-src &#039;self&#039; &#039;unsafe-inline&#039; &#039;unsafe-eval&#039; &#039;nonce-cop+m/GZKZ/ctcsP6sLwOQ==&#039; https://unpkg.com http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; style-src &#039;self&#039; &#039;unsafe-inline&#039; https://fonts.googleapis.com http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; font-src &#039;self&#039; https://fonts.gstatic.com data: http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; img-src &#039;self&#039; data: blob: https:; connect-src &#039;self&#039; https://assets2.lottiefiles.com https://unpkg.com http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; media-src &#039;self&#039; https://assets2.lottiefiles.com; worker-src &#039;self&#039; blob: http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; frame-ancestors &#039;self&#039;; base-uri &#039;self&#039;; form-action &#039;self&#039;
+access-control-allow-origin: http://127.0.0.1:8000
+ </code></pre></details>         <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;success&quot;: true,
+    &quot;data&quot;: [
+        {
+            &quot;id&quot;: 1,
+            &quot;iso2&quot;: &quot;PK&quot;,
+            &quot;iso3&quot;: null,
+            &quot;name&quot;: &quot;Pakistan&quot;,
+            &quot;currency_code&quot;: &quot;PKR&quot;,
+            &quot;default_locale&quot;: &quot;en&quot;
+        },
+        {
+            &quot;id&quot;: 2,
+            &quot;iso2&quot;: &quot;SA&quot;,
+            &quot;iso3&quot;: null,
+            &quot;name&quot;: &quot;Saudi Arabia&quot;,
+            &quot;currency_code&quot;: &quot;SAR&quot;,
+            &quot;default_locale&quot;: &quot;ar&quot;
+        },
+        {
+            &quot;id&quot;: 3,
+            &quot;iso2&quot;: &quot;AE&quot;,
+            &quot;iso3&quot;: null,
+            &quot;name&quot;: &quot;United Arab Emirates&quot;,
+            &quot;currency_code&quot;: &quot;AED&quot;,
+            &quot;default_locale&quot;: &quot;en&quot;
+        },
+        {
+            &quot;id&quot;: 4,
+            &quot;iso2&quot;: &quot;QA&quot;,
+            &quot;iso3&quot;: null,
+            &quot;name&quot;: &quot;Qatar&quot;,
+            &quot;currency_code&quot;: &quot;QAR&quot;,
+            &quot;default_locale&quot;: &quot;ar&quot;
+        },
+        {
+            &quot;id&quot;: 5,
+            &quot;iso2&quot;: &quot;MY&quot;,
+            &quot;iso3&quot;: null,
+            &quot;name&quot;: &quot;Malaysia&quot;,
+            &quot;currency_code&quot;: &quot;MYR&quot;,
+            &quot;default_locale&quot;: &quot;en&quot;
+        },
+        {
+            &quot;id&quot;: 6,
+            &quot;iso2&quot;: &quot;GB&quot;,
+            &quot;iso3&quot;: null,
+            &quot;name&quot;: &quot;United Kingdom&quot;,
+            &quot;currency_code&quot;: &quot;GBP&quot;,
+            &quot;default_locale&quot;: &quot;en&quot;
+        }
+    ]
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-v1-countries" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-v1-countries"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-v1-countries"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETapi-v1-countries" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-v1-countries">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-GETapi-v1-countries" data-method="GET"
+      data-path="api/v1/countries"
+      data-authed="0"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-v1-countries', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-v1-countries"
+                    onclick="tryItOut('GETapi-v1-countries');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-v1-countries"
+                    onclick="cancelTryOut('GETapi-v1-countries');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-v1-countries"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/v1/countries</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="GETapi-v1-countries"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="GETapi-v1-countries"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        </form>
+
+                    <h2 id="endpoints-GETapi-v1-countries--country_id--cities">GET api/v1/countries/{country_id}/cities</h2>
+
+<p>
+</p>
+
+
+
+<span id="example-requests-GETapi-v1-countries--country_id--cities">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request GET \
+    --get "http://127.0.0.1:8000/api/v1/countries/1/cities" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://127.0.0.1:8000/api/v1/countries/1/cities"
+);
+
+const headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+
+fetch(url, {
+    method: "GET",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-GETapi-v1-countries--country_id--cities">
+            <blockquote>
+            <p>Example response (500):</p>
+        </blockquote>
+                <details class="annotation">
+            <summary style="cursor: pointer;">
+                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
+            </summary>
+            <pre><code class="language-http">cache-control: no-cache, private
+content-type: application/json
+x-ratelimit-limit: 60
+x-ratelimit-remaining: 55
+x-frame-options: SAMEORIGIN
+x-content-type-options: nosniff
+referrer-policy: strict-origin-when-cross-origin
+permissions-policy: camera=(), microphone=(), geolocation=()
+content-security-policy: default-src &#039;self&#039;; script-src &#039;self&#039; &#039;unsafe-inline&#039; &#039;unsafe-eval&#039; &#039;nonce-q8jf+pHit0V2nhplmc7W4g==&#039; https://unpkg.com http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; style-src &#039;self&#039; &#039;unsafe-inline&#039; https://fonts.googleapis.com http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; font-src &#039;self&#039; https://fonts.gstatic.com data: http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; img-src &#039;self&#039; data: blob: https:; connect-src &#039;self&#039; https://assets2.lottiefiles.com https://unpkg.com http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; media-src &#039;self&#039; https://assets2.lottiefiles.com; worker-src &#039;self&#039; blob: http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; frame-ancestors &#039;self&#039;; base-uri &#039;self&#039;; form-action &#039;self&#039;
+access-control-allow-origin: http://127.0.0.1:8000
+ </code></pre></details>         <pre>
+
+<code class="language-json" style="max-height: 300px;">{
+    &quot;success&quot;: false,
+    &quot;message&quot;: &quot;Server error.&quot;,
+    &quot;code&quot;: &quot;http_error&quot;
+}</code>
+ </pre>
+    </span>
+<span id="execution-results-GETapi-v1-countries--country_id--cities" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-GETapi-v1-countries--country_id--cities"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-GETapi-v1-countries--country_id--cities"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-GETapi-v1-countries--country_id--cities" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-GETapi-v1-countries--country_id--cities">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-GETapi-v1-countries--country_id--cities" data-method="GET"
+      data-path="api/v1/countries/{country_id}/cities"
+      data-authed="0"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('GETapi-v1-countries--country_id--cities', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-GETapi-v1-countries--country_id--cities"
+                    onclick="tryItOut('GETapi-v1-countries--country_id--cities');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-GETapi-v1-countries--country_id--cities"
+                    onclick="cancelTryOut('GETapi-v1-countries--country_id--cities');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-GETapi-v1-countries--country_id--cities"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-green">GET</small>
+            <b><code>api/v1/countries/{country_id}/cities</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Content-Type"                data-endpoint="GETapi-v1-countries--country_id--cities"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="Accept"                data-endpoint="GETapi-v1-countries--country_id--cities"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
+                    <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>country_id</code></b>&nbsp;&nbsp;
+<small>integer</small>&nbsp;
+ &nbsp;
+ &nbsp;
+                <input type="number" style="display: none"
+               step="any"               name="country_id"                data-endpoint="GETapi-v1-countries--country_id--cities"
+               value="1"
+               data-component="url">
+    <br>
+<p>The ID of the country. Example: <code>1</code></p>
+            </div>
+                    </form>
 
                 <h1 id="favorites">Favorites</h1>
 
@@ -1610,7 +2206,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/v1/favorites" \
+    --get "http://127.0.0.1:8000/api/v1/favorites" \
     --header "Authorization: Bearer {YOUR_AUTH_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -1618,7 +2214,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/favorites"
+    "http://127.0.0.1:8000/api/v1/favorites"
 );
 
 const headers = {
@@ -1626,6 +2222,7 @@ const headers = {
     "Content-Type": "application/json",
     "Accept": "application/json",
 };
+
 
 fetch(url, {
     method: "GET",
@@ -1644,7 +2241,12 @@ fetch(url, {
             </summary>
             <pre><code class="language-http">cache-control: no-cache, private
 content-type: application/json
-access-control-allow-origin: http://localhost
+x-frame-options: SAMEORIGIN
+x-content-type-options: nosniff
+referrer-policy: strict-origin-when-cross-origin
+permissions-policy: camera=(), microphone=(), geolocation=()
+content-security-policy: default-src &#039;self&#039;; script-src &#039;self&#039; &#039;unsafe-inline&#039; &#039;unsafe-eval&#039; &#039;nonce-xbZREjz8YwxGlGMuPdtTqw==&#039; https://unpkg.com http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; style-src &#039;self&#039; &#039;unsafe-inline&#039; https://fonts.googleapis.com http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; font-src &#039;self&#039; https://fonts.gstatic.com data: http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; img-src &#039;self&#039; data: blob: https:; connect-src &#039;self&#039; https://assets2.lottiefiles.com https://unpkg.com http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; media-src &#039;self&#039; https://assets2.lottiefiles.com; worker-src &#039;self&#039; blob: http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; frame-ancestors &#039;self&#039;; base-uri &#039;self&#039;; form-action &#039;self&#039;
+access-control-allow-origin: http://127.0.0.1:8000
  </code></pre></details>         <pre>
 
 <code class="language-json" style="max-height: 300px;">{
@@ -1705,6 +2307,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                 <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
 &nbsp;
  &nbsp;
+ &nbsp;
                 <input type="text" style="display: none"
                               name="Authorization" class="auth-value"               data-endpoint="GETapi-v1-favorites"
                value="Bearer {YOUR_AUTH_TOKEN}"
@@ -1715,6 +2318,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                                 <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
 &nbsp;
+ &nbsp;
  &nbsp;
                 <input type="text" style="display: none"
                               name="Content-Type"                data-endpoint="GETapi-v1-favorites"
@@ -1727,6 +2331,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                 <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
 &nbsp;
  &nbsp;
+ &nbsp;
                 <input type="text" style="display: none"
                               name="Accept"                data-endpoint="GETapi-v1-favorites"
                value="application/json"
@@ -1736,7 +2341,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
             </div>
                         </form>
 
-                    <h2 id="favorites-POSTapi-v1-favorites--listing_id-">Toggle favorite for a listing.</h2>
+                    <h2 id="favorites-POSTapi-v1-favorites--listing_slug-">Toggle favorite for a listing.</h2>
 
 <p>
 <small class="badge badge-darkred">requires authentication</small>
@@ -1744,13 +2349,13 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 
 
-<span id="example-requests-POSTapi-v1-favorites--listing_id-">
+<span id="example-requests-POSTapi-v1-favorites--listing_slug-">
 <blockquote>Example request:</blockquote>
 
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/v1/favorites/17" \
+    "http://127.0.0.1:8000/api/v1/favorites/gulberg-apartment-for-sale" \
     --header "Authorization: Bearer {YOUR_AUTH_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -1758,7 +2363,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/favorites/17"
+    "http://127.0.0.1:8000/api/v1/favorites/gulberg-apartment-for-sale"
 );
 
 const headers = {
@@ -1767,6 +2372,7 @@ const headers = {
     "Accept": "application/json",
 };
 
+
 fetch(url, {
     method: "POST",
     headers,
@@ -1774,45 +2380,45 @@ fetch(url, {
 
 </span>
 
-<span id="example-responses-POSTapi-v1-favorites--listing_id-">
+<span id="example-responses-POSTapi-v1-favorites--listing_slug-">
 </span>
-<span id="execution-results-POSTapi-v1-favorites--listing_id-" hidden>
+<span id="execution-results-POSTapi-v1-favorites--listing_slug-" hidden>
     <blockquote>Received response<span
-                id="execution-response-status-POSTapi-v1-favorites--listing_id-"></span>:
+                id="execution-response-status-POSTapi-v1-favorites--listing_slug-"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-POSTapi-v1-favorites--listing_id-"
+    <pre class="json"><code id="execution-response-content-POSTapi-v1-favorites--listing_slug-"
       data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
-<span id="execution-error-POSTapi-v1-favorites--listing_id-" hidden>
+<span id="execution-error-POSTapi-v1-favorites--listing_slug-" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-POSTapi-v1-favorites--listing_id-">
+    <pre><code id="execution-error-message-POSTapi-v1-favorites--listing_slug-">
 
 Tip: Check that you&#039;re properly connected to the network.
 If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
 You can check the Dev Tools console for debugging information.</code></pre>
 </span>
-<form id="form-POSTapi-v1-favorites--listing_id-" data-method="POST"
-      data-path="api/v1/favorites/{listing_id}"
+<form id="form-POSTapi-v1-favorites--listing_slug-" data-method="POST"
+      data-path="api/v1/favorites/{listing_slug}"
       data-authed="1"
       data-hasfiles="0"
       data-isarraybody="0"
       autocomplete="off"
-      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v1-favorites--listing_id-', this);">
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-v1-favorites--listing_slug-', this);">
     <h3>
         Request&nbsp;&nbsp;&nbsp;
                     <button type="button"
                     style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-tryout-POSTapi-v1-favorites--listing_id-"
-                    onclick="tryItOut('POSTapi-v1-favorites--listing_id-');">Try it out ⚡
+                    id="btn-tryout-POSTapi-v1-favorites--listing_slug-"
+                    onclick="tryItOut('POSTapi-v1-favorites--listing_slug-');">Try it out ⚡
             </button>
             <button type="button"
                     style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-canceltryout-POSTapi-v1-favorites--listing_id-"
-                    onclick="cancelTryOut('POSTapi-v1-favorites--listing_id-');" hidden>Cancel 🛑
+                    id="btn-canceltryout-POSTapi-v1-favorites--listing_slug-"
+                    onclick="cancelTryOut('POSTapi-v1-favorites--listing_slug-');" hidden>Cancel 🛑
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-POSTapi-v1-favorites--listing_id-"
+                    id="btn-executetryout-POSTapi-v1-favorites--listing_slug-"
                     data-initial-text="Send Request 💥"
                     data-loading-text="⏱ Sending..."
                     hidden>Send Request 💥
@@ -1820,15 +2426,16 @@ You can check the Dev Tools console for debugging information.</code></pre>
             </h3>
             <p>
             <small class="badge badge-black">POST</small>
-            <b><code>api/v1/favorites/{listing_id}</code></b>
+            <b><code>api/v1/favorites/{listing_slug}</code></b>
         </p>
                 <h4 class="fancy-heading-panel"><b>Headers</b></h4>
                                 <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
 &nbsp;
  &nbsp;
+ &nbsp;
                 <input type="text" style="display: none"
-                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-v1-favorites--listing_id-"
+                              name="Authorization" class="auth-value"               data-endpoint="POSTapi-v1-favorites--listing_slug-"
                value="Bearer {YOUR_AUTH_TOKEN}"
                data-component="header">
     <br>
@@ -1838,8 +2445,9 @@ You can check the Dev Tools console for debugging information.</code></pre>
                 <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
 &nbsp;
  &nbsp;
+ &nbsp;
                 <input type="text" style="display: none"
-                              name="Content-Type"                data-endpoint="POSTapi-v1-favorites--listing_id-"
+                              name="Content-Type"                data-endpoint="POSTapi-v1-favorites--listing_slug-"
                value="application/json"
                data-component="header">
     <br>
@@ -1849,8 +2457,9 @@ You can check the Dev Tools console for debugging information.</code></pre>
                 <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
 &nbsp;
  &nbsp;
+ &nbsp;
                 <input type="text" style="display: none"
-                              name="Accept"                data-endpoint="POSTapi-v1-favorites--listing_id-"
+                              name="Accept"                data-endpoint="POSTapi-v1-favorites--listing_slug-"
                value="application/json"
                data-component="header">
     <br>
@@ -1858,15 +2467,16 @@ You can check the Dev Tools console for debugging information.</code></pre>
             </div>
                         <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
                     <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>listing_id</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
+                <b style="line-height: 2;"><code>listing_slug</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
  &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="listing_id"                data-endpoint="POSTapi-v1-favorites--listing_id-"
-               value="17"
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="listing_slug"                data-endpoint="POSTapi-v1-favorites--listing_slug-"
+               value="gulberg-apartment-for-sale"
                data-component="url">
     <br>
-<p>The ID of the listing. Example: <code>17</code></p>
+<p>The slug of the listing. Example: <code>gulberg-apartment-for-sale</code></p>
             </div>
                     </form>
 
@@ -1887,20 +2497,21 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/v1/listings" \
+    --get "http://127.0.0.1:8000/api/v1/listings" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/listings"
+    "http://127.0.0.1:8000/api/v1/listings"
 );
 
 const headers = {
     "Content-Type": "application/json",
     "Accept": "application/json",
 };
+
 
 fetch(url, {
     method: "GET",
@@ -1921,17 +2532,220 @@ fetch(url, {
 content-type: application/json
 x-ratelimit-limit: 60
 x-ratelimit-remaining: 58
-access-control-allow-origin: http://localhost
+x-frame-options: SAMEORIGIN
+x-content-type-options: nosniff
+referrer-policy: strict-origin-when-cross-origin
+permissions-policy: camera=(), microphone=(), geolocation=()
+content-security-policy: default-src &#039;self&#039;; script-src &#039;self&#039; &#039;unsafe-inline&#039; &#039;unsafe-eval&#039; &#039;nonce-+g5HBQt7ty+aERp7qmMqlg==&#039; https://unpkg.com http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; style-src &#039;self&#039; &#039;unsafe-inline&#039; https://fonts.googleapis.com http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; font-src &#039;self&#039; https://fonts.gstatic.com data: http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; img-src &#039;self&#039; data: blob: https:; connect-src &#039;self&#039; https://assets2.lottiefiles.com https://unpkg.com http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; media-src &#039;self&#039; https://assets2.lottiefiles.com; worker-src &#039;self&#039; blob: http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; frame-ancestors &#039;self&#039;; base-uri &#039;self&#039;; form-action &#039;self&#039;
+access-control-allow-origin: http://127.0.0.1:8000
  </code></pre></details>         <pre>
 
 <code class="language-json" style="max-height: 300px;">{
     &quot;success&quot;: true,
-    &quot;data&quot;: [],
+    &quot;data&quot;: [
+        {
+            &quot;id&quot;: 1,
+            &quot;title&quot;: &quot;Gulberg Apartment for Sale&quot;,
+            &quot;slug&quot;: &quot;gulberg-apartment-for-sale&quot;,
+            &quot;location&quot;: &quot;Gulberg III, Lahore&quot;,
+            &quot;type&quot;: &quot;Apartment&quot;,
+            &quot;listing_type_id&quot;: 2,
+            &quot;purpose&quot;: &quot;sale&quot;,
+            &quot;price&quot;: 21000000,
+            &quot;price_unit&quot;: &quot;total&quot;,
+            &quot;currency&quot;: &quot;PKR&quot;,
+            &quot;country_id&quot;: 1,
+            &quot;organization_id&quot;: null,
+            &quot;branch_name&quot;: null,
+            &quot;status&quot;: &quot;published&quot;,
+            &quot;primary_image_url&quot;: &quot;/images/listings/apartment-1.jpg&quot;,
+            &quot;bedrooms&quot;: 2,
+            &quot;bathrooms&quot;: 2,
+            &quot;attributes&quot;: {
+                &quot;bedrooms&quot;: 2,
+                &quot;bathrooms&quot;: 2,
+                &quot;floor&quot;: 5,
+                &quot;furnished&quot;: true
+            },
+            &quot;images&quot;: [],
+            &quot;created_at&quot;: &quot;2026-10-20T01:09:48+05:00&quot;
+        },
+        {
+            &quot;id&quot;: 2,
+            &quot;title&quot;: &quot;DHA Apartment for Rent&quot;,
+            &quot;slug&quot;: &quot;dha-apartment-for-rent&quot;,
+            &quot;location&quot;: &quot;DHA Phase 5, Karachi&quot;,
+            &quot;type&quot;: &quot;Apartment&quot;,
+            &quot;listing_type_id&quot;: 2,
+            &quot;purpose&quot;: &quot;rent&quot;,
+            &quot;price&quot;: 180000,
+            &quot;price_unit&quot;: &quot;per_month&quot;,
+            &quot;currency&quot;: &quot;PKR&quot;,
+            &quot;country_id&quot;: 1,
+            &quot;organization_id&quot;: null,
+            &quot;branch_name&quot;: null,
+            &quot;status&quot;: &quot;published&quot;,
+            &quot;primary_image_url&quot;: &quot;/images/listings/apartment-2.jpg&quot;,
+            &quot;bedrooms&quot;: 3,
+            &quot;bathrooms&quot;: 2,
+            &quot;attributes&quot;: {
+                &quot;bedrooms&quot;: 3,
+                &quot;bathrooms&quot;: 2,
+                &quot;floor&quot;: 8,
+                &quot;furnished&quot;: false
+            },
+            &quot;images&quot;: [],
+            &quot;created_at&quot;: &quot;2026-10-20T01:09:48+05:00&quot;
+        },
+        {
+            &quot;id&quot;: 3,
+            &quot;title&quot;: &quot;Model Town Family House&quot;,
+            &quot;slug&quot;: &quot;model-town-family-house&quot;,
+            &quot;location&quot;: &quot;Model Town, Lahore&quot;,
+            &quot;type&quot;: &quot;House&quot;,
+            &quot;listing_type_id&quot;: 1,
+            &quot;purpose&quot;: &quot;sale&quot;,
+            &quot;price&quot;: 45000000,
+            &quot;price_unit&quot;: &quot;total&quot;,
+            &quot;currency&quot;: &quot;PKR&quot;,
+            &quot;country_id&quot;: 1,
+            &quot;organization_id&quot;: null,
+            &quot;branch_name&quot;: null,
+            &quot;status&quot;: &quot;published&quot;,
+            &quot;primary_image_url&quot;: &quot;/images/listings/house-1.jpg&quot;,
+            &quot;bedrooms&quot;: 5,
+            &quot;bathrooms&quot;: 4,
+            &quot;attributes&quot;: {
+                &quot;bedrooms&quot;: 5,
+                &quot;bathrooms&quot;: 4,
+                &quot;garage&quot;: true
+            },
+            &quot;images&quot;: [],
+            &quot;created_at&quot;: &quot;2026-10-20T01:09:48+05:00&quot;
+        },
+        {
+            &quot;id&quot;: 4,
+            &quot;title&quot;: &quot;Bahria Town Residential Plot&quot;,
+            &quot;slug&quot;: &quot;bahria-town-residential-plot&quot;,
+            &quot;location&quot;: &quot;Bahria Town, Lahore&quot;,
+            &quot;type&quot;: &quot;Plot&quot;,
+            &quot;listing_type_id&quot;: 3,
+            &quot;purpose&quot;: &quot;sale&quot;,
+            &quot;price&quot;: 35000000,
+            &quot;price_unit&quot;: &quot;total&quot;,
+            &quot;currency&quot;: &quot;PKR&quot;,
+            &quot;country_id&quot;: 1,
+            &quot;organization_id&quot;: null,
+            &quot;branch_name&quot;: null,
+            &quot;status&quot;: &quot;published&quot;,
+            &quot;primary_image_url&quot;: &quot;/images/listings/plot-1.jpg&quot;,
+            &quot;bedrooms&quot;: null,
+            &quot;bathrooms&quot;: null,
+            &quot;attributes&quot;: {
+                &quot;plot_number&quot;: &quot;B-214&quot;,
+                &quot;facing&quot;: &quot;North&quot;
+            },
+            &quot;images&quot;: [],
+            &quot;created_at&quot;: &quot;2026-10-20T01:09:48+05:00&quot;
+        },
+        {
+            &quot;id&quot;: 5,
+            &quot;title&quot;: &quot;Blue Area Boutique Hotel&quot;,
+            &quot;slug&quot;: &quot;blue-area-boutique-hotel&quot;,
+            &quot;location&quot;: &quot;Blue Area, Islamabad&quot;,
+            &quot;type&quot;: &quot;Hotel&quot;,
+            &quot;listing_type_id&quot;: 4,
+            &quot;purpose&quot;: &quot;short_stay&quot;,
+            &quot;price&quot;: 25000,
+            &quot;price_unit&quot;: &quot;per_night&quot;,
+            &quot;currency&quot;: &quot;PKR&quot;,
+            &quot;country_id&quot;: 1,
+            &quot;organization_id&quot;: 1,
+            &quot;branch_name&quot;: &quot;Blue Area Flagship&quot;,
+            &quot;status&quot;: &quot;published&quot;,
+            &quot;primary_image_url&quot;: &quot;/images/listings/hotel-1.jpg&quot;,
+            &quot;bedrooms&quot;: null,
+            &quot;bathrooms&quot;: null,
+            &quot;attributes&quot;: {
+                &quot;star_rating&quot;: &quot;5&quot;,
+                &quot;rooms&quot;: 42,
+                &quot;breakfast_included&quot;: true
+            },
+            &quot;images&quot;: [],
+            &quot;created_at&quot;: &quot;2026-10-20T01:09:48+05:00&quot;
+        },
+        {
+            &quot;id&quot;: 6,
+            &quot;title&quot;: &quot;Maskanoor Stays Islamabad&quot;,
+            &quot;slug&quot;: &quot;maskanoor-stays-islamabad&quot;,
+            &quot;location&quot;: &quot;Islamabad&quot;,
+            &quot;type&quot;: &quot;Hotel&quot;,
+            &quot;listing_type_id&quot;: 4,
+            &quot;purpose&quot;: &quot;short_stay&quot;,
+            &quot;price&quot;: 15000,
+            &quot;price_unit&quot;: &quot;per_night&quot;,
+            &quot;currency&quot;: &quot;PKR&quot;,
+            &quot;country_id&quot;: 1,
+            &quot;organization_id&quot;: 2,
+            &quot;branch_name&quot;: &quot;Islamabad&quot;,
+            &quot;status&quot;: &quot;published&quot;,
+            &quot;primary_image_url&quot;: &quot;&quot;,
+            &quot;bedrooms&quot;: null,
+            &quot;bathrooms&quot;: null,
+            &quot;attributes&quot;: [],
+            &quot;images&quot;: [],
+            &quot;created_at&quot;: &quot;2026-10-20T01:09:48+05:00&quot;
+        },
+        {
+            &quot;id&quot;: 7,
+            &quot;title&quot;: &quot;Maskanoor Stays Dubai&quot;,
+            &quot;slug&quot;: &quot;maskanoor-stays-dubai&quot;,
+            &quot;location&quot;: &quot;Dubai&quot;,
+            &quot;type&quot;: &quot;Hotel&quot;,
+            &quot;listing_type_id&quot;: 4,
+            &quot;purpose&quot;: &quot;short_stay&quot;,
+            &quot;price&quot;: 15000,
+            &quot;price_unit&quot;: &quot;per_night&quot;,
+            &quot;currency&quot;: &quot;AED&quot;,
+            &quot;country_id&quot;: 3,
+            &quot;organization_id&quot;: 2,
+            &quot;branch_name&quot;: &quot;Dubai&quot;,
+            &quot;status&quot;: &quot;published&quot;,
+            &quot;primary_image_url&quot;: &quot;&quot;,
+            &quot;bedrooms&quot;: null,
+            &quot;bathrooms&quot;: null,
+            &quot;attributes&quot;: [],
+            &quot;images&quot;: [],
+            &quot;created_at&quot;: &quot;2026-10-20T01:09:48+05:00&quot;
+        },
+        {
+            &quot;id&quot;: 8,
+            &quot;title&quot;: &quot;Maskanoor Stays Kuala Lumpur&quot;,
+            &quot;slug&quot;: &quot;maskanoor-stays-kuala-lumpur&quot;,
+            &quot;location&quot;: &quot;Kuala Lumpur&quot;,
+            &quot;type&quot;: &quot;Hotel&quot;,
+            &quot;listing_type_id&quot;: 4,
+            &quot;purpose&quot;: &quot;short_stay&quot;,
+            &quot;price&quot;: 15000,
+            &quot;price_unit&quot;: &quot;per_night&quot;,
+            &quot;currency&quot;: &quot;MYR&quot;,
+            &quot;country_id&quot;: 5,
+            &quot;organization_id&quot;: 2,
+            &quot;branch_name&quot;: &quot;Kuala Lumpur&quot;,
+            &quot;status&quot;: &quot;published&quot;,
+            &quot;primary_image_url&quot;: &quot;&quot;,
+            &quot;bedrooms&quot;: null,
+            &quot;bathrooms&quot;: null,
+            &quot;attributes&quot;: [],
+            &quot;images&quot;: [],
+            &quot;created_at&quot;: &quot;2026-10-20T01:09:48+05:00&quot;
+        }
+    ],
     &quot;meta&quot;: {
         &quot;current_page&quot;: 1,
         &quot;last_page&quot;: 1,
         &quot;per_page&quot;: 15,
-        &quot;total&quot;: 0
+        &quot;total&quot;: 8
     }
 }</code>
  </pre>
@@ -1987,6 +2801,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                 <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
 &nbsp;
  &nbsp;
+ &nbsp;
                 <input type="text" style="display: none"
                               name="Content-Type"                data-endpoint="GETapi-v1-listings"
                value="application/json"
@@ -1997,6 +2812,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                                 <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
 &nbsp;
+ &nbsp;
  &nbsp;
                 <input type="text" style="display: none"
                               name="Accept"                data-endpoint="GETapi-v1-listings"
@@ -2020,20 +2836,21 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/v1/listings/17" \
+    --get "http://127.0.0.1:8000/api/v1/listings/gulberg-apartment-for-sale" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/listings/17"
+    "http://127.0.0.1:8000/api/v1/listings/gulberg-apartment-for-sale"
 );
 
 const headers = {
     "Content-Type": "application/json",
     "Accept": "application/json",
 };
+
 
 fetch(url, {
     method: "GET",
@@ -2044,7 +2861,7 @@ fetch(url, {
 
 <span id="example-responses-GETapi-v1-listings--id-">
             <blockquote>
-            <p>Example response (404):</p>
+            <p>Example response (200):</p>
         </blockquote>
                 <details class="annotation">
             <summary style="cursor: pointer;">
@@ -2054,13 +2871,44 @@ fetch(url, {
 content-type: application/json
 x-ratelimit-limit: 60
 x-ratelimit-remaining: 57
-access-control-allow-origin: http://localhost
+x-frame-options: SAMEORIGIN
+x-content-type-options: nosniff
+referrer-policy: strict-origin-when-cross-origin
+permissions-policy: camera=(), microphone=(), geolocation=()
+content-security-policy: default-src &#039;self&#039;; script-src &#039;self&#039; &#039;unsafe-inline&#039; &#039;unsafe-eval&#039; &#039;nonce-id86kM5GcS/579JZm+NvgA==&#039; https://unpkg.com http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; style-src &#039;self&#039; &#039;unsafe-inline&#039; https://fonts.googleapis.com http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; font-src &#039;self&#039; https://fonts.gstatic.com data: http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; img-src &#039;self&#039; data: blob: https:; connect-src &#039;self&#039; https://assets2.lottiefiles.com https://unpkg.com http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; media-src &#039;self&#039; https://assets2.lottiefiles.com; worker-src &#039;self&#039; blob: http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; frame-ancestors &#039;self&#039;; base-uri &#039;self&#039;; form-action &#039;self&#039;
+access-control-allow-origin: http://127.0.0.1:8000
  </code></pre></details>         <pre>
 
 <code class="language-json" style="max-height: 300px;">{
-    &quot;success&quot;: false,
-    &quot;message&quot;: &quot;No query results for model [App\\Models\\Listing].&quot;,
-    &quot;code&quot;: &quot;not_found&quot;
+    &quot;success&quot;: true,
+    &quot;data&quot;: {
+        &quot;id&quot;: 1,
+        &quot;title&quot;: &quot;Gulberg Apartment for Sale&quot;,
+        &quot;slug&quot;: &quot;gulberg-apartment-for-sale&quot;,
+        &quot;location&quot;: &quot;Gulberg III, Lahore&quot;,
+        &quot;type&quot;: &quot;Apartment&quot;,
+        &quot;listing_type_id&quot;: 2,
+        &quot;purpose&quot;: &quot;sale&quot;,
+        &quot;price&quot;: 21000000,
+        &quot;price_unit&quot;: &quot;total&quot;,
+        &quot;currency&quot;: &quot;PKR&quot;,
+        &quot;country_id&quot;: 1,
+        &quot;organization_id&quot;: null,
+        &quot;branch_name&quot;: null,
+        &quot;status&quot;: &quot;published&quot;,
+        &quot;primary_image_url&quot;: &quot;/images/listings/apartment-1.jpg&quot;,
+        &quot;bedrooms&quot;: 2,
+        &quot;bathrooms&quot;: 2,
+        &quot;attributes&quot;: {
+            &quot;bedrooms&quot;: 2,
+            &quot;bathrooms&quot;: 2,
+            &quot;floor&quot;: 5,
+            &quot;furnished&quot;: true
+        },
+        &quot;description&quot;: &quot;A curated Maskanoor sample listing with modern finishes and a prime location.&quot;,
+        &quot;images&quot;: [],
+        &quot;created_at&quot;: &quot;2026-10-20T01:09:48+05:00&quot;
+    }
 }</code>
  </pre>
     </span>
@@ -2115,6 +2963,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                 <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
 &nbsp;
  &nbsp;
+ &nbsp;
                 <input type="text" style="display: none"
                               name="Content-Type"                data-endpoint="GETapi-v1-listings--id-"
                value="application/json"
@@ -2126,6 +2975,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                 <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
 &nbsp;
  &nbsp;
+ &nbsp;
                 <input type="text" style="display: none"
                               name="Accept"                data-endpoint="GETapi-v1-listings--id-"
                value="application/json"
@@ -2136,14 +2986,15 @@ You can check the Dev Tools console for debugging information.</code></pre>
                         <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
+<small>string</small>&nbsp;
  &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="id"                data-endpoint="GETapi-v1-listings--id-"
-               value="17"
+ &nbsp;
+                <input type="text" style="display: none"
+                              name="id"                data-endpoint="GETapi-v1-listings--id-"
+               value="gulberg-apartment-for-sale"
                data-component="url">
     <br>
-<p>The ID of the listing. Example: <code>17</code></p>
+<p>The ID of the listing. Example: <code>gulberg-apartment-for-sale</code></p>
             </div>
                     </form>
 
@@ -2165,7 +3016,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/v1/profile" \
+    --get "http://127.0.0.1:8000/api/v1/profile" \
     --header "Authorization: Bearer {YOUR_AUTH_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -2173,7 +3024,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/profile"
+    "http://127.0.0.1:8000/api/v1/profile"
 );
 
 const headers = {
@@ -2181,6 +3032,7 @@ const headers = {
     "Content-Type": "application/json",
     "Accept": "application/json",
 };
+
 
 fetch(url, {
     method: "GET",
@@ -2199,7 +3051,12 @@ fetch(url, {
             </summary>
             <pre><code class="language-http">cache-control: no-cache, private
 content-type: application/json
-access-control-allow-origin: http://localhost
+x-frame-options: SAMEORIGIN
+x-content-type-options: nosniff
+referrer-policy: strict-origin-when-cross-origin
+permissions-policy: camera=(), microphone=(), geolocation=()
+content-security-policy: default-src &#039;self&#039;; script-src &#039;self&#039; &#039;unsafe-inline&#039; &#039;unsafe-eval&#039; &#039;nonce-il4ZMdawVTMdJtWJlYuUEA==&#039; https://unpkg.com http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; style-src &#039;self&#039; &#039;unsafe-inline&#039; https://fonts.googleapis.com http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; font-src &#039;self&#039; https://fonts.gstatic.com data: http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; img-src &#039;self&#039; data: blob: https:; connect-src &#039;self&#039; https://assets2.lottiefiles.com https://unpkg.com http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; media-src &#039;self&#039; https://assets2.lottiefiles.com; worker-src &#039;self&#039; blob: http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; frame-ancestors &#039;self&#039;; base-uri &#039;self&#039;; form-action &#039;self&#039;
+access-control-allow-origin: http://127.0.0.1:8000
  </code></pre></details>         <pre>
 
 <code class="language-json" style="max-height: 300px;">{
@@ -2260,6 +3117,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                 <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
 &nbsp;
  &nbsp;
+ &nbsp;
                 <input type="text" style="display: none"
                               name="Authorization" class="auth-value"               data-endpoint="GETapi-v1-profile"
                value="Bearer {YOUR_AUTH_TOKEN}"
@@ -2271,6 +3129,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                 <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
 &nbsp;
  &nbsp;
+ &nbsp;
                 <input type="text" style="display: none"
                               name="Content-Type"                data-endpoint="GETapi-v1-profile"
                value="application/json"
@@ -2281,6 +3140,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                                 <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
 &nbsp;
+ &nbsp;
  &nbsp;
                 <input type="text" style="display: none"
                               name="Accept"                data-endpoint="GETapi-v1-profile"
@@ -2305,21 +3165,21 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PUT \
-    "http://localhost/api/v1/profile" \
+    "http://127.0.0.1:8000/api/v1/profile" \
     --header "Authorization: Bearer {YOUR_AUTH_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"name\": \"vmqeopfuudtdsufvyvddq\",
-    \"email\": \"kunde.eloisa@example.com\",
-    \"phone\": \"hfqcoynlazghdtqtqxbaj\"
+    \"name\": \"b\",
+    \"email\": \"zbailey@example.net\",
+    \"phone\": \"i\"
 }"
 </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/profile"
+    "http://127.0.0.1:8000/api/v1/profile"
 );
 
 const headers = {
@@ -2329,9 +3189,9 @@ const headers = {
 };
 
 let body = {
-    "name": "vmqeopfuudtdsufvyvddq",
-    "email": "kunde.eloisa@example.com",
-    "phone": "hfqcoynlazghdtqtqxbaj"
+    "name": "b",
+    "email": "zbailey@example.net",
+    "phone": "i"
 };
 
 fetch(url, {
@@ -2395,6 +3255,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                 <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
 &nbsp;
  &nbsp;
+ &nbsp;
                 <input type="text" style="display: none"
                               name="Authorization" class="auth-value"               data-endpoint="PUTapi-v1-profile"
                value="Bearer {YOUR_AUTH_TOKEN}"
@@ -2406,6 +3267,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                 <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
 &nbsp;
  &nbsp;
+ &nbsp;
                 <input type="text" style="display: none"
                               name="Content-Type"                data-endpoint="PUTapi-v1-profile"
                value="application/json"
@@ -2416,6 +3278,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                                 <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
 &nbsp;
+ &nbsp;
  &nbsp;
                 <input type="text" style="display: none"
                               name="Accept"                data-endpoint="PUTapi-v1-profile"
@@ -2429,39 +3292,43 @@ You can check the Dev Tools console for debugging information.</code></pre>
             <b style="line-height: 2;"><code>name</code></b>&nbsp;&nbsp;
 <small>string</small>&nbsp;
 <i>optional</i> &nbsp;
+ &nbsp;
                 <input type="text" style="display: none"
                               name="name"                data-endpoint="PUTapi-v1-profile"
-               value="vmqeopfuudtdsufvyvddq"
+               value="b"
                data-component="body">
     <br>
-<p>Must not be greater than 120 characters. Example: <code>vmqeopfuudtdsufvyvddq</code></p>
+<p>Must not be greater than 120 characters. Example: <code>b</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>email</code></b>&nbsp;&nbsp;
 <small>string</small>&nbsp;
 <i>optional</i> &nbsp;
+ &nbsp;
                 <input type="text" style="display: none"
                               name="email"                data-endpoint="PUTapi-v1-profile"
-               value="kunde.eloisa@example.com"
+               value="zbailey@example.net"
                data-component="body">
     <br>
-<p>Must be a valid email address. Must not be greater than 255 characters. Example: <code>kunde.eloisa@example.com</code></p>
+<p>Must be a valid email address. Must not be greater than 255 characters. Example: <code>zbailey@example.net</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>phone</code></b>&nbsp;&nbsp;
 <small>string</small>&nbsp;
 <i>optional</i> &nbsp;
+ &nbsp;
                 <input type="text" style="display: none"
                               name="phone"                data-endpoint="PUTapi-v1-profile"
-               value="hfqcoynlazghdtqtqxbaj"
+               value="i"
                data-component="body">
     <br>
-<p>Must not be greater than 40 characters. Example: <code>hfqcoynlazghdtqtqxbaj</code></p>
+<p>Must not be greater than 40 characters. Example: <code>i</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>password</code></b>&nbsp;&nbsp;
 <small>string</small>&nbsp;
 <i>optional</i> &nbsp;
+ &nbsp;
                 <input type="text" style="display: none"
                               name="password"                data-endpoint="PUTapi-v1-profile"
                value=""
@@ -2475,7 +3342,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
     
 
-                                <h2 id="two-factor-authentication-POSTapi-v1-two-factor-setup">Begin 2FA setup (admin roles only).</h2>
+                                <h2 id="two-factor-authentication-POSTapi-v1-two-factor-setup">Begin 2FA setup (panel roles).</h2>
 
 <p>
 <small class="badge badge-darkred">requires authentication</small>
@@ -2489,7 +3356,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/v1/two-factor/setup" \
+    "http://127.0.0.1:8000/api/v1/two-factor/setup" \
     --header "Authorization: Bearer {YOUR_AUTH_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
@@ -2497,7 +3364,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/two-factor/setup"
+    "http://127.0.0.1:8000/api/v1/two-factor/setup"
 );
 
 const headers = {
@@ -2505,6 +3372,7 @@ const headers = {
     "Content-Type": "application/json",
     "Accept": "application/json",
 };
+
 
 fetch(url, {
     method: "POST",
@@ -2566,6 +3434,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                 <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
 &nbsp;
  &nbsp;
+ &nbsp;
                 <input type="text" style="display: none"
                               name="Authorization" class="auth-value"               data-endpoint="POSTapi-v1-two-factor-setup"
                value="Bearer {YOUR_AUTH_TOKEN}"
@@ -2577,6 +3446,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                 <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
 &nbsp;
  &nbsp;
+ &nbsp;
                 <input type="text" style="display: none"
                               name="Content-Type"                data-endpoint="POSTapi-v1-two-factor-setup"
                value="application/json"
@@ -2587,6 +3457,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                                 <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
 &nbsp;
+ &nbsp;
  &nbsp;
                 <input type="text" style="display: none"
                               name="Accept"                data-endpoint="POSTapi-v1-two-factor-setup"
@@ -2611,19 +3482,19 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/v1/two-factor/confirm" \
+    "http://127.0.0.1:8000/api/v1/two-factor/confirm" \
     --header "Authorization: Bearer {YOUR_AUTH_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"code\": \"consequatur\"
+    \"code\": \"architecto\"
 }"
 </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/two-factor/confirm"
+    "http://127.0.0.1:8000/api/v1/two-factor/confirm"
 );
 
 const headers = {
@@ -2633,7 +3504,7 @@ const headers = {
 };
 
 let body = {
-    "code": "consequatur"
+    "code": "architecto"
 };
 
 fetch(url, {
@@ -2697,6 +3568,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                 <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
 &nbsp;
  &nbsp;
+ &nbsp;
                 <input type="text" style="display: none"
                               name="Authorization" class="auth-value"               data-endpoint="POSTapi-v1-two-factor-confirm"
                value="Bearer {YOUR_AUTH_TOKEN}"
@@ -2708,6 +3580,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                 <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
 &nbsp;
  &nbsp;
+ &nbsp;
                 <input type="text" style="display: none"
                               name="Content-Type"                data-endpoint="POSTapi-v1-two-factor-confirm"
                value="application/json"
@@ -2718,6 +3591,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                                 <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
 &nbsp;
+ &nbsp;
  &nbsp;
                 <input type="text" style="display: none"
                               name="Accept"                data-endpoint="POSTapi-v1-two-factor-confirm"
@@ -2731,12 +3605,13 @@ You can check the Dev Tools console for debugging information.</code></pre>
             <b style="line-height: 2;"><code>code</code></b>&nbsp;&nbsp;
 <small>string</small>&nbsp;
  &nbsp;
+ &nbsp;
                 <input type="text" style="display: none"
                               name="code"                data-endpoint="POSTapi-v1-two-factor-confirm"
-               value="consequatur"
+               value="architecto"
                data-component="body">
     <br>
-<p>Example: <code>consequatur</code></p>
+<p>Example: <code>architecto</code></p>
         </div>
         </form>
 
@@ -2754,19 +3629,19 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost/api/v1/two-factor/disable" \
+    "http://127.0.0.1:8000/api/v1/two-factor/disable" \
     --header "Authorization: Bearer {YOUR_AUTH_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"code\": \"consequatur\"
+    \"code\": \"architecto\"
 }"
 </code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/v1/two-factor/disable"
+    "http://127.0.0.1:8000/api/v1/two-factor/disable"
 );
 
 const headers = {
@@ -2776,7 +3651,7 @@ const headers = {
 };
 
 let body = {
-    "code": "consequatur"
+    "code": "architecto"
 };
 
 fetch(url, {
@@ -2840,6 +3715,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                 <b style="line-height: 2;"><code>Authorization</code></b>&nbsp;&nbsp;
 &nbsp;
  &nbsp;
+ &nbsp;
                 <input type="text" style="display: none"
                               name="Authorization" class="auth-value"               data-endpoint="POSTapi-v1-two-factor-disable"
                value="Bearer {YOUR_AUTH_TOKEN}"
@@ -2851,6 +3727,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                 <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
 &nbsp;
  &nbsp;
+ &nbsp;
                 <input type="text" style="display: none"
                               name="Content-Type"                data-endpoint="POSTapi-v1-two-factor-disable"
                value="application/json"
@@ -2861,6 +3738,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
                                 <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
 &nbsp;
+ &nbsp;
  &nbsp;
                 <input type="text" style="display: none"
                               name="Accept"                data-endpoint="POSTapi-v1-two-factor-disable"
@@ -2874,12 +3752,13 @@ You can check the Dev Tools console for debugging information.</code></pre>
             <b style="line-height: 2;"><code>code</code></b>&nbsp;&nbsp;
 <small>string</small>&nbsp;
  &nbsp;
+ &nbsp;
                 <input type="text" style="display: none"
                               name="code"                data-endpoint="POSTapi-v1-two-factor-disable"
-               value="consequatur"
+               value="architecto"
                data-component="body">
     <br>
-<p>Example: <code>consequatur</code></p>
+<p>Example: <code>architecto</code></p>
         </div>
         </form>
 

@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Support\BrandAssets;
 use Database\Seeders\DatabaseSeeder;
+use Database\Seeders\ReferenceDataSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -37,14 +38,17 @@ class BrandAssetsTest extends TestCase
 
     public function test_division_pages_render_without_concept_logo_copy(): void
     {
+        $this->seed(ReferenceDataSeeder::class);
+
         $this->get(route('divisions.hospitality'))
             ->assertOk()
-            ->assertSee('Maskanoor Group', false)
+            ->assertSee('Maskanoor Hotels', false)
             ->assertSee('/brand/divisions/maskanoor-hotels-for-dark-bg.svg', false)
             ->assertDontSee('concept logo', false);
 
         $this->get(route('divisions.living'))
             ->assertOk()
+            ->assertSee('Maskanoor Living', false)
             ->assertSee('/brand/divisions/maskanoor-living-for-dark-bg.svg', false);
     }
 

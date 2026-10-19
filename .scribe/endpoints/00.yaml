@@ -2,10 +2,12 @@ name: Endpoints
 description: ''
 endpoints:
   -
+    custom: []
     httpMethods:
       - GET
     uri: api/properties
     metadata:
+      custom: []
       groupName: Endpoints
       groupDescription: ''
       subgroup: ''
@@ -13,7 +15,7 @@ endpoints:
       title: ''
       description: ''
       authenticated: false
-      custom: []
+      deprecated: false
     headers:
       Content-Type: application/json
       Accept: application/json
@@ -26,19 +28,129 @@ endpoints:
     fileParameters: []
     responses:
       -
+        custom: []
         status: 200
-        content: '{"data":[],"meta":{"current_page":1,"last_page":1,"per_page":15,"total":0}}'
+        content: '{"data":[{"id":1,"title":"Gulberg Apartment for Sale","slug":"gulberg-apartment-for-sale","location":"Gulberg III, Lahore","type":"Apartment","listing_type_id":2,"purpose":"sale","price":21000000,"price_unit":"total","currency":"PKR","country_id":1,"organization_id":null,"branch_name":null,"status":"published","primary_image_url":"\/images\/listings\/apartment-1.jpg","bedrooms":2,"bathrooms":2,"attributes":{"bedrooms":2,"bathrooms":2,"floor":5,"furnished":true},"images":[],"created_at":"2026-10-20T01:09:48+05:00"},{"id":2,"title":"DHA Apartment for Rent","slug":"dha-apartment-for-rent","location":"DHA Phase 5, Karachi","type":"Apartment","listing_type_id":2,"purpose":"rent","price":180000,"price_unit":"per_month","currency":"PKR","country_id":1,"organization_id":null,"branch_name":null,"status":"published","primary_image_url":"\/images\/listings\/apartment-2.jpg","bedrooms":3,"bathrooms":2,"attributes":{"bedrooms":3,"bathrooms":2,"floor":8,"furnished":false},"images":[],"created_at":"2026-10-20T01:09:48+05:00"},{"id":3,"title":"Model Town Family House","slug":"model-town-family-house","location":"Model Town, Lahore","type":"House","listing_type_id":1,"purpose":"sale","price":45000000,"price_unit":"total","currency":"PKR","country_id":1,"organization_id":null,"branch_name":null,"status":"published","primary_image_url":"\/images\/listings\/house-1.jpg","bedrooms":5,"bathrooms":4,"attributes":{"bedrooms":5,"bathrooms":4,"garage":true},"images":[],"created_at":"2026-10-20T01:09:48+05:00"},{"id":4,"title":"Bahria Town Residential Plot","slug":"bahria-town-residential-plot","location":"Bahria Town, Lahore","type":"Plot","listing_type_id":3,"purpose":"sale","price":35000000,"price_unit":"total","currency":"PKR","country_id":1,"organization_id":null,"branch_name":null,"status":"published","primary_image_url":"\/images\/listings\/plot-1.jpg","bedrooms":null,"bathrooms":null,"attributes":{"plot_number":"B-214","facing":"North"},"images":[],"created_at":"2026-10-20T01:09:48+05:00"},{"id":5,"title":"Blue Area Boutique Hotel","slug":"blue-area-boutique-hotel","location":"Blue Area, Islamabad","type":"Hotel","listing_type_id":4,"purpose":"short_stay","price":25000,"price_unit":"per_night","currency":"PKR","country_id":1,"organization_id":1,"branch_name":"Blue Area Flagship","status":"published","primary_image_url":"\/images\/listings\/hotel-1.jpg","bedrooms":null,"bathrooms":null,"attributes":{"star_rating":"5","rooms":42,"breakfast_included":true},"images":[],"created_at":"2026-10-20T01:09:48+05:00"},{"id":6,"title":"Maskanoor Stays Islamabad","slug":"maskanoor-stays-islamabad","location":"Islamabad","type":"Hotel","listing_type_id":4,"purpose":"short_stay","price":15000,"price_unit":"per_night","currency":"PKR","country_id":1,"organization_id":2,"branch_name":"Islamabad","status":"published","primary_image_url":"","bedrooms":null,"bathrooms":null,"attributes":[],"images":[],"created_at":"2026-10-20T01:09:48+05:00"},{"id":7,"title":"Maskanoor Stays Dubai","slug":"maskanoor-stays-dubai","location":"Dubai","type":"Hotel","listing_type_id":4,"purpose":"short_stay","price":15000,"price_unit":"per_night","currency":"AED","country_id":3,"organization_id":2,"branch_name":"Dubai","status":"published","primary_image_url":"","bedrooms":null,"bathrooms":null,"attributes":[],"images":[],"created_at":"2026-10-20T01:09:48+05:00"},{"id":8,"title":"Maskanoor Stays Kuala Lumpur","slug":"maskanoor-stays-kuala-lumpur","location":"Kuala Lumpur","type":"Hotel","listing_type_id":4,"purpose":"short_stay","price":15000,"price_unit":"per_night","currency":"MYR","country_id":5,"organization_id":2,"branch_name":"Kuala Lumpur","status":"published","primary_image_url":"","bedrooms":null,"bathrooms":null,"attributes":[],"images":[],"created_at":"2026-10-20T01:09:48+05:00"}],"meta":{"current_page":1,"last_page":1,"per_page":15,"total":8}}'
         headers:
           cache-control: 'no-cache, private'
           content-type: application/json
           x-ratelimit-limit: '60'
           x-ratelimit-remaining: '59'
-          access-control-allow-origin: 'http://localhost'
+          x-frame-options: SAMEORIGIN
+          x-content-type-options: nosniff
+          referrer-policy: strict-origin-when-cross-origin
+          permissions-policy: 'camera=(), microphone=(), geolocation=()'
+          content-security-policy: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' 'nonce-CaRrKTATuavQvGvJKtv95w==' https://unpkg.com http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; font-src 'self' https://fonts.gstatic.com data: http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; img-src 'self' data: blob: https:; connect-src 'self' https://assets2.lottiefiles.com https://unpkg.com http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; media-src 'self' https://assets2.lottiefiles.com; worker-src 'self' blob: http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; frame-ancestors 'self'; base-uri 'self'; form-action 'self'"
+          access-control-allow-origin: 'http://127.0.0.1:8000'
         description: null
-        custom: []
     responseFields: []
     auth: []
     controller: null
     method: null
     route: null
+  -
     custom: []
+    httpMethods:
+      - GET
+    uri: api/v1/countries
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: '{"success":true,"data":[{"id":1,"iso2":"PK","iso3":null,"name":"Pakistan","currency_code":"PKR","default_locale":"en"},{"id":2,"iso2":"SA","iso3":null,"name":"Saudi Arabia","currency_code":"SAR","default_locale":"ar"},{"id":3,"iso2":"AE","iso3":null,"name":"United Arab Emirates","currency_code":"AED","default_locale":"en"},{"id":4,"iso2":"QA","iso3":null,"name":"Qatar","currency_code":"QAR","default_locale":"ar"},{"id":5,"iso2":"MY","iso3":null,"name":"Malaysia","currency_code":"MYR","default_locale":"en"},{"id":6,"iso2":"GB","iso3":null,"name":"United Kingdom","currency_code":"GBP","default_locale":"en"}]}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          x-ratelimit-limit: '60'
+          x-ratelimit-remaining: '56'
+          x-frame-options: SAMEORIGIN
+          x-content-type-options: nosniff
+          referrer-policy: strict-origin-when-cross-origin
+          permissions-policy: 'camera=(), microphone=(), geolocation=()'
+          content-security-policy: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' 'nonce-cop+m/GZKZ/ctcsP6sLwOQ==' https://unpkg.com http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; font-src 'self' https://fonts.gstatic.com data: http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; img-src 'self' data: blob: https:; connect-src 'self' https://assets2.lottiefiles.com https://unpkg.com http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; media-src 'self' https://assets2.lottiefiles.com; worker-src 'self' blob: http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; frame-ancestors 'self'; base-uri 'self'; form-action 'self'"
+          access-control-allow-origin: 'http://127.0.0.1:8000'
+        description: null
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: 'api/v1/countries/{country_id}/cities'
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      country_id:
+        custom: []
+        name: country_id
+        description: 'The ID of the country.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      country_id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 500
+        content: '{"success":false,"message":"Server error.","code":"http_error"}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          x-ratelimit-limit: '60'
+          x-ratelimit-remaining: '55'
+          x-frame-options: SAMEORIGIN
+          x-content-type-options: nosniff
+          referrer-policy: strict-origin-when-cross-origin
+          permissions-policy: 'camera=(), microphone=(), geolocation=()'
+          content-security-policy: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' 'nonce-q8jf+pHit0V2nhplmc7W4g==' https://unpkg.com http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; font-src 'self' https://fonts.gstatic.com data: http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; img-src 'self' data: blob: https:; connect-src 'self' https://assets2.lottiefiles.com https://unpkg.com http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; media-src 'self' https://assets2.lottiefiles.com; worker-src 'self' blob: http://localhost:5173 http://127.0.0.1:5173 http://[::1]:5173 ws://localhost:5173 ws://127.0.0.1:5173 ws://[::1]:5173; frame-ancestors 'self'; base-uri 'self'; form-action 'self'"
+          access-control-allow-origin: 'http://127.0.0.1:8000'
+        description: null
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null

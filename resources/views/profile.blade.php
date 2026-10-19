@@ -19,6 +19,15 @@
                     <x-input label="Name" name="name" :value="old('name', $user->name)" required />
                     <x-input label="Email" name="email" type="email" :value="old('email', $user->email)" required />
                     <x-input label="Phone" name="phone" :value="old('phone', $user->phone)" placeholder="Optional" />
+                    <x-location-picker
+                        :countries="\App\Models\Country::query()->where('is_active', true)->orderBy('name')->get(['id', 'name'])"
+                        country-name="country_id"
+                        city-name="city_id"
+                        :country-id="old('country_id', $user->country_id)"
+                        :required="false"
+                        :allow-empty-country="true"
+                        city-label-text="City (optional)"
+                    />
                     <div class="flex flex-wrap gap-2">
                         <x-button type="submit" variant="primary">Save</x-button>
                         <x-button variant="ghost" href="{{ route('profile') }}">Cancel</x-button>

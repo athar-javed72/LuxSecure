@@ -6,7 +6,8 @@
     <title>New Contact Inquiry | {{ config('app.name') }}</title>
 </head>
 <body style="font-family: sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
-    <h2 style="color: #4F46E5;">New Contact Inquiry — {{ config('app.name') }}</h2>
+    <h2 style="color: #142A25;">New Contact Inquiry — {{ config('app.name') }}</h2>
+    <div style="height: 3px; width: 48px; background: #876A2F; margin: 0 0 16px;"></div>
     <p><strong>From:</strong> {{ $inquiry->name }}</p>
     <p><strong>Email:</strong> {{ $inquiry->email }}</p>
     <p><strong>Message:</strong></p>

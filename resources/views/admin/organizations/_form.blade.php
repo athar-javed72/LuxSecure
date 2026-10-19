@@ -6,8 +6,17 @@
         <label class="block text-xs font-semibold text-fs-primary mb-1" for="description">Description</label>
         <textarea id="description" name="description" rows="4" class="w-full px-4 py-3 rounded-sm border border-black/10 bg-white text-sm text-fs-primary focus:border-fs-brand focus:ring-2 focus:ring-fs-brand/20">{{ old('description', $organization?->description) }}</textarea>
     </div>
+    <x-location-picker
+        class="md:col-span-2"
+        :countries="$countries"
+        country-name="country_id"
+        city-name="city_id"
+        :country-id="old('country_id', $organization?->country_id)"
+        :required="false"
+        :allow-empty-country="true"
+        city-label-text="City (optional)"
+    />
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <x-select label="Country" name="country_id" :options="$countries->all()" :selected="old('country_id', $organization?->country_id)" placeholder="None" />
         <x-select label="Owner" name="owner_id" :options="$owners->all()" :selected="old('owner_id', $organization?->owner_id)" placeholder="None" />
     </div>
     <label class="inline-flex items-center gap-2 min-h-11 cursor-pointer">

@@ -173,7 +173,7 @@ class ApiV1Test extends TestCase
 
     public function test_backup_command_runs(): void
     {
-        $this->artisan('luxsecure:backup --storage')->assertSuccessful();
+        $this->artisan('maskanoor:backup --storage')->assertSuccessful();
     }
 
     public function test_two_factor_service_confirms_for_admin(): void

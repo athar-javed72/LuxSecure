@@ -133,7 +133,7 @@
         </div>
 
         <div class="mt-10 flex flex-col gap-3 border-t border-white/10 pt-5 text-xs text-[var(--color-sage)] sm:flex-row sm:items-center sm:justify-between">
-            <p>© <?php echo e(date('Y')); ?> <?php echo e($siteLegalName ?? $siteName ?? 'Maskanoor Group'); ?>. All rights reserved.</p>
+            <p>© <?php echo e(date('Y')); ?> <?php echo e($siteLegalName ?? $siteName ?? config('app.name')); ?>. All rights reserved.</p>
             <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
                 <?php if($legalPrivacy ?? null): ?>
                     <a href="<?php echo e(route('pages.show', $legalPrivacy->slug)); ?>" class="hover:text-[var(--color-ivory)] hover:underline">Privacy</a>

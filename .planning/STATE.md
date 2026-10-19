@@ -38,7 +38,7 @@ Brand SVG kit + Critical multi-country remediations — **COMPLETE locally**
 
 | Area | Status |
 |------|--------|
-| PHPUnit | **150 passed** |
+| PHPUnit | **152 passed** |
 | `npm run build` | Passing |
 | Country/City geo (import, visibility, location-picker) | Done |
 | Country scoping remediation | Done |
