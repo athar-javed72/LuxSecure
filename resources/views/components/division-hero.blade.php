@@ -21,7 +21,7 @@
     {{ $attributes->class([
         'relative overflow-hidden w-full flex flex-col justify-end',
         'bg-[var(--color-forest)]',
-        'min-h-[min(62svh,560px)] md:min-h-[min(68svh,620px)]',
+        'min-h-[min(48svh,440px)] md:min-h-[min(52svh,500px)]',
         '-mt-[var(--header-h)] pt-[var(--header-h)]',
     ]) }}
     @if($slides->count() > 1) data-hero-slideshow @endif
@@ -33,18 +33,18 @@
                 <x-media :media="$slide" class="absolute inset-0 w-full h-full" :eager="$i === 0" sizes="100vw" />
             </div>
         @endforeach
-        {{-- Stronger left wash so ivory type stays readable on every slide --}}
+        {{-- Left wash keeps ivory type readable; keep photo visible on the right --}}
         <div
             class="absolute inset-0 z-[2] pointer-events-none"
-            style="background: linear-gradient(90deg, rgba(13,29,25,.92) 0%, rgba(13,29,25,.72) 42%, rgba(13,29,25,.35) 72%, rgba(13,29,25,.18) 100%);"
+            style="background: linear-gradient(90deg, rgba(13,29,25,.88) 0%, rgba(13,29,25,.62) 38%, rgba(13,29,25,.28) 68%, rgba(13,29,25,.12) 100%);"
         ></div>
         <div
-            class="absolute inset-x-0 bottom-0 z-[2] h-40 pointer-events-none"
-            style="background: linear-gradient(to top, rgba(13,29,25,.55), transparent);"
+            class="absolute inset-x-0 bottom-0 z-[2] h-28 pointer-events-none"
+            style="background: linear-gradient(to top, rgba(13,29,25,.5), transparent);"
         ></div>
     </div>
 
-    <div class="relative z-10 w-full pb-24 md:pb-28 pt-8 md:pt-10">
+    <div class="relative z-10 w-full pb-20 md:pb-24 pt-6 md:pt-8">
         <x-container>
             @if(count($breadcrumbs))
                 <nav aria-label="Breadcrumb" class="text-xs text-[var(--color-sage)] mb-4">
