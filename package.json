@@ -15,7 +15,6 @@
         "vite": "^7.3.1"
     },
     "dependencies": {
-        "@alpinejs/csp": "^3.17.4",
-        "alpinejs": "^3.17.4"
+        "@alpinejs/csp": "^3.17.4"
     }
 }
