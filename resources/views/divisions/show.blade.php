@@ -39,6 +39,7 @@
     :primary-label="$division['browse_label']"
     :secondary-href="route('contact', ['type' => $division['cta_type']])"
     secondary-label="Start a Conversation"
+    :division="$divisionKey"
     :breadcrumbs="[
         ['label' => 'Home', 'href' => route('home')],
         ['label' => $divisionName],

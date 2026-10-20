@@ -8,6 +8,7 @@
     'secondaryHref' => '#',
     'secondaryLabel' => 'Start a Conversation',
     'breadcrumbs' => [],
+    'division' => null,
 ])
 
 @php
@@ -61,6 +62,15 @@
                         @endforeach
                     </ol>
                 </nav>
+            @endif
+
+            @if($division)
+                <x-brand-logo
+                    layout="stacked"
+                    surface="dark"
+                    :division="$division"
+                    class="mb-5 [&_img]:h-[72px] [&_img]:min-w-[160px] [&_img]:max-w-[200px]"
+                />
             @endif
 
             <x-eyebrow on-dark>{{ $eyebrow }}</x-eyebrow>
