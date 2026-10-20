@@ -724,3 +724,88 @@
         border-radius: var(--radius-button) !important;
     }
 }
+
+/* Global toast notifications (bottom-right stack) */
+.fs-toast-host {
+    z-index: 200;
+}
+
+.fs-toast {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border-radius: 12px;
+    border: 1px solid transparent;
+    box-shadow:
+        0 10px 28px rgba(13, 29, 25, 0.14),
+        0 2px 6px rgba(13, 29, 25, 0.06);
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    line-height: 1.45;
+    color: var(--color-ink);
+    background: var(--color-white);
+    backdrop-filter: blur(8px);
+}
+
+.fs-toast__body {
+    flex: 1 1 auto;
+    min-width: 0;
+    text-wrap: pretty;
+}
+
+.fs-toast__dismiss {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    margin: -0.25rem -0.35rem -0.25rem 0;
+    border-radius: 8px;
+    color: currentColor;
+    opacity: 0.65;
+    transition: opacity 150ms ease, background-color 150ms ease;
+}
+
+.fs-toast__dismiss:hover,
+.fs-toast__dismiss:focus-visible {
+    opacity: 1;
+    background: rgba(0, 0, 0, 0.06);
+    outline: none;
+}
+
+.fs-toast--success {
+    background: color-mix(in srgb, var(--color-forest) 8%, var(--color-white));
+    border-color: color-mix(in srgb, var(--color-forest) 22%, transparent);
+    color: var(--color-forest);
+}
+
+.fs-toast--error {
+    background: color-mix(in srgb, var(--color-fs-danger) 8%, var(--color-white));
+    border-color: color-mix(in srgb, var(--color-fs-danger) 28%, transparent);
+    color: var(--color-fs-danger);
+}
+
+.fs-toast--warning {
+    background: color-mix(in srgb, var(--color-gold) 22%, var(--color-white));
+    border-color: color-mix(in srgb, var(--color-gold-dark) 28%, transparent);
+    color: var(--color-gold-dark);
+}
+
+.fs-toast--info {
+    background: var(--color-white);
+    border-color: var(--color-border);
+    color: var(--color-ink);
+}
+
+@media (max-width: 639px) {
+    .fs-toast-host {
+        justify-content: stretch;
+    }
+
+    .fs-toast-host > div {
+        max-width: 100%;
+    }
+}

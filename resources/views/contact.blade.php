@@ -14,12 +14,6 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
             <x-panel>
-                @if ($errors->any())
-                    <x-alert tone="error" class="mb-4">
-                        <ul class="space-y-1">@foreach ($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>
-                    </x-alert>
-                @endif
-
                 <form id="inquiry-form" method="POST" action="{{ route('contact.store') }}" class="space-y-4 scroll-mt-[calc(var(--header-h)+16px)]">
                     @csrf
                     <x-input label="Name" name="name" :value="old('name')" placeholder="Your name" required />

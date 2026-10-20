@@ -105,10 +105,6 @@
                     $deactivated = $errors->has('email') && str_contains(strtolower($errors->first('email') ?? ''), 'deactivated');
                 @endphp
 
-                @if(session('success') || session('status'))
-                    <x-alert tone="success" class="mb-5">{{ session('success') ?? session('status') }}</x-alert>
-                @endif
-
                 @if($deactivated)
                     <x-empty-state
                         title="Account suspended"
@@ -116,10 +112,6 @@
                         action-label="Back to home"
                         :action-href="route('home')"
                     />
-                @elseif($errors->any())
-                    <x-alert tone="error" class="mb-5">
-                        <ul class="space-y-1">@foreach($errors->all() as $e)<li>{{ $e }}</li>@endforeach</ul>
-                    </x-alert>
                 @endif
 
                 {{-- LOGIN --}}

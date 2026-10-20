@@ -34,96 +34,32 @@
     <?php echo $__env->make('include.navbar', ['headerMode' => $headerMode], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
     <main id="main-content" class="flex-1 <?php echo e($headerMode === 'overlay' ? 'pt-0' : 'pt-[var(--header-h)]'); ?>">
-        <?php if(session('success') || session('error') || session('status')): ?>
-            <?php if (isset($component)) { $__componentOriginala766c2d312d6f7864fe218e2500d2bba = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginala766c2d312d6f7864fe218e2500d2bba = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.container','data' => ['class' => 'pt-4 '.e($headerMode === 'overlay' ? 'pt-[calc(var(--header-h)+1rem)]' : '').'']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('container'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['class' => 'pt-4 '.e($headerMode === 'overlay' ? 'pt-[calc(var(--header-h)+1rem)]' : '').'']); ?>
-                <?php if(session('success')): ?>
-                    <?php if (isset($component)) { $__componentOriginal5194778a3a7b899dcee5619d0610f5cf = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal5194778a3a7b899dcee5619d0610f5cf = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.alert','data' => ['tone' => 'success','class' => 'mb-2','dismissible' => true]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('alert'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['tone' => 'success','class' => 'mb-2','dismissible' => true]); ?><?php echo e(session('success')); ?> <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginal5194778a3a7b899dcee5619d0610f5cf)): ?>
-<?php $attributes = $__attributesOriginal5194778a3a7b899dcee5619d0610f5cf; ?>
-<?php unset($__attributesOriginal5194778a3a7b899dcee5619d0610f5cf); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginal5194778a3a7b899dcee5619d0610f5cf)): ?>
-<?php $component = $__componentOriginal5194778a3a7b899dcee5619d0610f5cf; ?>
-<?php unset($__componentOriginal5194778a3a7b899dcee5619d0610f5cf); ?>
-<?php endif; ?>
-                <?php endif; ?>
-                <?php if(session('error')): ?>
-                    <?php if (isset($component)) { $__componentOriginal5194778a3a7b899dcee5619d0610f5cf = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal5194778a3a7b899dcee5619d0610f5cf = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.alert','data' => ['tone' => 'error','class' => 'mb-2','dismissible' => true]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('alert'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['tone' => 'error','class' => 'mb-2','dismissible' => true]); ?><?php echo e(session('error')); ?> <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginal5194778a3a7b899dcee5619d0610f5cf)): ?>
-<?php $attributes = $__attributesOriginal5194778a3a7b899dcee5619d0610f5cf; ?>
-<?php unset($__attributesOriginal5194778a3a7b899dcee5619d0610f5cf); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginal5194778a3a7b899dcee5619d0610f5cf)): ?>
-<?php $component = $__componentOriginal5194778a3a7b899dcee5619d0610f5cf; ?>
-<?php unset($__componentOriginal5194778a3a7b899dcee5619d0610f5cf); ?>
-<?php endif; ?>
-                <?php endif; ?>
-                <?php if(session('status')): ?>
-                    <?php if (isset($component)) { $__componentOriginal5194778a3a7b899dcee5619d0610f5cf = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal5194778a3a7b899dcee5619d0610f5cf = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.alert','data' => ['tone' => 'info','class' => 'mb-2','dismissible' => true]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('alert'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['tone' => 'info','class' => 'mb-2','dismissible' => true]); ?><?php echo e(session('status')); ?> <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginal5194778a3a7b899dcee5619d0610f5cf)): ?>
-<?php $attributes = $__attributesOriginal5194778a3a7b899dcee5619d0610f5cf; ?>
-<?php unset($__attributesOriginal5194778a3a7b899dcee5619d0610f5cf); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginal5194778a3a7b899dcee5619d0610f5cf)): ?>
-<?php $component = $__componentOriginal5194778a3a7b899dcee5619d0610f5cf; ?>
-<?php unset($__componentOriginal5194778a3a7b899dcee5619d0610f5cf); ?>
-<?php endif; ?>
-                <?php endif; ?>
-             <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginala766c2d312d6f7864fe218e2500d2bba)): ?>
-<?php $attributes = $__attributesOriginala766c2d312d6f7864fe218e2500d2bba; ?>
-<?php unset($__attributesOriginala766c2d312d6f7864fe218e2500d2bba); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginala766c2d312d6f7864fe218e2500d2bba)): ?>
-<?php $component = $__componentOriginala766c2d312d6f7864fe218e2500d2bba; ?>
-<?php unset($__componentOriginala766c2d312d6f7864fe218e2500d2bba); ?>
-<?php endif; ?>
-        <?php endif; ?>
         <?php echo $__env->yieldContent('home_content'); ?>
         <?php echo $__env->yieldContent('content'); ?>
     </main>
 
     <?php echo $__env->make('include.footer', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+
+    <?php if (isset($component)) { $__componentOriginal17dbdda2e5e455c7135d48ee27e4f262 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal17dbdda2e5e455c7135d48ee27e4f262 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.toast-host','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('toast-host'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal17dbdda2e5e455c7135d48ee27e4f262)): ?>
+<?php $attributes = $__attributesOriginal17dbdda2e5e455c7135d48ee27e4f262; ?>
+<?php unset($__attributesOriginal17dbdda2e5e455c7135d48ee27e4f262); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal17dbdda2e5e455c7135d48ee27e4f262)): ?>
+<?php $component = $__componentOriginal17dbdda2e5e455c7135d48ee27e4f262; ?>
+<?php unset($__componentOriginal17dbdda2e5e455c7135d48ee27e4f262); ?>
+<?php endif; ?>
 
     <?php echo $__env->yieldPushContent('scripts'); ?>
 </body>

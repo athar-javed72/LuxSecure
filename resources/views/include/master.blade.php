@@ -34,24 +34,13 @@
     @include('include.navbar', ['headerMode' => $headerMode])
 
     <main id="main-content" class="flex-1 {{ $headerMode === 'overlay' ? 'pt-0' : 'pt-[var(--header-h)]' }}">
-        @if (session('success') || session('error') || session('status'))
-            <x-container class="pt-4 {{ $headerMode === 'overlay' ? 'pt-[calc(var(--header-h)+1rem)]' : '' }}">
-                @if (session('success'))
-                    <x-alert tone="success" class="mb-2" dismissible>{{ session('success') }}</x-alert>
-                @endif
-                @if (session('error'))
-                    <x-alert tone="error" class="mb-2" dismissible>{{ session('error') }}</x-alert>
-                @endif
-                @if (session('status'))
-                    <x-alert tone="info" class="mb-2" dismissible>{{ session('status') }}</x-alert>
-                @endif
-            </x-container>
-        @endif
         @yield('home_content')
         @yield('content')
     </main>
 
     @include('include.footer')
+
+    <x-toast-host />
 
     @stack('scripts')
 </body>

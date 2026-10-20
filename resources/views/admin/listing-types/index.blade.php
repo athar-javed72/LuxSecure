@@ -16,10 +16,6 @@
     <x-button variant="primary" href="{{ route('admin.listing-types.create') }}">Add type</x-button>
 </div>
 
-@if(session('error'))
-    <div class="mb-4 p-4 rounded-sm bg-red-50 text-fs-danger text-sm">{{ session('error') }}</div>
-@endif
-
 <div class="rounded-md bg-white shadow-sm border border-black/5 overflow-hidden">
     <table class="w-full text-sm">
         <thead class="bg-fs-surface text-left text-xs uppercase tracking-wide text-fs-muted">

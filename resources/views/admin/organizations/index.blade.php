@@ -18,10 +18,6 @@
     @endcan
 </div>
 
-@if(session('error'))
-    <div class="mb-4 p-4 rounded-sm bg-red-50 text-fs-danger text-sm">{{ session('error') }}</div>
-@endif
-
 <x-panel :padding="false">
     <table class="w-full text-sm">
         <thead class="bg-fs-surface text-left text-xs uppercase tracking-wide text-fs-muted">

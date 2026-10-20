@@ -92,12 +92,6 @@
 
         <main class="flex-1 p-4 sm:p-6 lg:p-8">
             <div class="w-full max-w-[1600px]">
-                @if (session('success'))
-                    <x-alert tone="success" class="mb-4" dismissible>{{ session('success') }}</x-alert>
-                @endif
-                @if (session('error'))
-                    <x-alert tone="error" class="mb-4" dismissible>{{ session('error') }}</x-alert>
-                @endif
                 @yield('content')
             </div>
         </main>
@@ -107,6 +101,9 @@
             @include('include.branding', ['brandingClass' => 'text-fs-muted', 'strongClass' => 'text-fs-brand font-medium'])
         </footer>
     </div>
+
+    <x-toast-host />
+
     @stack('scripts')
 </body>
 </html>

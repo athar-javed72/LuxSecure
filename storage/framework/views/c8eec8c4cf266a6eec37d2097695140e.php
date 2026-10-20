@@ -130,48 +130,6 @@
 
         <main class="flex-1 p-4 sm:p-6 lg:p-8">
             <div class="w-full max-w-[1600px]">
-                <?php if(session('success')): ?>
-                    <?php if (isset($component)) { $__componentOriginal5194778a3a7b899dcee5619d0610f5cf = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal5194778a3a7b899dcee5619d0610f5cf = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.alert','data' => ['tone' => 'success','class' => 'mb-4','dismissible' => true]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('alert'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['tone' => 'success','class' => 'mb-4','dismissible' => true]); ?><?php echo e(session('success')); ?> <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginal5194778a3a7b899dcee5619d0610f5cf)): ?>
-<?php $attributes = $__attributesOriginal5194778a3a7b899dcee5619d0610f5cf; ?>
-<?php unset($__attributesOriginal5194778a3a7b899dcee5619d0610f5cf); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginal5194778a3a7b899dcee5619d0610f5cf)): ?>
-<?php $component = $__componentOriginal5194778a3a7b899dcee5619d0610f5cf; ?>
-<?php unset($__componentOriginal5194778a3a7b899dcee5619d0610f5cf); ?>
-<?php endif; ?>
-                <?php endif; ?>
-                <?php if(session('error')): ?>
-                    <?php if (isset($component)) { $__componentOriginal5194778a3a7b899dcee5619d0610f5cf = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal5194778a3a7b899dcee5619d0610f5cf = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.alert','data' => ['tone' => 'error','class' => 'mb-4','dismissible' => true]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('alert'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['tone' => 'error','class' => 'mb-4','dismissible' => true]); ?><?php echo e(session('error')); ?> <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginal5194778a3a7b899dcee5619d0610f5cf)): ?>
-<?php $attributes = $__attributesOriginal5194778a3a7b899dcee5619d0610f5cf; ?>
-<?php unset($__attributesOriginal5194778a3a7b899dcee5619d0610f5cf); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginal5194778a3a7b899dcee5619d0610f5cf)): ?>
-<?php $component = $__componentOriginal5194778a3a7b899dcee5619d0610f5cf; ?>
-<?php unset($__componentOriginal5194778a3a7b899dcee5619d0610f5cf); ?>
-<?php endif; ?>
-                <?php endif; ?>
                 <?php echo $__env->yieldContent('content'); ?>
             </div>
         </main>
@@ -181,6 +139,28 @@
             <?php echo $__env->make('include.branding', ['brandingClass' => 'text-fs-muted', 'strongClass' => 'text-fs-brand font-medium'], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
         </footer>
     </div>
+
+    <?php if (isset($component)) { $__componentOriginal17dbdda2e5e455c7135d48ee27e4f262 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal17dbdda2e5e455c7135d48ee27e4f262 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.toast-host','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('toast-host'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal17dbdda2e5e455c7135d48ee27e4f262)): ?>
+<?php $attributes = $__attributesOriginal17dbdda2e5e455c7135d48ee27e4f262; ?>
+<?php unset($__attributesOriginal17dbdda2e5e455c7135d48ee27e4f262); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal17dbdda2e5e455c7135d48ee27e4f262)): ?>
+<?php $component = $__componentOriginal17dbdda2e5e455c7135d48ee27e4f262; ?>
+<?php unset($__componentOriginal17dbdda2e5e455c7135d48ee27e4f262); ?>
+<?php endif; ?>
+
     <?php echo $__env->yieldPushContent('scripts'); ?>
 </body>
 </html>

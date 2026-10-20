@@ -200,6 +200,94 @@ export function registerAlpineComponents(Alpine) {
         },
     }));
 
+    Alpine.data('toastStack', () => ({
+        items: [],
+        nextId: 1,
+        duration: 3000,
+        _timers: {},
+        _onWindowToast: null,
+        init() {
+            const cfg = parseAlpineConfig(this.$el);
+            const duration = Number(cfg.duration);
+            this.duration = Number.isFinite(duration) && duration > 0 ? duration : 3000;
+
+            const api = {
+                push: (type, message) => this.push(type, message),
+                success: (message) => this.push('success', message),
+                error: (message) => this.push('error', message),
+                warning: (message) => this.push('warning', message),
+                info: (message) => this.push('info', message),
+            };
+            window.MaskanoorToast = api;
+
+            this._onWindowToast = (event) => {
+                const detail = event?.detail || {};
+                if (detail.message) {
+                    this.push(detail.type || 'info', detail.message);
+                }
+            };
+            window.addEventListener('maskanoor:toast', this._onWindowToast);
+
+            (Array.isArray(cfg.initial) ? cfg.initial : []).forEach((toast) => {
+                if (toast?.message) {
+                    this.push(toast.type || 'info', toast.message);
+                }
+            });
+        },
+        destroy() {
+            Object.keys(this._timers).forEach((id) => {
+                clearTimeout(this._timers[id]);
+            });
+            this._timers = {};
+            if (this._onWindowToast) {
+                window.removeEventListener('maskanoor:toast', this._onWindowToast);
+                this._onWindowToast = null;
+            }
+            if (window.MaskanoorToast) {
+                delete window.MaskanoorToast;
+            }
+        },
+        push(type, message) {
+            const text = String(message ?? '').trim();
+            if (!text) {
+                return;
+            }
+            const tone = ['success', 'error', 'warning', 'info'].includes(type) ? type : 'info';
+            const id = this.nextId++;
+            this.items.push({ id, type: tone, message: text, visible: true });
+            this._timers[id] = setTimeout(() => this.dismiss(id), this.duration);
+        },
+        dismiss(id) {
+            const item = this.items.find((toast) => toast.id === id);
+            if (!item) {
+                return;
+            }
+            if (this._timers[id]) {
+                clearTimeout(this._timers[id]);
+                delete this._timers[id];
+            }
+            if (!item.visible) {
+                return;
+            }
+            item.visible = false;
+            setTimeout(() => {
+                this.items = this.items.filter((toast) => toast.id !== id);
+            }, 280);
+        },
+        onDismissClick(event) {
+            const id = Number(event?.currentTarget?.getAttribute('data-toast-id'));
+            if (!Number.isNaN(id)) {
+                this.dismiss(id);
+            }
+        },
+        toneClass(type) {
+            return 'fs-toast fs-toast--' + (type || 'info');
+        },
+        roleFor(type) {
+            return type === 'error' ? 'alert' : 'status';
+        },
+    }));
+
     Alpine.data('revealOnView', () => ({
         init() {
             if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
