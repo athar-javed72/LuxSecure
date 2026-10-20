@@ -725,42 +725,34 @@
     }
 }
 
-/* Back to top — international estate control */
+/* Back to top — matches international estate control (dark disc + gold progress ring) */
 .fs-back-to-top__btn {
     position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 3rem;
-    height: 3rem;
+    width: 3.25rem;
+    height: 3.25rem;
     border-radius: 9999px;
-    border: 1px solid color-mix(in srgb, var(--color-gold) 45%, transparent);
-    background:
-        linear-gradient(
-            160deg,
-            color-mix(in srgb, var(--color-forest) 92%, #1f3d35) 0%,
-            var(--color-forest-shadow) 100%
-        );
+    border: none;
+    background: var(--color-forest-shadow);
     color: var(--color-gold);
     box-shadow:
-        0 12px 28px rgba(13, 29, 25, 0.28),
-        0 0 0 1px rgba(255, 255, 255, 0.06) inset;
-    backdrop-filter: blur(10px);
+        0 10px 24px rgba(13, 29, 25, 0.32),
+        0 1px 0 rgba(255, 255, 255, 0.06) inset;
     cursor: pointer;
     transition:
         transform 200ms ease,
         box-shadow 200ms ease,
-        border-color 200ms ease,
         color 200ms ease;
 }
 
 .fs-back-to-top__btn:hover {
     transform: translateY(-2px);
     color: var(--color-ivory);
-    border-color: color-mix(in srgb, var(--color-gold) 70%, transparent);
     box-shadow:
-        0 16px 32px rgba(13, 29, 25, 0.34),
-        0 0 0 1px rgba(214, 183, 121, 0.25) inset;
+        0 14px 28px rgba(13, 29, 25, 0.38),
+        0 0 0 1px color-mix(in srgb, var(--color-gold) 35%, transparent);
 }
 
 .fs-back-to-top__btn:focus-visible {
@@ -777,18 +769,19 @@
     inset: 0;
     width: 100%;
     height: 100%;
+    padding: 2px;
     transform: rotate(-90deg);
     pointer-events: none;
 }
 
 .fs-back-to-top__track {
-    stroke: rgba(245, 240, 230, 0.16);
+    stroke: color-mix(in srgb, var(--color-gold) 28%, transparent);
     stroke-width: 1.5;
 }
 
 .fs-back-to-top__progress {
     stroke: var(--color-gold);
-    stroke-width: 1.75;
+    stroke-width: 1.85;
     stroke-linecap: round;
     transition: stroke-dashoffset 120ms linear;
 }
@@ -801,8 +794,8 @@
 
 @media (max-width: 639px) {
     .fs-back-to-top__btn {
-        width: 2.75rem;
-        height: 2.75rem;
+        width: 2.875rem;
+        height: 2.875rem;
     }
 }
 

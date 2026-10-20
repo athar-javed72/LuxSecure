@@ -25,6 +25,9 @@
     $w = (int) ($item['width'] ?? 1200);
     $h = (int) ($item['height'] ?? 1500);
     $variants = $item['variants'] ?? [];
+    $fillFrame = str_contains($class, 'absolute')
+        || str_contains($class, 'h-full')
+        || str_contains($class, 'aspect-');
 @endphp
 
 @if($isBranded)
@@ -50,7 +53,11 @@
         <button type="button" class="absolute bottom-4 right-4 z-10 h-11 px-3 rounded-[var(--radius-button)] text-xs font-semibold bg-[rgba(13,29,25,.55)] text-[var(--color-ivory)] border border-white/20" data-bg-video-toggle aria-pressed="false">Pause</button>
     </div>
 @else
-    <picture {{ $attributes->class([$class]) }}>
+    <picture {{ $attributes->class([
+        'block overflow-hidden',
+        $fillFrame && ! str_contains($class, 'absolute') ? 'relative' : null,
+        $class,
+    ]) }}>
         @foreach(['avif', 'webp'] as $ext)
             @if(!empty($variants[$ext]))
                 @php
@@ -66,7 +73,11 @@
             height="{{ $h }}"
             decoding="async"
             @if($eager) fetchpriority="high" @else loading="lazy" @endif
-            class="w-full h-full object-cover"
+            @class([
+                'object-cover',
+                'absolute inset-0 w-full h-full' => $fillFrame,
+                'w-full h-auto' => ! $fillFrame,
+            ])
             style="object-position: {{ $objectPosition }}"
         >
     </picture>

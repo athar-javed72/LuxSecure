@@ -102,6 +102,7 @@
         </footer>
     </div>
 
+    <x-back-to-top />
     <x-toast-host />
 
     @stack('scripts')

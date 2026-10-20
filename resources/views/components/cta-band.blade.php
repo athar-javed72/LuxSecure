@@ -14,7 +14,7 @@
     $eyebrow = $eyebrow ?? ($siteName ?? config('app.name'));
 @endphp
 
-<section {{ $attributes->class(['relative z-0 fs-section-ivory']) }}>
+<section {{ $attributes->class(['relative z-0 fs-section fs-section-ivory']) }}>
     <x-container>
         <div class="relative overflow-hidden rounded-[var(--radius-card)] bg-[var(--color-forest-shadow)] px-6 py-12 md:px-12 md:py-14 border-t border-[color-mix(in_srgb,var(--color-gold)_40%,transparent)]" data-reveal>
             <img src="{{ \App\Support\BrandAssets::logo('monogram-nostar', 'dark') }}" alt="" aria-hidden="true" class="pointer-events-none absolute -bottom-8 -right-6 w-56 md:w-72 opacity-[0.07] select-none">

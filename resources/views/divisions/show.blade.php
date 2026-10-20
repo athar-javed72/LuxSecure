@@ -46,7 +46,7 @@
 />
 
 @if(!empty($sections['search']))
-    <div class="relative z-30 w-full -mt-[72px]" data-hero-search>
+    <div class="relative z-30 w-full -mt-[72px] pb-8 md:pb-10" data-hero-search>
         <x-container>
             <x-property-search
                 :suggestions="$locationSuggestions"
@@ -59,7 +59,7 @@
 @endif
 
 @if(!empty($sections['stats']))
-    <x-stat-strip :stats="$stats" class="relative z-0" />
+    <x-stat-strip :stats="$stats" class="relative z-0 {{ !empty($sections['search']) ? 'mt-2' : '' }}" />
 @endif
 
 @if(!empty($sections['intro']) && ($introTitle || $introBody))
