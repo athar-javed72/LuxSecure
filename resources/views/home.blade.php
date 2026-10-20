@@ -7,8 +7,7 @@
 @endsection
 
 @php
-    $img = config('site-images');
-    $slides = $img['hero_slides'] ?? [];
+    $slides = $heroSlides ?? collect();
     $featuredSale = $houses->where('purpose', '!=', 'short_stay')->take(8);
     $featuredStays = $houses->where('purpose', 'short_stay')->take(8);
     if (app()->isProduction()) {
@@ -17,10 +16,13 @@
     $typeIcons = config('search.type_icons');
     $searchTypes = \App\Models\ListingType::query()->where('is_active', true)->orderBy('name')->get(['name', 'slug'])->map(fn ($t) => ['name' => $t->name, 'slug' => $t->slug])->all();
     $currency = session('currency', optional($activeCountry ?? null)->currency_code ?? 'PKR');
+    $firstHero = $slides->first();
 @endphp
 
 @push('styles')
-<link rel="preload" as="image" href="{{ $slides[0]['desktop'] ?? $img['hero']['desktop'] }}" fetchpriority="high">
+@if(!empty($firstHero['src']))
+<link rel="preload" as="image" href="{{ $firstHero['src'] }}" fetchpriority="high">
+@endif
 @endpush
 
 @section('home_content')
@@ -38,31 +40,10 @@
             <div
                 class="fs-hero-slide {{ $i === 0 ? 'is-active' : '' }}"
                 role="group"
-                aria-label="{{ $i + 1 }} of {{ count($slides) }}"
+                aria-label="{{ $i + 1 }} of {{ $slides->count() }}"
                 @if($i > 0) aria-hidden="true" @endif
             >
-                <picture>
-                    <source
-                        media="(max-width: 767px)"
-                        @if($i === 0) srcset="{{ $slide['mobile'] }}" @else data-srcset="{{ $slide['mobile'] }}" @endif
-                    >
-                    <img
-                        @if($i === 0)
-                            src="{{ $slide['desktop'] }}"
-                            fetchpriority="high"
-                        @else
-                            data-src="{{ $slide['desktop'] }}"
-                            src=""
-                            loading="lazy"
-                        @endif
-                        alt="{{ $slide['alt'] }}"
-                        width="2400"
-                        height="1350"
-                        decoding="async"
-                        class="absolute inset-0 w-full h-full object-cover"
-                        style="object-position: {{ $slide['object_position'] }}; transform-origin: {{ $slide['origin'] ?? 'center' }};"
-                    >
-                </picture>
+                <x-media :media="$slide" class="absolute inset-0 w-full h-full" :eager="$i === 0" sizes="100vw" />
             </div>
         @endforeach
         <div class="absolute inset-0 fs-hero-overlay z-[2]"></div>
@@ -121,11 +102,18 @@
     <x-container class="grid lg:grid-cols-2 gap-8 lg:gap-16 items-start" data-reveal>
         <div>
             <x-eyebrow>{{ $siteName ?? config('app.name') }}</x-eyebrow>
-            <h2 id="intro-heading" class="mt-4">Spaces shape how we live, travel, and connect.</h2>
+            <h2 id="intro-heading" class="mt-4">{{ $introCopy['title'] ?? 'Spaces shape how we live, travel, and connect.' }}</h2>
         </div>
         <div>
+            @if(!empty($introMedia))
+                <div class="aspect-[4/5] max-w-md ml-auto rounded-[var(--radius-card)] overflow-hidden mb-6">
+                    <x-media :media="$introMedia" class="w-full h-full" sizes="(min-width:1024px) 28vw, 90vw" />
+                </div>
+            @elseif(!empty($homeStats) && count($homeStats) >= 2)
+                <x-stat-strip :stats="$homeStats" class="!border-0 !bg-transparent mb-4" />
+            @endif
             <p class="fs-lead">
-                We bring hospitality and property together through a thoughtful, detail-led approach.
+                {{ $introBody['body'] ?? 'We bring hospitality and property together through a thoughtful, detail-led approach.' }}
             </p>
             <a href="{{ route('home') }}#about" class="mt-6 inline-flex items-center min-h-11 text-sm font-semibold text-[var(--color-gold-dark)] hover:underline">
                 About us →
@@ -144,15 +132,11 @@
             heading-id="divisions-heading"
         />
         <div class="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6" data-reveal data-reveal-stagger>
-            @foreach([
-                ['key' => 'hotels', 'name' => 'Hotels', 'href' => route('divisions.hospitality'), 'copy' => 'Considered guest experiences, built around comfort, character and thoughtful service.', 'cta' => 'Discover Hotels'],
-                ['key' => 'properties', 'name' => 'Properties', 'href' => route('properties'), 'copy' => 'A considered approach to property opportunities, ownership, leasing and management.', 'cta' => 'Discover Properties'],
-                ['key' => 'living', 'name' => 'Living', 'href' => route('divisions.living'), 'copy' => 'Refined residences for stays that feel effortless, short-term or extended.', 'cta' => 'Discover Living'],
-            ] as $div)
+            @foreach($divisionCards as $div)
                 <article class="group relative rounded-[var(--radius-card)] overflow-hidden">
                     <a href="{{ $div['href'] }}" class="absolute inset-0 z-10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-gold)] rounded-[var(--radius-card)]" aria-label="{{ $div['cta'] }}"><span class="sr-only">{{ $div['cta'] }}</span></a>
                     <div class="relative aspect-[16/10] lg:aspect-[4/5] fs-card-media">
-                        <img src="{{ $img['divisions'][$div['key']]['src'] }}" alt="{{ $img['divisions'][$div['key']]['alt'] }}" width="1200" height="1500" loading="lazy" decoding="async" class="absolute inset-0 w-full h-full object-cover">
+                        <x-media :media="$div['media']" class="absolute inset-0 w-full h-full" sizes="(min-width:768px) 33vw, 100vw" />
                         <div class="absolute inset-0 fs-division-overlay" aria-hidden="true"></div>
                         <div class="absolute inset-x-0 bottom-0 p-5 md:p-6 text-[var(--color-ivory)]">
                             <h3 class="font-[family-name:var(--font-display)] text-[30px] md:text-[32px] font-semibold text-[var(--color-ivory)]">{{ $div['name'] }}</h3>
@@ -280,7 +264,7 @@
         <x-split-section>
             <x-slot:media>
                 <div class="aspect-[4/5] w-full rounded-[var(--radius-card)] overflow-hidden" data-reveal>
-                    <img src="{{ $img['about']['src'] }}" alt="{{ $img['about']['alt'] }}" width="1200" height="1500" loading="lazy" decoding="async" class="w-full h-full object-cover">
+                    <x-media :media="$aboutMedia" class="w-full h-full" sizes="(min-width:1024px) 40vw, 100vw" />
                 </div>
             </x-slot:media>
             <div data-reveal>
@@ -337,12 +321,56 @@
     </x-container>
 </section>
 
+@if(!empty($destinations) && $destinations->isNotEmpty())
+<section class="relative z-0 fs-section fs-section-ivory" aria-labelledby="home-destinations-heading">
+    <x-container>
+        <x-section-heading eyebrow="Destinations" title="Places with something to explore" heading-id="home-destinations-heading" />
+        <div class="mt-10">
+            <x-destination-grid :destinations="$destinations" />
+        </div>
+    </x-container>
+</section>
+@endif
+
+@if(!empty($recent) && $recent->isNotEmpty())
+<section class="relative z-0 fs-section fs-section-ivory-50" aria-labelledby="recent-heading" data-carousel>
+    <x-container>
+        <x-section-heading eyebrow="New" title="Recently added" heading-id="recent-heading" action-href="{{ route('properties') }}" action-label="View all">
+            <x-slot:controls>
+                <div class="flex items-center gap-2" data-carousel-controls>
+                    <button type="button" class="fs-carousel__btn" data-carousel-prev aria-label="Previous" disabled><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 19l-7-7 7-7"/></svg></button>
+                    <button type="button" class="fs-carousel__btn" data-carousel-next aria-label="Next"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 5l7 7-7 7"/></svg></button>
+                </div>
+            </x-slot:controls>
+        </x-section-heading>
+        <div class="mt-10 fs-carousel" data-reveal>
+            <div class="fs-carousel__track" data-carousel-track tabindex="0">
+                @foreach($recent as $listing)
+                    <div class="fs-carousel__slide" data-carousel-slide>
+                        <x-property-card :property="$listing" />
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </x-container>
+</section>
+@endif
+
+@if(!empty($homeVideo))
+<section class="relative z-0 fs-section fs-section-ivory" aria-labelledby="home-video-heading">
+    <x-container>
+        <x-section-heading eyebrow="Experience" title="See the approach" heading-id="home-video-heading" />
+        <div class="mt-10">
+            <x-video-modal :media="$homeVideo" />
+        </div>
+    </x-container>
+</section>
+@endif
+
 {{-- Image break --}}
+@if(!empty($breakMedia))
 <section class="relative z-0 w-full overflow-hidden fs-break-media" data-break aria-label="Brand statement">
-    <picture>
-        <source media="(max-width: 767px)" srcset="{{ $img['break']['mobile'] }}">
-        <img src="{{ $img['break']['desktop'] }}" alt="{{ $img['break']['alt'] }}" width="2400" height="1030" loading="lazy" decoding="async" class="w-full aspect-[4/5] md:aspect-[21/9] object-cover">
-    </picture>
+    <x-media :media="$breakMedia" class="w-full aspect-[4/5] md:aspect-[21/9] block" sizes="100vw" />
     <div class="absolute inset-0 fs-break-overlay" aria-hidden="true"></div>
     <div class="absolute inset-0 flex items-center justify-center px-6">
         <p class="fs-break-quote font-[family-name:var(--font-display)] font-medium text-[var(--color-ivory)] text-center text-[clamp(28px,4vw,52px)] leading-tight max-w-[18ch]">
@@ -350,6 +378,7 @@
         </p>
     </div>
 </section>
+@endif
 
 @if($agents->isNotEmpty())
 <section id="agents" class="relative z-0 fs-section fs-section-ivory scroll-mt-[calc(var(--header-h)+16px)]" aria-labelledby="agents-heading" data-carousel>

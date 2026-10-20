@@ -14,6 +14,7 @@ class Faq extends Model
         'answer',
         'sort_order',
         'is_published',
+        'tag',
         'meta_title',
         'meta_description',
     ];

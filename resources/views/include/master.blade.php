@@ -40,6 +40,7 @@
 
     @include('include.footer')
 
+    <x-back-to-top />
     <x-toast-host />
 
     @stack('scripts')

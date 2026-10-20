@@ -15,7 +15,7 @@
                 <x-blog-card
                     :title="$post->title"
                     :excerpt="$post->excerpt"
-                    :image="$post->featured_image ?: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=800&q=80'"
+                    :image="$post->featured_image"
                     :date="optional($post->published_at)->toDateString()"
                     :category="$post->category"
                     :href="route('blog.show', $post->slug)"

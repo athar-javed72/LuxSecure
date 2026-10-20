@@ -20,6 +20,9 @@ class City extends Model
         'latitude',
         'longitude',
         'population',
+        'cover_path',
+        'cover_focal_x',
+        'cover_focal_y',
         'is_active',
     ];
 
@@ -29,6 +32,8 @@ class City extends Model
         'longitude' => 'decimal:7',
         'population' => 'integer',
         'source_id' => 'integer',
+        'cover_focal_x' => 'integer',
+        'cover_focal_y' => 'integer',
     ];
 
     public function country()

@@ -2,40 +2,120 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ContentBlock;
+use App\Models\ListingType;
 use App\Models\Setting;
+use App\Services\DivisionCatalog;
+use App\Services\MediaResolver;
+use App\Support\BrandAssets;
 use Illuminate\View\View;
 
 class DivisionController extends Controller
 {
-    public function hospitality(): View
+    public function hospitality(DivisionCatalog $catalog, MediaResolver $media): View
     {
-        $name = Setting::getValue('site.division.hotels', 'Hotels');
-
-        return view('divisions.show', [
-            'title' => $name,
-            'division' => 'hotels',
-            'intro' => 'Hospitality designed for considered stays — boutique hotels and short-stay residences under the '.$name.' division.',
-            'sectionTitle' => 'Hotels',
-            'sectionSubtitle' => 'Short stays with the same care as a private residence.',
-            'body' => 'Explore curated hotel and short-stay listings. Bookings, room types, and cancellation policies follow country-aware commerce settings.',
-            'ctaHref' => '/properties?purpose=short_stay',
-            'ctaLabel' => 'Browse stays',
-        ]);
+        return $this->show('hotels', $catalog, $media);
     }
 
-    public function living(): View
+    public function living(DivisionCatalog $catalog, MediaResolver $media): View
     {
-        $name = Setting::getValue('site.division.living', 'Living');
+        return $this->show('living', $catalog, $media);
+    }
+
+    private function show(string $key, DivisionCatalog $catalog, MediaResolver $media): View
+    {
+        $division = $catalog->config($key);
+        $prefix = $division['content_prefix'];
+        $mediaPrefix = $division['media_prefix'];
+
+        $heroTitle = ContentBlock::resolve("{$prefix}.hero.title")['title']
+            ?? ContentBlock::resolve("{$prefix}.hero.title")['body'];
+        $heroLead = ContentBlock::resolve("{$prefix}.hero.lead")['body'];
+        $introTitle = ContentBlock::resolve("{$prefix}.intro.title")['title'];
+        $introBody = ContentBlock::resolve("{$prefix}.intro.body")['body'];
+
+        $steps = [];
+        for ($i = 1; $i <= 3; $i++) {
+            $block = ContentBlock::resolve("{$prefix}.steps.{$i}.title");
+            if ($block['title'] || $block['body']) {
+                $steps[] = ['title' => $block['title'], 'body' => $block['body']];
+            }
+        }
+
+        $audience = null;
+        if (! empty($division['sections']['audience'])) {
+            $audience = [
+                'tenants' => ContentBlock::resolve('living.tenants.title'),
+                'landlords' => ContentBlock::resolve('living.landlords.title'),
+            ];
+        }
+
+        $heroSlides = $media->collection("{$mediaPrefix}.hero");
+        if ($heroSlides->isEmpty()) {
+            $derived = $media->listingCoverFallback(
+                $division['scope']['purpose'] ?? null,
+                $division['scope']['type_slugs'] ?? null
+            );
+            $heroSlides = collect([$derived ?: $media->brandedFallback()]);
+        }
+
+        $introMedia = $media->resolve("{$mediaPrefix}.intro", 0, function () use ($media, $division) {
+            return $media->listingCoverFallback(
+                $division['scope']['purpose'] ?? null,
+                $division['scope']['type_slugs'] ?? null
+            );
+        });
+
+        $video = $media->forSlot("{$mediaPrefix}.video");
+        $featured = $catalog->featured($key, 8);
+        $stats = $catalog->stats($key);
+        $destinations = $catalog->destinations($key);
+        $amenities = $catalog->amenities($key);
+        $faqs = $catalog->faqs($key);
+        $reviews = $catalog->reviews($key);
+        $browseHref = $catalog->browseHref($division);
+
+        $searchTypes = ListingType::query()
+            ->where('is_active', true)
+            ->orderBy('name')
+            ->get(['name', 'slug'])
+            ->map(fn ($t) => ['name' => $t->name, 'slug' => $t->slug])
+            ->all();
+
+        $cross = config('divisions.'.$division['cross_link']);
+        $divisionName = Setting::getValue(
+            $key === 'hotels' ? 'site.division.hotels' : 'site.division.living',
+            $division['nav_label']
+        );
+
+        $og = $heroSlides->first();
+        $ogImage = (! empty($og['src'])) ? $og['src'] : url(BrandAssets::ogImage());
 
         return view('divisions.show', [
-            'title' => $name,
-            'division' => 'living',
-            'intro' => 'Longer-term homes and rental living managed with clarity — tenancies, schedules, and trusted local support.',
-            'sectionTitle' => 'Living',
-            'sectionSubtitle' => 'Rentals and residences for everyday life.',
-            'body' => 'Discover rent listings and tenancy-ready homes. '.$name.' focuses on transparent pricing and dependable landlord–tenant workflows.',
-            'ctaHref' => '/properties?purpose=rent',
-            'ctaLabel' => 'Browse rentals',
+            'divisionKey' => $key,
+            'division' => $division,
+            'divisionName' => $divisionName,
+            'heroTitle' => $heroTitle,
+            'heroLead' => $heroLead,
+            'introTitle' => $introTitle,
+            'introBody' => $introBody,
+            'steps' => $steps,
+            'audience' => $audience,
+            'heroSlides' => $heroSlides,
+            'introMedia' => $introMedia,
+            'video' => $video,
+            'featured' => $featured,
+            'stats' => $stats,
+            'destinations' => $destinations,
+            'amenities' => $amenities,
+            'faqs' => $faqs,
+            'reviews' => $reviews,
+            'browseHref' => $browseHref,
+            'searchTypes' => $searchTypes,
+            'cross' => $cross,
+            'ogImage' => $ogImage,
+            'currency' => session('currency', 'PKR'),
+            'locationSuggestions' => $destinations->map(fn ($d) => $d['city']->displayLabel())->filter()->values()->all(),
         ]);
     }
 }

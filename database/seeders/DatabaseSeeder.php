@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
                 CmsPagesSeeder::class,
                 DemoOrganizationSeeder::class,
                 FaqSeeder::class,
+                DemoMediaSeeder::class,
             ]);
         }
     }

@@ -12,8 +12,9 @@
             'forgot' => route('password.request'),
         ],
     ];
-    $panelImage = config('site-images.about.src', '/images/home/about.jpg');
-    $panelAlt = config('site-images.about.alt', '');
+    $panelMedia = app(\App\Services\MediaResolver::class)->resolve('home.about');
+    $panelImage = $panelMedia['src'] ?? null;
+    $panelAlt = $panelMedia['alt'] ?? '';
     $brand = $siteName ?? config('app.name');
     $tagline = $siteTagline ?? \App\Support\BrandAssets::TAGLINE;
 @endphp
@@ -26,14 +27,18 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 min-h-[min(720px,calc(100svh-var(--header-h)-6rem))]">
         {{-- Brand panel — atmosphere, not a floating card --}}
         <aside class="fs-auth-panel relative hidden lg:flex flex-col justify-between overflow-hidden bg-[var(--color-forest-shadow)] text-[var(--color-ivory)] p-10 xl:p-12">
-            <img
-                src="{{ $panelImage }}"
-                alt="{{ $panelAlt }}"
-                width="1200"
-                height="1500"
-                class="fs-auth-panel__media absolute inset-0 h-full w-full object-cover"
-                decoding="async"
-            >
+            @if($panelImage)
+                <img
+                    src="{{ $panelImage }}"
+                    alt="{{ $panelAlt }}"
+                    width="1200"
+                    height="1500"
+                    class="fs-auth-panel__media absolute inset-0 h-full w-full object-cover"
+                    decoding="async"
+                >
+            @else
+                <img src="{{ \App\Support\BrandAssets::logo('monogram-nostar', 'dark') }}" alt="" width="160" height="160" class="absolute inset-0 m-auto w-[30%] opacity-[0.08]" aria-hidden="true">
+            @endif
             <div class="fs-auth-panel__veil absolute inset-0" aria-hidden="true"></div>
 
             <div class="relative z-10">

@@ -117,6 +117,18 @@ return [
             'permission' => 'cms.view',
         ],
         [
+            'label' => 'Site media',
+            'route' => 'admin.site-media.index',
+            'active' => ['admin.site-media.*'],
+            'permission' => 'cms.view',
+        ],
+        [
+            'label' => 'Content blocks',
+            'route' => 'admin.content-blocks.index',
+            'active' => ['admin.content-blocks.*'],
+            'permission' => 'cms.view',
+        ],
+        [
             'label' => 'Countries',
             'route' => 'admin.countries.index',
             'active' => ['admin.countries.*', 'admin.kyc-document-types.*', 'admin.country-payment-methods.*'],

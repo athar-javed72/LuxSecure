@@ -725,6 +725,94 @@
     }
 }
 
+/* Back to top — international estate control */
+.fs-back-to-top__btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 9999px;
+    border: 1px solid color-mix(in srgb, var(--color-gold) 45%, transparent);
+    background:
+        linear-gradient(
+            160deg,
+            color-mix(in srgb, var(--color-forest) 92%, #1f3d35) 0%,
+            var(--color-forest-shadow) 100%
+        );
+    color: var(--color-gold);
+    box-shadow:
+        0 12px 28px rgba(13, 29, 25, 0.28),
+        0 0 0 1px rgba(255, 255, 255, 0.06) inset;
+    backdrop-filter: blur(10px);
+    cursor: pointer;
+    transition:
+        transform 200ms ease,
+        box-shadow 200ms ease,
+        border-color 200ms ease,
+        color 200ms ease;
+}
+
+.fs-back-to-top__btn:hover {
+    transform: translateY(-2px);
+    color: var(--color-ivory);
+    border-color: color-mix(in srgb, var(--color-gold) 70%, transparent);
+    box-shadow:
+        0 16px 32px rgba(13, 29, 25, 0.34),
+        0 0 0 1px rgba(214, 183, 121, 0.25) inset;
+}
+
+.fs-back-to-top__btn:focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 3px;
+}
+
+.fs-back-to-top__btn:active {
+    transform: translateY(0);
+}
+
+.fs-back-to-top__ring {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+    pointer-events: none;
+}
+
+.fs-back-to-top__track {
+    stroke: rgba(245, 240, 230, 0.16);
+    stroke-width: 1.5;
+}
+
+.fs-back-to-top__progress {
+    stroke: var(--color-gold);
+    stroke-width: 1.75;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 120ms linear;
+}
+
+.fs-back-to-top__icon {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+}
+
+@media (max-width: 639px) {
+    .fs-back-to-top__btn {
+        width: 2.75rem;
+        height: 2.75rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .fs-back-to-top__btn,
+    .fs-back-to-top__progress {
+        transition: none;
+    }
+}
+
 /* Global toast notifications (bottom-right stack) */
 .fs-toast-host {
     z-index: 200;

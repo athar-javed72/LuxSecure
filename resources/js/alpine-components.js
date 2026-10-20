@@ -200,6 +200,117 @@ export function registerAlpineComponents(Alpine) {
         },
     }));
 
+    Alpine.data('backToTop', () => ({
+        visible: false,
+        progress: 0,
+        reduceMotion: false,
+        _onScroll: null,
+        init() {
+            this.reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            this._onScroll = () => this.update();
+            window.addEventListener('scroll', this._onScroll, { passive: true });
+            this.update();
+        },
+        destroy() {
+            if (this._onScroll) {
+                window.removeEventListener('scroll', this._onScroll);
+            }
+        },
+        update() {
+            const doc = document.documentElement;
+            const scrollTop = window.scrollY || doc.scrollTop || 0;
+            const max = Math.max(doc.scrollHeight - window.innerHeight, 1);
+            this.visible = scrollTop > 420;
+            this.progress = Math.min(100, Math.round((scrollTop / max) * 100));
+        },
+        goTop() {
+            if (this.reduceMotion) {
+                window.scrollTo(0, 0);
+                return;
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        },
+        ringStyle() {
+            const c = 2 * Math.PI * 18;
+            const offset = c - (c * this.progress) / 100;
+            return 'stroke-dasharray: ' + c + '; stroke-dashoffset: ' + offset + ';';
+        },
+    }));
+
+    Alpine.data('galleryLightbox', () => ({
+        open: false,
+        index: 0,
+        items: [],
+        previouslyFocused: null,
+        init() {
+            const cfg = parseAlpineConfig(this.$el);
+            this.items = Array.isArray(cfg.items) ? cfg.items : [];
+        },
+        openAtEvent(event) {
+            const raw = event?.currentTarget?.getAttribute('data-index');
+            const idx = Number(raw);
+            if (Number.isNaN(idx)) {
+                return;
+            }
+            this.previouslyFocused = document.activeElement;
+            this.index = idx;
+            this.open = true;
+        },
+        closeLightbox() {
+            this.open = false;
+            this.$nextTick(() => {
+                if (this.previouslyFocused?.focus) {
+                    this.previouslyFocused.focus();
+                }
+            });
+        },
+        next() {
+            if (!this.items.length) {
+                return;
+            }
+            this.index = (this.index + 1) % this.items.length;
+        },
+        prev() {
+            if (!this.items.length) {
+                return;
+            }
+            this.index = (this.index - 1 + this.items.length) % this.items.length;
+        },
+        currentSrc() {
+            return this.items[this.index]?.src || '';
+        },
+        currentAlt() {
+            return this.items[this.index]?.alt || '';
+        },
+        counterLabel() {
+            return (this.index + 1) + ' / ' + this.items.length;
+        },
+    }));
+
+    Alpine.data('videoModal', () => ({
+        open: false,
+        src: '',
+        embed: false,
+        previouslyFocused: null,
+        init() {
+            const cfg = parseAlpineConfig(this.$el);
+            this.src = cfg.src || '';
+            this.embed = !!cfg.embed;
+        },
+        openModal() {
+            this.previouslyFocused = document.activeElement;
+            this.open = true;
+        },
+        closeModal() {
+            this.open = false;
+            this.$nextTick(() => {
+                if (this.previouslyFocused?.focus) {
+                    this.previouslyFocused.focus();
+                }
+            });
+        },
+    }));
+
     Alpine.data('toastStack', () => ({
         items: [],
         nextId: 1,

@@ -8,7 +8,9 @@ use App\Models\Booking;
 use App\Models\ContactInquiry;
 use App\Models\Faq;
 use App\Models\KycDocument;
+use App\Models\ContentBlock;
 use App\Models\Lead;
+use App\Models\MediaAsset;
 use App\Models\Listing;
 use App\Models\ListingType;
 use App\Models\Organization;
@@ -68,6 +70,8 @@ class AuthServiceProvider extends ServiceProvider
         Faq::class => CmsPolicy::class,
         Testimonial::class => CmsPolicy::class,
         Page::class => CmsPolicy::class,
+        MediaAsset::class => CmsPolicy::class,
+        ContentBlock::class => CmsPolicy::class,
         Payment::class => PaymentPolicy::class,
         Review::class => ReviewPolicy::class,
         KycDocument::class => KycDocumentPolicy::class,

@@ -4,6 +4,8 @@ use App\Http\Controllers\Admin\ActivityLogController;
 use App\Http\Controllers\Admin\AgentProfileController;
 use App\Http\Controllers\Admin\CancellationPolicyController;
 use App\Http\Controllers\Admin\CmsController;
+use App\Http\Controllers\Admin\ContentBlockController;
+use App\Http\Controllers\Admin\SiteMediaController;
 use App\Http\Controllers\Admin\CountryController;
 use App\Http\Controllers\Admin\CountryPaymentMethodController;
 use App\Http\Controllers\Admin\CountryVisibilityController;
@@ -216,6 +218,16 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'active', 'panel', '
         Route::post('cms/pages', [CmsController::class, 'storePage'])->name('cms.pages.store');
         Route::put('cms/pages/{page}', [CmsController::class, 'updatePage'])->name('cms.pages.update');
         Route::delete('cms/pages/{page}', [CmsController::class, 'destroyPage'])->name('cms.pages.destroy');
+
+        Route::get('site-media', [SiteMediaController::class, 'index'])->name('site-media.index');
+        Route::post('site-media', [SiteMediaController::class, 'store'])->name('site-media.store');
+        Route::put('site-media/{media}', [SiteMediaController::class, 'update'])->name('site-media.update');
+        Route::delete('site-media/{media}', [SiteMediaController::class, 'destroy'])->name('site-media.destroy');
+        Route::post('site-media/reorder', [SiteMediaController::class, 'reorder'])->name('site-media.reorder');
+        Route::put('site-media/cities/{city}/cover', [SiteMediaController::class, 'updateCityCover'])->name('site-media.city-cover');
+
+        Route::get('content-blocks', [ContentBlockController::class, 'index'])->name('content-blocks.index');
+        Route::put('content-blocks', [ContentBlockController::class, 'update'])->name('content-blocks.update');
     });
 
     Route::middleware('permission:settings.view|settings.update')->group(function () {

@@ -50,7 +50,8 @@ class SecurityHeaders
             $fontSrc = ["'self'", 'https://fonts.gstatic.com', 'data:'];
             $imgSrc = ["'self'", 'data:', 'blob:', 'https:'];
             $connectSrc = ["'self'", 'https://assets2.lottiefiles.com', 'https://unpkg.com'];
-            $mediaSrc = ["'self'", 'https://assets2.lottiefiles.com'];
+            $mediaSrc = ["'self'", 'blob:', 'https://assets2.lottiefiles.com'];
+            $frameSrc = ["'self'", 'https://www.youtube-nocookie.com', 'https://player.vimeo.com'];
             $workerSrc = ["'self'", 'blob:'];
 
             $viteOrigins = [
@@ -73,7 +74,8 @@ class SecurityHeaders
             $fontSrc = ["'self'", 'https://fonts.gstatic.com', 'data:'];
             $imgSrc = ["'self'", 'data:', 'blob:', 'https:'];
             $connectSrc = ["'self'", 'https://assets2.lottiefiles.com', 'https://unpkg.com', 'ws:', 'wss:'];
-            $mediaSrc = ["'self'", 'https://assets2.lottiefiles.com'];
+            $mediaSrc = ["'self'", 'blob:', 'https://assets2.lottiefiles.com'];
+            $frameSrc = ["'self'", 'https://www.youtube-nocookie.com', 'https://player.vimeo.com'];
             $workerSrc = ["'self'", 'blob:'];
         }
 
@@ -85,6 +87,7 @@ class SecurityHeaders
             'img-src '.implode(' ', $imgSrc),
             'connect-src '.implode(' ', $connectSrc),
             'media-src '.implode(' ', $mediaSrc),
+            'frame-src '.implode(' ', $frameSrc),
             'worker-src '.implode(' ', $workerSrc),
             "frame-ancestors 'self'",
             "base-uri 'self'",

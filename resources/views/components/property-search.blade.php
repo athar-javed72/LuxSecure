@@ -2,13 +2,14 @@
     'suggestions' => [],
     'types' => [],
     'currency' => 'PKR',
+    'purpose' => null,
 ])
 
 @php
     $purposes = config('search.purposes', []);
     $presets = config('search.budget_presets', []);
     $icons = config('search.type_icons', []);
-    $currentPurpose = request('purpose', '');
+    $currentPurpose = $purpose ?? request('purpose', '');
     $currentType = request('type', '');
     $currentPrice = request('price', '');
     $currentSearch = request('search', '');
