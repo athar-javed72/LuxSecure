@@ -9,9 +9,19 @@
     $summary = $search['summary']['label'] ?? '';
     $error = $search['error'] ?? null;
     $enquireHref = route('contact', ['type' => 'hospitality']);
+    $sort = $search['sort'] ?? null;
+    $page = (int) ($search['page'] ?? 1);
+    $hasMore = (bool) ($search['has_more'] ?? false);
+    $queryBase = array_filter([
+        'destination' => $search['destination'] ?? null,
+        'check_in' => $search['check_in'] ?? null,
+        'check_out' => $search['check_out'] ?? null,
+        'guests' => $search['guests'] ?? null,
+        'sort' => $sort,
+    ], fn ($v) => $v !== null && $v !== '');
 @endphp
 
-<section class="mg-section mh-results" id="mh-results" aria-labelledby="mh-results-heading" data-mh-results>
+<section class="mg-section mh-results" id="results" aria-labelledby="mh-results-heading" data-mh-results>
     <div class="mg-container">
         <div class="mh-results__head">
             <div>
@@ -22,11 +32,20 @@
                     </p>
                 @endif
             </div>
-            @unless($error)
-                <p class="mh-results__count" aria-live="polite">
-                    {{ $count }} {{ $count === 1 ? 'stay' : 'stays' }} found
-                </p>
-            @endunless
+            <div class="mh-results__meta">
+                @unless($error)
+                    <p class="mh-results__count" aria-live="polite">
+                        {{ $count }} {{ $count === 1 ? 'stay' : 'stays' }} found
+                    </p>
+                @endunless
+                @if($count > 1 && ! $error)
+                    <a
+                        class="mh-results__sort"
+                        href="{{ route('divisions.hospitality', array_merge($queryBase, ['sort' => 'price_asc', 'page' => 1])) }}#results"
+                        @if($sort === 'price_asc') aria-current="true" @endif
+                    >Price: low to high</a>
+                @endif
+            </div>
         </div>
 
         @if($error)
@@ -48,6 +67,14 @@
                     <x-landing.hotels.stay-card :stay="$stay" />
                 @endforeach
             </div>
+            @if($hasMore)
+                <div class="mh-results__more">
+                    <a
+                        class="mg-btn mg-btn--ghost"
+                        href="{{ route('divisions.hospitality', array_merge($queryBase, ['page' => $page + 1])) }}#results"
+                    >Show more</a>
+                </div>
+            @endif
         @endif
     </div>
 </section>

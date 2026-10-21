@@ -151,6 +151,16 @@ function initBookingDates() {
         errors.hidden = false;
     }
 
+    const defaultSubmitLabel = submit?.textContent?.trim() || 'Check availability';
+
+    const resetSubmit = () => {
+        if (!submit) return;
+        submit.disabled = false;
+        submit.removeAttribute('aria-busy');
+        submit.textContent = defaultSubmitLabel;
+        form.classList.remove('is-loading');
+    };
+
     form.addEventListener('submit', (event) => {
         if (checkIn.value && checkOut.value && checkOut.value <= checkIn.value) {
             event.preventDefault();
@@ -169,6 +179,24 @@ function initBookingDates() {
             submit.textContent = 'Searching…';
             form.classList.add('is-loading');
         }
+    });
+
+    // bfcache / Back-Forward: restore button if the page was restored from cache
+    // or the submit control was left disabled mid-navigation.
+    window.addEventListener('pageshow', (event) => {
+        if (event.persisted || (submit && submit.disabled)) {
+            resetSubmit();
+        }
+    });
+}
+
+function initHotelsResultsScroll() {
+    const results = qs('#results');
+    if (!results) return;
+    // Only jump when the URL is a search (query present) so landing stays at top.
+    if (!window.location.search) return;
+    requestAnimationFrame(() => {
+        results.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
 }
 
@@ -279,6 +307,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initHearts();
     initBackToTop();
     initBookingDates();
+    initHotelsResultsScroll();
     initFaq();
     initGalleryLightbox();
 });

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Http\Requests\HotelsSearchRequest;
 use App\Models\Booking;
 use App\Models\Listing;
 use App\Models\Room;
@@ -70,6 +71,51 @@ class HotelsSearchTest extends TestCase
                 'destination' => 'Islamabad',
                 'check_in' => $checkIn,
                 'check_out' => $checkIn,
+                'guests' => 2,
+            ]));
+
+        $response->assertRedirect(route('divisions.hospitality'));
+        $response->assertSessionHasErrors('check_out');
+    }
+
+    public function test_past_check_in_is_rejected(): void
+    {
+        $response = $this->from(route('divisions.hospitality'))
+            ->get(route('divisions.hospitality', [
+                'destination' => 'Islamabad',
+                'check_in' => now()->subDays(2)->toDateString(),
+                'check_out' => now()->addDays(2)->toDateString(),
+                'guests' => 2,
+            ]));
+
+        $response->assertRedirect(route('divisions.hospitality'));
+        $response->assertSessionHasErrors('check_in');
+    }
+
+    public function test_check_out_before_check_in_is_rejected(): void
+    {
+        $response = $this->from(route('divisions.hospitality'))
+            ->get(route('divisions.hospitality', [
+                'destination' => 'Islamabad',
+                'check_in' => now()->addDays(10)->toDateString(),
+                'check_out' => now()->addDays(8)->toDateString(),
+                'guests' => 2,
+            ]));
+
+        $response->assertRedirect(route('divisions.hospitality'));
+        $response->assertSessionHasErrors('check_out');
+    }
+
+    public function test_stay_longer_than_max_nights_is_rejected(): void
+    {
+        $checkIn = now()->addDays(3)->toDateString();
+        $checkOut = now()->addDays(3 + HotelsSearchRequest::MAX_NIGHTS + 1)->toDateString();
+
+        $response = $this->from(route('divisions.hospitality'))
+            ->get(route('divisions.hospitality', [
+                'destination' => 'Islamabad',
+                'check_in' => $checkIn,
+                'check_out' => $checkOut,
                 'guests' => 2,
             ]));
 

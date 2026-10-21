@@ -50,6 +50,21 @@ class DivisionController extends Controller
         }
 
         $summary = null;
+        $sort = $request->input('sort');
+        $page = max(1, (int) $request->input('page', 1));
+        $perPage = 12;
+        $totalCount = $stays->count();
+        $hasMore = false;
+
+        if ($searching && $stays->isNotEmpty()) {
+            if ($sort === 'price_asc') {
+                $stays = $stays->sortBy('nightly')->values();
+            }
+            // Cumulative "Show more": page 1 = 12, page 2 = 24, …
+            $hasMore = $totalCount > ($page * $perPage);
+            $stays = $stays->take($page * $perPage)->values();
+        }
+
         if ($searching) {
             $summary = $this->hotelsSearchSummary(
                 filled($destination) ? (string) $destination : null,
@@ -67,7 +82,11 @@ class DivisionController extends Controller
                 'check_out' => $checkOut,
                 'guests' => $guests,
                 'stays' => $stays,
-                'count' => $stays->count(),
+                'count' => $totalCount,
+                'page' => $page,
+                'per_page' => $perPage,
+                'has_more' => $hasMore,
+                'sort' => $sort === 'price_asc' ? 'price_asc' : null,
                 'summary' => $summary,
                 'error' => $searchError,
             ],
