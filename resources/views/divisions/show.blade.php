@@ -46,30 +46,26 @@
     ]"
 />
 
-{{-- Search bridges hero → ivory; stats sit directly under with a short, even gap (no cream void) --}}
-@if(!empty($sections['search']) || !empty($sections['stats']))
-<section class="relative z-0 bg-[var(--color-ivory)]" aria-label="{{ $divisionName }} search">
-    @if(!empty($sections['search']))
-        <div class="relative z-30 w-full -mt-[72px]" data-hero-search>
-            <x-container>
-                <x-property-search
-                    :suggestions="$locationSuggestions"
-                    :types="$searchTypes"
-                    :currency="$currency"
-                    :purpose="$division['scope']['purpose'] ?? null"
-                />
-            </x-container>
-        </div>
-    @endif
+{{-- Search must be a z-30 sibling of the hero (not inside a z-0 section) or hero paints over Buy/Rent/Stay tabs --}}
+@if(!empty($sections['search']))
+    <div class="relative z-30 w-full -mt-[72px]" data-hero-search>
+        <x-container>
+            <x-property-search
+                :suggestions="$locationSuggestions"
+                :types="$searchTypes"
+                :currency="$currency"
+                :purpose="$division['scope']['purpose'] ?? null"
+            />
+        </x-container>
+    </div>
+@endif
 
-    @if(!empty($sections['stats']))
-        <x-stat-strip
-            :stats="$stats"
-            :flush-top="!empty($sections['search'])"
-            class="relative z-0 {{ !empty($sections['search']) ? 'mt-6 md:mt-8' : '' }}"
-        />
-    @endif
-</section>
+@if(!empty($sections['stats']))
+    <x-stat-strip
+        :stats="$stats"
+        :flush-top="!empty($sections['search'])"
+        class="relative z-0 bg-[var(--color-ivory)] {{ !empty($sections['search']) ? 'mt-6 md:mt-8' : '' }}"
+    />
 @endif
 
 @if(!empty($sections['intro']) && ($introTitle || $introBody))

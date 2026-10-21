@@ -20,7 +20,7 @@
 
 <section
     {{ $attributes->class([
-        'relative overflow-hidden w-full flex flex-col justify-end',
+        'relative z-0 overflow-hidden w-full flex flex-col justify-end',
         'bg-[var(--color-forest)]',
         'min-h-[min(48svh,440px)] md:min-h-[min(52svh,500px)]',
         '-mt-[var(--header-h)] pt-[var(--header-h)]',
