@@ -1,5 +1,6 @@
 /**
- * Landing page interactions — tabs, mobile nav, save hearts, back-to-top.
+ * Landing page interactions — tabs, mobile nav, save hearts, back-to-top,
+ * hotels booking dates, FAQ accordion, gallery lightbox.
  * No scroll-triggered reveals (design reference).
  */
 
@@ -76,9 +77,136 @@ function initBackToTop() {
     });
 }
 
+function initBookingDates() {
+    const form = qs('[data-mh-booking]');
+    if (!form) return;
+
+    const checkIn = qs('[data-mh-checkin]', form);
+    const checkOut = qs('[data-mh-checkout]', form);
+    if (!checkIn || !checkOut) return;
+
+    const syncMin = () => {
+        if (checkIn.value) {
+            checkOut.min = checkIn.value;
+            if (checkOut.value && checkOut.value < checkIn.value) {
+                checkOut.value = checkIn.value;
+            }
+        } else {
+            checkOut.removeAttribute('min');
+        }
+    };
+
+    checkIn.addEventListener('change', syncMin);
+    syncMin();
+}
+
+function initFaq() {
+    qsa('[data-mh-faq]').forEach((root) => {
+        qsa('[data-mh-faq-item]', root).forEach((item) => {
+            const trigger = qs('[data-mh-faq-trigger]', item);
+            if (!trigger) return;
+
+            trigger.addEventListener('click', () => {
+                const open = item.classList.toggle('is-open');
+                trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+            });
+        });
+    });
+}
+
+function initGalleryLightbox() {
+    const root = qs('[data-mh-gallery]');
+    const lightbox = qs('[data-mh-lightbox]');
+    if (!root || !lightbox) return;
+
+    const items = qsa('[data-mh-gallery-open]', root).map((btn) => {
+        const img = qs('img', btn);
+        return {
+            src: img?.currentSrc || img?.src || '',
+            alt: img?.alt || '',
+        };
+    });
+    if (!items.length) return;
+
+    const imgEl = qs('[data-mh-lightbox-img]', lightbox);
+    const capEl = qs('[data-mh-lightbox-cap]', lightbox);
+    const closes = qsa('[data-mh-lightbox-close]', lightbox);
+    const prevBtn = qs('[data-mh-lightbox-prev]', lightbox);
+    const nextBtn = qs('[data-mh-lightbox-next]', lightbox);
+
+    let index = 0;
+    let lastFocus = null;
+
+    const focusables = () =>
+        qsa('button:not([disabled]), [href], input, select, textarea, [tabindex]:not([tabindex="-1"])', lightbox).filter(
+            (el) => !el.hasAttribute('disabled') && el.offsetParent !== null
+        );
+
+    const show = (i) => {
+        index = (i + items.length) % items.length;
+        const item = items[index];
+        if (imgEl) {
+            imgEl.src = item.src;
+            imgEl.alt = item.alt;
+        }
+        if (capEl) capEl.textContent = item.alt;
+    };
+
+    const open = (i) => {
+        lastFocus = document.activeElement;
+        show(i);
+        lightbox.hidden = false;
+        document.body.style.overflow = 'hidden';
+        (prevBtn || qs('[data-mh-lightbox-close]', lightbox))?.focus();
+    };
+
+    const close = () => {
+        lightbox.hidden = true;
+        document.body.style.overflow = '';
+        if (lastFocus && typeof lastFocus.focus === 'function') lastFocus.focus();
+    };
+
+    qsa('[data-mh-gallery-open]', root).forEach((btn) => {
+        btn.addEventListener('click', () => open(Number(btn.dataset.index || 0)));
+    });
+
+    closes.forEach((btn) => btn.addEventListener('click', close));
+    prevBtn?.addEventListener('click', () => show(index - 1));
+    nextBtn?.addEventListener('click', () => show(index + 1));
+
+    document.addEventListener('keydown', (event) => {
+        if (lightbox.hidden) return;
+        if (event.key === 'Escape') {
+            event.preventDefault();
+            close();
+        } else if (event.key === 'ArrowLeft') {
+            event.preventDefault();
+            show(index - 1);
+        } else if (event.key === 'ArrowRight') {
+            event.preventDefault();
+            show(index + 1);
+        } else if (event.key === 'Tab') {
+            const nodes = focusables();
+            if (!nodes.length) return;
+            const first = nodes[0];
+            const last = nodes[nodes.length - 1];
+            if (event.shiftKey && document.activeElement === first) {
+                event.preventDefault();
+                last.focus();
+            } else if (!event.shiftKey && document.activeElement === last) {
+                event.preventDefault();
+                first.focus();
+            }
+        }
+    });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     initNav();
     initSearchTabs();
     initHearts();
     initBackToTop();
+    initBookingDates();
+    initFaq();
+    initGalleryLightbox();
 });

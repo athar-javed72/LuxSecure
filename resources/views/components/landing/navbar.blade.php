@@ -1,11 +1,23 @@
 @php
     $links = [
-        ['label' => 'Properties', 'href' => route('properties')],
-        ['label' => 'Hotels', 'href' => route('divisions.hospitality')],
-        ['label' => 'Living', 'href' => route('divisions.living')],
-        ['label' => 'About', 'href' => url('/#about')],
+        ['label' => 'Properties', 'href' => route('properties'), 'key' => 'Properties'],
+        ['label' => 'Hotels', 'href' => route('divisions.hospitality'), 'key' => 'Hotels'],
+        ['label' => 'Living', 'href' => route('divisions.living'), 'key' => 'Living'],
+        ['label' => 'About', 'href' => url('/#about'), 'key' => 'About'],
     ];
-    $listHref = route('contact', ['type' => 'property']);
+
+    $active = match (true) {
+        request()->routeIs('divisions.hospitality') => 'Hotels',
+        request()->routeIs('divisions.living') => 'Living',
+        request()->routeIs('properties*') => 'Properties',
+        default => null,
+    };
+
+    $isHotels = request()->routeIs('divisions.hospitality');
+    $ctaLabel = $isHotels ? 'Enquire' : 'List your property';
+    $ctaHref = $isHotels
+        ? route('contact', ['type' => 'hospitality'])
+        : route('contact', ['type' => 'property']);
 @endphp
 
 <header class="mg-nav">
@@ -17,14 +29,23 @@
 
         <nav class="mg-nav__links" aria-label="Main">
             @foreach($links as $link)
-                <a href="{{ $link['href'] }}">{{ $link['label'] }}</a>
+                <a
+                    href="{{ $link['href'] }}"
+                    @class(['is-active' => $active === $link['key']])
+                    @if($active === $link['key']) aria-current="page" @endif
+                >{{ $link['label'] }}</a>
             @endforeach
         </nav>
 
         <div class="mg-nav__actions">
-            <span class="mg-nav__meta" aria-label="Language and currency">EN · PKR</span>
+            @if($isHotels)
+                <span class="mg-nav__pill mg-nav__pill--hide-sm" aria-label="Language">EN | اردو</span>
+                <span class="mg-nav__pill mg-nav__pill--hide-sm" aria-label="Currency">PKR</span>
+            @else
+                <span class="mg-nav__meta" aria-label="Language and currency">EN · PKR</span>
+            @endif
             <a href="{{ route('login.form') }}" class="mg-nav__login">Login</a>
-            <a href="{{ $listHref }}" class="mg-btn mg-btn--gold">List your property</a>
+            <a href="{{ $ctaHref }}" class="mg-btn mg-btn--gold">{{ $ctaLabel }}</a>
         </div>
 
         <button
@@ -41,10 +62,13 @@
 
     <div id="mg-nav-drawer" class="mg-nav__drawer" data-mg-nav-drawer>
         @foreach($links as $link)
-            <a href="{{ $link['href'] }}">{{ $link['label'] }}</a>
+            <a
+                href="{{ $link['href'] }}"
+                @class(['is-active' => $active === $link['key']])
+            >{{ $link['label'] }}</a>
         @endforeach
-        <span class="mg-nav__drawer-meta">EN · PKR</span>
+        <span class="mg-nav__drawer-meta">{{ $isHotels ? 'EN | اردو · PKR' : 'EN · PKR' }}</span>
         <a href="{{ route('login.form') }}">Login</a>
-        <a href="{{ $listHref }}">List your property</a>
+        <a href="{{ $ctaHref }}">{{ $ctaLabel }}</a>
     </div>
 </header>

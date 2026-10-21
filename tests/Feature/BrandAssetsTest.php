@@ -43,7 +43,9 @@ class BrandAssetsTest extends TestCase
         $this->get(route('divisions.hospitality'))
             ->assertOk()
             ->assertSee('Maskanoor Hotels', false)
-            ->assertSee('/brand/divisions/maskanoor-hotels-for-dark-bg.svg', false)
+            ->assertSee('Considered stays,', false)
+            ->assertSee('wherever you travel.', false)
+            ->assertSee('/brand/monogram/maskanoor-monogram-nostar-two-tone-for-dark-bg.svg', false)
             ->assertDontSee('concept logo', false);
 
         $this->get(route('divisions.living'))

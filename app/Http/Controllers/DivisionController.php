@@ -12,9 +12,9 @@ use Illuminate\View\View;
 
 class DivisionController extends Controller
 {
-    public function hospitality(DivisionCatalog $catalog, MediaResolver $media): View
+    public function hospitality(): View
     {
-        return $this->show('hotels', $catalog, $media);
+        return view('divisions.hotels');
     }
 
     public function living(DivisionCatalog $catalog, MediaResolver $media): View
