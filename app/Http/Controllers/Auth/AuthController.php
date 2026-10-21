@@ -22,8 +22,15 @@ use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
-    public function showLoginForm()
+    public function showLoginForm(Request $request)
     {
+        $redirect = $request->query('redirect');
+        if (is_string($redirect) && $redirect !== '') {
+            if (str_starts_with($redirect, '/') && ! str_starts_with($redirect, '//')) {
+                $request->session()->put('url.intended', url($redirect));
+            }
+        }
+
         return view('auth.login');
     }
 

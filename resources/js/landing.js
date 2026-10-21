@@ -83,21 +83,93 @@ function initBookingDates() {
 
     const checkIn = qs('[data-mh-checkin]', form);
     const checkOut = qs('[data-mh-checkout]', form);
+    const submit = qs('[data-mh-submit]', form);
+    const errors = qs('[data-mh-booking-errors]');
     if (!checkIn || !checkOut) return;
 
+    const pad = (n) => String(n).padStart(2, '0');
+    const fmt = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+
+    /** Parse YYYY-MM-DD at noon local to avoid DST/off-by-one. */
+    const parseYmd = (value) => {
+        const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value || '');
+        if (!m) return null;
+        return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]), 12, 0, 0, 0);
+    };
+
+    const addDays = (value, days) => {
+        const d = parseYmd(value);
+        if (!d) return '';
+        d.setDate(d.getDate() + days);
+        return fmt(d);
+    };
+
+    const today = (() => {
+        const n = new Date();
+        return fmt(new Date(n.getFullYear(), n.getMonth(), n.getDate(), 12, 0, 0, 0));
+    })();
+
+    const showError = (message) => {
+        if (!errors) return;
+        errors.hidden = !message;
+        errors.innerHTML = message ? `<p>${message}</p>` : '';
+    };
+
     const syncMin = () => {
+        checkIn.min = today;
+        if (checkIn.value && checkIn.value < today) {
+            checkIn.value = today;
+        }
+
         if (checkIn.value) {
-            checkOut.min = checkIn.value;
-            if (checkOut.value && checkOut.value < checkIn.value) {
-                checkOut.value = checkIn.value;
+            const minOut = addDays(checkIn.value, 1);
+            checkOut.min = minOut;
+            if (checkOut.value && checkOut.value <= checkIn.value) {
+                checkOut.value = '';
+                showError('Check-out must be at least one night after check-in.');
+            } else if (errors && !errors.dataset.server) {
+                showError('');
             }
         } else {
-            checkOut.removeAttribute('min');
+            checkOut.min = today;
         }
     };
 
     checkIn.addEventListener('change', syncMin);
+    checkOut.addEventListener('change', () => {
+        if (checkIn.value && checkOut.value && checkOut.value <= checkIn.value) {
+            checkOut.value = '';
+            showError('Check-out must be at least one night after check-in.');
+        } else if (errors && !errors.dataset.server) {
+            showError('');
+        }
+    });
     syncMin();
+
+    if (errors && errors.querySelector('p')) {
+        errors.dataset.server = '1';
+        errors.hidden = false;
+    }
+
+    form.addEventListener('submit', (event) => {
+        if (checkIn.value && checkOut.value && checkOut.value <= checkIn.value) {
+            event.preventDefault();
+            showError('Check-out must be at least one night after check-in.');
+            checkOut.focus();
+            return;
+        }
+
+        if (submit) {
+            if (submit.disabled) {
+                event.preventDefault();
+                return;
+            }
+            submit.disabled = true;
+            submit.setAttribute('aria-busy', 'true');
+            submit.textContent = 'Searching…';
+            form.classList.add('is-loading');
+        }
+    });
 }
 
 function initFaq() {

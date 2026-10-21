@@ -16,7 +16,8 @@ return [
             'price_suffix' => '/night',
             'title' => 'Blue Area Boutique Hotel',
             'meta' => 'Blue Area, Islamabad · 2 room types',
-            'href' => null, // set at runtime to properties search if needed
+            'search' => 'Blue Area',
+            'href' => null,
         ],
     ],
 

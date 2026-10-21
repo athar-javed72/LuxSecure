@@ -1465,6 +1465,110 @@ a.mg-hero__card:hover {
     background: var(--mg-green-2);
 }
 
+.mh-booking__submit:disabled {
+    opacity: 0.7;
+    cursor: wait;
+    transform: none;
+}
+
+.mh-booking.is-loading {
+    opacity: 0.92;
+}
+
+.mh-booking__alerts {
+    margin-top: 12px;
+    padding: 12px 14px;
+    border-radius: var(--mg-radius-btn);
+    background: #f8ebe6;
+    color: #7a2e1f;
+    font: 500 14px var(--mg-font-body);
+}
+
+.mh-booking__alerts[hidden] {
+    display: none;
+}
+
+.mh-booking__alerts p {
+    margin: 0;
+}
+
+.mh-booking__alerts p + p {
+    margin-top: 4px;
+}
+
+.mh-results {
+    padding-top: 28px;
+}
+
+.mh-results__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    justify-content: space-between;
+    gap: 12px 24px;
+    margin-bottom: 24px;
+}
+
+.mh-results__summary {
+    margin: 6px 0 0;
+    font: 500 15px var(--mg-font-body);
+    color: var(--mg-muted);
+}
+
+.mh-results__summary a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.mh-results__count {
+    margin: 0;
+    font: 600 14px var(--mg-font-body);
+    color: var(--mg-ink);
+}
+
+.mh-results__state {
+    padding: 40px 24px;
+    text-align: center;
+    background: var(--mg-cream);
+    border-radius: var(--mg-radius-card);
+}
+
+.mh-results__state p {
+    margin: 0 0 20px;
+    font: 500 18px var(--mg-font-display);
+    color: var(--mg-ink);
+}
+
+.mh-results__state--error p {
+    color: #7a2e1f;
+}
+
+.mh-results__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+}
+
+.mh-stay-card__total {
+    margin: 2px 0 0;
+    font: 500 13px var(--mg-font-body);
+    color: var(--mg-muted);
+}
+
+.mh-stay-card__save-form {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 2;
+    margin: 0;
+}
+
+.mh-stay-card__save-form .mh-stay-card__save {
+    position: static;
+}
+
 .mh-pills {
     display: flex;
     gap: 10px;

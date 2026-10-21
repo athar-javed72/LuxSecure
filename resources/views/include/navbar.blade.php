@@ -91,6 +91,7 @@
         <div class="hidden lg:flex items-center gap-2">
             @if(($countries ?? collect())->isNotEmpty() && $variant !== 'admin')
                 @php
+                    $activeCountry = $activeCountry ?? null;
                     $localeMeta = strtoupper(substr((string) app()->getLocale(), 0, 2))
                         .' · '
                         .session('currency', optional($activeCountry)->currency_code ?? 'PKR');
