@@ -34,6 +34,9 @@ jobs:
       - name: Pint (test)
         run: vendor/bin/pint --test
 
+      - name: Frontend build
+        run: npm run build
+
       - name: PHPUnit
         run: php artisan test
         env:
@@ -45,9 +48,6 @@ jobs:
           QUEUE_CONNECTION: sync
           SESSION_DRIVER: array
           MAIL_MAILER: array
-
-      - name: Frontend build
-        run: npm run build
 
   deploy:
     name: Deploy to Oracle VPS
