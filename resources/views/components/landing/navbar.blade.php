@@ -13,11 +13,13 @@
         default => null,
     };
 
-    $isHotels = request()->routeIs('divisions.hospitality');
-    $ctaLabel = $isHotels ? 'Enquire' : 'List your property';
-    $ctaHref = $isHotels
-        ? route('contact', ['type' => 'hospitality'])
-        : route('contact', ['type' => 'property']);
+    $isDivisionLanding = request()->routeIs('divisions.hospitality', 'divisions.living');
+    $ctaLabel = $isDivisionLanding ? 'Enquire' : 'List your property';
+    $ctaHref = match (true) {
+        request()->routeIs('divisions.hospitality') => route('contact', ['type' => 'hospitality']),
+        request()->routeIs('divisions.living') => route('contact', ['type' => 'living']),
+        default => route('contact', ['type' => 'property']),
+    };
 @endphp
 
 <header class="mg-nav">
@@ -38,7 +40,7 @@
         </nav>
 
         <div class="mg-nav__actions">
-            @if($isHotels)
+            @if($isDivisionLanding)
                 <span class="mg-nav__pill mg-nav__pill--hide-sm" aria-label="Language">EN | اردو</span>
                 <span class="mg-nav__pill mg-nav__pill--hide-sm" aria-label="Currency">PKR</span>
             @else
@@ -67,7 +69,7 @@
                 @class(['is-active' => $active === $link['key']])
             >{{ $link['label'] }}</a>
         @endforeach
-        <span class="mg-nav__drawer-meta">{{ $isHotels ? 'EN | اردو · PKR' : 'EN · PKR' }}</span>
+        <span class="mg-nav__drawer-meta">{{ $isDivisionLanding ? 'EN | اردو · PKR' : 'EN · PKR' }}</span>
         <a href="{{ route('login.form') }}">Login</a>
         <a href="{{ $ctaHref }}">{{ $ctaLabel }}</a>
     </div>

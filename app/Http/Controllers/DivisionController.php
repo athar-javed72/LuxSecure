@@ -17,9 +17,9 @@ class DivisionController extends Controller
         return view('divisions.hotels');
     }
 
-    public function living(DivisionCatalog $catalog, MediaResolver $media): View
+    public function living(): View
     {
-        return $this->show('living', $catalog, $media);
+        return view('divisions.living');
     }
 
     private function show(string $key, DivisionCatalog $catalog, MediaResolver $media): View
