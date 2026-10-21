@@ -66,10 +66,17 @@ class PlatformModulesTest extends TestCase
 
         $this->get(route('home'))
             ->assertOk()
-            ->assertSee('Estate Noir Realty')
-            ->assertSee('Market update')
-            ->assertSee('Is Maskanoor verified?')
+            ->assertSee('Elevating Spaces. Enriching Stays.', false)
+            ->assertSee('Three ways to experience Maskanoor', false)
+            ->assertSee('Featured listings', false)
             ->assertDontSee('Ayesha Khan');
+
+        $this->get(route('blog.index'))
+            ->assertOk()
+            ->assertSee('Market update');
+
+        $this->assertDatabaseHas('faqs', ['question' => 'Is Maskanoor verified?']);
+        $this->assertDatabaseHas('agent_profiles', ['agency' => 'Estate Noir Realty']);
     }
 
     public function test_inquiry_converts_to_lead_and_agent_scoped(): void

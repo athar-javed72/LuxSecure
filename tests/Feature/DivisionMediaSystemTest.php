@@ -137,7 +137,8 @@ class DivisionMediaSystemTest extends TestCase
     {
         $this->seed(AdminAndPropertiesSeeder::class);
         $html = $this->get(route('home'))->assertOk()->getContent();
-        // Hero should not explode; branded or listing fallback ok
-        $this->assertStringContainsString('data-hero-slideshow', $html);
+        // Landing hero should render with design-reference markup
+        $this->assertStringContainsString('mg-hero', $html);
+        $this->assertStringContainsString('Elevating Spaces', $html);
     }
 }

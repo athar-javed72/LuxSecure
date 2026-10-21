@@ -59,7 +59,8 @@ class BrandAssetsTest extends TestCase
         $this->get('/')
             ->assertOk()
             ->assertSee('/brand/favicon/favicon.svg', false)
-            ->assertSee('/brand/logos/maskanoor-group-horizontal-compact-for-dark-bg.svg', false)
+            ->assertSee('/brand/monogram/maskanoor-monogram-nostar-two-tone-for-dark-bg.svg', false)
+            ->assertSee('Elevating Spaces. Enriching Stays.', false)
             ->assertDontSee('concept logo', false)
             ->assertDontSee('Enterprise-grade security', false)
             ->assertDontSee('Equal tiles for every category', false);

@@ -54,9 +54,13 @@ class RemainingPlatformFeaturesTest extends TestCase
 
         $this->get(route('home'))
             ->assertOk()
-            ->assertSee('Noir Estate')
-            ->assertSee('hello@noir.test')
-            ->assertSee('+92 311 1111111');
+            ->assertSee('Elevating Spaces. Enriching Stays.', false)
+            ->assertSee('List your property', false)
+            ->assertSee('support@maskanoor.com', false);
+
+        $this->assertSame('Noir Estate', Setting::getValue('site.name'));
+        $this->assertSame('hello@noir.test', Setting::getValue('site.email'));
+        $this->assertSame('+92 311 1111111', Setting::getValue('site.phone'));
     }
 
     public function test_bank_transfer_payment_and_admin_approval_creates_invoice(): void
