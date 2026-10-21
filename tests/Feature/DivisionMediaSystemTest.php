@@ -4,7 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Listing;
 use App\Models\MediaAsset;
-use App\Models\User;
+use App\Services\DivisionCatalog;
 use App\Services\MediaResolver;
 use App\Services\MediaUploadService;
 use Database\Seeders\AdminAndPropertiesSeeder;
@@ -99,13 +99,13 @@ class DivisionMediaSystemTest extends TestCase
     {
         $this->seed(AdminAndPropertiesSeeder::class);
         // Warm caches, then measure controller data assembly (not full HTTP stack noise).
-        app(\App\Services\DivisionCatalog::class)->stats('hotels');
-        app(\App\Services\DivisionCatalog::class)->amenities('hotels');
-        app(\App\Services\MediaResolver::class)->collection('hotels.hero');
+        app(DivisionCatalog::class)->stats('hotels');
+        app(DivisionCatalog::class)->amenities('hotels');
+        app(MediaResolver::class)->collection('hotels.hero');
 
         DB::connection()->flushQueryLog();
         DB::enableQueryLog();
-        $catalog = app(\App\Services\DivisionCatalog::class);
+        $catalog = app(DivisionCatalog::class);
         $catalog->featured('hotels', 8);
         $catalog->destinations('hotels');
         $catalog->stats('hotels');
