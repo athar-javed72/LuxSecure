@@ -1,4 +1,10 @@
-# Production deployment runbook (Ubuntu)
+# Production deployment runbook (Ubuntu + PHP-FPM)
+
+> **Live demo VPS (Oracle Linux, `maskanoor.service`, GitHub Actions):** see the primary guide at [`../DEPLOYMENT.md`](../DEPLOYMENT.md).  
+> **Status / pending checks:** [`../PROJECT_STATUS.md`](../PROJECT_STATUS.md).  
+> **Developer README:** [`../README.md`](../README.md).
+
+This document remains a **generic Ubuntu 22.04/24.04** procedure (Nginx + **PHP-FPM** + MySQL + Supervisor + cron). It is an alternative layout — not a transcript of the current DuckDNS demo host, which binds Laravel on `127.0.0.1:8000` behind Nginx via systemd.
 
 Fresh Ubuntu 22.04/24.04 server → running Maskanoor Group (Laravel + Nginx + MySQL + Supervisor + cron).
 
@@ -191,4 +197,4 @@ chmod +x scripts/deploy.sh
 
 ## CI
 
-GitHub Actions (`.github/workflows/ci.yml`): `pint --test`, `php artisan test`, `npm run build`.
+GitHub Actions (`.github/workflows/ci.yml`): `pint --test` → **`npm run build`** → `php artisan test`, then deploy on push to `main`. Details: [`../DEPLOYMENT.md`](../DEPLOYMENT.md#4-github-actions-cicd).

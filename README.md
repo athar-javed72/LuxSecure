@@ -4,20 +4,32 @@
 
 Multi-country property listing and management platform — verified homes, RBAC admin, bookings/tenancies, payments, KYC, reviews, Sanctum API, and Estate Noir UI. Brand name, tagline, logo, and contact details are Admin-editable Settings (`site.name`, `site.tagline.{locale}`, `site.logo`).
 
+| Resource | Link |
+|----------|------|
+| **Public demo** | [https://maskanoor.duckdns.org](https://maskanoor.duckdns.org) |
+| **GitHub** | [athar-javed72/MaskanoorGroup](https://github.com/athar-javed72/MaskanoorGroup) (`main`) |
+| **VPS / CI deployment** | [`DEPLOYMENT.md`](DEPLOYMENT.md) |
+| **Project status & pending work** | [`PROJECT_STATUS.md`](PROJECT_STATUS.md) |
+| **Ubuntu + PHP-FPM runbook** | [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) |
+| **Artisan backup notes** | [`docs/BACKUP.md`](docs/BACKUP.md) |
+
 ## Product ownership
 
-Maskanoor is an **in-house product** of **Nexora Labs**. Features and architecture are maintained for internal use, portfolio demos, and future client deployments under Nexora Labs.
+Maskanoor is an **in-house product** of **Nexora Labs**. Features and architecture are maintained for internal use, portfolio demos, and future client deployments under Nexora Labs. The live DuckDNS site is a **demo / portfolio** deployment — see [`PROJECT_STATUS.md`](PROJECT_STATUS.md).
 
 ## Tech stack
 
-- **Backend:** Laravel 13.x, PHP 8.4.1–8.5, Sanctum 4.x, Spatie Permission + Activity Log
-- **Frontend:** Blade, Tailwind CSS 4 via Vite (`@tailwindcss/vite`), Alpine.js — **no Bootstrap, no Tailwind CDN**
-- **Database:** MySQL (primary); SQLite for tests
+- **Backend:** Laravel 13.x (lockfile `v13.38.0`), PHP 8.4.1–8.5 locally / PHP **8.4** in CI, Sanctum 4.x, Spatie Permission + Activity Log
+- **Frontend:** Blade, Tailwind CSS 4 via Vite (`@tailwindcss/vite`), Alpine.js **CSP** (`@alpinejs/csp`) — **no Bootstrap, no Tailwind CDN**
+- **Database:** MySQL / MariaDB (primary; example name `Maskanoor_db`); SQLite for tests
 - **Media:** Intervention Image; uploads via configurable `UPLOADS_DISK` / `PRIVATE_DISK`
 - **Payments PDF:** barryvdh/laravel-dompdf
 - **API docs:** Scribe (`/docs`)
 - **Errors (optional):** Sentry (`SENTRY_LARAVEL_DSN` empty = off)
 - **Quality:** PHPUnit 12, Laravel Pint
+- **CI/CD:** GitHub Actions (`.github/workflows/ci.yml`) — Pint → `npm run build` → PHPUnit → deploy to VPS on `main`
+
+Development vs infrastructure tools are listed in [`DEPLOYMENT.md`](DEPLOYMENT.md#3-tools-used).
 
 ## Roles (Spatie RBAC)
 
@@ -55,13 +67,15 @@ Permission catalog lives in `config/rbac.php` and is seeded by `RolesAndPermissi
 
 ## Design system — Estate Noir
 
-| Token | Role |
-|-------|------|
-| `fs-primary` | Ink navy (`#0b1426`) |
-| `fs-brand` | Brass accents (`#9a7b4f`) |
-| `fs-surface` | Stone background |
+Canonical CSS tokens live in `resources/css/app.css` (Forest / Gold / Ivory). Tailwind `fs-*` utilities map to those tokens.
 
-Fonts: Cormorant Garamond (display) + DM Sans (UI). Shared `x-*` Blade components. Approved brand SVGs live under `public/brand/` (copied from `brand-source/maskanoor-brand/`; do not regenerate or edit path data). Use `<x-brand-logo>` / `App\Support\BrandAssets`.
+| Token (Tailwind) | Role (approximate) |
+|------------------|--------------------|
+| `fs-primary` | Deep forest ink |
+| `fs-brand` | Brass / gold accents |
+| `fs-surface` | Ivory / stone surface |
+
+Fonts: Cormorant Garamond (display) + Manrope (UI). Shared `x-*` Blade components. Approved brand SVGs live under `public/brand/` (copied from `brand-source/maskanoor-brand/`; do not regenerate or edit path data). Use `<x-brand-logo>` / `App\Support\BrandAssets`.
 
 ## Requirements
 
@@ -151,11 +165,23 @@ php artisan schedule:work
 ## Testing & quality
 
 ```bash
-vendor/bin/pint
-php artisan test
+vendor/bin/pint --test
 npm run build
-php artisan migrate:fresh --seed
+php artisan test
+php artisan migrate:fresh --seed   # local/testing only for demo data
 ```
+
+CI runs the same Pint → frontend build → PHPUnit sequence. See [`DEPLOYMENT.md`](DEPLOYMENT.md#4-github-actions-cicd).
+
+## Development workflow (summary)
+
+1. Change code locally (do not make routine commits on the production VPS).  
+2. Run Pint, `npm run build`, and `php artisan test`.  
+3. Commit and push to GitHub (`main` or a pull request).  
+4. Confirm GitHub Actions; on `main`, confirm the deploy job and [the demo site](https://maskanoor.duckdns.org).  
+
+Full VPS architecture, secrets handling, diagnostics, and backup notes: [`DEPLOYMENT.md`](DEPLOYMENT.md).  
+Outstanding tasks and verification status: [`PROJECT_STATUS.md`](PROJECT_STATUS.md).
 
 ## License
 
