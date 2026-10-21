@@ -39,13 +39,13 @@
             @endforeach
         </nav>
 
+        @php
+            $localeMeta = strtoupper(substr((string) app()->getLocale(), 0, 2))
+                .' · '
+                .session('currency', 'PKR');
+        @endphp
         <div class="mg-nav__actions">
-            @if($isDivisionLanding)
-                <span class="mg-nav__pill mg-nav__pill--hide-sm" aria-label="Language">EN | اردو</span>
-                <span class="mg-nav__pill mg-nav__pill--hide-sm" aria-label="Currency">PKR</span>
-            @else
-                <span class="mg-nav__meta" aria-label="Language and currency">EN · PKR</span>
-            @endif
+            <span class="mg-nav__meta" aria-label="Language and currency">{{ $localeMeta }}</span>
             <a href="{{ route('login.form') }}" class="mg-nav__login">Login</a>
             <a href="{{ $ctaHref }}" class="mg-btn mg-btn--gold">{{ $ctaLabel }}</a>
         </div>
@@ -69,7 +69,7 @@
                 @class(['is-active' => $active === $link['key']])
             >{{ $link['label'] }}</a>
         @endforeach
-        <span class="mg-nav__drawer-meta">{{ $isDivisionLanding ? 'EN | اردو · PKR' : 'EN · PKR' }}</span>
+        <span class="mg-nav__drawer-meta">{{ $localeMeta }}</span>
         <a href="{{ route('login.form') }}">Login</a>
         <a href="{{ $ctaHref }}">{{ $ctaLabel }}</a>
     </div>

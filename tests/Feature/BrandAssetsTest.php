@@ -51,7 +51,9 @@ class BrandAssetsTest extends TestCase
         $this->get(route('divisions.living'))
             ->assertOk()
             ->assertSee('Maskanoor Living', false)
-            ->assertSee('/brand/divisions/maskanoor-living-for-dark-bg.svg', false);
+            ->assertSee('Homes that feel settled', false)
+            ->assertSee('/brand/monogram/maskanoor-monogram-nostar-two-tone-for-dark-bg.svg', false)
+            ->assertDontSee('concept logo', false);
     }
 
     public function test_home_uses_brand_favicon_and_compact_lockup(): void
