@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Http\Requests\HotelsSearchRequest;
 use App\Models\Booking;
+use App\Models\Country;
 use App\Models\Listing;
 use App\Models\Room;
 use App\Models\RoomType;
@@ -189,8 +190,202 @@ class HotelsSearchTest extends TestCase
         ]));
 
         $response->assertOk();
+        // Inventory exists but dates are fully booked → omit (not an Enquire card).
         $response->assertDontSee('Booked Out Hotel', false);
+        $response->assertDontSee('Enquire for dates — Booked Out Hotel', false);
         $response->assertSee('No stays for these dates', false);
+    }
+
+    public function test_stay_without_inventory_shows_as_enquire_card(): void
+    {
+        $manager = $this->makeHotelManager(['email' => 'hm-enquire@example.com']);
+        $this->makeListing([
+            'title' => 'QA Enquire Dubai Residence',
+            'location' => 'Dubai',
+            'purpose' => 'short_stay',
+            'price_unit' => 'per_night',
+            'price' => 15000,
+            'status' => 'published',
+            'agent_id' => $manager->id,
+            'owner_id' => $manager->id,
+        ]);
+
+        $checkIn = now()->addDays(7)->toDateString();
+        $checkOut = now()->addDays(9)->toDateString();
+
+        $response = $this->get(route('divisions.hospitality', [
+            'destination' => 'Dubai',
+            'check_in' => $checkIn,
+            'check_out' => $checkOut,
+            'guests' => 2,
+        ]));
+
+        $response->assertOk();
+        $response->assertSee('QA Enquire Dubai Residence', false);
+        $response->assertSee('Enquire for dates', false);
+        $response->assertSee('1 stay found', false);
+        $response->assertDontSee('No stays for these dates', false);
+        $response->assertSee('Enquire for dates — QA Enquire Dubai Residence', false);
+        $html = $response->getContent();
+        $this->assertMatchesRegularExpression(
+            '/mh-results[\s\S]*contact\?type=hospitality[^"]*stay=QA(?:\+|%20)Enquire(?:\+|%20)Dubai(?:\+|%20)Residence/',
+            $html
+        );
+    }
+
+    public function test_destination_filter_still_works_for_enquire_and_bookable(): void
+    {
+        $this->seedStay('QA Bookable Islamabad Stay', 'Islamabad', 2, 12000);
+
+        $manager = $this->makeHotelManager(['email' => 'hm-kl@example.com']);
+        $this->makeListing([
+            'title' => 'QA Enquire KL Residence',
+            'location' => 'Kuala Lumpur',
+            'purpose' => 'short_stay',
+            'price_unit' => 'per_night',
+            'price' => 15000,
+            'status' => 'published',
+            'agent_id' => $manager->id,
+            'owner_id' => $manager->id,
+        ]);
+
+        $params = [
+            'check_in' => now()->addDays(8)->toDateString(),
+            'check_out' => now()->addDays(10)->toDateString(),
+            'guests' => 2,
+        ];
+
+        $kl = $this->get(route('divisions.hospitality', $params + ['destination' => 'Kuala Lumpur']));
+        $kl->assertOk();
+        $kl->assertSee('QA Enquire KL Residence', false);
+        $kl->assertSee('Enquire for dates — QA Enquire KL Residence', false);
+        $kl->assertDontSee('QA Bookable Islamabad Stay', false);
+
+        $isb = $this->get(route('divisions.hospitality', $params + ['destination' => 'Islamabad']));
+        $isb->assertOk();
+        $isb->assertSee('QA Bookable Islamabad Stay', false);
+        $isb->assertDontSee('QA Enquire KL Residence', false);
+        $isb->assertSee('/night', false);
+    }
+
+    public function test_bookable_range_shows_and_blocked_range_hides_inventory_stay(): void
+    {
+        [$listing, $roomType] = $this->seedStay('QA Availability Proof Hotel', 'Islamabad', 2, 15000);
+        $guest = $this->makeClient(['email' => 'avail-proof@example.com']);
+
+        $freeIn = now()->addDays(30)->toDateString();
+        $freeOut = now()->addDays(32)->toDateString();
+        $blockIn = now()->addDays(40)->toDateString();
+        $blockOut = now()->addDays(42)->toDateString();
+
+        $availability = app(BookingAvailabilityService::class);
+        $this->assertTrue($availability->isAvailable($roomType, $freeIn, $freeOut));
+        $this->assertSame(1, $availability->availableRoomCount($roomType, $freeIn, $freeOut));
+
+        $availability->createBooking($roomType, $blockIn, $blockOut, [
+            'user_id' => $guest->id,
+            'guests' => 1,
+            'status' => 'confirmed',
+        ]);
+
+        $this->assertFalse($availability->isAvailable($roomType, $blockIn, $blockOut));
+        $this->assertSame(0, $availability->availableRoomCount($roomType, $blockIn, $blockOut));
+
+        $free = $this->get(route('divisions.hospitality', [
+            'destination' => 'Islamabad',
+            'check_in' => $freeIn,
+            'check_out' => $freeOut,
+            'guests' => 2,
+        ]));
+        $free->assertOk();
+        $free->assertSee('QA Availability Proof Hotel', false);
+        $free->assertSee('1 stay found', false);
+        $free->assertDontSee('Enquire for dates — QA Availability Proof Hotel', false);
+
+        $blocked = $this->get(route('divisions.hospitality', [
+            'destination' => 'Islamabad',
+            'check_in' => $blockIn,
+            'check_out' => $blockOut,
+            'guests' => 2,
+        ]));
+        $blocked->assertOk();
+        $blocked->assertDontSee('QA Availability Proof Hotel', false);
+        $blocked->assertSee('0 stays found', false);
+        $blocked->assertSee('No stays for these dates', false);
+    }
+
+    public function test_showing_all_destinations_count_includes_enquire_stays(): void
+    {
+        $this->seedStay('Bookable Stay', 'Islamabad', 2, 11000);
+
+        $manager = $this->makeHotelManager(['email' => 'hm-all@example.com']);
+        $this->makeListing([
+            'title' => 'Enquire Only Stay',
+            'location' => 'Dubai',
+            'purpose' => 'short_stay',
+            'price_unit' => 'per_night',
+            'price' => 9000,
+            'status' => 'published',
+            'agent_id' => $manager->id,
+            'owner_id' => $manager->id,
+        ]);
+
+        $response = $this->get(route('divisions.hospitality', [
+            'check_in' => now()->addDays(5)->toDateString(),
+            'check_out' => now()->addDays(7)->toDateString(),
+            'guests' => 2,
+        ]));
+
+        $response->assertOk();
+        $response->assertSee('Showing all destinations', false);
+        $response->assertSee('2 stays found', false);
+        $response->assertSee('Bookable Stay', false);
+        $response->assertSee('Enquire Only Stay', false);
+        $response->assertSee('Enquire for dates', false);
+    }
+
+    public function test_enquire_stay_appears_even_when_country_is_inactive(): void
+    {
+        $country = Country::query()->firstOrCreate(
+            ['iso2' => 'AE'],
+            [
+                'name' => 'United Arab Emirates',
+                'currency_code' => 'AED',
+                'default_locale' => 'en',
+                'timezone' => 'Asia/Dubai',
+                'phone_code' => '+971',
+                'area_units' => ['sq_ft'],
+                'is_active' => false,
+                'wind_down' => false,
+                'sort_order' => 99,
+            ]
+        );
+        $country->forceFill(['is_active' => false, 'wind_down' => false])->save();
+
+        $manager = $this->makeHotelManager(['email' => 'hm-ae@example.com']);
+        $this->makeListing([
+            'title' => 'QA Inactive Country Dubai Stay',
+            'location' => 'Dubai Marina',
+            'purpose' => 'short_stay',
+            'price_unit' => 'per_night',
+            'price' => 15000,
+            'status' => 'published',
+            'agent_id' => $manager->id,
+            'owner_id' => $manager->id,
+            'country_id' => $country->id,
+        ]);
+
+        $response = $this->get(route('divisions.hospitality', [
+            'destination' => 'Dubai',
+            'check_in' => now()->addDays(6)->toDateString(),
+            'check_out' => now()->addDays(8)->toDateString(),
+            'guests' => 2,
+        ]));
+
+        $response->assertOk();
+        $response->assertSee('QA Inactive Country Dubai Stay', false);
+        $response->assertSee('Enquire for dates — QA Inactive Country Dubai Stay', false);
+        $response->assertDontSee('No stays for these dates', false);
     }
 
     public function test_query_string_prefills_booking_bar(): void

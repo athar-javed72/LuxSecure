@@ -5,6 +5,8 @@
     $listingId = $stay['listing_id'] ?? ($listing->id ?? null);
     $title = $stay['title'] ?? 'stay';
     $searchTerm = $stay['search'] ?? null;
+    $enquireOnly = (bool) ($stay['enquire_only'] ?? false);
+    $ctaLabel = $stay['cta_label'] ?? null;
 
     if (! empty($stay['href'])) {
         $href = $stay['href'];
@@ -19,10 +21,13 @@
     $showFrom = array_key_exists('show_from', $stay) ? (bool) $stay['show_from'] : true;
     $isFavorited = (bool) ($stay['is_favorited'] ?? false);
     $loginRedirect = request()->getRequestUri();
+    $linkLabel = $enquireOnly
+        ? ($ctaLabel ?: 'Enquire for dates').' — '.$title
+        : 'View '.$title;
 @endphp
 
-<article class="mh-stay-card">
-    <a href="{{ $href }}" class="mh-stay-card__link" aria-label="View {{ $title }}">
+<article class="mh-stay-card {{ $enquireOnly ? 'mh-stay-card--enquire' : '' }}">
+    <a href="{{ $href }}" class="mh-stay-card__link" aria-label="{{ $linkLabel }}">
         <div class="mh-stay-card__media">
             <img
                 src="{{ $stay['image'] ?? '' }}"
@@ -32,18 +37,22 @@
                 loading="lazy"
                 decoding="async"
             >
-            <span class="mh-tag">Short stay</span>
+            <span class="mh-tag">{{ $enquireOnly ? 'Enquire' : 'Short stay' }}</span>
         </div>
         <div class="mh-stay-card__body">
-            @if($showFrom)
-                <p class="mh-stay-card__from">From</p>
-            @endif
-            <p class="mh-price">
-                {{ $stay['price'] ?? '' }}
-                <small>{{ $stay['price_suffix'] ?? '' }}</small>
-            </p>
-            @if(! empty($stay['total_label']))
-                <p class="mh-stay-card__total">{{ $stay['total_label'] }}</p>
+            @if($enquireOnly)
+                <p class="mh-stay-card__cta">{{ $ctaLabel ?: 'Enquire for dates' }}</p>
+            @else
+                @if($showFrom)
+                    <p class="mh-stay-card__from">From</p>
+                @endif
+                <p class="mh-price">
+                    {{ $stay['price'] ?? '' }}
+                    <small>{{ $stay['price_suffix'] ?? '' }}</small>
+                </p>
+                @if(! empty($stay['total_label']))
+                    <p class="mh-stay-card__total">{{ $stay['total_label'] }}</p>
+                @endif
             @endif
             <h3 class="mh-stay-card__title">{{ $title }}</h3>
             <p class="mh-stay-card__loc">{{ $stay['location'] ?? '' }}</p>

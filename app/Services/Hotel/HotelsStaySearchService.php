@@ -27,11 +27,14 @@ class HotelsStaySearchService
             $query = Listing::query()
                 ->published()
                 ->where('purpose', 'short_stay')
-                ->whereHas('country', fn ($c) => $c->where('is_active', true)->where('wind_down', false))
+                // Load country; bookable stays still require an active country in mapStay.
+                // No-inventory stays (Enquire cards) are included even when the country is inactive
+                // so marketed destinations like Dubai / Kuala Lumpur still appear.
                 ->with([
                     'images',
                     'city',
-                    'roomTypes' => fn ($q) => $q->where('is_active', true)->with(['seasonalPrices']),
+                    'country',
+                    'roomTypes' => fn ($q) => $q->where('is_active', true)->with(['seasonalPrices', 'rooms']),
                 ]);
 
             if (filled($destination)) {
@@ -69,10 +72,29 @@ class HotelsStaySearchService
      */
     private function mapStay(Listing $listing, int $guests, bool $hasDates, ?string $checkIn, ?string $checkOut): ?array
     {
-        $candidates = $listing->roomTypes
+        $activeRoomTypes = $listing->roomTypes;
+        $hasBookableInventory = $activeRoomTypes->contains(
+            fn (RoomType $rt) => $rt->rooms->contains(fn ($room) => $room->status === 'available')
+        );
+        $countryBookable = $listing->country
+            && $listing->country->is_active
+            && ! $listing->country->wind_down;
+
+        // No active room types, or none with status=available rooms → enquire card.
+        if ($activeRoomTypes->isEmpty() || ! $hasBookableInventory) {
+            return $this->enquirePayload($listing);
+        }
+
+        // Inventory exists but country is inactive / wound down → omit (do not book).
+        if (! $countryBookable) {
+            return null;
+        }
+
+        $candidates = $activeRoomTypes
             ->filter(fn (RoomType $rt) => (int) $rt->capacity >= $guests)
             ->values();
 
+        // Inventory exists but nothing fits this guest count → omit.
         if ($candidates->isEmpty()) {
             return null;
         }
@@ -86,6 +108,7 @@ class HotelsStaySearchService
                 ->filter(fn (RoomType $rt) => $this->availability->isAvailable($rt, $checkIn, $checkOut))
                 ->values();
 
+            // Real inventory, but fully booked for these dates → omit (not enquire).
             if ($available->isEmpty()) {
                 return null;
             }
@@ -137,6 +160,42 @@ class HotelsStaySearchService
     /**
      * @return array<string, mixed>
      */
+    private function enquirePayload(Listing $listing): array
+    {
+        $destination = $listing->city?->name
+            ?: (string) ($listing->location ?? '');
+        $image = $listing->primary_image_url ?: '/images/listings/hotel-1.jpg';
+
+        return [
+            'listing' => $listing,
+            'listing_id' => $listing->id,
+            'title' => $listing->title,
+            'location' => $listing->location,
+            'image' => $image,
+            'image_alt' => $listing->title,
+            'href' => route('contact', array_filter([
+                'type' => 'hospitality',
+                'stay' => $listing->title,
+                'destination' => $destination !== '' ? $destination : null,
+            ])),
+            'enquire_only' => true,
+            'currency' => null,
+            'nightly' => null,
+            'total' => null,
+            'nights' => null,
+            'show_from' => false,
+            'price' => null,
+            'price_suffix' => null,
+            'total_label' => null,
+            'cta_label' => 'Enquire for dates',
+            'amenities' => ['Enquire for dates'],
+            'is_favorited' => false,
+        ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
     private function stayPayload(
         Listing $listing,
         string $currency,
@@ -155,6 +214,7 @@ class HotelsStaySearchService
             'image' => $image,
             'image_alt' => $listing->title,
             'href' => route('properties.show', $listing),
+            'enquire_only' => false,
             'currency' => $currency,
             'nightly' => $nightly,
             'total' => $total,

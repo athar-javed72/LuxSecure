@@ -14,6 +14,22 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
             <x-panel>
+                @php
+                    $prefillStay = trim((string) request('stay', ''));
+                    $prefillDestination = trim((string) request('destination', ''));
+                    $prefillMessage = old('message');
+                    if ($prefillMessage === null || $prefillMessage === '') {
+                        if ($prefillStay !== '' || $prefillDestination !== '') {
+                            $parts = array_filter([
+                                $prefillStay !== '' ? $prefillStay : null,
+                                $prefillDestination !== '' ? 'in '.$prefillDestination : null,
+                            ]);
+                            $prefillMessage = 'I am interested in '.implode(' ', $parts).'. Please share availability and rates for my preferred dates.';
+                        } else {
+                            $prefillMessage = '';
+                        }
+                    }
+                @endphp
                 <form id="inquiry-form" method="POST" action="{{ route('contact.store') }}" class="space-y-4 scroll-mt-[calc(var(--header-h)+16px)]">
                     @csrf
                     <x-input label="Name" name="name" :value="old('name')" placeholder="Your name" required />
@@ -23,12 +39,12 @@
                         <textarea
                             id="message"
                             name="message"
-                            @if(request('type') === 'inquiry') autofocus @endif
+                            @if(request('type') === 'inquiry' || request('type') === 'hospitality') autofocus @endif
                             rows="5"
                             required
                             placeholder="How can we help?"
                             class="w-full px-4 py-3 rounded-sm border border-black/10 bg-white text-sm text-fs-primary placeholder:text-fs-muted focus:border-fs-brand focus:ring-2 focus:ring-fs-brand/20"
-                        >{{ old('message') }}</textarea>
+                        >{{ $prefillMessage }}</textarea>
                         @error('message')<p class="mt-1 text-xs text-fs-danger">{{ $message }}</p>@enderror
                     </div>
                     <x-button type="submit" variant="primary" class="w-full">Send message</x-button>

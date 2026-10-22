@@ -1782,6 +1782,16 @@ a.mg-hero__card:hover {
     color: var(--mg-muted);
 }
 
+.mh-stay-card__cta {
+    margin: 0 0 4px;
+    font: 600 15px var(--mg-font-body);
+    color: var(--mg-gold-dark);
+}
+
+.mh-stay-card--enquire .mh-stay-card__title {
+    min-height: 0;
+}
+
 .mh-stay-card__title {
     margin: 2px 0;
     font: 600 16px var(--mg-font-body);

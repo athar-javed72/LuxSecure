@@ -58,7 +58,14 @@ class DivisionController extends Controller
 
         if ($searching && $stays->isNotEmpty()) {
             if ($sort === 'price_asc') {
-                $stays = $stays->sortBy('nightly')->values();
+                // Bookable stays by nightly; enquire-only cards last.
+                $stays = $stays->sortBy(function (array $stay) {
+                    if (! empty($stay['enquire_only'])) {
+                        return PHP_FLOAT_MAX;
+                    }
+
+                    return (float) ($stay['nightly'] ?? PHP_FLOAT_MAX);
+                })->values();
             }
             // Cumulative "Show more": page 1 = 12, page 2 = 24, …
             $hasMore = $totalCount > ($page * $perPage);
