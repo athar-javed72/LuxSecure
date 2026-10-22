@@ -5,6 +5,13 @@
 
 @php
     $hotels = config('hotels_page');
+    $hotelsSearch = $hotelsSearch ?? [
+        'active' => false,
+        'stays' => collect(),
+        'count' => 0,
+        'summary' => null,
+        'error' => null,
+    ];
 @endphp
 
 @push('styles')
@@ -15,6 +22,7 @@
 @section('content')
     <x-landing.hotels.hero :data="$hotels" />
     <x-landing.hotels.booking-bar />
+    <x-landing.hotels.results :search="$hotelsSearch" />
     <x-landing.hotels.trust-pills :pills="$hotels['trust_pills']" />
     <x-landing.hotels.destinations :destinations="$hotels['destinations']" />
     <x-landing.hotels.stays-grid :stays="$hotels['stays']" />

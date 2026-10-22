@@ -4,7 +4,11 @@
     $hero = $data['hero'] ?? [];
     $featured = $hero['featured'] ?? [];
     $enquireHref = route('contact', ['type' => 'hospitality']);
-    $featuredHref = $featured['href'] ?? route('properties', ['purpose' => 'short_stay', 'search' => 'Blue Area']);
+    $featuredHref = $featured['href']
+        ?? route('divisions.hospitality', array_filter([
+            'destination' => $featured['search'] ?? 'Blue Area',
+            'guests' => 2,
+        ]));
 @endphp
 
 <section class="mh-hero" aria-label="Maskanoor Hotels">

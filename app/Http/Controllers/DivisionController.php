@@ -2,24 +2,130 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\HotelsSearchRequest;
 use App\Models\ContentBlock;
 use App\Models\ListingType;
 use App\Models\Setting;
 use App\Services\DivisionCatalog;
+use App\Services\Hotel\HotelsStaySearchService;
 use App\Services\MediaResolver;
 use App\Support\BrandAssets;
+use Carbon\Carbon;
 use Illuminate\View\View;
 
 class DivisionController extends Controller
 {
-    public function hospitality(): View
+    public function hospitality(HotelsSearchRequest $request, HotelsStaySearchService $search): View
     {
-        return view('divisions.hotels');
+        $destination = $request->input('destination');
+        $checkIn = $request->input('check_in');
+        $checkOut = $request->input('check_out');
+        $guests = (int) ($request->input('guests') ?: 2);
+
+        $searching = $request->isSearchAttempt();
+        $stays = collect();
+        $searchError = null;
+
+        if ($searching) {
+            $result = $search->search(
+                filled($destination) ? (string) $destination : null,
+                filled($checkIn) ? (string) $checkIn : null,
+                filled($checkOut) ? (string) $checkOut : null,
+                max(1, $guests),
+            );
+            $stays = $result['stays'];
+            $searchError = $result['error'];
+
+            if (auth()->check() && $stays->isNotEmpty()) {
+                $ids = $stays->pluck('listing_id')->filter()->all();
+                $favIds = auth()->user()->favorites()
+                    ->whereIn('listings.id', $ids)
+                    ->pluck('listings.id');
+                $stays = $stays->map(function (array $stay) use ($favIds) {
+                    $stay['is_favorited'] = $favIds->contains($stay['listing_id']);
+
+                    return $stay;
+                });
+            }
+        }
+
+        $summary = null;
+        $sort = $request->input('sort');
+        $page = max(1, (int) $request->input('page', 1));
+        $perPage = 12;
+        $totalCount = $stays->count();
+        $hasMore = false;
+
+        if ($searching && $stays->isNotEmpty()) {
+            if ($sort === 'price_asc') {
+                // Bookable stays by nightly; enquire-only cards last.
+                $stays = $stays->sortBy(function (array $stay) {
+                    if (! empty($stay['enquire_only'])) {
+                        return PHP_FLOAT_MAX;
+                    }
+
+                    return (float) ($stay['nightly'] ?? PHP_FLOAT_MAX);
+                })->values();
+            }
+            // Cumulative "Show more": page 1 = 12, page 2 = 24, …
+            $hasMore = $totalCount > ($page * $perPage);
+            $stays = $stays->take($page * $perPage)->values();
+        }
+
+        if ($searching) {
+            $summary = $this->hotelsSearchSummary(
+                filled($destination) ? (string) $destination : null,
+                filled($checkIn) ? (string) $checkIn : null,
+                filled($checkOut) ? (string) $checkOut : null,
+                max(1, $guests),
+            );
+        }
+
+        return view('divisions.hotels', [
+            'hotelsSearch' => [
+                'active' => $searching,
+                'destination' => $destination,
+                'check_in' => $checkIn,
+                'check_out' => $checkOut,
+                'guests' => $guests,
+                'stays' => $stays,
+                'count' => $totalCount,
+                'page' => $page,
+                'per_page' => $perPage,
+                'has_more' => $hasMore,
+                'sort' => $sort === 'price_asc' ? 'price_asc' : null,
+                'summary' => $summary,
+                'error' => $searchError,
+            ],
+        ]);
     }
 
-    public function living(DivisionCatalog $catalog, MediaResolver $media): View
+    /**
+     * @return array{label: string, destination_label: string}
+     */
+    private function hotelsSearchSummary(?string $destination, ?string $checkIn, ?string $checkOut, int $guests): array
     {
-        return $this->show('living', $catalog, $media);
+        $destinationLabel = filled($destination) ? $destination : 'Showing all destinations';
+        $parts = [$destinationLabel];
+
+        if (filled($checkIn) && filled($checkOut)) {
+            $tz = config('app.timezone');
+            $in = Carbon::parse($checkIn, $tz)->timezone($tz);
+            $out = Carbon::parse($checkOut, $tz)->timezone($tz);
+            $parts[] = $in->format('j M').' to '.$out->format('j M');
+        }
+
+        $parts[] = $guests.' '.($guests === 1 ? 'guest' : 'guests');
+
+        return [
+            'label' => implode(' · ', $parts).' · Edit',
+            'destination_label' => $destinationLabel,
+        ];
+    }
+
+    public function living(): View
+    {
+        return view('divisions.living');
     }
 
     private function show(string $key, DivisionCatalog $catalog, MediaResolver $media): View

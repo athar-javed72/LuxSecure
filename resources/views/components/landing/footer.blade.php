@@ -46,7 +46,7 @@
 
         <div class="mg-footer__bottom">
             <p>© {{ date('Y') }} Maskanoor Group · Developed by Nexora Labs</p>
-            <p>EN · PKR</p>
+            <p>{{ strtoupper(substr((string) app()->getLocale(), 0, 2)) }} · {{ session('currency', 'PKR') }}</p>
         </div>
     </div>
 </footer>

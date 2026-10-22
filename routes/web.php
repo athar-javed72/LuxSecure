@@ -46,6 +46,7 @@ use App\Http\Controllers\PaymentWebhookController;
 use App\Http\Controllers\PhoneVerificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReviewController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
@@ -72,6 +73,15 @@ Route::get('/properties/{listing}', [ListingController::class, 'show'])->name('p
 Route::get('/countries/{country}/cities', CitySearchController::class)->name('countries.cities');
 
 Route::get('/hospitality', [DivisionController::class, 'hospitality'])->name('divisions.hospitality');
+Route::get('/hotels', function (Request $request) {
+    $target = '/hospitality';
+    $query = $request->getQueryString();
+    if ($query) {
+        $target .= '?'.$query;
+    }
+
+    return redirect()->to($target, 301);
+})->name('divisions.hotels.redirect');
 Route::get('/living', [DivisionController::class, 'living'])->name('divisions.living');
 Route::get('/up', HealthController::class)->name('health');
 

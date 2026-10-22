@@ -11,6 +11,7 @@ use App\Services\UserAccessRevoker;
 use App\Services\UserPrivilegedAttributes;
 use App\Support\CountryContext;
 use App\Support\LegalAcceptanceService;
+use App\Support\SafeLoginRedirect;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Events\Verified;
@@ -22,8 +23,13 @@ use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
-    public function showLoginForm()
+    public function showLoginForm(Request $request)
     {
+        $safe = SafeLoginRedirect::path($request->query('redirect'));
+        if ($safe !== null) {
+            $request->session()->put('url.intended', url($safe));
+        }
+
         return view('auth.login');
     }
 

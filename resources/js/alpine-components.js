@@ -48,30 +48,14 @@ export function registerAlpineComponents(Alpine) {
 
     Alpine.data('authCard', () => ({
         mode: 'login',
-        urls: {},
+        showPassword: false,
+        showPasswordConfirm: false,
+        loading: false,
+        registerSuccess: false,
         init() {
             const cfg = parseAlpineConfig(this.$el);
             this.mode = cfg.mode || 'login';
-            this.urls = cfg.urls || {};
-        },
-        get isLogin() {
-            return this.mode === 'login';
-        },
-        get isForgot() {
-            return this.mode === 'forgot';
-        },
-        get isRegister() {
-            return this.mode === 'register';
-        },
-        setMode(next) {
-            if (this.mode === next) {
-                return;
-            }
-            this.mode = next;
-            const url = this.urls[next];
-            if (url && window.location.pathname !== new URL(url, window.location.origin).pathname) {
-                window.history.replaceState({}, '', url);
-            }
+            this.registerSuccess = Boolean(cfg.registerSuccess);
         },
     }));
 

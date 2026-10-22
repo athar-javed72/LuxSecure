@@ -6,11 +6,11 @@
         <div class="mh-city-grid">
             @foreach($destinations as $city)
                 @php
-                    $href = !empty($city['browse_all'])
-                        ? route('properties', ['purpose' => 'short_stay'])
-                        : route('properties', array_filter([
-                            'purpose' => 'short_stay',
-                            'search' => $city['search'] ?? null,
+                    $href = ! empty($city['browse_all'])
+                        ? route('divisions.hospitality', ['guests' => 2])
+                        : route('divisions.hospitality', array_filter([
+                            'destination' => $city['search'] ?? null,
+                            'guests' => 2,
                         ]));
                 @endphp
                 <a href="{{ $href }}" class="mh-city-card" aria-label="{{ $city['name'] }} — {{ $city['line'] }}">

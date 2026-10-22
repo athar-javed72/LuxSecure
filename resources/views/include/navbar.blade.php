@@ -90,15 +90,20 @@
 
         <div class="hidden lg:flex items-center gap-2">
             @if(($countries ?? collect())->isNotEmpty() && $variant !== 'admin')
+                @php
+                    $activeCountry = $activeCountry ?? null;
+                    $localeMeta = strtoupper(substr((string) app()->getLocale(), 0, 2))
+                        .' · '
+                        .session('currency', optional($activeCountry)->currency_code ?? 'PKR');
+                @endphp
                 <div class="relative" @click.outside="closeLocale()">
                     <button type="button"
-                            class="inline-flex items-center gap-1.5 h-11 px-3 rounded-[var(--radius-button)] text-xs font-medium border border-[color-mix(in_srgb,var(--header-fg)_25%,transparent)]"
-                            style="color: var(--header-fg)"
+                            class="inline-flex items-center h-11 px-2 text-[13px] font-medium opacity-90 hover:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--header-fg)]"
+                            style="color: var(--header-fg); border: 0; background: transparent;"
                             @click="toggleLocale()"
                             :aria-expanded="localeExpanded()"
-                            aria-label="Country and currency">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M12 21a9 9 0 100-18 9 9 0 000 18zM2.5 12h19M12 2.5c2.5 2.8 3.8 5.8 3.8 9.5S14.5 18.7 12 21.5C9.5 18.7 8.2 15.7 8.2 12S9.5 5.3 12 2.5z"/></svg>
-                        {{ session('currency', optional($activeCountry)->currency_code ?? 'PKR') }}
+                            aria-label="Language and currency">
+                        {{ $localeMeta }}
                     </button>
                     <div x-cloak x-show="localeOpen" class="absolute right-0 top-full mt-2 w-64 rounded-[var(--radius-card)] bg-white shadow-[var(--shadow-card)] border border-[var(--color-border)] p-3 z-50 text-[var(--color-ink)]">
                         <form method="POST" action="{{ route('locale.update') }}" x-ref="localeForm" class="space-y-2">
